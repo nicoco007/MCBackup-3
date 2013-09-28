@@ -23,6 +23,7 @@
         <Canvas x:Name="GeneralPanel" HorizontalAlignment="Left" Height="191" VerticalAlignment="Top" Width="567" Margin="117,10,0,0">
             <CheckBox Content="Show tooltips" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="9" Canvas.Top="13" ToolTip="Not Implemented" ToolTipService.ShowOnDisabled="True" IsEnabled="False" IsChecked="True"/>
             <CheckBox Content="Show delete confirmation" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="9" Canvas.Top="35" ToolTip="Not Implemented" ToolTipService.ShowOnDisabled="True" IsEnabled="False" IsChecked="True"/>
+            <CheckBox x:Name="CheckForUpdatesCheckBox" Content="Check for updates" Canvas.Left="9" Canvas.Top="55" ToolTip="Automatically check for updates on startup"/>
         </Canvas>
         <ListBox x:Name="ListBox" HorizontalAlignment="Left" Width="102" Margin="10,10,0,35">
             <ListBoxItem Content="General"/>

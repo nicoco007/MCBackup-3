@@ -33,6 +33,7 @@ Public Class Options
         ListViewOpacitySlider.Value = My.Settings.OpacityPercent
         OpacityPercentLabel.Content = Int(ListViewOpacitySlider.Value).ToString & "%"
         BackgroundImageStyle.SelectedIndex = My.Settings.BackgroundImageStretch
+        CheckForUpdatesCheckBox.IsChecked = My.Settings.CheckForUpdates
     End Sub
 
     Private Sub BrowseMinecraftFolderButton_Click(sender As Object, e As RoutedEventArgs) Handles BrowseMinecraftFolderButton.Click
@@ -49,8 +50,6 @@ Public Class Options
                     Me.Close() ' Close program if "No"
                 End If
             End If
-        Else
-            Me.Close() ' Close program if "Cancel" or "X" buttons are pressed
         End If
     End Sub
 
@@ -121,6 +120,7 @@ Public Class Options
         My.Settings.SavesFolderLocation = SavesFolderTextBox.Text
         My.Settings.BackupsFolderLocation = BackupsFolderTextBox.Text
         My.Settings.OpacityPercent = ListViewOpacitySlider.Value
+        My.Settings.CheckForUpdates = CheckForUpdatesCheckBox.IsChecked
         My.Settings.Save()
         Main.RefreshBackupsList()
     End Sub

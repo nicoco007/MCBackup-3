@@ -125,13 +125,13 @@ Partial Friend NotInheritable Class MySettings
     
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-     Global.System.Configuration.DefaultSettingValueAttribute("0")>  _
-    Public Property SidebarWidth() As Integer
+     Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+    Public Property CheckForUpdates() As Boolean
         Get
-            Return CType(Me("SidebarWidth"),Integer)
+            Return CType(Me("CheckForUpdates"),Boolean)
         End Get
         Set
-            Me("SidebarWidth") = value
+            Me("CheckForUpdates") = value
         End Set
     End Property
 End Class

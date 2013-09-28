@@ -36,7 +36,8 @@ Class MainWindow
     Private ThumbnailBackgroundWorker As BackgroundWorker
 
     Private StartupPath As String = System.IO.Directory.GetCurrentDirectory()
-    Private ApplicationVersion As String = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()
+    Public ApplicationVersion As String = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()
+    Public LatestVersion As String
 
     Public Sub New()
         InitializeComponent()
@@ -70,6 +71,8 @@ Class MainWindow
         ListView.Opacity = OpacityDecimal
         Sidebar.Opacity = OpacityDecimal
 
+        Debug.Print(My.Settings.CheckForUpdates)
+
         If My.Settings.BackgroundImageLocation = "" Then
             Me.Background = New SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 240, 240, 240))
         Else
@@ -78,28 +81,31 @@ Class MainWindow
             Me.Background = Brush
         End If
 
-        Try
-            Dim WebClient As New WebClient
-            Dim LatestVersion As String = WebClient.DownloadString("http://content.nicoco007.com/downloads/mcbackup-3/version")
+        If My.Settings.CheckForUpdates Then
+            Try
+                Dim WebClient As New WebClient
+                LatestVersion = WebClient.DownloadString("http://content.nicoco007.com/downloads/mcbackup-3/version")
 
-            If Not LatestVersion = ApplicationVersion Then
-                Debug.Print(DebugTimeStamp() & "[INFO] New MCBackup version available!")
-                MessageBox.Show("New version available!" & vbNewLine & "Current Version: " & ApplicationVersion & vbNewLine & "Latest Version: " & LatestVersion)
-            Else
-                Debug.Print(DebugTimeStamp() & "[INFO] MCBackup is up-to-date (Version " & ApplicationVersion & ")")
-            End If
-        Catch ex As Exception
-            Debug.Print(DebugTimeStamp() & "[SEVERE] " & ex.Message)
-        End Try
+                If Not LatestVersion = ApplicationVersion Then
+                    Debug.Print(DebugTimeStamp() & "[INFO] New MCBackup version available!")
+                    Dim UpdateDialog As New UpdateDialog
+                    UpdateDialog.Show()
+                Else
+                    Debug.Print(DebugTimeStamp() & "[INFO] MCBackup is up-to-date (Version " & ApplicationVersion & ")")
+                End If
+            Catch ex As Exception
+                Debug.Print(DebugTimeStamp() & "[SEVERE] " & ex.Message)
+            End Try
+        End If
 
         If My.Settings.BackupsFolderLocation = "" Then
-            My.Settings.BackupsFolderLocation = AppData & "\.mcbackup\backups"
+            My.Settings.BackupsFolderLocation = StartupPath & "\backups"
         End If
 
         Debug.Print(DebugTimeStamp() & "[INFO] Set Backups folder location to """ & My.Settings.BackupsFolderLocation & """")
 
         My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation)
-        If Not My.Computer.FileSystem.DirectoryExists(My.Settings.MinecraftFolderLocation & "\launcher.jar") Then ' Check if saved directory exists AND still has Minecraft installed in it
+        If My.Computer.FileSystem.FileExists(My.Settings.MinecraftFolderLocation & "\launcher.jar") Then ' Check if saved directory exists AND still has Minecraft installed in it
             If My.Computer.FileSystem.FileExists(AppData & "\.minecraft\launcher.jar") Then ' If not, check for the usual Minecraft folder location
                 My.Settings.MinecraftFolderLocation = AppData & "\.minecraft" ' Set folder location to default Minecraft folder location
                 My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"

@@ -20,8 +20,8 @@
     <Setting Name="BackgroundImageStretch" Type="System.Int32" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="SidebarWidth" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+    <Setting Name="CheckForUpdates" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>
