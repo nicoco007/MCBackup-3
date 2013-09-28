@@ -35,6 +35,9 @@ Class MainWindow
     Private DeleteBackgroundWorker As BackgroundWorker
     Private ThumbnailBackgroundWorker As BackgroundWorker
 
+    Private StartupPath As String = System.IO.Directory.GetCurrentDirectory()
+    Private ApplicationVersion As String = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()
+
     Public Sub New()
         InitializeComponent()
         BackupBackgroundWorker = New BackgroundWorker()
@@ -56,7 +59,7 @@ Class MainWindow
 
 #Region "Load"
     Private Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs)
-        Debug.Print(DebugTimeStamp() & "[DEBUG] Starting MCBackup")
+        Debug.Print(DebugTimeStamp() & "[INFO] Starting MCBackup")
 
         If My.Settings.OpacityPercent = 0 Then
             My.Settings.OpacityPercent = 100
@@ -75,12 +78,26 @@ Class MainWindow
             Me.Background = Brush
         End If
 
+        Try
+            Dim WebClient As New WebClient
+            Dim LatestVersion As String = WebClient.DownloadString("http://content.nicoco007.com/downloads/mcbackup-3/version")
+
+            If Not LatestVersion = ApplicationVersion Then
+                Debug.Print(DebugTimeStamp() & "[INFO] New MCBackup version available!")
+                MessageBox.Show("New version available!" & vbNewLine & "Current Version: " & ApplicationVersion & vbNewLine & "Latest Version: " & LatestVersion)
+            Else
+                Debug.Print(DebugTimeStamp() & "[INFO] MCBackup is up-to-date (Version " & ApplicationVersion & ")")
+            End If
+        Catch ex As Exception
+            Debug.Print(DebugTimeStamp() & "[SEVERE] " & ex.Message)
+        End Try
+
         If My.Settings.BackupsFolderLocation = "" Then
             My.Settings.BackupsFolderLocation = AppData & "\.mcbackup\backups"
         End If
 
-        Debug.Print(DebugTimeStamp() & "[DEBUG] Set Backups folder location to """ & My.Settings.BackupsFolderLocation & """")
-        
+        Debug.Print(DebugTimeStamp() & "[INFO] Set Backups folder location to """ & My.Settings.BackupsFolderLocation & """")
+
         My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation)
         If Not My.Computer.FileSystem.DirectoryExists(My.Settings.MinecraftFolderLocation & "\launcher.jar") Then ' Check if saved directory exists AND still has Minecraft installed in it
             If My.Computer.FileSystem.FileExists(AppData & "\.minecraft\launcher.jar") Then ' If not, check for the usual Minecraft folder location
@@ -93,8 +110,8 @@ Class MainWindow
                 Exit Sub
             End If
         End If
-        Debug.Print(DebugTimeStamp() & "[DEBUG] Minecraft folder set to """ & My.Settings.MinecraftFolderLocation & """")
-        Debug.Print(DebugTimeStamp() & "[DEBUG] Saves folder set to """ & My.Settings.SavesFolderLocation & """")
+        Debug.Print(DebugTimeStamp() & "[INFO] Minecraft folder set to """ & My.Settings.MinecraftFolderLocation & """")
+        Debug.Print(DebugTimeStamp() & "[INFO] Saves folder set to """ & My.Settings.SavesFolderLocation & """")
         RefreshBackupsList()
     End Sub
 
@@ -104,8 +121,8 @@ Class MainWindow
                 MessageBox.Show("Minecraft folder set to " & FolderBrowserDialog.SelectedPath, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) ' Tell user that folder has been selected successfully
                 My.Settings.MinecraftFolderLocation = FolderBrowserDialog.SelectedPath
                 My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
-                Debug.Print(DebugTimeStamp() & "[DEBUG] Minecraft folder set to """ & My.Settings.MinecraftFolderLocation & """")
-                Debug.Print(DebugTimeStamp() & "[DEBUG] Saves folder set to """ & My.Settings.SavesFolderLocation & """")
+                Debug.Print(DebugTimeStamp() & "[INFO] Minecraft folder set to """ & My.Settings.MinecraftFolderLocation & """")
+                Debug.Print(DebugTimeStamp() & "[INFO] Saves folder set to """ & My.Settings.SavesFolderLocation & """")
                 Exit Sub
             Else
                 If MessageBox.Show("Minecraft is not installed in that folder! Try again?", "Error!", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then ' Ask if user wants to try finding folder again
@@ -229,7 +246,7 @@ Class MainWindow
     End Sub
 
     Public Sub StartBackup()
-        Debug.Print(DebugTimeStamp() & "[DEBUG] Starting new backup (name=""" & BackupInfo(0) & """; type=""" & BackupInfo(3) & """)")
+        Debug.Print(DebugTimeStamp() & "[INFO] Starting new backup (name=""" & BackupInfo(0) & """; type=""" & BackupInfo(3) & """)")
         ListView.IsEnabled = False
         BackupButton.IsEnabled = False
         RestoreButton.IsEnabled = False
@@ -271,12 +288,12 @@ Class MainWindow
         ProgressBar.Value = 100
         If BackupInfo(3) = "save" Then
             StatusLabel.Content = "Creating thumbnail..."
-            Debug.Print(DebugTimeStamp() & "[DEBUG] Creating thumbnail")
+            Debug.Print(DebugTimeStamp() & "[INFO] Creating thumbnail")
             CreateThumb(BackupInfo(2))
         Else
             RefreshBackupsList()
             StatusLabel.Content = "Backup Complete; Ready"
-            Debug.Print(DebugTimeStamp() & "[DEBUG] Backup Complete")
+            Debug.Print(DebugTimeStamp() & "[INFO] Backup Complete")
             ListView.IsEnabled = True
             BackupButton.IsEnabled = True
         End If
@@ -286,7 +303,7 @@ Class MainWindow
 #Region "Restore"
     Private Sub RestoreButton_Click(sender As Object, e As EventArgs) Handles RestoreButton.Click
         If MessageBox.Show("Are you sure you want to restore this backup? This will overwrite any existing content!", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = Forms.DialogResult.Yes Then
-            Debug.Print(DebugTimeStamp() & "[DEBUG] Starting Restore")
+            Debug.Print(DebugTimeStamp() & "[INFO] Starting Restore")
             RestoreInfo(0) = ListView.SelectedItems(0).Name ' Set place 0 of RestoreInfo array to the backup name
 
             Dim BaseFolderName As String = ""
@@ -316,7 +333,7 @@ Class MainWindow
             DeleteForRestoreBackgroundWorker.RunWorkerAsync()
             ProgressBar.IsIndeterminate = True
             StatusLabel.Content = "Removing old content, please wait..."
-            Debug.Print(DebugTimeStamp() & "[DEBUG] Removing old content")
+            Debug.Print(DebugTimeStamp() & "[INFO] Removing old content")
         Else
             Exit Sub
         End If
@@ -336,7 +353,7 @@ Class MainWindow
         ProgressBar.IsIndeterminate = False
         RestoreBackgroundWorker.RunWorkerAsync()
         UpdateRestoreProgress()
-        Debug.Print(DebugTimeStamp() & "[DEBUG] Removed old content, restoring")
+        Debug.Print(DebugTimeStamp() & "[INFO] Removed old content, restoring")
     End Sub
 
     Private Sub RestoreBackgroundWorker_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs)
@@ -366,7 +383,7 @@ Class MainWindow
     Private Sub RestoreBackgroundWorker_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
         StatusLabel.Content = "Restore Complete; Ready"
         RefreshBackupsList()
-        Debug.Print(DebugTimeStamp() & "[DEBUG] Restore Complete")
+        Debug.Print(DebugTimeStamp() & "[INFO] Restore Complete")
     End Sub
 #End Region
 
@@ -477,15 +494,15 @@ Class MainWindow
     Private Sub ThumbnailBackgroundWorker_DoWork()
         Try
             Dim MCMapProcess As New Process
-            MCMapProcess.StartInfo.FileName = Chr(34) & System.IO.Directory.GetCurrentDirectory() & "\bin\mcmap.exe" & Chr(34)
+            MCMapProcess.StartInfo.FileName = Chr(34) & StartupPath & "\bin\mcmap.exe" & Chr(34)
             MCMapProcess.StartInfo.Arguments = " " & Chr(34) & WorldPath & Chr(34)
-            MCMapProcess.StartInfo.WorkingDirectory = System.IO.Directory.GetCurrentDirectory()
+            MCMapProcess.StartInfo.WorkingDirectory = StartupPath
             MCMapProcess.StartInfo.CreateNoWindow = True
             MCMapProcess.StartInfo.UseShellExecute = False
-            MCMapProcess.StartInfo.WorkingDirectory = System.IO.Directory.GetCurrentDirectory() & "\output\"
+            MCMapProcess.StartInfo.WorkingDirectory = StartupPath & "\output\"
             MCMapProcess.Start()
             MCMapProcess.WaitForExit()
-            My.Computer.FileSystem.MoveFile(System.IO.Directory.GetCurrentDirectory() & "\output\output.png", WorldPath & "\thumb.png", True)
+            My.Computer.FileSystem.MoveFile(StartupPath & "\output\output.png", WorldPath & "\thumb.png", True)
         Catch ex As Exception
             Debug.Print(DebugTimeStamp() & "[SEVERE] " & ex.Message)
         End Try
@@ -494,7 +511,7 @@ Class MainWindow
     Private Sub ThumbnailBackgroundWorker_RunWorkerCompleted()
         RefreshBackupsList()
         StatusLabel.Content = "Backup Complete; Ready"
-        Debug.Print(DebugTimeStamp() & "[DEBUG] Backup Complete")
+        Debug.Print(DebugTimeStamp() & "[INFO] Backup Complete")
         ListView.IsEnabled = True
         BackupButton.IsEnabled = True
     End Sub
