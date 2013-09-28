@@ -80,7 +80,7 @@ publish
 *.Publish.xml
 
 # Others
-[Bb]in
+# [Bb]in
 [Oo]bj
 sql
 TestResults

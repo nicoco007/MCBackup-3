@@ -1,0 +1,93 @@
+﻿<!--
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                         Copyright 2013 nicoco007                          ║
+║                                                                           ║
+║      Licensed under the Apache License, Version 2.0 (the "License");      ║
+║      you may not use this file except in compliance with the License.     ║
+║                  You may obtain a copy of the License at                  ║
+║                                                                           ║
+║                 http://www.apache.org/licenses/LICENSE-2.0                ║
+║                                                                           ║
+║    Unless required by applicable law or agreed to in writing, software    ║
+║     distributed under the License is distributed on an "AS IS" BASIS,     ║
+║  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. ║
+║     See the License for the specific language governing permissions and   ║
+║                      limitations under the License.                       ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+-->
+
+<Window x:Class="MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="MCBackup" Height="480" Width="850" Loaded="MainWindow_Loaded" Icon="MCBackup.ico" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Window.Background>
+        <ImageBrush Stretch="Uniform"/>
+    </Window.Background>
+    <Grid Width="834" HorizontalAlignment="Left" VerticalAlignment="Top" Height="441">
+        <Grid.Background>
+            <ImageBrush/>
+        </Grid.Background>
+        <Menu x:Name="MenuBar" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="842" Foreground="Black" Opacity="0.85">
+            <Menu.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <LinearGradientBrush.RelativeTransform>
+                        <TransformGroup>
+                            <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                            <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                            <RotateTransform Angle="90" CenterY="0.5" CenterX="0.5"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </LinearGradientBrush.RelativeTransform>
+                    <GradientStop Color="White"/>
+                    <GradientStop Color="#FFF0F0FF" Offset="1"/>
+                </LinearGradientBrush>
+            </Menu.Background>
+            <MenuItem Header="File" Height="20" Margin="2" HorizontalAlignment="Center">
+                <MenuItem Header="Exit" Click="ExitMenuItem_Click"/>
+            </MenuItem>
+            <MenuItem Header="Edit" Height="20" Margin="2" HorizontalAlignment="Center">
+                <MenuItem Header="Refresh Backups List" Click="RefreshBackupsList"/>
+                <MenuItem Header="Backups Folder" Click="BackupsFolderMenuItem"/>
+            </MenuItem>
+            <MenuItem Header="Tools" Height="20" Margin="2" HorizontalAlignment="Center">
+                <MenuItem Header="Options" Click="OptionsMenuItem"/>
+            </MenuItem>
+            <MenuItem Header="Help" Height="20" Margin="2" HorizontalAlignment="Center">
+                <MenuItem Header="Website" Click="WebsiteMenuItem"/>
+                <Separator/>
+                <MenuItem Header="About" Click="AboutMenuItem"/>
+            </MenuItem>
+        </Menu>
+        <Button x:Name="BackupButton" Content="Backup" HorizontalAlignment="Left" VerticalAlignment="Top" Width="145" Margin="10,314,0,0" FontSize="24" Height="45" Opacity="0.85"/>
+        <Button x:Name="RestoreButton" Content="Restore" HorizontalAlignment="Left" VerticalAlignment="Top" Width="145" Height="45" Margin="160,314,0,0" FontSize="24" Opacity="0.85"/>
+        <Button x:Name="DeleteButton" Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Margin="310,314,0,0" Opacity="0.85"/>
+        <Button x:Name="RenameButton" Content="Rename" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Margin="310,339,0,0" Opacity="0.85"/>
+        <ProgressBar x:Name="ProgressBar" Margin="10,408,0,0" VerticalAlignment="Top" DockPanel.Dock="Bottom" Height="23" Foreground="#FF06B025" Opacity="0.85" HorizontalAlignment="Left" Width="814"/>
+        <Label x:Name="StatusLabel" Content="Ready" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,379,0,0" FontSize="14" Width="814" FontWeight="Bold"/>
+        <Grid x:Name="Grid" HorizontalAlignment="Left" Height="280" VerticalAlignment="Top" Width="814" Margin="10,29,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="589*" MinWidth="300"/>
+                <ColumnDefinition Width="224*" MinWidth="224"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ListView x:Name="ListView" Height="280" Opacity="0.75" Margin="1,0" VerticalAlignment="Top">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding Name}"/>
+                        <GridViewColumn Header="Date Created" Width="140" DisplayMemberBinding="{Binding DateCreated}"/>
+                        <GridViewColumn Header="Description" Width="235" DisplayMemberBinding="{Binding Description}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <GridSplitter x:Name="GridSplitter" HorizontalAlignment="Left" Height="280" VerticalAlignment="Top" Width="3" Margin="3,0,0,0" Grid.Column="1"/>
+            <Grid x:Name="Sidebar" Height="280" VerticalAlignment="Top" Grid.Column="1" Margin="10,0,0,0" Grid.ColumnSpan="2" Background="White" Opacity="0.75">
+                <Border BorderBrush="#FFBDBDBD" BorderThickness="1"/>
+                <Image x:Name="ThumbnailImage" Margin="10,10,10,0" Height="200" VerticalAlignment="Top"/>
+                <TextBlock Text="Original Name:" HorizontalAlignment="Left" Margin="3,228,0,26"/>
+                <TextBlock Text="Type:" HorizontalAlignment="Left" Width="92" Margin="3,254,0,0"/>
+                <TextBlock x:Name="OriginalNameLabel" Text="" Margin="87,228,2,26" TextTrimming="WordEllipsis"/>
+                <TextBlock x:Name="TypeLabel" Text="" Margin="87,254,2,0" TextTrimming="WordEllipsis"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
