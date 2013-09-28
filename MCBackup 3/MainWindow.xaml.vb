@@ -24,7 +24,7 @@ Imports System.ComponentModel
 Imports System.Windows.Interop.Imaging
 
 Class MainWindow
-    Private AppData = Environ("APPDATA")
+    Private AppData As String = Environ("APPDATA")
     Public BackupInfo(3) As String
     Public RestoreInfo(2) As String
     Private FolderBrowserDialog As New FolderBrowserDialog
@@ -105,7 +105,8 @@ Class MainWindow
         Debug.Print(DebugTimeStamp() & "[INFO] Set Backups folder location to """ & My.Settings.BackupsFolderLocation & """")
 
         My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation)
-        If My.Computer.FileSystem.FileExists(My.Settings.MinecraftFolderLocation & "\launcher.jar") Then ' Check if saved directory exists AND still has Minecraft installed in it
+
+        If Not My.Computer.FileSystem.FileExists(My.Settings.MinecraftFolderLocation & "\launcher.jar") Then ' Check if saved directory exists AND still has Minecraft installed in it
             If My.Computer.FileSystem.FileExists(AppData & "\.minecraft\launcher.jar") Then ' If not, check for the usual Minecraft folder location
                 My.Settings.MinecraftFolderLocation = AppData & "\.minecraft" ' Set folder location to default Minecraft folder location
                 My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
