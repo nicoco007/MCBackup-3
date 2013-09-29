@@ -19,7 +19,7 @@
 <Window x:Class="MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="MCBackup" Height="480" Width="850" Loaded="MainWindow_Loaded" Icon="MCBackup.ico" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    Title="MCBackup" Height="480" Width="850" Loaded="MainWindow_Loaded" Icon="MCBackup.ico" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
     <Window.Background>
         <ImageBrush Stretch="Uniform"/>
     </Window.Background>
