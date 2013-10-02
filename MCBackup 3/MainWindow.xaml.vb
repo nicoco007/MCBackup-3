@@ -90,18 +90,21 @@ Class MainWindow
         If My.Settings.CheckForUpdates Then
             Try
                 Dim WebClient As New WebClient
-                LatestVersion = WebClient.DownloadString("http://content.nicoco007.com/downloads/mcbackup-3/version")
-
-                If Not LatestVersion = ApplicationVersion Then
-                    DebugPrint("[INFO] New MCBackup version available!")
-                    Dim UpdateDialog As New UpdateDialog
-                    UpdateDialog.Show()
-                Else
-                    DebugPrint("[INFO] MCBackup is up-to-date (Version " & ApplicationVersion & ")")
-                End If
+                Dim LatestVersion As String = WebClient.DownloadString("http://content.nicoco007.com/downloads/mcbackup-3/version")
             Catch ex As Exception
                 DebugPrint("[SEVERE] " & ex.Message)
             End Try
+
+            Dim LatestVersionInt As Integer = LatestVersion.Split(".")(0) & LatestVersion.Split(".")(1) & LatestVersion.Split(".")(2) & LatestVersion.Split(".")(3)
+            Dim ApplicationVersionInt As Integer = ApplicationVersion.Split(".")(0) & ApplicationVersion.Split(".")(1) & ApplicationVersion.Split(".")(2) & ApplicationVersion.Split(".")(3)
+
+            If LatestVersionInt > ApplicationVersionInt Then
+                DebugPrint("[INFO] New MCBackup version available (Version " & LatestVersion & ")!")
+                Dim UpdateDialog As New UpdateDialog
+                UpdateDialog.Show()
+            Else
+                DebugPrint("[INFO] MCBackup is up-to-date (Version " & ApplicationVersion & ")")
+            End If
         End If
 
         If My.Settings.BackupsFolderLocation = "" Then
