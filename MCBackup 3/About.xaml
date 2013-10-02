@@ -22,7 +22,7 @@
     <Grid Background="#FFF0F0F0">
         <TextBlock x:Name="TextBlock1" TextWrapping="Wrap" Margin="10,0,10,5" TextAlignment="Center" Height="259" VerticalAlignment="Bottom" xml:space="preserve">
             <TextBlock.Text>MCBackup Singleplayer
-Version 3.2.1.0
+Version 3.2.2.0
                 
 Copyright 2013 nicoco007
                 
