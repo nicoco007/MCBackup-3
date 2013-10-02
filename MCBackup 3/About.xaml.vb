@@ -16,4 +16,7 @@
 
 Public Class About
 
+    Private Sub AboutWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles AboutWindow.Loaded
+
+    End Sub
 End Class

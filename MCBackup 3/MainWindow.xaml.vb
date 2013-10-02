@@ -79,7 +79,6 @@ Class MainWindow
             DebugPrint("[INFO] Automatic update checking is OFF")
         End If
 
-
         If My.Settings.BackgroundImageLocation = "" Then
             Me.Background = New SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 240, 240, 240))
         Else
@@ -541,7 +540,7 @@ Class MainWindow
         Return Year & "-" & Month & "-" & Day & " " & Hours & ":" & Minutes & ":" & Seconds & " "
     End Function
 
-    Private Sub DebugPrint(Message As String)
+    Public Sub DebugPrint(Message As String)
         Debug.Print(DebugTimeStamp() & Message)
         LogSW.WriteLine(DebugTimeStamp() & Message)
     End Sub

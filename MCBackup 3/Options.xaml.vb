@@ -112,6 +112,7 @@ Public Class Options
             Brush.Stretch = My.Settings.BackgroundImageStretch
             Main.Background = Brush
             My.Settings.BackgroundImageLocation = OpenFileDialog.FileName
+            MsgBox(My.Settings.BackgroundImageLocation)
         End If
     End Sub
 
@@ -130,22 +131,26 @@ Public Class Options
     End Sub
 
     Private Sub BackgroundImageStyle_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles BackgroundImageStyle.SelectionChanged
-        If Not Me.IsLoaded Then
+        If Not Me.IsLoaded Or My.Settings.BackgroundImageLocation = "" Then
             Exit Sub
         End If
 
-        Dim Brush As New ImageBrush(New BitmapImage(New Uri(My.Settings.BackgroundImageLocation)))
-        Select Case BackgroundImageStyle.SelectedIndex
-            Case 0
-                Brush.Stretch = Stretch.None
-            Case 1
-                Brush.Stretch = Stretch.Fill
-            Case 2
-                Brush.Stretch = Stretch.Uniform
-            Case 3
-                Brush.Stretch = Stretch.UniformToFill
-        End Select
-        My.Settings.BackgroundImageStretch = Int(Brush.Stretch)
-        Main.Background = Brush
+        Try
+            Dim Brush As New ImageBrush(New BitmapImage(New Uri(My.Settings.BackgroundImageLocation)))
+            Select Case BackgroundImageStyle.SelectedIndex
+                Case 0
+                    Brush.Stretch = Stretch.None
+                Case 1
+                    Brush.Stretch = Stretch.Fill
+                Case 2
+                    Brush.Stretch = Stretch.Uniform
+                Case 3
+                    Brush.Stretch = Stretch.UniformToFill
+            End Select
+            My.Settings.BackgroundImageStretch = Int(Brush.Stretch)
+            Main.Background = Brush
+        Catch ex As Exception
+            Main.DebugPrint("[SEVERE] " & ex.Message)
+        End Try
     End Sub
 End Class
