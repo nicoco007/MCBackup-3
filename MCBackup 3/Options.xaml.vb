@@ -16,6 +16,8 @@
 
 Imports System.Windows.Forms
 Imports System.Linq
+Imports System.Security.Permissions
+Imports System.Security
 
 Public Class Options
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
@@ -55,7 +57,14 @@ Public Class Options
 
     Private Sub BrowseBackupsFolderButton_Click(sender As Object, e As RoutedEventArgs) Handles BrowseBackupsFolderButton.Click
         If FolderBrowserDialog.ShowDialog = Forms.DialogResult.OK Then
-            BackupsFolderTextBox.Text = FolderBrowserDialog.SelectedPath
+            Try
+                IO.File.Create(FolderBrowserDialog.SelectedPath & "\.tmp").Dispose()
+                My.Computer.FileSystem.DeleteFile(FolderBrowserDialog.SelectedPath & "\.tmp")
+                BackupsFolderTextBox.Text = FolderBrowserDialog.SelectedPath
+            Catch ex As Exception
+                Main.DebugPrint("[SEVERE] " & ex.Message)
+                MessageBox.Show("Error: Unable to set backups folder to """ & FolderBrowserDialog.SelectedPath & """", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
+            End Try
         End If
     End Sub
 
