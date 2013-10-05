@@ -15,8 +15,9 @@
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
 
 Public Class About
+    Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
 
     Private Sub AboutWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles AboutWindow.Loaded
-
+        VersionLabel.Content = "Version " & Main.ApplicationVersion
     End Sub
 End Class

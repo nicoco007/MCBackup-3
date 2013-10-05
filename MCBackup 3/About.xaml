@@ -22,7 +22,7 @@
     <Grid Background="#FFF0F0F0">
         <TextBlock x:Name="TextBlock1" TextWrapping="Wrap" Margin="10,0,10,5" TextAlignment="Center" Height="259" VerticalAlignment="Bottom" xml:space="preserve">
             <TextBlock.Text>MCBackup Singleplayer
-Version 3.2.2.0
+
                 
 Copyright 2013 nicoco007
                 
@@ -40,5 +40,6 @@ limitations under the License.
             </TextBlock.Text>
         </TextBlock>
         <Image Height="134" VerticalAlignment="Top" Source="Resources/logo.png" Margin="26,0"/>
+        <Label x:Name="VersionLabel" Content="Version 0.0.0.0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,140,0,0" Width="452" HorizontalContentAlignment="Center"/>
     </Grid>
 </Window>
