@@ -40,7 +40,6 @@ Class MainWindow
     Public LatestVersion As String
     Private LogSW As StreamWriter = New StreamWriter(StartupPath & "\mcbackup.log")
 
-
     Public Sub New()
         InitializeComponent()
         BackupBackgroundWorker = New BackgroundWorker()
@@ -126,6 +125,9 @@ Class MainWindow
                 Exit Sub
             End If
         End If
+
+        My.Computer.FileSystem.CreateDirectory(My.Settings.SavesFolderLocation)
+
         DebugPrint("[INFO] Minecraft folder set to """ & My.Settings.MinecraftFolderLocation & """")
         DebugPrint("[INFO] Saves folder set to """ & My.Settings.SavesFolderLocation & """")
         RefreshBackupsList()
@@ -262,7 +264,7 @@ Class MainWindow
     End Sub
 
     Public Sub StartBackup()
-        DebugPrint("[INFO] Starting new backup (name=""" & BackupInfo(0) & """; type=""" & BackupInfo(3) & """)")
+        DebugPrint("[INFO] Starting new backup <name=""" & BackupInfo(0) & """; type=""" & BackupInfo(3) & """>")
         ListView.IsEnabled = False
         BackupButton.IsEnabled = False
         RestoreButton.IsEnabled = False
@@ -551,5 +553,34 @@ Class MainWindow
     Private Sub Window_Closing(sender As Object, e As CancelEventArgs)
         DebugPrint("[INFO] Someone is closing me!")
         LogSW.Dispose()
+    End Sub
+
+    Private AutoBackupWindow As New AutoBackup
+    Public IsMoving As Boolean
+
+    Public Sub AutomaticBackupButton_Click(sender As Object, e As RoutedEventArgs) Handles AutomaticBackupButton.Click
+        If AutoBackupWindow.IsVisible Then
+            AutoBackupWindow.Hide()
+            Me.Left = Me.Left + 155
+            AutomaticBackupButton.Content = "Automatic Backup >>"
+        Else
+            AutoBackupWindow.Show()
+            Me.Left = Me.Left - 155
+            AutomaticBackupButton.Content = "Automatic Backup <<"
+        End If
+    End Sub
+
+    Private Sub Window_Activated(sender As Object, e As EventArgs)
+        AutoBackupWindow.Focus()
+        Me.Focus()
+    End Sub
+
+    Private Sub Window_LocationChanged(sender As Object, e As EventArgs)
+        If Not AutoBackupWindow.IsMoving Then
+            IsMoving = True
+            AutoBackupWindow.Left = Me.Left + 855
+            AutoBackupWindow.Top = Me.Top
+            IsMoving = False
+        End If
     End Sub
 End Class
