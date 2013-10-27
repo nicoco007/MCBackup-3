@@ -43,12 +43,14 @@ Public Class AutoBackup
         If TimerStarted Then
             Timer.Stop()
             TimeLabel.Content = "00:00"
+            StartButton.Content = "Start"
             TimerStarted = False
         Else
             Minutes = MinutesTextBox.Text
             Seconds = 0
             TimeLabel.Content = IntToText(MinutesTextBox.Text) & ":00"
             Timer.Start()
+            StartButton.Content = "Stop"
             TimerStarted = True
         End If
     End Sub
@@ -67,7 +69,7 @@ Public Class AutoBackup
 
         If Minutes = 0 And Seconds = 0 Then
             Main.BackupInfo(0) = PrefixTextBox.Text & GetTimeAndDate() & SuffixTextBox.Text
-            Main.BackupInfo(1) = "Automated backup"
+            Main.BackupInfo(1) = "Automated backup of " & WorldName
             Main.BackupInfo(2) = My.Settings.SavesFolderLocation & "\" & WorldName
             Main.BackupInfo(3) = "save"
             Main.StartBackup()
