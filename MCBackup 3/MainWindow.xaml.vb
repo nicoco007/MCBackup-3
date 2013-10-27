@@ -40,6 +40,8 @@ Class MainWindow
     Public LatestVersion As String
     Private LogSW As StreamWriter = New StreamWriter(StartupPath & "\mcbackup.log")
 
+    Private WithEvents NotifyIcon As New NotifyIcon
+
     Public Sub New()
         InitializeComponent()
         BackupBackgroundWorker = New BackgroundWorker()
@@ -57,6 +59,13 @@ Class MainWindow
         AddHandler DeleteBackgroundWorker.RunWorkerCompleted, New RunWorkerCompletedEventHandler(AddressOf DeleteBackgroundWorker_RunWorkerCompleted)
         AddHandler ThumbnailBackgroundWorker.DoWork, New DoWorkEventHandler(AddressOf ThumbnailBackgroundWorker_DoWork)
         AddHandler ThumbnailBackgroundWorker.RunWorkerCompleted, New RunWorkerCompletedEventHandler(AddressOf ThumbnailBackgroundWorker_RunWorkerCompleted)
+
+        NotifyIcon.Icon = New Icon(Application.GetResourceStream(New Uri("pack://application:,,,/Resources/MCBackup.ico")).Stream)
+        NotifyIcon.Visible = True
+    End Sub
+
+    Private Sub NotifyIcon_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon.DoubleClick, NotifyIcon.BalloonTipClicked
+        Me.Activate()
     End Sub
 
 #Region "Load"
@@ -287,6 +296,7 @@ Class MainWindow
             End Using
         Catch ex As Exception
             MessageBox.Show("An error occured during the backup." & vbNewLine & vbNewLine & ex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
+            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Backup Error!", "An error occured during the backup.", ToolTipIcon.Error)
             DebugPrint("[SEVERE] " & ex.Message)
         End Try
     End Sub
@@ -313,6 +323,7 @@ Class MainWindow
         Else
             RefreshBackupsList()
             StatusLabel.Content = "Backup Complete; Ready"
+            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Backup Complete!", "Your backup is complete.", ToolTipIcon.Info)
             DebugPrint("[INFO] Backup Complete")
             ListView.IsEnabled = True
             BackupButton.IsEnabled = True
@@ -382,6 +393,7 @@ Class MainWindow
             My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\info.mcb")
         Catch ex As Exception
             MessageBox.Show("An error occured during the restore." & vbNewLine & vbNewLine & ex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
+            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Restore Error!", "An error occured during the restore.", ToolTipIcon.Error)
             DebugPrint("[SEVERE] " & ex.Message)
         End Try
     End Sub
@@ -402,8 +414,9 @@ Class MainWindow
 
     Private Sub RestoreBackgroundWorker_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
         StatusLabel.Content = "Restore Complete; Ready"
-        RefreshBackupsList()
+        If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Restore Complete!", "Your restore is complete.", ToolTipIcon.Info)
         DebugPrint("[INFO] Restore Complete")
+        RefreshBackupsList()
     End Sub
 #End Region
 
@@ -483,7 +496,7 @@ Class MainWindow
             Try
                 My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & Item, FileIO.DeleteDirectoryOption.DeleteAllContents)
             Catch ex As Exception
-
+                MessageBox.Show("An error occured during the removal.", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
             End Try
         Next
     End Sub
@@ -534,6 +547,7 @@ Class MainWindow
     Private Sub ThumbnailBackgroundWorker_RunWorkerCompleted()
         RefreshBackupsList()
         StatusLabel.Content = "Backup Complete; Ready"
+        If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Backup Complete!", "Your backup is complete.", ToolTipIcon.Info)
         DebugPrint("[INFO] Backup Complete")
         ListView.IsEnabled = True
         BackupButton.IsEnabled = True

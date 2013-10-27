@@ -39,6 +39,7 @@ Public Class Options
         OpacityPercentLabel.Content = Int(ListViewOpacitySlider.Value).ToString & "%"
         BackgroundImageStyle.SelectedIndex = My.Settings.BackgroundImageStretch
         CheckForUpdatesCheckBox.IsChecked = My.Settings.CheckForUpdates
+        ShowBalloonTipsCheckBox.IsChecked = My.Settings.ShowBalloonTips
     End Sub
 
     Private Sub BrowseMinecraftFolderButton_Click(sender As Object, e As RoutedEventArgs) Handles BrowseMinecraftFolderButton.Click
@@ -134,6 +135,7 @@ Public Class Options
         My.Settings.BackupsFolderLocation = BackupsFolderTextBox.Text
         My.Settings.OpacityPercent = ListViewOpacitySlider.Value
         My.Settings.CheckForUpdates = CheckForUpdatesCheckBox.IsChecked
+        My.Settings.ShowBalloonTips = ShowBalloonTipsCheckBox.IsChecked
         My.Settings.Save()
         Main.RefreshBackupsList()
     End Sub

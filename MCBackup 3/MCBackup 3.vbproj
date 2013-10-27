@@ -78,7 +78,6 @@
     <Compile Include="AutoBackup.xaml.vb">
       <DependentUpon>AutoBackup.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainWindow.vb" />
     <Compile Include="Options.xaml.vb">
       <DependentUpon>Options.xaml</DependentUpon>
     </Compile>
