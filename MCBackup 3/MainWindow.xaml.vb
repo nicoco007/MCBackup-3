@@ -97,6 +97,7 @@ Class MainWindow
                 If LatestVersionInt > ApplicationVersionInt Then
                     DebugPrint("[INFO] New MCBackup version available (Version " & LatestVersion & ")!")
                     Dim UpdateDialog As New UpdateDialog
+                    UpdateDialog.Owner = Me
                     UpdateDialog.Show()
                 Else
                     DebugPrint("[INFO] MCBackup is up-to-date (Version " & ApplicationVersion & ")")
@@ -260,6 +261,7 @@ Class MainWindow
 
     Private Sub BackupButton_Click(sender As Object, e As EventArgs) Handles BackupButton.Click
         Dim BackupWindow As New Backup
+        BackupWindow.Owner = Me
         BackupWindow.ShowDialog()
     End Sub
 
@@ -279,7 +281,7 @@ Class MainWindow
             My.Computer.FileSystem.CopyDirectory(BackupInfo(2), My.Settings.BackupsFolderLocation & "\" & BackupInfo(0), True) ' Copy selected save/version/everything to backups folder
             Using SW As New StreamWriter(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0) & "\info.mcb") ' Create information fie (stores description and type)
                 Dim BaseFolderName = BackupInfo(2).Split("\")
-                SW.WriteLine("baseFolderName=" & BaseFolderName(BaseFolderName.GetUpperBound(BaseFolderName.Rank - 1))) ' Write save/version folder name
+                SW.WriteLine("baseFolderName=" & BaseFolderName.Last) ' Write save/version folder name
                 SW.WriteLine("type=" & BackupInfo(3)) ' Write type in file
                 SW.Write("desc=" & BackupInfo(1)) ' Write description if file
             End Using
@@ -455,6 +457,7 @@ Class MainWindow
 
     Private Sub AboutMenuItem(sender As Object, e As RoutedEventArgs)
         Dim AboutWindow As New About
+        AboutWindow.Owner = Me
         AboutWindow.ShowDialog()
     End Sub
 #End Region
@@ -494,11 +497,13 @@ Class MainWindow
 
     Private Sub RenameButton_Click(sender As Object, e As EventArgs) Handles RenameButton.Click
         Dim RenameWindow As New Rename
+        RenameWindow.Owner = Me
         RenameWindow.ShowDialog()
     End Sub
 
     Private Sub OptionsMenuItem(sender As Object, e As RoutedEventArgs)
         Dim OptionsWindow As New Options
+        OptionsWindow.Owner = Me
         OptionsWindow.ShowDialog()
     End Sub
 
@@ -559,6 +564,7 @@ Class MainWindow
     Public IsMoving As Boolean
 
     Public Sub AutomaticBackupButton_Click(sender As Object, e As RoutedEventArgs) Handles AutomaticBackupButton.Click
+        AutoBackupWindow.Owner = Me
         If AutoBackupWindow.IsVisible Then
             AutoBackupWindow.Hide()
             Me.Left = Me.Left + 155

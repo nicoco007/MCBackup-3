@@ -24,6 +24,9 @@ Public Class Options
     Private FolderBrowserDialog As New FolderBrowserDialog
     Private OpenFileDialog As New OpenFileDialog
 
+    Sub New()
+        InitializeComponent()
+    End Sub
 
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
         OpenFileDialog.Filter = "All Supported Image Files (*bmp, *.gif, *.jpg, *.jpeg, *.jpe, *.jfif, *.png)|*bmp;*.gif;*.png;*.jpg;*.jpeg;*.jpe;*.jfif;*.png|BMP (*.bmp)|*.bmp|GIF (*.gif)|*.gif|JPEG (*.jpg, *.jpeg, *.jpe, *.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|PNG (*.png)|*.png"

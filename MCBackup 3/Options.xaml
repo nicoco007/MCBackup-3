@@ -18,7 +18,7 @@
 <Window x:Class="Options"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Options" Height="275" Width="700" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Background="White">
+    Title="Options" Height="275" Width="700" Loaded="Window_Loaded" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Background="White">
     <Grid Height="236" Margin="0,0,10,10" Width="684">
         <Canvas x:Name="GeneralPanel" HorizontalAlignment="Left" Height="191" VerticalAlignment="Top" Width="567" Margin="117,10,0,0">
             <CheckBox Content="Show tooltips" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="9" Canvas.Top="13" ToolTip="Not Implemented" ToolTipService.ShowOnDisabled="True" IsEnabled="False" IsChecked="True"/>
