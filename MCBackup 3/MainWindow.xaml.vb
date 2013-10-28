@@ -40,7 +40,7 @@ Class MainWindow
     Public LatestVersion As String
     Private LogSW As StreamWriter = New StreamWriter(StartupPath & "\mcbackup.log")
 
-    Private WithEvents NotifyIcon As New NotifyIcon
+    Public WithEvents NotifyIcon As New NotifyIcon
     Private AutoBackupHidden As Boolean
 
     Public Sub New()

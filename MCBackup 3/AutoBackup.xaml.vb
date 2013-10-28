@@ -78,6 +78,8 @@ Public Class AutoBackup
             Main.BackupInfo(3) = "save"
             Main.StartBackup()
 
+            If My.Settings.ShowBalloonTips Then Main.NotifyIcon.ShowBalloonTip(2000, "Automated Backup Started", "An automated """ & WorldName & """ backup started", Forms.ToolTipIcon.Info)
+
             Minutes = MinutesTextBox.Text
             Seconds = 0
             TimeLabel.Content = IntToText(MinutesTextBox.Text) & ":00"
