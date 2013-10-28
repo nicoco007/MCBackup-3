@@ -125,8 +125,6 @@ Public Class AutoBackup
             End If
         End If
 
-        Dim text As String = MinutesTextBox.Text
-
         If e.Key = Key.Return Then
             MinutesTextBox_LostFocus(New Object, New RoutedEventArgs)
         End If
@@ -141,10 +139,6 @@ Public Class AutoBackup
         If MinutesTextBox.Text > 60 Then
             System.Media.SystemSounds.Exclamation.Play()
             MinutesTextBox.Text = "60"
-        End If
-
-        If MinutesTextBox.Text.Length > 2 Then
-            MinutesTextBox.Text = MinutesTextBox.Text.Remove(2, MinutesTextBox.Text.Length - 3)
         End If
     End Sub
 

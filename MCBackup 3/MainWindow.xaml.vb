@@ -41,6 +41,7 @@ Class MainWindow
     Private LogSW As StreamWriter = New StreamWriter(StartupPath & "\mcbackup.log")
 
     Private WithEvents NotifyIcon As New NotifyIcon
+    Private AutoBackupHidden As Boolean
 
     Public Sub New()
         InitializeComponent()
@@ -67,6 +68,10 @@ Class MainWindow
     Private Sub NotifyIcon_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon.DoubleClick, NotifyIcon.BalloonTipClicked
         Me.Show()
         Me.Activate()
+        If AutoBackupHidden Then
+            AutoBackupWindow.Show()
+            AutoBackupWindow.Activate()
+        End If
     End Sub
 
 #Region "Load"
@@ -575,7 +580,12 @@ Class MainWindow
             e.Cancel = True
             NotifyIcon.ShowBalloonTip(2000, "I'm here!", "MCBackup is running in background.", ToolTipIcon.Info)
             Me.Hide()
-            AutoBackupWindow.Hide()
+            If AutoBackupWindow.IsVisible Then
+                AutoBackupWindow.Hide()
+                AutoBackupHidden = True
+            Else
+                AutoBackupHidden = False
+            End If
             Exit Sub
         End If
         DebugPrint("[INFO] Someone is closing me!")
