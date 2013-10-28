@@ -29,7 +29,7 @@ Public Class Options
     End Sub
 
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
-        OpenFileDialog.Filter = "All Supported Image Files (*bmp, *.gif, *.jpg, *.jpeg, *.png)|*bmp;*.gif;*.png;*.jpg;*.jpeg;*.png|BMP (*.bmp)|*.bmp|GIF (*.gif)|*.gif|JPEG (*.jpg, *.jpeg)|*.jpg;*.jpeg;|PNG (*.png)|*.png"
+        OpenFileDialog.Filter = "All Supported Image Files (*bmp, *.jpg, *.jpeg, *.png)|*bmp;*.gif;*.png;*.jpg;*.jpeg;*.png|BMP (*.bmp)|*.bmp|JPEG (*.jpg, *.jpeg)|*.jpg;*.jpeg;|PNG (*.png)|*.png"
 
         ListBox.SelectedIndex = 0
         MinecraftFolderTextBox.Text = My.Settings.MinecraftFolderLocation
