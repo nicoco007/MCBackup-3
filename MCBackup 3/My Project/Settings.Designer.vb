@@ -146,6 +146,30 @@ Partial Friend NotInheritable Class MySettings
             Me("ShowBalloonTips") = value
         End Set
     End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+    Public Property CloseToTray() As Boolean
+        Get
+            Return CType(Me("CloseToTray"),Boolean)
+        End Get
+        Set
+            Me("CloseToTray") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+    Public Property SaveCloseState() As Boolean
+        Get
+            Return CType(Me("SaveCloseState"),Boolean)
+        End Get
+        Set
+            Me("SaveCloseState") = value
+        End Set
+    End Property
 End Class
 
 Namespace My

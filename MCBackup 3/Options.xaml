@@ -24,6 +24,9 @@
             <CheckBox x:Name="ShowBalloonTipsCheckBox" Content="Show balloon tips" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="9" Canvas.Top="13" ToolTipService.ShowOnDisabled="True" IsChecked="True" ToolTip="Show a ballon tip when a backup/restore finishes or fails"/>
             <CheckBox Content="Show delete confirmation" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="9" Canvas.Top="35" ToolTip="Not Implemented" ToolTipService.ShowOnDisabled="True" IsEnabled="False" IsChecked="True"/>
             <CheckBox x:Name="CheckForUpdatesCheckBox" Content="Check for updates" Canvas.Left="9" Canvas.Top="55" ToolTip="Automatically check for updates on startup"/>
+            <CheckBox x:Name="AlwaysCloseCheckBox" Content="Always" Canvas.Left="358" Canvas.Top="16"/>
+            <RadioButton x:Name="CloseCompletelyRadioButton" Content="Close completely" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="419" Canvas.Top="35"/>
+            <RadioButton x:Name="CloseToTrayRadioButton" Content="Close to tray" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="419" Canvas.Top="16"/>
         </Canvas>
         <ListBox x:Name="ListBox" HorizontalAlignment="Left" Width="102" Margin="10,10,0,35">
             <ListBoxItem Content="General"/>
@@ -42,7 +45,7 @@
             <Button x:Name="BrowseSavesFolderButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Canvas.Left="482" Canvas.Top="37"/>
         </Canvas>
         <Button x:Name="CloseButton" Content="Close" VerticalAlignment="Top" Margin="309,206,0,0" HorizontalAlignment="Left" Width="77"/>
-        <Canvas x:Name="AppearancePanel" HorizontalAlignment="Left" Height="191" VerticalAlignment="Top" Width="567" Margin="689,11,-572,0">
+        <Canvas x:Name="AppearancePanel" HorizontalAlignment="Left" Height="191" VerticalAlignment="Top" Width="567" Margin="689,3,-572,0">
             <Label Content="ListView Opacity" Canvas.Left="10" Canvas.Top="10"/>
             <Slider x:Name="ListViewOpacitySlider" Width="412" Canvas.Left="112" Canvas.Top="14" ValueChanged="ListViewOpacitySlider_ValueChanged" Maximum="100" Minimum="50" Value="75"/>
             <Label Content="Background Image" Canvas.Left="10" Canvas.Top="46"/>

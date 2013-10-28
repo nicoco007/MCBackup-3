@@ -62,7 +62,18 @@ Class MainWindow
         AddHandler ThumbnailBackgroundWorker.RunWorkerCompleted, New RunWorkerCompletedEventHandler(AddressOf ThumbnailBackgroundWorker_RunWorkerCompleted)
 
         NotifyIcon.Icon = New Icon(Application.GetResourceStream(New Uri("pack://application:,,,/Resources/MCBackup.ico")).Stream)
+        Dim ContextMenu As New ContextMenu
+        Dim ExitToolbarMenuItem As New MenuItem
+        ExitToolbarMenuItem.Text = "E&xit"
+        AddHandler ExitToolbarMenuItem.Click, AddressOf ExitToolbarMenuItem_Click
+        ContextMenu.MenuItems.Add(ExitToolbarMenuItem)
+        NotifyIcon.ContextMenu = ContextMenu
         NotifyIcon.Visible = True
+    End Sub
+
+    Private Sub ExitToolbarMenuItem_Click(sender As Object, e As EventArgs)
+        ForceClose = True
+        Me.Close()
     End Sub
 
     Private Sub NotifyIcon_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon.DoubleClick, NotifyIcon.BalloonTipClicked
@@ -575,21 +586,40 @@ Class MainWindow
         LogSW.WriteLine(DebugTimeStamp() & Message)
     End Sub
 
+    Public CloseToTray As Boolean
+    Public ForceClose As Boolean
+
     Private Sub Window_Closing(sender As Object, e As CancelEventArgs)
-        If MessageBox.Show("Would you like to close MCBackup to tray?", "Close to tray?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = Forms.DialogResult.Yes Then
-            e.Cancel = True
-            NotifyIcon.ShowBalloonTip(2000, "I'm here!", "MCBackup is running in background.", ToolTipIcon.Info)
-            Me.Hide()
-            If AutoBackupWindow.IsVisible Then
-                AutoBackupWindow.Hide()
-                AutoBackupHidden = True
+        If Not ForceClose Then
+            Dim CloseToTrayWindow As New CloseToTray
+            CloseToTrayWindow.Owner = Me
+
+            If My.Settings.SaveCloseState Then
+                CloseToTray = My.Settings.CloseToTray
             Else
-                AutoBackupHidden = False
+                CloseToTrayWindow.ShowDialog()
             End If
-            Exit Sub
+
+            If CloseToTray Then
+                e.Cancel = True
+                NotifyIcon.ShowBalloonTip(2000, "I'm here!", "MCBackup is running in background.", ToolTipIcon.Info)
+                Me.Hide()
+
+                If AutoBackupWindow.IsVisible Then
+                    AutoBackupWindow.Hide()
+                    AutoBackupHidden = True
+                Else
+                    AutoBackupHidden = False
+                End If
+
+                Exit Sub
+            Else
+                DebugPrint("[INFO] Someone is closing me!")
+                LogSW.Dispose()
+            End If
         End If
-        DebugPrint("[INFO] Someone is closing me!")
-        LogSW.Dispose()
+
+        ForceClose = False
     End Sub
 
     Private AutoBackupWindow As New AutoBackup

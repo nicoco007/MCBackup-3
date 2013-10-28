@@ -78,6 +78,9 @@
     <Compile Include="AutoBackup.xaml.vb">
       <DependentUpon>AutoBackup.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CloseToTray.xaml.vb">
+      <DependentUpon>CloseToTray.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Options.xaml.vb">
       <DependentUpon>Options.xaml</DependentUpon>
     </Compile>
@@ -96,6 +99,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Backup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CloseToTray.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

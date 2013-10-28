@@ -40,6 +40,10 @@ Public Class Options
         BackgroundImageStyle.SelectedIndex = My.Settings.BackgroundImageStretch
         CheckForUpdatesCheckBox.IsChecked = My.Settings.CheckForUpdates
         ShowBalloonTipsCheckBox.IsChecked = My.Settings.ShowBalloonTips
+
+        AlwaysCloseCheckBox.IsChecked = My.Settings.SaveCloseState
+        CloseToTrayRadioButton.IsChecked = My.Settings.CloseToTray
+        CloseCompletelyRadioButton.IsChecked = Not My.Settings.CloseToTray
     End Sub
 
     Private Sub BrowseMinecraftFolderButton_Click(sender As Object, e As RoutedEventArgs) Handles BrowseMinecraftFolderButton.Click
@@ -136,6 +140,14 @@ Public Class Options
         My.Settings.OpacityPercent = ListViewOpacitySlider.Value
         My.Settings.CheckForUpdates = CheckForUpdatesCheckBox.IsChecked
         My.Settings.ShowBalloonTips = ShowBalloonTipsCheckBox.IsChecked
+
+        If AlwaysCloseCheckBox.IsChecked Then
+            My.Settings.SaveCloseState = True
+            My.Settings.CloseToTray = CloseToTrayRadioButton.IsChecked
+        Else
+            My.Settings.SaveCloseState = False
+        End If
+
         My.Settings.Save()
         Main.RefreshBackupsList()
     End Sub
@@ -166,5 +178,11 @@ Public Class Options
         Catch ex As Exception
             Main.DebugPrint("[SEVERE] " & ex.Message)
         End Try
+    End Sub
+
+    Private Sub AlwaysCloseCheckBox_Checked(sender As Object, e As RoutedEventArgs) Handles AlwaysCloseCheckBox.Click
+        CloseToTrayRadioButton.IsEnabled = AlwaysCloseCheckBox.IsChecked
+        CloseCompletelyRadioButton.IsEnabled = AlwaysCloseCheckBox.IsChecked
+        Debug.Print(AlwaysCloseCheckBox.IsChecked.ToString)
     End Sub
 End Class
