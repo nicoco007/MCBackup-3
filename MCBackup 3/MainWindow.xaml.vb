@@ -23,6 +23,8 @@ Imports System.Drawing
 Imports System.ComponentModel
 Imports System.Windows.Interop.Imaging
 
+Imports MCBackup.CloseAction
+
 Class MainWindow
     Private AppData As String = Environ("APPDATA")
     Public BackupInfo(3) As String
@@ -72,7 +74,7 @@ Class MainWindow
     End Sub
 
     Private Sub ExitToolbarMenuItem_Click(sender As Object, e As EventArgs)
-        ForceClose = True
+        Me.ClsType = CloseType.ForceClose
         Me.Close()
     End Sub
 
@@ -586,41 +588,7 @@ Class MainWindow
         LogSW.WriteLine(DebugTimeStamp() & Message)
     End Sub
 
-    Public CloseToTray As Boolean
-    Public ForceClose As Boolean
 
-    Private Sub Window_Closing(sender As Object, e As CancelEventArgs)
-        If Not ForceClose Then
-            Dim CloseToTrayWindow As New CloseToTray
-            CloseToTrayWindow.Owner = Me
-
-            If My.Settings.SaveCloseState Then
-                CloseToTray = My.Settings.CloseToTray
-            Else
-                CloseToTrayWindow.ShowDialog()
-            End If
-
-            If CloseToTray Then
-                e.Cancel = True
-                NotifyIcon.ShowBalloonTip(2000, "I'm here!", "MCBackup is running in background.", ToolTipIcon.Info)
-                Me.Hide()
-
-                If AutoBackupWindow.IsVisible Then
-                    AutoBackupWindow.Hide()
-                    AutoBackupHidden = True
-                Else
-                    AutoBackupHidden = False
-                End If
-
-                Exit Sub
-            Else
-                DebugPrint("[INFO] Someone is closing me!")
-                LogSW.Dispose()
-            End If
-        End If
-
-        ForceClose = False
-    End Sub
 
     Private AutoBackupWindow As New AutoBackup
     Public IsMoving As Boolean
@@ -651,4 +619,47 @@ Class MainWindow
             IsMoving = False
         End If
     End Sub
+
+    Public ClsType As CloseType
+
+    Private Sub Window_Closing(sender As Object, e As CancelEventArgs)
+        Dim CloseToTrayWindow As New CloseToTray
+        CloseToTrayWindow.Owner = Me
+
+        If Not ClsType = CloseType.ForceClose Then
+            If My.Settings.SaveCloseState Then
+                If My.Settings.CloseToTray Then
+                    ClsType = CloseType.CloseToTray
+                Else
+                    ClsType = CloseType.CloseCompletely
+                End If
+            Else
+                CloseToTrayWindow.ShowDialog()
+            End If
+
+            Select Case ClsType
+                Case CloseType.CloseToTray
+                    e.Cancel = True
+                    Me.Hide()
+                    NotifyIcon.ShowBalloonTip(2000, "I'm here!", "MCBackup is running in background.", ToolTipIcon.Info)
+                    Exit Sub
+                Case CloseType.CloseCompletely
+                    Exit Select
+                Case CloseType.Cancel
+                    e.Cancel = True
+                    Exit Sub
+            End Select
+        End If
+        DebugPrint("[INFO] Someone is closing me!")
+        LogSW.Dispose()
+    End Sub
+End Class
+
+Public Class CloseAction
+    Public Enum CloseType As Integer
+        CloseToTray
+        CloseCompletely
+        Cancel
+        ForceClose
+    End Enum
 End Class

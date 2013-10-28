@@ -29,7 +29,7 @@ Public Class Options
     End Sub
 
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
-        OpenFileDialog.Filter = "All Supported Image Files (*bmp, *.gif, *.jpg, *.jpeg, *.jpe, *.jfif, *.png)|*bmp;*.gif;*.png;*.jpg;*.jpeg;*.jpe;*.jfif;*.png|BMP (*.bmp)|*.bmp|GIF (*.gif)|*.gif|JPEG (*.jpg, *.jpeg, *.jpe, *.jfif)|*.jpg;*.jpeg;*.jpe;*.jfif|PNG (*.png)|*.png"
+        OpenFileDialog.Filter = "All Supported Image Files (*bmp, *.gif, *.jpg, *.jpeg, *.png)|*bmp;*.gif;*.png;*.jpg;*.jpeg;*.png|BMP (*.bmp)|*.bmp|GIF (*.gif)|*.gif|JPEG (*.jpg, *.jpeg)|*.jpg;*.jpeg;|PNG (*.png)|*.png"
 
         ListBox.SelectedIndex = 0
         MinecraftFolderTextBox.Text = My.Settings.MinecraftFolderLocation
@@ -44,6 +44,8 @@ Public Class Options
         AlwaysCloseCheckBox.IsChecked = My.Settings.SaveCloseState
         CloseToTrayRadioButton.IsChecked = My.Settings.CloseToTray
         CloseCompletelyRadioButton.IsChecked = Not My.Settings.CloseToTray
+
+        AlwaysCloseCheckBox_Checked(New Object, New RoutedEventArgs)
     End Sub
 
     Private Sub BrowseMinecraftFolderButton_Click(sender As Object, e As RoutedEventArgs) Handles BrowseMinecraftFolderButton.Click
