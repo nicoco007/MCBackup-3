@@ -65,6 +65,7 @@ Class MainWindow
     End Sub
 
     Private Sub NotifyIcon_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon.DoubleClick, NotifyIcon.BalloonTipClicked
+        Me.Show()
         Me.Activate()
     End Sub
 
@@ -531,7 +532,7 @@ Class MainWindow
         Try
             Dim MCMapProcess As New Process
             MCMapProcess.StartInfo.FileName = Chr(34) & StartupPath & "\bin\mcmap.exe" & Chr(34)
-            MCMapProcess.StartInfo.Arguments = " " & Chr(34) & WorldPath & Chr(34)
+            MCMapProcess.StartInfo.Arguments = " """ & WorldPath & """"
             MCMapProcess.StartInfo.WorkingDirectory = StartupPath
             MCMapProcess.StartInfo.CreateNoWindow = True
             MCMapProcess.StartInfo.UseShellExecute = False
@@ -570,6 +571,13 @@ Class MainWindow
     End Sub
 
     Private Sub Window_Closing(sender As Object, e As CancelEventArgs)
+        If MessageBox.Show("Would you like to close MCBackup to tray?", "Close to tray?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = Forms.DialogResult.Yes Then
+            e.Cancel = True
+            NotifyIcon.ShowBalloonTip(2000, "I'm here!", "MCBackup is running in background.", ToolTipIcon.Info)
+            Me.Hide()
+            AutoBackupWindow.Hide()
+            Exit Sub
+        End If
         DebugPrint("[INFO] Someone is closing me!")
         LogSW.Dispose()
     End Sub

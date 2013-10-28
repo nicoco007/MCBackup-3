@@ -17,8 +17,8 @@
         <Label Content="(Suffix)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="177,360,0,0" Width="89" HorizontalContentAlignment="Center" FontSize="10"/>
         <Button x:Name="StartButton" Content="Start" VerticalAlignment="Top" Margin="72,392,0,0" Height="40" FontSize="24" Width="150" HorizontalAlignment="Left"/>
         <ListBox x:Name="SaveListBox" HorizontalAlignment="Left" Height="102" VerticalAlignment="Top" Width="274" Margin="10,179,0,0"/>
-        <Label Content="World to back up:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,153,0,0"/>
+        <TextBlock Text="World to back up:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,159,0,0" Height="20"/>
         <Button Content="Refresh" Margin="209,283,10,143" Click="Button_Click"/>
-        <Label x:Name="WorldNameLabel" Content="worldname" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="112,153,0,0"/>
+        <TextBlock x:Name="WorldNameLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="112,159,0,0" Width="172" Height="20" TextTrimming="WordEllipsis"/>
     </Grid>
 </Window>

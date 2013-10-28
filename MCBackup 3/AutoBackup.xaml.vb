@@ -46,6 +46,10 @@ Public Class AutoBackup
             StartButton.Content = "Start"
             TimerStarted = False
         Else
+            If WorldName = "" Then
+                MessageBox.Show("Please select a world to automatically back up.", "Error!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK)
+                Exit Sub
+            End If
             Minutes = MinutesTextBox.Text
             Seconds = 0
             TimeLabel.Content = IntToText(MinutesTextBox.Text) & ":00"
@@ -123,33 +127,29 @@ Public Class AutoBackup
 
         Dim text As String = MinutesTextBox.Text
 
-        If text.Length >= 2 Then
-            e.Handled = True
-        End If
-    End Sub
-
-    Private Sub MinutesTextBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles MinutesTextBox.TextChanged
-        Dim text As String = MinutesTextBox.Text
-
-        If text.IndexOf(" ") > -1 Then
-            MinutesTextBox.Text = text.Remove(text.IndexOf(" "), 1)
+        If e.Key = Key.Return Then
+            MinutesTextBox_LostFocus(New Object, New RoutedEventArgs)
         End If
     End Sub
 
     Private Sub MinutesTextBox_LostFocus(sender As Object, e As RoutedEventArgs) Handles MinutesTextBox.LostFocus
         If MinutesTextBox.Text < 5 Then
-            MsgBox("You cannot enter a number under 5!")
+            System.Media.SystemSounds.Exclamation.Play()
             MinutesTextBox.Text = "5"
         End If
 
         If MinutesTextBox.Text > 60 Then
-            MsgBox("You cannot enter a number over 60!")
+            System.Media.SystemSounds.Exclamation.Play()
             MinutesTextBox.Text = "60"
+        End If
+
+        If MinutesTextBox.Text.Length > 2 Then
+            MinutesTextBox.Text = MinutesTextBox.Text.Remove(2, MinutesTextBox.Text.Length - 3)
         End If
     End Sub
 
     Private Sub SaveListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles SaveListBox.SelectionChanged
-        WorldNameLabel.Content = SaveListBox.SelectedItem
+        WorldNameLabel.Text = SaveListBox.SelectedItem
         WorldName = SaveListBox.SelectedItem
     End Sub
 
