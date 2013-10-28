@@ -37,10 +37,9 @@ Class MainWindow
     Private DeleteBackgroundWorker As BackgroundWorker
     Private ThumbnailBackgroundWorker As BackgroundWorker
 
-    Private StartupPath As String = System.IO.Directory.GetCurrentDirectory()
+    Public StartupPath As String = System.IO.Directory.GetCurrentDirectory()
     Public ApplicationVersion As String = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()
     Public LatestVersion As String
-    Private LogSW As StreamWriter = New StreamWriter(StartupPath & "\mcbackup.log")
 
     Public WithEvents NotifyIcon As New NotifyIcon
     Private AutoBackupHidden As Boolean
@@ -89,7 +88,8 @@ Class MainWindow
 
 #Region "Load"
     Private Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs)
-        DebugPrint("[INFO] Starting MCBackup")
+        Log.StartNew()
+        Log.Print("[INFO] Starting MCBackup")
 
         If My.Settings.OpacityPercent = 0 Then
             My.Settings.OpacityPercent = 100
@@ -101,9 +101,9 @@ Class MainWindow
         Sidebar.Opacity = OpacityDecimal
 
         If My.Settings.CheckForUpdates Then
-            DebugPrint("[INFO] Automatic update checking is ON")
+            Log.Print("[INFO] Automatic update checking is ON")
         Else
-            DebugPrint("[INFO] Automatic update checking is OFF")
+            Log.Print("[INFO] Automatic update checking is OFF")
         End If
 
         If My.Settings.BackgroundImageLocation = "" Then
@@ -123,15 +123,15 @@ Class MainWindow
                 Dim ApplicationVersionInt As Integer = ApplicationVersion.Split(".")(0) & ApplicationVersion.Split(".")(1) & ApplicationVersion.Split(".")(2) & ApplicationVersion.Split(".")(3)
 
                 If LatestVersionInt > ApplicationVersionInt Then
-                    DebugPrint("[INFO] New MCBackup version available (Version " & LatestVersion & ")!")
+                    Log.Print("[INFO] New MCBackup version available (Version " & LatestVersion & ")!")
                     Dim UpdateDialog As New UpdateDialog
                     UpdateDialog.Owner = Me
                     UpdateDialog.Show()
                 Else
-                    DebugPrint("[INFO] MCBackup is up-to-date (Version " & ApplicationVersion & ")")
+                    Log.Print("[INFO] MCBackup is up-to-date (Version " & ApplicationVersion & ")")
                 End If
             Catch ex As Exception
-                DebugPrint("[SEVERE] " & ex.Message)
+                Log.Print("[SEVERE] " & ex.Message)
             End Try
         End If
 
@@ -139,7 +139,7 @@ Class MainWindow
             My.Settings.BackupsFolderLocation = StartupPath & "\backups"
         End If
 
-        DebugPrint("[INFO] Set Backups folder location to """ & My.Settings.BackupsFolderLocation & """")
+        Log.Print("[INFO] Set Backups folder location to """ & My.Settings.BackupsFolderLocation & """")
 
         My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation)
 
@@ -149,7 +149,7 @@ Class MainWindow
                 My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
             Else
                 MessageBox.Show("MCBackup was unable to find an installation of Minecraft on your computer. Please select your Minecraft folder in the following dialog", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
-                DebugPrint("[WARNING] Minecraft folder not found")
+                Log.Print("[WARNING] Minecraft folder not found")
                 MinecraftFolderSearch()
                 Exit Sub
             End If
@@ -157,8 +157,8 @@ Class MainWindow
 
         My.Computer.FileSystem.CreateDirectory(My.Settings.SavesFolderLocation)
 
-        DebugPrint("[INFO] Minecraft folder set to """ & My.Settings.MinecraftFolderLocation & """")
-        DebugPrint("[INFO] Saves folder set to """ & My.Settings.SavesFolderLocation & """")
+        Log.Print("[INFO] Minecraft folder set to """ & My.Settings.MinecraftFolderLocation & """")
+        Log.Print("[INFO] Saves folder set to """ & My.Settings.SavesFolderLocation & """")
         RefreshBackupsList()
     End Sub
 
@@ -168,8 +168,8 @@ Class MainWindow
                 MessageBox.Show("Minecraft folder set to " & FolderBrowserDialog.SelectedPath, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) ' Tell user that folder has been selected successfully
                 My.Settings.MinecraftFolderLocation = FolderBrowserDialog.SelectedPath
                 My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
-                DebugPrint("[INFO] Minecraft folder set to """ & My.Settings.MinecraftFolderLocation & """")
-                DebugPrint("[INFO] Saves folder set to """ & My.Settings.SavesFolderLocation & """")
+                Log.Print("[INFO] Minecraft folder set to """ & My.Settings.MinecraftFolderLocation & """")
+                Log.Print("[INFO] Saves folder set to """ & My.Settings.SavesFolderLocation & """")
                 Exit Sub
             Else
                 If MessageBox.Show("Minecraft is not installed in that folder! Try again?", "Error!", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then ' Ask if user wants to try finding folder again
@@ -219,7 +219,7 @@ Class MainWindow
                     Loop
                 End Using
             Catch ex As Exception
-                DebugPrint("[SEVERE] " & ex.Message)
+                Log.Print("[SEVERE] " & ex.Message)
             End Try
 
             ListView.Items.Add(New With {Key .Name = ListViewItem.Name, Key .DateCreated = GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Key .Description = Description})
@@ -269,7 +269,7 @@ Class MainWindow
                     Loop
                 End Using
             Catch ex As Exception
-                DebugPrint("[SEVERE] " & ex.Message)
+                Log.Print("[SEVERE] " & ex.Message)
             End Try
 
             OriginalNameLabel.Text = OriginalFolderName
@@ -294,7 +294,7 @@ Class MainWindow
     End Sub
 
     Public Sub StartBackup()
-        DebugPrint("[INFO] Starting new backup <name=""" & BackupInfo(0) & """; type=""" & BackupInfo(3) & """>")
+        Log.Print("[INFO] Starting new backup <name=""" & BackupInfo(0) & """; type=""" & BackupInfo(3) & """>")
         ListView.IsEnabled = False
         BackupButton.IsEnabled = False
         RestoreButton.IsEnabled = False
@@ -316,7 +316,7 @@ Class MainWindow
         Catch ex As Exception
             MessageBox.Show("An error occured during the backup." & vbNewLine & vbNewLine & ex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Backup Error!", "An error occured during the backup.", ToolTipIcon.Error)
-            DebugPrint("[SEVERE] " & ex.Message)
+            Log.Print("[SEVERE] " & ex.Message)
         End Try
     End Sub
 
@@ -337,13 +337,13 @@ Class MainWindow
         ProgressBar.Value = 100
         If BackupInfo(3) = "save" Then
             StatusLabel.Content = "Creating thumbnail..."
-            DebugPrint("[INFO] Creating thumbnail")
+            Log.Print("[INFO] Creating thumbnail")
             CreateThumb(BackupInfo(2))
         Else
             RefreshBackupsList()
             StatusLabel.Content = "Backup Complete; Ready"
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Backup Complete!", "Your backup is complete.", ToolTipIcon.Info)
-            DebugPrint("[INFO] Backup Complete")
+            Log.Print("[INFO] Backup Complete")
             ListView.IsEnabled = True
             BackupButton.IsEnabled = True
         End If
@@ -353,7 +353,7 @@ Class MainWindow
 #Region "Restore"
     Private Sub RestoreButton_Click(sender As Object, e As EventArgs) Handles RestoreButton.Click
         If MessageBox.Show("Are you sure you want to restore this backup? This will overwrite any existing content!", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = Forms.DialogResult.Yes Then
-            DebugPrint("[INFO] Starting Restore")
+            Log.Print("[INFO] Starting Restore")
             RestoreInfo(0) = ListView.SelectedItems(0).Name ' Set place 0 of RestoreInfo array to the backup name
 
             Dim BaseFolderName As String = ""
@@ -383,7 +383,7 @@ Class MainWindow
             DeleteForRestoreBackgroundWorker.RunWorkerAsync()
             ProgressBar.IsIndeterminate = True
             StatusLabel.Content = "Removing old content, please wait..."
-            DebugPrint("[INFO] Removing old content")
+            Log.Print("[INFO] Removing old content")
         Else
             Exit Sub
         End If
@@ -394,7 +394,7 @@ Class MainWindow
             Try
                 My.Computer.FileSystem.DeleteDirectory(RestoreInfo(1), FileIO.DeleteDirectoryOption.DeleteAllContents)
             Catch ex As Exception
-                DebugPrint("[SEVERE] " & ex.Message)
+                Log.Print("[SEVERE] " & ex.Message)
             End Try
         End If
     End Sub
@@ -403,7 +403,7 @@ Class MainWindow
         ProgressBar.IsIndeterminate = False
         RestoreBackgroundWorker.RunWorkerAsync()
         UpdateRestoreProgress()
-        DebugPrint("[INFO] Removed old content, restoring")
+        Log.Print("[INFO] Removed old content, restoring")
     End Sub
 
     Private Sub RestoreBackgroundWorker_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs)
@@ -413,7 +413,7 @@ Class MainWindow
         Catch ex As Exception
             MessageBox.Show("An error occured during the restore." & vbNewLine & vbNewLine & ex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Restore Error!", "An error occured during the restore.", ToolTipIcon.Error)
-            DebugPrint("[SEVERE] " & ex.Message)
+            Log.Print("[SEVERE] " & ex.Message)
         End Try
     End Sub
 
@@ -434,7 +434,7 @@ Class MainWindow
     Private Sub RestoreBackgroundWorker_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
         StatusLabel.Content = "Restore Complete; Ready"
         If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Restore Complete!", "Your restore is complete.", ToolTipIcon.Info)
-        DebugPrint("[INFO] Restore Complete")
+        Log.Print("[INFO] Restore Complete")
         RefreshBackupsList()
     End Sub
 #End Region
@@ -445,7 +445,7 @@ Class MainWindow
             Dim FSO As FileSystemObject = New FileSystemObject
             Return FSO.GetFolder(FolderPath).Size ' Get FolderPath's size
         Catch ex As Exception
-            DebugPrint("[SEVERE] Could not find " & FolderPath & "'s size: " & ex.Message)
+            Log.Print("[SEVERE] Could not find " & FolderPath & "'s size: " & ex.Message)
         End Try
         Return 0
     End Function
@@ -455,7 +455,7 @@ Class MainWindow
             Dim FSO As FileSystemObject = New FileSystemObject
             Return FSO.GetFolder(FolderPath).DateCreated ' Get FolderPath's date of creation
         Catch ex As Exception
-            DebugPrint("[SEVERE] Could not find " & FolderPath & "'s creation date: " & ex.Message)
+            Log.Print("[SEVERE] Could not find " & FolderPath & "'s creation date: " & ex.Message)
         End Try
         Return 0
     End Function
@@ -559,7 +559,7 @@ Class MainWindow
             MCMapProcess.WaitForExit()
             My.Computer.FileSystem.MoveFile(StartupPath & "\output\output.png", WorldPath & "\thumb.png", True)
         Catch ex As Exception
-            DebugPrint("[SEVERE] " & ex.Message)
+            Log.Print("[SEVERE] " & ex.Message)
         End Try
     End Sub
 
@@ -567,28 +567,10 @@ Class MainWindow
         RefreshBackupsList()
         StatusLabel.Content = "Backup Complete; Ready"
         If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Backup Complete!", "Your backup is complete.", ToolTipIcon.Info)
-        DebugPrint("[INFO] Backup Complete")
+        Log.Print("[INFO] Backup Complete")
         ListView.IsEnabled = True
         BackupButton.IsEnabled = True
     End Sub
-
-    Private Function DebugTimeStamp()
-        Dim Day As String = Format(Now(), "dd")
-        Dim Month As String = Format(Now(), "MM")
-        Dim Year As String = Format(Now(), "yyyy")
-        Dim Hours As String = Format(Now(), "hh")
-        Dim Minutes As String = Format(Now(), "mm")
-        Dim Seconds As String = Format(Now(), "ss")
-
-        Return Year & "-" & Month & "-" & Day & " " & Hours & ":" & Minutes & ":" & Seconds & " "
-    End Function
-
-    Public Sub DebugPrint(Message As String)
-        Debug.Print(DebugTimeStamp() & Message)
-        LogSW.WriteLine(DebugTimeStamp() & Message)
-    End Sub
-
-
 
     Private AutoBackupWindow As New AutoBackup
     Public IsMoving As Boolean
@@ -650,8 +632,7 @@ Class MainWindow
                     Exit Sub
             End Select
         End If
-        DebugPrint("[INFO] Someone is closing me!")
-        LogSW.Dispose()
+        Log.Print("[INFO] Someone is closing me!")
     End Sub
 End Class
 

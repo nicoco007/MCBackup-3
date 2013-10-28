@@ -72,7 +72,7 @@ Public Class Options
                 My.Computer.FileSystem.DeleteFile(FolderBrowserDialog.SelectedPath & "\.tmp")
                 BackupsFolderTextBox.Text = FolderBrowserDialog.SelectedPath
             Catch ex As Exception
-                Main.DebugPrint("[SEVERE] " & ex.Message)
+                Log.Print("[SEVERE] " & ex.Message)
                 MessageBox.Show("Error: Unable to set backups folder to """ & FolderBrowserDialog.SelectedPath & """", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
             End Try
         End If
@@ -178,13 +178,12 @@ Public Class Options
             My.Settings.BackgroundImageStretch = Int(Brush.Stretch)
             Main.Background = Brush
         Catch ex As Exception
-            Main.DebugPrint("[SEVERE] " & ex.Message)
+            Log.Print("[SEVERE] " & ex.Message)
         End Try
     End Sub
 
     Private Sub AlwaysCloseCheckBox_Checked(sender As Object, e As RoutedEventArgs) Handles AlwaysCloseCheckBox.Click
         CloseToTrayRadioButton.IsEnabled = AlwaysCloseCheckBox.IsChecked
         CloseCompletelyRadioButton.IsEnabled = AlwaysCloseCheckBox.IsChecked
-        Debug.Print(AlwaysCloseCheckBox.IsChecked.ToString)
     End Sub
 End Class
