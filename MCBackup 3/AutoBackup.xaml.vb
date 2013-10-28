@@ -72,13 +72,14 @@ Public Class AutoBackup
         TimeLabel.Content = IntToText(Minutes) & ":" & IntToText(Seconds)
 
         If Minutes = 0 And Seconds = 0 Then
+            Log.Print("[INFO] Starting automated backup...")
             Main.BackupInfo(0) = PrefixTextBox.Text & GetTimeAndDate() & SuffixTextBox.Text
             Main.BackupInfo(1) = "Automated backup of " & WorldName
             Main.BackupInfo(2) = My.Settings.SavesFolderLocation & "\" & WorldName
             Main.BackupInfo(3) = "save"
             Main.StartBackup()
 
-            If My.Settings.ShowBalloonTips Then Main.NotifyIcon.ShowBalloonTip(2000, "Automated Backup Started", "An automated """ & WorldName & """ backup started", Forms.ToolTipIcon.Info)
+            If My.Settings.ShowBalloonTips Then Main.NotifyIcon.ShowBalloonTip(2000, "Automated Backup Started", "An automated backup started for """ & WorldName & """", Forms.ToolTipIcon.Info)
 
             Minutes = MinutesTextBox.Text
             Seconds = 0

@@ -348,6 +348,39 @@ Class MainWindow
             BackupButton.IsEnabled = True
         End If
     End Sub
+
+    Private WorldPath As String = ""
+
+    Private Sub CreateThumb(Path As String)
+        ThumbnailBackgroundWorker.RunWorkerAsync()
+        WorldPath = Path
+    End Sub
+
+    Private Sub ThumbnailBackgroundWorker_DoWork()
+        Try
+            Dim MCMapProcess As New Process
+            MCMapProcess.StartInfo.FileName = Chr(34) & StartupPath & "\bin\mcmap.exe" & Chr(34)
+            MCMapProcess.StartInfo.Arguments = " """ & WorldPath & """"
+            MCMapProcess.StartInfo.WorkingDirectory = StartupPath
+            MCMapProcess.StartInfo.CreateNoWindow = True
+            MCMapProcess.StartInfo.UseShellExecute = False
+            MCMapProcess.StartInfo.WorkingDirectory = StartupPath & "\output\"
+            MCMapProcess.Start()
+            MCMapProcess.WaitForExit()
+            My.Computer.FileSystem.MoveFile(StartupPath & "\output\output.png", WorldPath & "\thumb.png", True)
+        Catch ex As Exception
+            Log.Print("[SEVERE] " & ex.Message)
+        End Try
+    End Sub
+
+    Private Sub ThumbnailBackgroundWorker_RunWorkerCompleted()
+        RefreshBackupsList()
+        StatusLabel.Content = "Backup Complete; Ready"
+        If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Backup Complete!", "Your backup is complete.", ToolTipIcon.Info)
+        Log.Print("[INFO] Backup Complete")
+        ListView.IsEnabled = True
+        BackupButton.IsEnabled = True
+    End Sub
 #End Region
 
 #Region "Restore"
@@ -479,6 +512,12 @@ Class MainWindow
         Me.Close()
     End Sub
 
+    Private Sub OptionsMenuItem(sender As Object, e As RoutedEventArgs)
+        Dim OptionsWindow As New Options
+        OptionsWindow.Owner = Me
+        OptionsWindow.ShowDialog()
+    End Sub
+
     Private Sub BackupsFolderMenuItem(sender As Object, e As RoutedEventArgs)
         Process.Start(My.Settings.BackupsFolderLocation)
     End Sub
@@ -527,51 +566,15 @@ Class MainWindow
     End Sub
 #End Region
 
+#Region "Buttons"
     Private Sub RenameButton_Click(sender As Object, e As EventArgs) Handles RenameButton.Click
         Dim RenameWindow As New Rename
         RenameWindow.Owner = Me
         RenameWindow.ShowDialog()
     End Sub
+#End Region
 
-    Private Sub OptionsMenuItem(sender As Object, e As RoutedEventArgs)
-        Dim OptionsWindow As New Options
-        OptionsWindow.Owner = Me
-        OptionsWindow.ShowDialog()
-    End Sub
-
-    Private WorldPath As String = ""
-
-    Private Sub CreateThumb(Path As String)
-        ThumbnailBackgroundWorker.RunWorkerAsync()
-        WorldPath = Path
-    End Sub
-
-    Private Sub ThumbnailBackgroundWorker_DoWork()
-        Try
-            Dim MCMapProcess As New Process
-            MCMapProcess.StartInfo.FileName = Chr(34) & StartupPath & "\bin\mcmap.exe" & Chr(34)
-            MCMapProcess.StartInfo.Arguments = " """ & WorldPath & """"
-            MCMapProcess.StartInfo.WorkingDirectory = StartupPath
-            MCMapProcess.StartInfo.CreateNoWindow = True
-            MCMapProcess.StartInfo.UseShellExecute = False
-            MCMapProcess.StartInfo.WorkingDirectory = StartupPath & "\output\"
-            MCMapProcess.Start()
-            MCMapProcess.WaitForExit()
-            My.Computer.FileSystem.MoveFile(StartupPath & "\output\output.png", WorldPath & "\thumb.png", True)
-        Catch ex As Exception
-            Log.Print("[SEVERE] " & ex.Message)
-        End Try
-    End Sub
-
-    Private Sub ThumbnailBackgroundWorker_RunWorkerCompleted()
-        RefreshBackupsList()
-        StatusLabel.Content = "Backup Complete; Ready"
-        If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Backup Complete!", "Your backup is complete.", ToolTipIcon.Info)
-        Log.Print("[INFO] Backup Complete")
-        ListView.IsEnabled = True
-        BackupButton.IsEnabled = True
-    End Sub
-
+#Region "Automatic Backup"
     Private AutoBackupWindow As New AutoBackup
     Public IsMoving As Boolean
 
@@ -601,7 +604,9 @@ Class MainWindow
             IsMoving = False
         End If
     End Sub
+#End Region
 
+#Region "Close to Tray"
     Public ClsType As CloseType
 
     Private Sub Window_Closing(sender As Object, e As CancelEventArgs)
@@ -624,6 +629,7 @@ Class MainWindow
                     e.Cancel = True
                     Me.Hide()
                     NotifyIcon.ShowBalloonTip(2000, "I'm here!", "MCBackup is running in background.", ToolTipIcon.Info)
+                    Log.Print("[INFO] Closing to tray")
                     Exit Sub
                 Case CloseType.CloseCompletely
                     Exit Select
@@ -634,6 +640,7 @@ Class MainWindow
         End If
         Log.Print("[INFO] Someone is closing me!")
     End Sub
+#End Region
 End Class
 
 Public Class CloseAction

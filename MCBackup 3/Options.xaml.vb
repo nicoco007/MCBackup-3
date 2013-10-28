@@ -136,9 +136,13 @@ Public Class Options
     End Sub
 
     Private Sub Window_Unloaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Unloaded
+        Log.Print("[INFO] Saving settings...")
         My.Settings.MinecraftFolderLocation = MinecraftFolderTextBox.Text
+        Log.Print("[INFO] Minecraft folder location set to " & My.Settings.MinecraftFolderLocation)
         My.Settings.SavesFolderLocation = SavesFolderTextBox.Text
+        Log.Print("[INFO] Saves folder location set to " & My.Settings.SavesFolderLocation)
         My.Settings.BackupsFolderLocation = BackupsFolderTextBox.Text
+        Log.Print("[INFO] Backups folder location set to " & My.Settings.BackupsFolderLocation)
         My.Settings.OpacityPercent = ListViewOpacitySlider.Value
         My.Settings.CheckForUpdates = CheckForUpdatesCheckBox.IsChecked
         My.Settings.ShowBalloonTips = ShowBalloonTipsCheckBox.IsChecked
