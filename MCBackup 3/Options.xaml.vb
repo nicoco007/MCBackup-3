@@ -73,7 +73,6 @@ Public Class Options
     Private Sub BrowseMinecraftFolderButton_Click(sender As Object, e As RoutedEventArgs) Handles BrowseMinecraftFolderButton.Click
         If FolderBrowserDialog.ShowDialog = Forms.DialogResult.OK Then
             If My.Computer.FileSystem.FileExists(FolderBrowserDialog.SelectedPath & "\launcher.jar") Then ' Check if Minecraft exists in that folder
-                MessageBox.Show("Minecraft folder set to " & FolderBrowserDialog.SelectedPath, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) ' Tell user that folder has been selected successfully
                 MinecraftFolderTextBox.Text = FolderBrowserDialog.SelectedPath
                 SavesFolderTextBox.Text = FolderBrowserDialog.SelectedPath & "\saves"
                 Exit Sub
@@ -131,7 +130,6 @@ Public Class Options
             Brush.Stretch = My.Settings.BackgroundImageStretch
             Main.Background = Brush
             My.Settings.BackgroundImageLocation = OpenFileDialog.FileName
-            MsgBox(My.Settings.BackgroundImageLocation)
         End If
     End Sub
 

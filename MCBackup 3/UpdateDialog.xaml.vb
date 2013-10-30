@@ -27,7 +27,9 @@ Public Class UpdateDialog
     End Sub
 
     Private Sub UpdateDialog_Loaded(sender As Object, e As RoutedEventArgs)
-        CurrentVersionLabel.Content = "Current version: " & Main.ApplicationVersion
-        LatestVersionLabel.Content = "Latest version: " & Main.LatestVersion
+        If Main.IsLoaded Then
+            CurrentVersionLabel.Content = "Current version: " & Main.ApplicationVersion
+            LatestVersionLabel.Content = "Latest version: " & Main.LatestVersion
+        End If
     End Sub
 End Class

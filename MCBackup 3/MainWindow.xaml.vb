@@ -103,7 +103,7 @@ Class MainWindow
         If My.Settings.CheckForUpdates Then
             Try
                 Dim WebClient As New WebClient
-                Dim LatestVersion As String = WebClient.DownloadString("http://content.nicoco007.com/downloads/mcbackup-3/version")
+                LatestVersion = WebClient.DownloadString("http://content.nicoco007.com/downloads/mcbackup-3/version")
 
                 Dim LatestVersionInt As Integer = LatestVersion.Split(".")(0) & LatestVersion.Split(".")(1) & LatestVersion.Split(".")(2) & LatestVersion.Split(".")(3)
                 Dim ApplicationVersionInt As Integer = ApplicationVersion.Split(".")(0) & ApplicationVersion.Split(".")(1) & ApplicationVersion.Split(".")(2) & ApplicationVersion.Split(".")(3)
@@ -113,6 +113,8 @@ Class MainWindow
                     Dim UpdateDialog As New UpdateDialog
                     UpdateDialog.Owner = Me
                     UpdateDialog.Show()
+                ElseIf LatestVersionInt < ApplicationVersionInt Then
+                    Log.Print("[INFO] MCBackup is running in beta mode (Version " & ApplicationVersion & ")")
                 Else
                     Log.Print("[INFO] MCBackup is up-to-date (Version " & ApplicationVersion & ")")
                 End If
