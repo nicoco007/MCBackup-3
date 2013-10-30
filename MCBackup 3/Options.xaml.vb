@@ -48,6 +48,28 @@ Public Class Options
         AlwaysCloseCheckBox_Checked(New Object, New RoutedEventArgs)
     End Sub
 
+    Private Sub ListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles ListBox.SelectionChanged
+        Select Case ListBox.SelectedIndex
+            Case 0
+                GeneralPanel.Visibility = Windows.Visibility.Visible
+                AppearancePanel.Visibility = Windows.Visibility.Hidden
+                FoldersPanel.Visibility = Windows.Visibility.Hidden
+            Case 1
+                GeneralPanel.Visibility = Windows.Visibility.Hidden
+                AppearancePanel.Visibility = Windows.Visibility.Visible
+                FoldersPanel.Visibility = Windows.Visibility.Hidden
+            Case 2
+                GeneralPanel.Visibility = Windows.Visibility.Hidden
+                AppearancePanel.Visibility = Windows.Visibility.Hidden
+                FoldersPanel.Visibility = Windows.Visibility.Visible
+        End Select
+    End Sub
+
+    Private Sub AlwaysCloseCheckBox_Checked(sender As Object, e As RoutedEventArgs) Handles AlwaysCloseCheckBox.Click
+        CloseToTrayRadioButton.IsEnabled = AlwaysCloseCheckBox.IsChecked
+        CloseCompletelyRadioButton.IsEnabled = AlwaysCloseCheckBox.IsChecked
+    End Sub
+
     Private Sub BrowseMinecraftFolderButton_Click(sender As Object, e As RoutedEventArgs) Handles BrowseMinecraftFolderButton.Click
         If FolderBrowserDialog.ShowDialog = Forms.DialogResult.OK Then
             If My.Computer.FileSystem.FileExists(FolderBrowserDialog.SelectedPath & "\launcher.jar") Then ' Check if Minecraft exists in that folder
@@ -94,23 +116,6 @@ Public Class Options
         End If
     End Sub
 
-    Private Sub ListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles ListBox.SelectionChanged
-        Select Case ListBox.SelectedIndex
-            Case 0
-                GeneralPanel.Visibility = Windows.Visibility.Visible
-                AppearancePanel.Visibility = Windows.Visibility.Hidden
-                FoldersPanel.Visibility = Windows.Visibility.Hidden
-            Case 1
-                GeneralPanel.Visibility = Windows.Visibility.Hidden
-                AppearancePanel.Visibility = Windows.Visibility.Visible
-                FoldersPanel.Visibility = Windows.Visibility.Hidden
-            Case 2
-                GeneralPanel.Visibility = Windows.Visibility.Hidden
-                AppearancePanel.Visibility = Windows.Visibility.Hidden
-                FoldersPanel.Visibility = Windows.Visibility.Visible
-        End Select
-    End Sub
-
     Private Sub ListViewOpacitySlider_ValueChanged(sender As Object, e As RoutedPropertyChangedEventArgs(Of Double))
         If Me.IsLoaded Then
             Dim Value As Double = ListViewOpacitySlider.Value / 100
@@ -118,11 +123,6 @@ Public Class Options
             Main.Sidebar.Opacity = Value
             OpacityPercentLabel.Content = Math.Round(ListViewOpacitySlider.Value, 0).ToString & "%"
         End If
-    End Sub
-
-    Private Sub BackgroundImageRemoveButton_Click(sender As Object, e As RoutedEventArgs) Handles BackgroundImageRemoveButton.Click
-        Main.Background = New SolidColorBrush(Color.FromArgb(255, 240, 240, 240))
-        My.Settings.BackgroundImageLocation = ""
     End Sub
 
     Private Sub BackgroundImageBrowseButton_Click(sender As Object, e As RoutedEventArgs) Handles BackgroundImageBrowseButton.Click
@@ -135,31 +135,9 @@ Public Class Options
         End If
     End Sub
 
-    Private Sub Window_Unloaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Unloaded
-        Log.Print("[INFO] Saving settings...")
-        My.Settings.MinecraftFolderLocation = MinecraftFolderTextBox.Text
-        Log.Print("[INFO] Minecraft folder location set to " & My.Settings.MinecraftFolderLocation)
-        My.Settings.SavesFolderLocation = SavesFolderTextBox.Text
-        Log.Print("[INFO] Saves folder location set to " & My.Settings.SavesFolderLocation)
-        My.Settings.BackupsFolderLocation = BackupsFolderTextBox.Text
-        Log.Print("[INFO] Backups folder location set to " & My.Settings.BackupsFolderLocation)
-        My.Settings.OpacityPercent = ListViewOpacitySlider.Value
-        My.Settings.CheckForUpdates = CheckForUpdatesCheckBox.IsChecked
-        My.Settings.ShowBalloonTips = ShowBalloonTipsCheckBox.IsChecked
-
-        If AlwaysCloseCheckBox.IsChecked Then
-            My.Settings.SaveCloseState = True
-            My.Settings.CloseToTray = CloseToTrayRadioButton.IsChecked
-        Else
-            My.Settings.SaveCloseState = False
-        End If
-
-        My.Settings.Save()
-        Main.RefreshBackupsList()
-    End Sub
-
-    Private Sub SaveButton_Click(sender As Object, e As RoutedEventArgs) Handles CloseButton.Click
-        Me.Close()
+    Private Sub BackgroundImageRemoveButton_Click(sender As Object, e As RoutedEventArgs) Handles BackgroundImageRemoveButton.Click
+        Main.Background = New SolidColorBrush(Color.FromArgb(255, 240, 240, 240))
+        My.Settings.BackgroundImageLocation = ""
     End Sub
 
     Private Sub BackgroundImageStyle_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles BackgroundImageStyle.SelectionChanged
@@ -186,8 +164,30 @@ Public Class Options
         End Try
     End Sub
 
-    Private Sub AlwaysCloseCheckBox_Checked(sender As Object, e As RoutedEventArgs) Handles AlwaysCloseCheckBox.Click
-        CloseToTrayRadioButton.IsEnabled = AlwaysCloseCheckBox.IsChecked
-        CloseCompletelyRadioButton.IsEnabled = AlwaysCloseCheckBox.IsChecked
+    Private Sub SaveButton_Click(sender As Object, e As RoutedEventArgs) Handles CloseButton.Click
+        Me.Close()
+    End Sub
+
+    Private Sub Window_Unloaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Unloaded
+        Log.Print("[INFO] Saving settings...")
+        My.Settings.MinecraftFolderLocation = MinecraftFolderTextBox.Text
+        Log.Print("[INFO] Minecraft folder location set to " & My.Settings.MinecraftFolderLocation)
+        My.Settings.SavesFolderLocation = SavesFolderTextBox.Text
+        Log.Print("[INFO] Saves folder location set to " & My.Settings.SavesFolderLocation)
+        My.Settings.BackupsFolderLocation = BackupsFolderTextBox.Text
+        Log.Print("[INFO] Backups folder location set to " & My.Settings.BackupsFolderLocation)
+        My.Settings.OpacityPercent = ListViewOpacitySlider.Value
+        My.Settings.CheckForUpdates = CheckForUpdatesCheckBox.IsChecked
+        My.Settings.ShowBalloonTips = ShowBalloonTipsCheckBox.IsChecked
+
+        If AlwaysCloseCheckBox.IsChecked Then
+            My.Settings.SaveCloseState = True
+            My.Settings.CloseToTray = CloseToTrayRadioButton.IsChecked
+        Else
+            My.Settings.SaveCloseState = False
+        End If
+
+        My.Settings.Save()
+        Main.RefreshBackupsList()
     End Sub
 End Class

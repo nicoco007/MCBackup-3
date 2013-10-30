@@ -72,20 +72,6 @@ Class MainWindow
         NotifyIcon.Visible = True
     End Sub
 
-    Private Sub ExitToolbarMenuItem_Click(sender As Object, e As EventArgs)
-        Me.ClsType = CloseType.ForceClose
-        Me.Close()
-    End Sub
-
-    Private Sub NotifyIcon_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon.DoubleClick, NotifyIcon.BalloonTipClicked
-        Me.Show()
-        Me.Activate()
-        If AutoBackupHidden Then
-            AutoBackupWindow.Show()
-            AutoBackupWindow.Activate()
-        End If
-    End Sub
-
 #Region "Load"
     Private Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs)
         Log.StartNew()
@@ -606,6 +592,22 @@ Class MainWindow
     End Sub
 #End Region
 
+#Region "Tray Icon"
+    Private Sub ExitToolbarMenuItem_Click(sender As Object, e As EventArgs)
+        Me.ClsType = CloseType.ForceClose
+        Me.Close()
+    End Sub
+
+    Private Sub NotifyIcon_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon.DoubleClick, NotifyIcon.BalloonTipClicked
+        Me.Show()
+        Me.Activate()
+        If AutoBackupHidden Then
+            AutoBackupWindow.Show()
+            AutoBackupWindow.Activate()
+        End If
+    End Sub
+#End Region
+
 #Region "Close to Tray"
     Public ClsType As CloseType
 
@@ -641,6 +643,7 @@ Class MainWindow
         Log.Print("[INFO] Someone is closing me!")
     End Sub
 #End Region
+
 End Class
 
 Public Class CloseAction

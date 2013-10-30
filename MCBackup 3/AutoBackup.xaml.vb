@@ -16,6 +16,18 @@ Public Class AutoBackup
         AddHandler Timer.Tick, New EventHandler(AddressOf Timer_Tick)
     End Sub
 
+#Region "Window crap"
+    Private Sub AutoBackupWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles AutoBackupWindow.Loaded
+        ReloadSaves()
+    End Sub
+
+    Private Sub AutoBackupWindow_Closing(sender As Object, e As ComponentModel.CancelEventArgs) Handles AutoBackupWindow.Closing
+        e.Cancel = True
+        Me.Hide()
+        Main.Left = Main.Left + 155
+        Main.AutomaticBackupButton.Content = "Automatic Backup >>"
+    End Sub
+
     Private Sub AutoBackupWindow_LocationChanged(sender As Object, e As EventArgs) Handles AutoBackupWindow.LocationChanged
         If Not Main.IsMoving Then
             IsMoving = True
@@ -24,7 +36,9 @@ Public Class AutoBackup
             IsMoving = False
         End If
     End Sub
-
+#End Region
+    
+#Region "NumericUpDown"
     Private Sub PlusRepeatButton_Click(sender As Object, e As RoutedEventArgs) Handles PlusRepeatButton.Click
         If Not MinutesTextBox.Text = "60" Then
             MinutesTextBox.Text = MinutesTextBox.Text + 1
@@ -37,6 +51,32 @@ Public Class AutoBackup
         End If
     End Sub
 
+    Private Sub MinutesTextBox_KeyDown(sender As Object, e As KeyEventArgs) Handles MinutesTextBox.KeyDown
+        If e.Key < 34 Or e.Key > 43 Then
+            If e.Key < 74 Or e.Key > 83 Then
+                e.Handled = True
+            End If
+        End If
+
+        If e.Key = Key.Return Then
+            MinutesTextBox_LostFocus(New Object, New RoutedEventArgs)
+        End If
+    End Sub
+
+    Private Sub MinutesTextBox_LostFocus(sender As Object, e As RoutedEventArgs) Handles MinutesTextBox.LostFocus
+        If MinutesTextBox.Text < 5 Then
+            System.Media.SystemSounds.Exclamation.Play()
+            MinutesTextBox.Text = "5"
+        End If
+
+        If MinutesTextBox.Text > 60 Then
+            System.Media.SystemSounds.Exclamation.Play()
+            MinutesTextBox.Text = "60"
+        End If
+    End Sub
+#End Region
+
+#Region "Timer"
     Private TimerStarted As Boolean
 
     Private Sub StartButton_Click(sender As Object, e As RoutedEventArgs) Handles StartButton.Click
@@ -102,19 +142,9 @@ Public Class AutoBackup
             TimeLabel.Content = IntToText(MinutesTextBox.Text) & ":00"
         End If
     End Sub
+#End Region
 
-    Private Function IntToText(Int As Integer)
-        If Int >= 10 Then
-            Return Int.ToString
-        Else
-            Return "0" & Int.ToString
-        End If
-    End Function
-
-    Private Sub Button_Click(sender As Object, e As RoutedEventArgs)
-        ReloadSaves()
-    End Sub
-
+#Region "Functions"
     Private Sub ReloadSaves()
         SaveListBox.Items.Clear()
         Dim SavesDirectory As New IO.DirectoryInfo(My.Settings.SavesFolderLocation)
@@ -126,45 +156,13 @@ Public Class AutoBackup
         Next
     End Sub
 
-    Private Sub AutoBackupWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles AutoBackupWindow.Loaded
-        ReloadSaves()
-    End Sub
-
-    Private Sub AutoBackupWindow_Closing(sender As Object, e As ComponentModel.CancelEventArgs) Handles AutoBackupWindow.Closing
-        e.Cancel = True
-        Me.Hide()
-        Main.Left = Main.Left + 155
-        Main.AutomaticBackupButton.Content = "Automatic Backup >>"
-    End Sub
-
-    Private Sub MinutesTextBox_KeyDown(sender As Object, e As KeyEventArgs) Handles MinutesTextBox.KeyDown
-        If e.Key < 34 Or e.Key > 43 Then
-            If e.Key < 74 Or e.Key > 83 Then
-                e.Handled = True
-            End If
+    Private Function IntToText(Int As Integer)
+        If Int >= 10 Then
+            Return Int.ToString
+        Else
+            Return "0" & Int.ToString
         End If
-
-        If e.Key = Key.Return Then
-            MinutesTextBox_LostFocus(New Object, New RoutedEventArgs)
-        End If
-    End Sub
-
-    Private Sub MinutesTextBox_LostFocus(sender As Object, e As RoutedEventArgs) Handles MinutesTextBox.LostFocus
-        If MinutesTextBox.Text < 5 Then
-            System.Media.SystemSounds.Exclamation.Play()
-            MinutesTextBox.Text = "5"
-        End If
-
-        If MinutesTextBox.Text > 60 Then
-            System.Media.SystemSounds.Exclamation.Play()
-            MinutesTextBox.Text = "60"
-        End If
-    End Sub
-
-    Private Sub SaveListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles SaveListBox.SelectionChanged
-        WorldNameLabel.Text = SaveListBox.SelectedItem
-        WorldName = SaveListBox.SelectedItem
-    End Sub
+    End Function
 
     Private Function GetTimeAndDate()
         Dim Day As String = Format(Now(), "dd")
@@ -176,4 +174,15 @@ Public Class AutoBackup
 
         Return Year & "-" & Month & "-" & Day & " (" & Hours & "h" & Minutes & "m" & Seconds & "s)"
     End Function
+#End Region
+    
+
+    Private Sub RefreshButton_Click(sender As Object, e As RoutedEventArgs) Handles RefreshButton.Click
+        ReloadSaves()
+    End Sub
+
+    Private Sub SaveListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles SaveListBox.SelectionChanged
+        WorldNameLabel.Text = SaveListBox.SelectedItem
+        WorldName = SaveListBox.SelectedItem
+    End Sub
 End Class
