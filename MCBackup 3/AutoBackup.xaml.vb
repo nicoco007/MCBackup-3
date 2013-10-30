@@ -45,6 +45,14 @@ Public Class AutoBackup
             TimeLabel.Content = "00:00"
             StartButton.Content = "Start"
             TimerStarted = False
+
+            MinutesTextBox.IsEnabled = True
+            MinusRepeatButton.IsEnabled = True
+            PlusRepeatButton.IsEnabled = True
+            SaveListBox.IsEnabled = True
+            RefreshButton.IsEnabled = True
+            PrefixTextBox.IsEnabled = True
+            SuffixTextBox.IsEnabled = True
         Else
             If WorldName = "" Then
                 MessageBox.Show("Please select a world to automatically back up.", "Error!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK)
@@ -56,6 +64,14 @@ Public Class AutoBackup
             Timer.Start()
             StartButton.Content = "Stop"
             TimerStarted = True
+
+            MinutesTextBox.IsEnabled = False
+            MinusRepeatButton.IsEnabled = False
+            PlusRepeatButton.IsEnabled = False
+            SaveListBox.IsEnabled = False
+            RefreshButton.IsEnabled = False
+            PrefixTextBox.IsEnabled = False
+            SuffixTextBox.IsEnabled = False
         End If
     End Sub
 
