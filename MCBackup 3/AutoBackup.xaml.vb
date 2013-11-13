@@ -128,7 +128,7 @@ Public Class AutoBackup
         TimeLabel.Content = IntToText(Minutes) & ":" & IntToText(Seconds)
 
         If Minutes = 0 And Seconds = 0 Then
-            Log.Print("[INFO] Starting automated backup...")
+            Log.Print(Log.Type.Info, "Starting automated backup...")
             Main.BackupInfo(0) = PrefixTextBox.Text & GetTimeAndDate() & SuffixTextBox.Text
             Main.BackupInfo(1) = "Automated backup of " & WorldName
             Main.BackupInfo(2) = My.Settings.SavesFolderLocation & "\" & WorldName

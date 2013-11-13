@@ -1,6 +1,12 @@
 ﻿Imports System.IO
 
 Public Class Log
+    Public Enum Type
+        Info
+        Warning
+        Severe
+    End Enum
+
     Public Shared Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
 
     Public Shared Sub StartNew()
@@ -15,9 +21,13 @@ Public Class Log
     End Sub
 
     Public Shared Sub Print(Message As String)
+        Print(Message, Type.Info)
+    End Sub
+
+    Public Shared Sub Print(Message As String, LogType As Type)
         Dim SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
-        Debug.Print(DebugTimeStamp() & " " & Message)
-        SW.WriteLine(DebugTimeStamp() & " " & Message)
+        Debug.Print(DebugTimeStamp() & " " & LogTypeToString(LogType) & " " & Message)
+        SW.WriteLine(DebugTimeStamp() & " " & LogTypeToString(LogType) & " " & Message)
         SW.Dispose()
     End Sub
 
@@ -30,5 +40,17 @@ Public Class Log
         Dim Seconds As String = Format(Now(), "ss")
 
         Return Year & "-" & Month & "-" & Day & " " & Hours & ":" & Minutes & ":" & Seconds
+    End Function
+
+    Public Shared Function LogTypeToString(LogType As Type)
+        Select Case LogType
+            Case 0
+                Return "[INFO]"
+            Case 1
+                Return "[WARNING]"
+            Case 2
+                Return "[SEVERE]"
+        End Select
+        Return ""
     End Function
 End Class
