@@ -344,18 +344,29 @@ Class MainWindow
         WorldPath = Path
     End Sub
 
+    Private CartographProcess As New Process
+
     Private Sub ThumbnailBackgroundWorker_DoWork()
         Try
-            Dim MCMapProcess As New Process
-            MCMapProcess.StartInfo.FileName = Chr(34) & StartupPath & "\bin\mcmap.exe" & Chr(34)
-            MCMapProcess.StartInfo.Arguments = " """ & WorldPath & """"
-            MCMapProcess.StartInfo.WorkingDirectory = StartupPath
-            MCMapProcess.StartInfo.CreateNoWindow = True
-            MCMapProcess.StartInfo.UseShellExecute = False
-            MCMapProcess.StartInfo.WorkingDirectory = StartupPath & "\output\"
-            MCMapProcess.Start()
-            MCMapProcess.WaitForExit()
-            My.Computer.FileSystem.MoveFile(StartupPath & "\output\output.png", WorldPath & "\thumb.png", True)
+            CartographProcess.StartInfo.FileName = Chr(34) & StartupPath & "\cartograph\cartograph_render.exe" & Chr(34)
+            CartographProcess.StartInfo.Arguments = "custom """ & WorldPath & """ name """ & "WorldName" & """ isometric solar-north showbeaconbeam rectangle -256 256 -256 256 automirror progress progress.log outfile output.png"
+            CartographProcess.StartInfo.CreateNoWindow = False
+            CartographProcess.StartInfo.UseShellExecute = False
+            CartographProcess.Start()
+            Dim LastMD5 As String = ""
+            While CartographProcess.HasExited = False
+                Dim CurrentMD5 = GetMD5(StartupPath & "\cartograph\progress.log")
+                If Not LastMD5 = CurrentMD5 Then
+                    Using SR As New StreamReader("cartograph\progress.log")
+                        Log.Print(SR.ReadLine)
+                        SR.Dispose()
+                    End Using
+                End If
+                LastMD5 = CurrentMD5
+                System.Threading.Thread.Sleep(500)
+            End While
+            CartographProcess.WaitForExit()
+            My.Computer.FileSystem.CopyFile(StartupPath & "\cartograph\output.png", WorldPath & "\thumb.png", True)
         Catch ex As Exception
             Log.Print("[SEVERE] " & ex.Message)
         End Try
@@ -643,9 +654,20 @@ Class MainWindow
             End Select
         End If
         Log.Print("[INFO] Someone is closing me!")
+        CartographProcess.Kill()
     End Sub
 #End Region
 
+    Private Function GetMD5(FilePath As String)
+        Using MD5 As New System.Security.Cryptography.MD5CryptoServiceProvider
+            Dim buffer = MD5.ComputeHash(IO.File.ReadAllBytes(FilePath))
+            Dim sb As New System.Text.StringBuilder
+            For i As Integer = 0 To buffer.Length - 1
+                sb.Append(buffer(i).ToString("x2"))
+            Next
+            Return sb.ToString()
+        End Using
+    End Function
 End Class
 
 Public Class CloseAction

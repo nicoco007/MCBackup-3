@@ -1,0 +1,297 @@
+# The first number is the address/index of the texture in terain.png of texture packs. Index 0 is the top-left corner, 15 is top-right, 16 is the first on the second row and so on.
+# The following three numbers are RGB values of 0 to 255.
+# The last number is alpha, 255 being opaque and 0 being totally transparent.
+# Alpha is optional and by default 255. A line with an invalid number of arguments is ignored. Anything following # is ignored.
+# The colors are aproximations of the textures as seen in-game.
+# When a texture is said to be patched, it means that the original color as used in texture packs is gray. 
+# When a texture is said to be custom, it means that the address space is used for a texture not normally in texture packs.
+
+
+  0 117 176  73 255 # Grass (patched green)
+  1 125 125 125 255 # Stone
+  2 134  96  67 255 # Dirt
+  3 126 107  65 255 # Grass
+  4 156 127  78 255 # Planks (oak)
+  5                 # Stone slabs (side)
+  6 159 159 159 255 # Stone slabs (top)
+  7 146  99  86 255 # Bricks
+  8                 # TNT (side)
+  9 130  65  47 255 # TNT (top)
+ 10                 # TNT (bottom)
+ 11 219 219 219 169 # Spider web
+ 12 137  42  12  58 # Red rose
+ 13 107 161   0  60 # Yellow flower
+ 14                 # 
+ 15  66 109  17 173 # Sapling (oak)
+ 
+ 16 122 122 122 255 # Cobblestone
+ 17                 # Bedrock
+ 18 219 211 160 255 # Sand
+ 19 131 123 123 255 # Gravel
+ 20 102  81  49 255 # Wood (oak, side)
+ 21                 # Wood (top)
+ 22 219 219 219 255 # Iron block
+ 23 249 236  78 255 # Gold block
+ 24  97 219 213 255 # Diamond block
+ 25  81 217 117 255 # Emerald block
+ 26                 # 
+ 27 122  90  40 255 # Chest (patched custom)
+ 28 194  52  55  64 # Red mushroom
+ 29 137 104  82  50 # Green mushroom
+ 30  48  86  18 200 # Sapling (jungle)
+ 31                 # 
+ 
+ 32 143 139 124 255 # Gold ore
+ 33 135 130 126 255 # Iron ore
+ 34 115 115 115 255 # Coal
+ 35 107  88  57 255 # Bookshelf
+ 36 103 121 103 255 # Moss stone
+ 37  20  18  29 255 # Obsidian
+ 38                 # Grass add-on
+ 39                 # Tall grass
+ 40                 # 
+ 41 116 221 215 255 # Beacon block
+ 42                 # 
+ 43 107  71  42 255 # Crafting table (top)
+ 44  78  78  78 255 # Oven (front)
+ 45                 # Oven (back)
+ 46 107 107 107 255 # Dispenser
+ 47                 # 
+ 
+ 48 182 182  57 255 # Sponge
+ 49 217 239 243 124 # Glass
+ 50 129 140 143 255 # Diamond ore
+ 51 132 107 107 255 # Redstone ore
+ 52  45  72  19 255 # Leaves (patched custom, jungle)
+ 53  46 138  35 255 # Leaves (patched custom, oak)
+ 54 122 122 122 255 # Stone brick
+ 55 122  78  24 139 # Dead shrub
+ 56                 # Fern
+ 57                 # 
+ 58                 # 
+ 59                 # Crafting table (front)
+ 60                 # Crafting table (side)
+ 61 125 102  85 255 # Oven (front, on)
+ 62                 # Dispenser (back)
+ 63  50  57  32 143 # Sapling (spurce)
+ 
+ 64 221 221 221 255 # Wool (white)
+ 65                 # Spawner
+ 66 239 251 251 255 # Snow
+ 67 122 170 254 255 # Ice
+ 68                 # Dirt with snow
+ 69                 # Cactus (top)
+ 70  12 101  23 255 # Cactus (side)
+ 71                 # Cactus (bottom)
+ 72 158 164 176 255 # Clay
+ 73 147 191 100 205 # Reed
+ 74 100  67  50 255 # Jukebox (side)
+ 75                 # Jukebox (top)
+ 76 117 117 117 211 # Lily pad
+ 77 113  88  73 255 # Mycelium (side)
+ 78 111  99 105 255 # Mycelium (top)
+ 79 117 149  83 173 # Sapling (birch)
+ 
+ 80                 # Torch
+ 81                 # Wooden door (top)
+ 82 185 185 185 247 # Iron door (top)
+ 83 120  94  51 209 # Ladder
+ 84 125  92  44 251 # Trapdoor
+ 85 108 107 105 181 # Iron bars
+ 86                 # Farmland (wet)
+ 87                 # Farmland (dry)
+ 88                 # Wheat (0)
+ 89                 # Wheat (1)
+ 90                 # Wheat (2)
+ 91                 # Wheat (3)
+ 92                 # Wheat (4)
+ 93                 # Wheat (5)
+ 94                 # Wheat (6)
+ 95  85 101   6 225 # Wheat (7)
+ 
+ 96                 # Lever
+ 97 134 101  50 255 # Wooden door (bottom)
+ 98 163 163 163 255 # Iron door (bottom)
+ 99 166  74  40  50 # Redstone torch (on)
+100 114 119 106 255 # Mossy stone brick
+101 118 118 118 255 # Cracked stone brick
+102                 # Pumpkin (top)
+103 111  54  52 255 # Netherrack
+104  84  64  51 255 # Soulsand
+105 143 118  69 255 # Glowstone
+106                 # Piston (top, sticky)
+107 153 129  89 255 # Piston (top)
+108 106 102  95 255 # Piston (side)
+109                 # Piston (bottom)
+110                 # Piston (inside)
+111                 # Stem (straight)
+
+112                 # Rail (corner)
+113  26  23  23 255 # Wool (black)
+114  66  66  66 255 # Wool (gray)
+115  92  61  37  40 # Redstone torch (off)
+116  45  28  12 255 # Wood (spurce, side)
+117 206 206 201 255 # Wood (birch, side)
+118                 # Pumpkin (side)
+119 142  76  12 255 # Pumpkin (front)
+120 185 133  28 255 # Jack-o-lantern (front)
+121 227 204 205 243 # Cake (top)
+122                 # Cake (side)
+123                 # Cake (inside)
+124                 # Cake (bottom)
+125 182  37  36 255 # Huge red mushroom cap
+126 141 106  83 255 # Huge brown mushroom cap
+127                 # Stem (bent)
+
+128 120 107  87 209 # Rail (straight)
+129 163  44  40 255 # Wool (red)
+130 217 131 154 255 # Wool (pink)
+131 151 147 147 255 # Redstone repeater (off)
+132  29  38  20 255 # Leaves (patched custom, birch)
+133  20  32  20 255 # Leaves (patched custom, spurce)
+134 142  22  22 255 # Bed (end, top)
+135                 # Bed (pillow, top)
+136                 # Melon (side)
+137 151 153  36 255 # Melon (top)
+138                 # Cauldron (top)
+139  55  55  55 255 # Cauldron (inside)
+140                 # Cake (item)
+141 207 204 194 255 # Huge mushroom (stem)
+142 202 171 120 255 # Huge mushroom (flesh)
+143                 # Vines
+
+144  29  71 165 255 # Lapis lazuli
+145  55  77  24 255 # Wool (dark green)
+146  59 188  47 255 # Wool (light green)
+147 161 147 147 255 # Redstone repeater (on)
+148  51  20  95 255 # Portal field (custom)
+149                 # Bed (end, end)
+150                 # Bed (end, side)
+151                 # Bed (pillow, side)
+152                 # Bed (pillow, end)
+153  87  67  26 255 # Wood (jungle)
+154                 # Cauldron (side)
+155                 # Cauldron (bottom)
+156                 # Brewing stand (bottom)
+157 123 102  80 185 # Brewing stand (side)
+158                 # End portal frame (top)
+159 146 159 122 247 # End portal fame (side)
+
+160 102 112 134 255 # Lapis lazuli ore
+161  85  51  27 255 # Wool (brown)
+162 194 180  28 255 # Wool (yellow)
+163                 # Powered rail (off)
+164 127  42  42 235 # Redstone wire (cross, patched)
+165                 # Redstone wire (line)
+166 103  64  59 255 # Enchantment table (top)
+167  12   9  15 255 # 
+168 145  80  30 255 # Cocoa pod (large)
+169                 # Cocoa pod (medium)
+170                 # Cocoa pod (small)
+171 109 128 116 255 # Emerald ore
+172 138 129 113 255 # Tripwire hook
+173 129 129 129 107 # Tripwire
+174                 # Socketed eye of ender
+175 221 223 165 255 # End stone
+
+176                 # Sandstone (top)
+177  38  51 153 255 # Wool (blue)
+178 103 138 211 255 # Wool (light blue)
+179 153 103  69 229 # Powered rail (on)
+180                 # 
+181                 # 
+182                 # Enchantment table (side)
+183                 # Enchantmetn table (bottom)
+184 178 137 111 255 # Command block (side)
+185                 # Command block (bottom)
+186                 # Tripwire attachment
+187                 # 
+188                 # 
+189                 # 
+190                 # 
+191                 # 
+
+192                 # Sandstone (side)
+193 129  53 195 255 # Wool (purple)
+194 190  75 200 255 # Wool (magenta)
+195 119 100  88 219 # Detector rail
+196                 # Leaves (jungle, transparent)
+197                 # Leaves (jungle, solid)
+198 103  77  46 255 # Planks (spuce)
+199 154 110  77 255 # Planks (jungle)
+200                 # Vegetables (0)
+201                 # Vegetables (1)
+202                 # Vegetables (2)
+203  21 128   2 255 # Carrots
+204  34 170  36 255 # Potatoes
+205                 # Water
+206                 # Water
+207                 # Water
+
+208 212 205 148 255 # Sandstone (bottom)
+209  39 116 149 255 # Wool (cyan)
+210 234 127  54 255 # Wool (orange)
+211 163  44  40 255 # Redstone lamp (unlit)
+212 163  44  40 255 # Redstone lamp (lit) 
+213 118 118 118 255 # Chiseled stone brick
+214 195 179 123 255 # Planks (birch)
+215  64  64  64 255 # Anvil (base)
+216                 # Anvil (cracked 1)
+217                 # 
+218                 # 
+219                 # 
+220                 # 
+221                 # 
+222                 # Water
+223                 # Water
+
+224  44  22  26 255 # Netherbrick
+225 158 165 165 255 # Wool (light gray)
+226                 # Netherwart (0)
+227                 # Netherwart (1)
+228 110  17  16 247 # Netherwart (2)
+229                 # Sandstone (side, chiseled)
+230                 # Sandstone (side, smooth)
+231                 # Anvil (cracked 0)
+232                 # Anvil (cracked 2)
+233                 # 
+234                 # 
+235                 # 
+236                 # 
+237                 # Lava
+238                 # Lava
+239                 # Lava
+
+240                 # Crack (0)
+241                 # Crack (1)
+242                 # Crack (2)
+243                 # Crack (3)
+244                 # Crack (4)
+245                 # Crack (5)
+246                 # Crack (6)
+247                 # Crack (7)
+248                 # Crack (8)
+249                 # Crack (9)
+250                 # Particles
+251                 # Shockwave (staight)
+252                 # Shockwave (corner)
+253  41  93 255 138 # Water (custom)
+254 245  65   0 255 # Lava
+255 249 193  38 245 # Fire (custom)
+
+
+
+# These can be used to make all leaves the same classic color
+# 52  46 138  35 255 # Leaves (patched custom, jungle only, as oak)
+# 53  46 138  35 255 # Leaves (patched custom, oak only, no change)
+#132  46 138  35 255 # Leaves (patched custom, birch, as oak)
+#133  46 138  35 255 # Leaves (patched custom, spurce, as oak)
+
+# These can be used to make all ores distinctive colors, especially when brightness is forced.
+# 32 255 255   0 255 # Gold ore (as yellow)
+# 33 255   0 255 255 # Iron ore (as magenta)
+# 34   0   0   0 255 # Coal (as black)
+# 50   0 255 255 255 # Diamond ore (as cyan)
+# 51 255   0   0 255 # Redstone ore (as red)
+#160   0   0 255 255 # Lapis lazuli ore (as blue)
+#171   0 255   0 255 # Emerald ore (as green)

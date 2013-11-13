@@ -1,0 +1,228 @@
+Map surface: 83200 square meters
+Block amounts:
+Air:                          	15244996
+Stone:                        	5048494
+Grass:                        	71517
+Dirt:                         	363594
+Cobblestone:                  	461
+Moss Cobblestone:             	203
+Monster Spawner:              	4
+Command block:                	0
+Bedrock:                      	249807
+Snow:                         	3983
+
+Water:                        	18277
+Ice:                          	0
+Lava:                         	23900
+Fire:                         	0
+Portal field:                 	0
+Obsidian:                     	215
+
+Endportal frame:              	0
+Endportal field:              	0
+End stone:                    	0
+Enderdragon egg:              	0
+
+Wood:                         	6309
+ > Oak:                       	2434
+ > Spurce:                    	24
+ > Birch:                     	3851
+ > Jungle:                    	0
+Sapling:                      	0
+ > Oak:                       	0
+ > Spurce:                    	0
+ > Birch:                     	0
+ > Jungle:                    	0
+Tall grass and ferns:         	5482
+ > Tall grass:                	5482
+ > Fern:                      	0
+Dead shrub:                   	0
+Leaves:                       	58183
+ > Oak:                       	24865
+ > Spurce:                    	257
+ > Birch:                     	33061
+ > Jungle:                    	0
+Wooden planks:                	0
+ > Oak:                       	0
+ > Spurce:                    	0
+ > Birch:                     	0
+ > Jungle:                    	0
+Cactus:                       	0
+Yellow flower:                	229
+Red rose:                     	70
+Mycelium:                     	0
+Lily pad:                     	0
+Brown mushroom:               	10
+Huge brown mushroom:          	51
+ > Flesh:                     	0
+ > Cap:                       	45
+ > Stem:                      	6
+Red mushroom:                 	14
+Huge red mushroom:            	0
+ > Flesh:                     	0
+ > Cap:	                     	0
+ > Stem:                      	0
+Cobweb:                       	0
+Silverfish stone:             	2125
+
+Sand:                         	7832
+Sandstone:                    	0
+Snow Block:                   	0
+Gravel:                       	79935
+Clay:                         	194
+
+Gold Ore:                     	2670
+Iron Ore:                     	28702
+Coal Ore:                     	58435
+Diamond Ore:                  	948
+Lapis Lazuli Ore:             	1034
+Emerald Ore:                  	293
+Redstone Ore:                 	8031
+
+Gold:                         	0
+Iron:                         	0
+Diamond:                      	0
+Lapis Lazuli:                 	0
+Emerald:                      	0
+
+Wool:                         	0
+ > White:                     	0
+ > Orange:                    	0
+ > Magenta:                   	0
+ > Light Blue:                	0
+ > Yellow:                    	0
+ > Light Green:               	0
+ > Pink:                      	0
+ > Gray:                      	0
+ > Light Gray:                	0
+ > Cyan:                      	0
+ > Purple:                    	0
+ > Blue:                      	0
+ > Brown:                     	0
+ > Dark Green:                	0
+ > Red:                       	0
+ > Black:                     	0
+
+Farmland:                     	0
+Wheat:                        	0
+Carrots:                      	0
+Potatoes:                     	0
+Sugar cane:                   	0
+Vines:                        	33
+Cocoa pod:                    	0
+Flower pot:                   	0
+Cake:                         	0
+Torch:                        	0
+Craft table:                  	0
+Enchantment table:            	0
+Brewing stand:                	0
+Couldron:                     	0
+Anvil:                        	0
+Chest:                        	7
+Ender chest:                  	0
+Furnace:                      	0
+Dispenser:                    	0
+Beacon:                       	0
+Note Block:                   	0
+Jukebox:                      	0
+Bookshelf:                    	0
+Beds:                         	0
+Wooden doors:                 	0
+Iron doors:                   	0
+
+Wooden stairs:                	0
+ > Oak:                       	0
+ > Spurce:                    	0
+ > Birch:                     	0
+ > Jungle:                    	0
+Cobblestone stairs:           	0
+Brick stairs:                 	0
+Stone brick stairs:           	0
+Sandstone stairs:             	0
+Slabs:                        	0
+ > Stone slabs:               	0
+ > Sand slabs:                	0
+ > Wooden slabs:              	0
+ > Cobblestone slabs:         	0
+ > Brick slabs:               	0
+ > Stone brick slabs:         	0
+Double slabs:                 	0
+ > Stone double slabs:        	0
+ > Sand double slabs:         	0
+ > Wooden double slabs:       	0
+ > Cobblestone double slabs:  	0
+ > Brick double slabs:        	0
+ > Stone brick double slabs:  	0
+Wooden slabs:                 	0
+ > Oak:                       	0
+ > Spurce:                    	0
+ > Birch:                     	0
+ > Jungle:                    	0
+Wooden double slabs:          	0
+ > Oak:                       	0
+ > Spurce:                    	0
+ > Birch:                     	0
+ > Jungle:                    	0
+Glass:                        	0
+Glass pane:                   	0
+Brick:                        	0
+Stone brick:                  	0
+ > Smooth:                    	0
+ > Mossy:                     	0
+ > Cracked:                   	0
+ > Chiseled:                  	0
+Iron bars:                    	0
+TNT:                          	0
+
+Melon stem:                   	0
+Melon:                        	0
+Pumpkin stem:                 	0
+Pumpkin:                      	9
+Jack-O-Lantern:               	0
+Head:                         	0
+
+Netherrack:                   	0
+Soul Sand:                    	0
+Glowstone:                    	0
+Nether brick:                 	0
+Nether brick fence:           	0
+Nether brick stairs:          	0
+Nether wart:                  	0
+
+Signs:                        	0
+Ladder:                       	0
+Fence:                        	0
+Fence gate:                   	0
+Cobblestone wall:             	0
+Mossy cobblestone wall:       	0
+Minecart Track:               	0
+Powered Rail:                 	0
+Detector Rail:                	0
+Piston:                       	0
+Sticky piston:                	0
+Lever:                        	0
+Buttons:                      	0
+Trapdoor:                     	0
+Pressure Plates:              	0
+Redstone Wire:                	0
+Redstone Torches:             	0
+Redstone Repeaters:           	0
+Redstone Lamps:               	0
+ > On:                        	0
+ > Off:                       	0
+Tripwire hook:                	0
+Tripwire:                     	0
+
+
+
+
+These numbers might not be correct
+Zombies: 14
+Cows: 0
+Sheep: 0
+Pigs: 78
+Skeletons: 30
+Creepers: 0
+Slimes: 0
+maxx = 13 maxy = 16 smax = 31 smaxy = 51
+minx = -11 miny = 4 smin = -5 sminy = 15
