@@ -31,11 +31,11 @@ Class MainWindow
     Public RestoreInfo(2) As String
     Private FolderBrowserDialog As New FolderBrowserDialog
 
-    Private BackupBackgroundWorker As BackgroundWorker
-    Private DeleteForRestoreBackgroundWorker As BackgroundWorker
-    Private RestoreBackgroundWorker As BackgroundWorker
-    Private DeleteBackgroundWorker As BackgroundWorker
-    Private ThumbnailBackgroundWorker As BackgroundWorker
+    Private BackupBackgroundWorker As New BackgroundWorker()
+    Private DeleteForRestoreBackgroundWorker As New BackgroundWorker()
+    Private RestoreBackgroundWorker As New BackgroundWorker()
+    Private DeleteBackgroundWorker As New BackgroundWorker()
+    Private ThumbnailBackgroundWorker As New BackgroundWorker()
 
     Public StartupPath As String = System.IO.Directory.GetCurrentDirectory()
     Public ApplicationVersion As String = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()
@@ -46,11 +46,6 @@ Class MainWindow
 
     Public Sub New()
         InitializeComponent()
-        BackupBackgroundWorker = New BackgroundWorker()
-        DeleteForRestoreBackgroundWorker = New BackgroundWorker()
-        RestoreBackgroundWorker = New BackgroundWorker()
-        DeleteBackgroundWorker = New BackgroundWorker()
-        ThumbnailBackgroundWorker = New BackgroundWorker()
         AddHandler BackupBackgroundWorker.DoWork, New DoWorkEventHandler(AddressOf BackupBackgroundWorker_DoWork)
         AddHandler BackupBackgroundWorker.RunWorkerCompleted, New RunWorkerCompletedEventHandler(AddressOf BackupBackgroundWorker_RunWorkerCompleted)
         AddHandler DeleteForRestoreBackgroundWorker.DoWork, New DoWorkEventHandler(AddressOf DeleteForRestoreBackgroundWorker_DoWork)
@@ -289,7 +284,7 @@ Class MainWindow
         DeleteButton.IsEnabled = False
         RenameButton.IsEnabled = False
         BackupBackgroundWorker.RunWorkerAsync()
-        UpdateProgress()
+        UpdateBackupProgress()
     End Sub
 
     Private Sub BackupBackgroundWorker_DoWork(sender As Object, e As DoWorkEventArgs)
@@ -308,7 +303,7 @@ Class MainWindow
         End Try
     End Sub
 
-    Private Sub UpdateProgress()
+    Private Sub UpdateBackupProgress()
         My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0))
         Dim PercentComplete As Double = 0
 
@@ -358,7 +353,15 @@ Class MainWindow
                 Dim CurrentMD5 = GetMD5(StartupPath & "\cartograph\progress.log")
                 If LastMD5 <> CurrentMD5 And LastMD5 <> "" Then
                     Using SR As New StreamReader("cartograph\progress.log")
-                        Log.Print("Thumbnail Progress: " & SR.ReadLine)
+                        Dim text As String = SR.ReadLine
+                        Dim blah As Double
+                        If Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator = "." Then
+                            blah = CDbl(Math.Round(CDec(text)))
+                        Else
+                            text = text.Replace(".", Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator)
+                            blah = CDbl(Math.Round(CDec(text)))
+                        End If
+                        Log.Print("Creating thumbnail (" & blah & "% complete)")
                         SR.Dispose()
                     End Using
                 End If
@@ -366,6 +369,7 @@ Class MainWindow
                 System.Threading.Thread.Sleep(500)
             End While
             CartographProcess.WaitForExit()
+            UpdateProgress(100)
             My.Computer.FileSystem.CopyFile(StartupPath & "\cartograph\output.png", WorldPath & "\thumb.png", True)
         Catch ex As Exception
             Log.Print(ex.Message, Log.Type.Severe)
@@ -515,6 +519,11 @@ Class MainWindow
             Return sb.ToString()
         End Using
     End Function
+
+    Private Sub UpdateProgress(Value As Double)
+        Dim UpdateProgressBarDelegate As New UpdateProgressBarDelegate(AddressOf ProgressBar.SetValue)
+        Dispatcher.Invoke(UpdateProgressBarDelegate, System.Windows.Threading.DispatcherPriority.Background, New Object() {ProgressBar.ValueProperty, Value})
+    End Sub
 #End Region
 
 #Region "Menu Bar"
@@ -670,8 +679,8 @@ Class MainWindow
         End If
 
         Try
-            CartographProcess.Kill()
             Log.Print("Killing Cartograph Process")
+            CartographProcess.Kill()
         Catch ex As Exception
 
         End Try
