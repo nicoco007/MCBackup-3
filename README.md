@@ -1,6 +1,14 @@
 MCBackup-3
 ==========
 
+###Quick Useful Links
+[Downloads] [1]<br />
+[Bug Tracker] [2]<br />
+Wiki (Soon)
+
+[1]:http://www.nicoco007.com/minecraft/applications/mcbackup-3/downloads/   "Downloads"
+[2]:http://bugtracker.nicoco007.com/index.php?project=2                     "Bug Tracker"
+
 Overview
 --------
 MCBackup is a free, open-source backup utility for Minecraft versions 1.6 and up. This release was launched when the new Minecraft Launcher was introduced, changing the Minecraft folder structure.
