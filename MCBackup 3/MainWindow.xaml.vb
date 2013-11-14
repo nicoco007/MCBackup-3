@@ -356,7 +356,7 @@ Class MainWindow
             Dim LastMD5 As String = ""
             While CartographProcess.HasExited = False
                 Dim CurrentMD5 = GetMD5(StartupPath & "\cartograph\progress.log")
-                If Not LastMD5 = CurrentMD5 Then
+                If LastMD5 <> CurrentMD5 And LastMD5 <> "" Then
                     Using SR As New StreamReader("cartograph\progress.log")
                         Log.Print("Thumbnail Progress: " & SR.ReadLine)
                         SR.Dispose()
@@ -522,24 +522,28 @@ Class MainWindow
         Me.Close()
     End Sub
 
-    Private Sub OptionsMenuItem(sender As Object, e As RoutedEventArgs)
+    Private Sub OptionsMenuItem_Click(sender As Object, e As RoutedEventArgs)
         Dim OptionsWindow As New Options
         OptionsWindow.Owner = Me
         OptionsWindow.ShowDialog()
     End Sub
 
-    Private Sub BackupsFolderMenuItem(sender As Object, e As RoutedEventArgs)
+    Private Sub BackupsFolderMenuItem_Click(sender As Object, e As RoutedEventArgs)
         Process.Start(My.Settings.BackupsFolderLocation)
     End Sub
 
-    Private Sub WebsiteMenuItem(sender As Object, e As RoutedEventArgs)
+    Private Sub WebsiteMenuItem_Click(sender As Object, e As RoutedEventArgs)
         Process.Start("http://www.nicoco007.com/minecraft/applications/mcbackup-3")
     End Sub
 
-    Private Sub AboutMenuItem(sender As Object, e As RoutedEventArgs)
+    Private Sub AboutMenuItem_Click(sender As Object, e As RoutedEventArgs)
         Dim AboutWindow As New About
         AboutWindow.Owner = Me
         AboutWindow.ShowDialog()
+    End Sub
+
+    Private Sub ReportBugMenuItem_Click(sender As Object, e As RoutedEventArgs)
+        Process.Start("http://bugtracker.nicoco007.com/index.php?do=newtask&project=2")
     End Sub
 #End Region
 
@@ -665,7 +669,9 @@ Class MainWindow
             End Select
         End If
         Log.Print("Someone is closing me!")
-        CartographProcess.Kill()
+        If CartographProcess.HasExited = False Then
+            CartographProcess.Kill()
+        End If
     End Sub
 #End Region
 End Class

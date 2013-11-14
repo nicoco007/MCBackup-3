@@ -50,9 +50,10 @@
                 <MenuItem Header="Options" Click="OptionsMenuItem"/>
             </MenuItem>
             <MenuItem Header="Help" Height="20" Margin="2" HorizontalAlignment="Center">
-                <MenuItem Header="Website" Click="WebsiteMenuItem"/>
+                <MenuItem Header="Report a Bug" Click="ReportBugMenuItem_Click"/>
                 <Separator/>
-                <MenuItem Header="About" Click="AboutMenuItem"/>
+                <MenuItem Header="Website" Click="WebsiteMenuItem_Click"/>
+                <MenuItem Header="About" Click="AboutMenuItem_Click"/>
             </MenuItem>
         </Menu>
         <Button x:Name="BackupButton" Content="Backup" HorizontalAlignment="Left" VerticalAlignment="Top" Width="145" Margin="10,314,0,0" FontSize="24" Height="45" Opacity="0.85"/>
