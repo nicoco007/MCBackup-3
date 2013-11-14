@@ -170,6 +170,18 @@ Partial Friend NotInheritable Class MySettings
             Me("SaveCloseState") = value
         End Set
     End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(), _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(), _
+     Global.System.Configuration.DefaultSettingValueAttribute("True")> _
+    Public Property CreateThumbOnWorld() As Boolean
+        Get
+            Return CType(Me("CreateThumbOnWorld"), Boolean)
+        End Get
+        Set(value As Boolean)
+            Me("CreateThumbOnWorld") = value
+        End Set
+    End Property
 End Class
 
 Namespace My

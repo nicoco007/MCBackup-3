@@ -318,8 +318,8 @@ Class MainWindow
 
     Private Sub BackupBackgroundWorker_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
         ProgressBar.Value = 100
-        If BackupInfo(3) = "save" Then
-            StatusLabel.Content = "Creating thumbnail..."
+        If BackupInfo(3) = "save" And My.Settings.CreateThumbOnWorld Then
+            StatusLabel.Content = "Creating thumbnail... This can take a while, you can disable this in the options."
             Log.Print("Creating thumbnail")
             CreateThumb(BackupInfo(2))
         Else
@@ -343,6 +343,7 @@ Class MainWindow
 
     Private Sub ThumbnailBackgroundWorker_DoWork()
         Try
+            UpdateProgress(0)
             CartographProcess.StartInfo.FileName = Chr(34) & StartupPath & "\cartograph\cartograph_render.exe" & Chr(34)
             CartographProcess.StartInfo.Arguments = "custom """ & WorldPath & """ name """ & "WorldName" & """ isometric solar-north showbeaconbeam rectangle -256 256 -256 256 automirror progress progress.log outfile output.png"
             CartographProcess.StartInfo.CreateNoWindow = False
@@ -353,15 +354,16 @@ Class MainWindow
                 Dim CurrentMD5 = GetMD5(StartupPath & "\cartograph\progress.log")
                 If LastMD5 <> CurrentMD5 And LastMD5 <> "" Then
                     Using SR As New StreamReader("cartograph\progress.log")
-                        Dim text As String = SR.ReadLine
-                        Dim blah As Double
+                        Dim ProgressString As String = SR.ReadLine
+                        Dim Progress As Double
                         If Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator = "." Then
-                            blah = CDbl(Math.Round(CDec(text)))
+                            Progress = CDbl(Math.Round(CDec(ProgressString)))
                         Else
-                            text = text.Replace(".", Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator)
-                            blah = CDbl(Math.Round(CDec(text)))
+                            ProgressString = ProgressString.Replace(".", Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator)
+                            Progress = CDbl(Math.Round(CDec(ProgressString)))
                         End If
-                        Log.Print("Creating thumbnail (" & blah & "% complete)")
+                        StatusLabel_Content("Creating thumbnail (" & Progress & "% complete)... This can take a while, you can disable this in the options.", False)
+                        UpdateProgress(Progress)
                         SR.Dispose()
                     End Using
                 End If
@@ -523,6 +525,14 @@ Class MainWindow
     Private Sub UpdateProgress(Value As Double)
         Dim UpdateProgressBarDelegate As New UpdateProgressBarDelegate(AddressOf ProgressBar.SetValue)
         Dispatcher.Invoke(UpdateProgressBarDelegate, System.Windows.Threading.DispatcherPriority.Background, New Object() {ProgressBar.ValueProperty, Value})
+    End Sub
+
+    Private Sub StatusLabel_Content(Text As String, invoked As Boolean)
+        If invoked = False Then
+            StatusLabel.Dispatcher.Invoke(Sub() StatusLabel_Content(Text, True))
+        Else
+            StatusLabel.Content = Text
+        End If
     End Sub
 #End Region
 

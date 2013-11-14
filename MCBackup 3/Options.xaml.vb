@@ -40,6 +40,7 @@ Public Class Options
         BackgroundImageStyle.SelectedIndex = My.Settings.BackgroundImageStretch
         CheckForUpdatesCheckBox.IsChecked = My.Settings.CheckForUpdates
         ShowBalloonTipsCheckBox.IsChecked = My.Settings.ShowBalloonTips
+        CreateThumbOnWorldCheckBox.IsChecked = My.Settings.CreateThumbOnWorld
 
         AlwaysCloseCheckBox.IsChecked = My.Settings.SaveCloseState
         CloseToTrayRadioButton.IsChecked = My.Settings.CloseToTray
@@ -177,6 +178,7 @@ Public Class Options
         My.Settings.OpacityPercent = ListViewOpacitySlider.Value
         My.Settings.CheckForUpdates = CheckForUpdatesCheckBox.IsChecked
         My.Settings.ShowBalloonTips = ShowBalloonTipsCheckBox.IsChecked
+        My.Settings.CreateThumbOnWorld = CreateThumbOnWorldCheckBox.IsChecked
 
         If AlwaysCloseCheckBox.IsChecked Then
             My.Settings.SaveCloseState = True
