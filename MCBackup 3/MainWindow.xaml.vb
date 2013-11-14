@@ -344,7 +344,7 @@ Class MainWindow
         WorldPath = Path
     End Sub
 
-    Private CartographProcess As New Process
+    Private CartographProcess As New Process()
 
     Private Sub ThumbnailBackgroundWorker_DoWork()
         Try
@@ -668,10 +668,15 @@ Class MainWindow
                     Exit Sub
             End Select
         End If
-        Log.Print("Someone is closing me!")
-        If CartographProcess.HasExited = False Then
+
+        Try
             CartographProcess.Kill()
-        End If
+            Log.Print("Killing Cartograph Process")
+        Catch ex As Exception
+
+        End Try
+
+        Log.Print("Someone is closing me!")
     End Sub
 #End Region
 End Class
