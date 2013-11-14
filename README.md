@@ -1,7 +1,7 @@
 MCBackup-3
 ==========
 
-###Quick Useful Links
+###Quick Links
 [Downloads] [1]<br />
 [Bug Tracker] [2]<br />
 Wiki (Soon)
