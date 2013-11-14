@@ -1,5 +1,8 @@
 # Build and Object Folders
 obj/
+bin/[Dd]ebug/*.exe.config
+bin/[Dd]ebug/*.xml
+bin/[Rr]elease/
 
 #User Specific Files
 *.user
