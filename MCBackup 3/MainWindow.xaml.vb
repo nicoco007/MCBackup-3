@@ -277,7 +277,7 @@ Class MainWindow
     End Sub
 
     Public Sub StartBackup()
-        Log.Print("Starting new backup <name=""" & BackupInfo(0) & """; type=""" & BackupInfo(3) & """>")
+        Log.Print("Starting new backup <name=""" & BackupInfo(0) & """; description=""" & BackupInfo(1) & """; path=""" & BackupInfo(2) & """; type=""" & BackupInfo(3) & """;>")
         ListView.IsEnabled = False
         BackupButton.IsEnabled = False
         RestoreButton.IsEnabled = False
