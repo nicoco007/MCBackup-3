@@ -1,0 +1,8 @@
+﻿fullname="Français"
+
+# Main Window
+MainWindow.BackupButton.Content="Sauvegarde..."
+MainWindow.RestoreButton.Content="Restaurer"
+MainWindow.DeleteButton.Content="Supprimer"
+MainWindow.RenameButton.Content="Renommer"
+MainWindow.AutomaticBackupButton.Content="Sauvegarde Automatique"

@@ -26,10 +26,8 @@ Public Class Options
 
     Sub New()
         InitializeComponent()
-    End Sub
 
-    Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
-        OpenFileDialog.Filter = "All Supported Image Files (*bmp, *.jpg, *.jpeg, *.png)|*bmp;*.gif;*.png;*.jpg;*.jpeg;*.png|BMP (*.bmp)|*.bmp|JPEG (*.jpg, *.jpeg)|*.jpg;*.jpeg;|PNG (*.png)|*.png"
+        OpenFileDialog.Filter = "All Supported Image Files (*bmp, *.jpg, *.jpeg, *.png)|*bmp;*.gif;*.png;*.jpg;*.jpeg|BMP (*.bmp)|*.bmp|JPEG (*.jpg, *.jpeg)|*.jpg;*.jpeg|PNG (*.png)|*.png"
 
         ListBox.SelectedIndex = 0
         MinecraftFolderTextBox.Text = My.Settings.MinecraftFolderLocation
@@ -45,6 +43,18 @@ Public Class Options
         AlwaysCloseCheckBox.IsChecked = My.Settings.SaveCloseState
         CloseToTrayRadioButton.IsChecked = My.Settings.CloseToTray
         CloseCompletelyRadioButton.IsChecked = Not My.Settings.CloseToTray
+    End Sub
+
+    Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
+        Dim LanguageDirectory As New IO.DirectoryInfo(Main.StartupPath & "\language")
+        Dim LanguageFiles As IO.FileInfo() = LanguageDirectory.GetFiles()
+        Dim LanguageFile As IO.FileInfo
+
+        For Each LanguageFile In LanguageFiles
+            LanguagesListBox.Items.Add(MCBackup.Language.FindString("fullname", LanguageFile.ToString))
+        Next
+
+        LanguagesListBox.SelectedIndex = 0
 
         AlwaysCloseCheckBox_Checked(New Object, New RoutedEventArgs)
     End Sub
@@ -55,14 +65,22 @@ Public Class Options
                 GeneralPanel.Visibility = Windows.Visibility.Visible
                 AppearancePanel.Visibility = Windows.Visibility.Hidden
                 FoldersPanel.Visibility = Windows.Visibility.Hidden
+                LanguagePanel.Visibility = Windows.Visibility.Hidden
             Case 1
                 GeneralPanel.Visibility = Windows.Visibility.Hidden
                 AppearancePanel.Visibility = Windows.Visibility.Visible
                 FoldersPanel.Visibility = Windows.Visibility.Hidden
+                LanguagePanel.Visibility = Windows.Visibility.Hidden
             Case 2
                 GeneralPanel.Visibility = Windows.Visibility.Hidden
                 AppearancePanel.Visibility = Windows.Visibility.Hidden
                 FoldersPanel.Visibility = Windows.Visibility.Visible
+                LanguagePanel.Visibility = Windows.Visibility.Hidden
+            Case 3
+                GeneralPanel.Visibility = Windows.Visibility.Hidden
+                AppearancePanel.Visibility = Windows.Visibility.Hidden
+                FoldersPanel.Visibility = Windows.Visibility.Hidden
+                LanguagePanel.Visibility = Windows.Visibility.Visible
         End Select
     End Sub
 
@@ -94,7 +112,7 @@ Public Class Options
                 My.Computer.FileSystem.DeleteFile(FolderBrowserDialog.SelectedPath & "\.tmp")
                 BackupsFolderTextBox.Text = FolderBrowserDialog.SelectedPath
             Catch ex As Exception
-                Log.Print("[SEVERE] " & ex.Message)
+                Log.Print(ex.Message, Log.Type.Severe)
                 MessageBox.Show("Error: Unable to set backups folder to """ & FolderBrowserDialog.SelectedPath & """", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
             End Try
         End If
@@ -168,13 +186,12 @@ Public Class Options
     End Sub
 
     Private Sub Window_Unloaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Unloaded
-        Log.Print("[INFO] Saving settings...")
         My.Settings.MinecraftFolderLocation = MinecraftFolderTextBox.Text
-        Log.Print("[INFO] Minecraft folder location set to " & My.Settings.MinecraftFolderLocation)
+        Log.Print("Minecraft folder location set to " & My.Settings.MinecraftFolderLocation)
         My.Settings.SavesFolderLocation = SavesFolderTextBox.Text
-        Log.Print("[INFO] Saves folder location set to " & My.Settings.SavesFolderLocation)
+        Log.Print("Saves folder location set to " & My.Settings.SavesFolderLocation)
         My.Settings.BackupsFolderLocation = BackupsFolderTextBox.Text
-        Log.Print("[INFO] Backups folder location set to " & My.Settings.BackupsFolderLocation)
+        Log.Print("Backups folder location set to " & My.Settings.BackupsFolderLocation)
         My.Settings.OpacityPercent = ListViewOpacitySlider.Value
         My.Settings.CheckForUpdates = CheckForUpdatesCheckBox.IsChecked
         My.Settings.ShowBalloonTips = ShowBalloonTipsCheckBox.IsChecked
@@ -186,8 +203,12 @@ Public Class Options
         Else
             My.Settings.SaveCloseState = False
         End If
-
+        Log.Print("Saving settings...")
         My.Settings.Save()
         Main.RefreshBackupsList()
+    End Sub
+
+    Private Sub LanguagesListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles LanguagesListBox.SelectionChanged
+        MCBackup.Language.Load(MCBackup.Language.GetIDFromName(LanguagesListBox.SelectedItem))
     End Sub
 End Class

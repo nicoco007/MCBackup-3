@@ -43,8 +43,8 @@
                 <MenuItem Header="Exit" Click="ExitMenuItem_Click"/>
             </MenuItem>
             <MenuItem Header="Edit" Height="20" Margin="2" HorizontalAlignment="Center">
-                <MenuItem Header="Refresh Backups List" Click="RefreshBackupsList"/>
-                <MenuItem Header="Backups Folder" Click="BackupsFolderMenuItem"/>
+                <MenuItem Header="Refresh Backups List" Click="RefreshBackupsList_Click"/>
+                <MenuItem Header="Backups Folder" Click="BackupsFolderMenuItem_Click"/>
             </MenuItem>
             <MenuItem Header="Tools" Height="20" Margin="2" HorizontalAlignment="Center">
                 <MenuItem Header="Options" Click="OptionsMenuItem"/>
@@ -87,6 +87,6 @@
                 <TextBlock x:Name="TypeLabel" Text="" Margin="87,254,2,0" TextTrimming="WordEllipsis"/>
             </Grid>
         </Grid>
-        <Button x:Name="AutomaticBackupButton" Content="Automatic Backup &gt;&gt;" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Margin="674,314,0,0" Opacity="0.85"/>
+        <Button x:Name="AutomaticBackupButton" Content="Automatic Backup &gt;" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Margin="674,314,0,0" Opacity="0.85"/>
     </Grid>
 </Window>

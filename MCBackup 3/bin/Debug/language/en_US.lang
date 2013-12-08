@@ -1,0 +1,8 @@
+﻿fullname="English"
+
+# Main Window
+MainWindow.BackupButton.Content="Backup..."
+MainWindow.RestoreButton.Content="Restore"
+MainWindow.DeleteButton.Content="Delete"
+MainWindow.RenameButton.Content="Rename"
+MainWindow.AutomaticBackupButton.Content="Automatic Backup"

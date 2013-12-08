@@ -72,6 +72,8 @@ Class MainWindow
         Log.StartNew()
         Log.Print("Starting MCBackup")
 
+        MCBackup.Language.Load("fr_FR.lang")
+
         If My.Settings.OpacityPercent = 0 Then
             My.Settings.OpacityPercent = 100
         End If
@@ -564,6 +566,10 @@ Class MainWindow
     Private Sub ReportBugMenuItem_Click(sender As Object, e As RoutedEventArgs)
         Process.Start("http://bugtracker.nicoco007.com/index.php?do=newtask&project=2")
     End Sub
+
+    Private Sub RefreshBackupsList_Click(sender As Object, e As RoutedEventArgs)
+        RefreshBackupsList()
+    End Sub
 #End Region
 
 #Region "Delete"
@@ -616,11 +622,11 @@ Class MainWindow
         If AutoBackupWindow.IsVisible Then
             AutoBackupWindow.Hide()
             Me.Left = Me.Left + 155
-            AutomaticBackupButton.Content = "Automatic Backup >>"
+            AutomaticBackupButton.Content = MCBackup.Language.LanguageDictionnary("MainWindow.AutomaticBackupButton.Content") & " >"
         Else
             AutoBackupWindow.Show()
             Me.Left = Me.Left - 155
-            AutomaticBackupButton.Content = "Automatic Backup <<"
+            AutomaticBackupButton.Content = MCBackup.Language.LanguageDictionnary("MainWindow.AutomaticBackupButton.Content") & " <"
         End If
     End Sub
 

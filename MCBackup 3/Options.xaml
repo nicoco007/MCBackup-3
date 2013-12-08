@@ -32,8 +32,9 @@
         </Canvas>
         <ListBox x:Name="ListBox" HorizontalAlignment="Left" Width="102" Margin="10,10,0,35">
             <ListBoxItem Content="General"/>
-            <ListBoxItem Background="White" Content="Appearance"/>
+            <ListBoxItem Content="Appearance"/>
             <ListBoxItem Content="Folders"/>
+            <ListBoxItem Content="Language"/>
         </ListBox>
         <Canvas x:Name="FoldersPanel" HorizontalAlignment="Left" Height="191" VerticalAlignment="Top" Width="567" Margin="117,10,0,0">
             <Label Content="Minecraft Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="6" Canvas.Top="6"/>
@@ -61,6 +62,9 @@
                 <ComboBoxItem Content="Zoom"/>
             </ComboBox>
             <Label Content="Size Mode" Canvas.Left="10" Canvas.Top="81" Width="110"/>
+        </Canvas>
+        <Canvas x:Name="LanguagePanel" HorizontalAlignment="Left" Height="191" VerticalAlignment="Top" Width="567" Margin="117,10,0,0">
+            <ListBox x:Name="LanguagesListBox" Width="100" Height="100"/>
         </Canvas>
     </Grid>
 </Window>
