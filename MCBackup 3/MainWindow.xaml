@@ -47,7 +47,7 @@
                 <MenuItem Header="Backups Folder" Click="BackupsFolderMenuItem_Click"/>
             </MenuItem>
             <MenuItem Header="Tools" Height="20" Margin="2" HorizontalAlignment="Center">
-                <MenuItem Header="Options" Click="OptionsMenuItem"/>
+                <MenuItem Header="Options" Click="OptionsMenuItem_Click"/>
             </MenuItem>
             <MenuItem Header="Help" Height="20" Margin="2" HorizontalAlignment="Center">
                 <MenuItem Header="Report a Bug" Click="ReportBugMenuItem_Click"/>
@@ -70,7 +70,7 @@
             </Grid.ColumnDefinitions>
             <ListView x:Name="ListView" Height="280" Opacity="0.75" Margin="1,0" VerticalAlignment="Top">
                 <ListView.View>
-                    <GridView>
+                    <GridView x:Name="ListViewGridView">
                         <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding Name}"/>
                         <GridViewColumn Header="Date Created" Width="140" DisplayMemberBinding="{Binding DateCreated}"/>
                         <GridViewColumn Header="Description" Width="235" DisplayMemberBinding="{Binding Description}"/>
@@ -81,10 +81,10 @@
             <Grid x:Name="Sidebar" Height="280" VerticalAlignment="Top" Grid.Column="1" Margin="10,0,0,0" Grid.ColumnSpan="2" Background="White" Opacity="0.75">
                 <Border BorderBrush="#FFBDBDBD" BorderThickness="1"/>
                 <Image x:Name="ThumbnailImage" Margin="10,10,10,0" Height="200" VerticalAlignment="Top"/>
-                <TextBlock Text="Original Name:" HorizontalAlignment="Left" Margin="3,228,0,26"/>
-                <TextBlock Text="Type:" HorizontalAlignment="Left" Width="92" Margin="3,254,0,0"/>
-                <TextBlock x:Name="OriginalNameLabel" Text="" Margin="87,228,2,26" TextTrimming="WordEllipsis"/>
-                <TextBlock x:Name="TypeLabel" Text="" Margin="87,254,2,0" TextTrimming="WordEllipsis"/>
+                <TextBlock x:Name="OriginalNameLabel" Text="Original Name:" HorizontalAlignment="Left" Margin="3,228,0,26"/>
+                <TextBlock x:Name="TypeLabel" Text="Type:" HorizontalAlignment="Left" Width="92" Margin="3,254,0,0"/>
+                <TextBlock x:Name="OriginalBackupName" Text="" Margin="87,228,2,26" TextTrimming="WordEllipsis"/>
+                <TextBlock x:Name="BackupType" Text="" Margin="87,254,2,0" TextTrimming="WordEllipsis"/>
             </Grid>
         </Grid>
         <Button x:Name="AutomaticBackupButton" Content="Automatic Backup &gt;" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Margin="674,314,0,0" Opacity="0.85"/>

@@ -42,7 +42,6 @@ Class MainWindow
     Public LatestVersion As String
 
     Public WithEvents NotifyIcon As New NotifyIcon
-    Private AutoBackupHidden As Boolean
 
     Public Sub New()
         InitializeComponent()
@@ -257,14 +256,16 @@ Class MainWindow
                 Log.Print(ex.Message, Log.Type.Severe)
             End Try
 
-            OriginalNameLabel.Text = OriginalFolderName
-            OriginalNameLabel.ToolTip = OriginalFolderName
-            TypeLabel.Text = Type
-            TypeLabel.ToolTip = Type
+            OriginalBackupName.Text = OriginalFolderName
+            OriginalBackupName.ToolTip = OriginalFolderName
+            BackupType.Text = Type
+            BackupType.ToolTip = Type
         ElseIf ListView.SelectedItems.Count = 0 Then
             ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/nothumb.png"))
-            OriginalNameLabel.Text = "N/A"
-            TypeLabel.Text = "N/A"
+            OriginalBackupName.Text = "N/A"
+            OriginalBackupName.ToolTip = "No backup selected."
+            BackupType.Text = "N/A"
+            BackupType.ToolTip = "No backup selected."
         End If
     End Sub
 #End Region
@@ -614,7 +615,7 @@ Class MainWindow
 #End Region
 
 #Region "Automatic Backup"
-    Private AutoBackupWindow As New AutoBackup
+    Public AutoBackupWindow As New AutoBackup
     Public IsMoving As Boolean
 
     Public Sub AutomaticBackupButton_Click(sender As Object, e As RoutedEventArgs) Handles AutomaticBackupButton.Click
@@ -654,7 +655,7 @@ Class MainWindow
     Private Sub NotifyIcon_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon.DoubleClick, NotifyIcon.BalloonTipClicked
         Me.Show()
         Me.Activate()
-        If AutoBackupHidden Then
+        If AutoBackupWindow.IsVisible Then
             AutoBackupWindow.Show()
             AutoBackupWindow.Activate()
         End If
