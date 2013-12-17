@@ -71,7 +71,21 @@ Class MainWindow
         Log.StartNew()
         Log.Print("Starting MCBackup")
 
-        MCBackup.Language.Load("fr_FR.lang")
+        If My.Settings.Language = "" Then
+            Try
+                MCBackup.Language.Load("en_US")
+            Catch ex As Exception
+                Log.Print("Language file not found for """ & My.Settings.Language & """; Reverted to English", Log.Type.Severe)
+                MessageBox.Show("Error: Language file not found for """ & My.Settings.Language & """; Reverted to English", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        Else
+            Try
+                MCBackup.Language.Load(My.Settings.Language)
+            Catch ex As Exception
+                Log.Print("Language file not found for """ & My.Settings.Language & """; Reverted to English", Log.Type.Severe)
+                MessageBox.Show("Error: Language file not found for """ & My.Settings.Language & """; Reverted to English", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End If
 
         If My.Settings.OpacityPercent = 0 Then
             My.Settings.OpacityPercent = 100
@@ -132,7 +146,7 @@ Class MainWindow
                 My.Settings.MinecraftFolderLocation = AppData & "\.minecraft" ' Set folder location to default Minecraft folder location
                 My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
             Else
-                MessageBox.Show("MCBackup was unable to find an installation of Minecraft on your computer. Please select your Minecraft folder in the following dialog", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
+                MessageBox.Show(MCBackup.Language.Dictionnary("Message.Error.NoMinecraftInstall"), "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
                 Log.Print("Minecraft folder not found", Log.Type.Warning)
                 MinecraftFolderSearch()
                 Exit Sub
@@ -149,7 +163,7 @@ Class MainWindow
     Private Sub MinecraftFolderSearch()
         If FolderBrowserDialog.ShowDialog = Windows.Forms.DialogResult.OK Then
             If My.Computer.FileSystem.FileExists(FolderBrowserDialog.SelectedPath & "\launcher.jar") Then ' Check if Minecraft exists in that folder
-                MessageBox.Show("Minecraft folder set to " & FolderBrowserDialog.SelectedPath, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) ' Tell user that folder has been selected successfully
+                MessageBox.Show(String.Format(MCBackup.Language.Dictionnary("Message.Info.MinecraftFolderSetTo"), FolderBrowserDialog.SelectedPath), "Information", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) ' Tell user that folder has been selected successfully
                 My.Settings.MinecraftFolderLocation = FolderBrowserDialog.SelectedPath
                 My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
                 Log.Print("Minecraft folder set to """ & My.Settings.MinecraftFolderLocation & """")
@@ -159,6 +173,7 @@ Class MainWindow
                 If MessageBox.Show("Minecraft is not installed in that folder! Try again?", "Error!", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then ' Ask if user wants to try finding folder again
                     MinecraftFolderSearch() ' Restart from beginning if "Yes"
                 Else
+                    Me.ClsType = CloseType.ForceClose
                     Me.Close() ' Close program if "No"
                 End If
             End If
@@ -623,11 +638,11 @@ Class MainWindow
         If AutoBackupWindow.IsVisible Then
             AutoBackupWindow.Hide()
             Me.Left = Me.Left + 155
-            AutomaticBackupButton.Content = MCBackup.Language.LanguageDictionnary("MainWindow.AutomaticBackupButton.Content") & " >"
+            AutomaticBackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.AutomaticBackupButton.Content") & " >"
         Else
             AutoBackupWindow.Show()
             Me.Left = Me.Left - 155
-            AutomaticBackupButton.Content = MCBackup.Language.LanguageDictionnary("MainWindow.AutomaticBackupButton.Content") & " <"
+            AutomaticBackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.AutomaticBackupButton.Content") & " <"
         End If
     End Sub
 

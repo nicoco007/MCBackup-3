@@ -24,3 +24,8 @@ MainWindow.MenuBar.Items(3).Header="Help"
 MainWindow.MenuBar.Items(3).Items(0).Header="Report a bug"
 MainWindow.MenuBar.Items(3).Items(2).Header="Website"
 MainWindow.MenuBar.Items(3).Items(3).Header="About"
+
+# Messages
+Message.Error.Title="Error!"
+Message.Error.NoMinecraftInstall="MCBackup was unable to find an installation of Minecraft on your computer. Please select your Minecraft folder in the following dialog."
+Message.Info.MinecraftFolderSetTo="Minecraft folder set to {0}"

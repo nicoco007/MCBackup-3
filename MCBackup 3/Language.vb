@@ -3,7 +3,7 @@
 Public Class Language
     Public Shared Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
 
-    Public Shared LanguageDictionnary As New Dictionary(Of String, String)
+    Public Shared Dictionnary As New Dictionary(Of String, String)
 
     Public Shared Sub Load(FileName As String)
         LoadDictionnary(FileName)
@@ -13,9 +13,9 @@ Public Class Language
         Main.RenameButton.Content = FindString("MainWindow.RenameButton.Content", FileName)
 
         If Main.AutoBackupWindow.IsVisible Then
-            Main.AutomaticBackupButton.Content = LanguageDictionnary("MainWindow.AutomaticBackupButton.Content") & " <"
+            Main.AutomaticBackupButton.Content = Dictionnary("MainWindow.AutomaticBackupButton.Content") & " <"
         Else
-            Main.AutomaticBackupButton.Content = LanguageDictionnary("MainWindow.AutomaticBackupButton.Content") & " >"
+            Main.AutomaticBackupButton.Content = Dictionnary("MainWindow.AutomaticBackupButton.Content") & " >"
         End If
 
         Main.ListViewGridView.Columns(0).Header = FindString("MainWindow.ListView.Columns(0).Header", FileName)
@@ -35,12 +35,15 @@ Public Class Language
         Main.MenuBar.Items(3).Items(0).Header = FindString("MainWindow.MenuBar.Items(3).Items(0).Header", FileName)
         Main.MenuBar.Items(3).Items(2).Header = FindString("MainWindow.MenuBar.Items(3).Items(2).Header", FileName)
         Main.MenuBar.Items(3).Items(3).Header = FindString("MainWindow.MenuBar.Items(3).Items(3).Header", FileName)
-
     End Sub
 
     Public Shared Sub LoadDictionnary(FileName As String)
-        LanguageDictionnary.Clear()
-        LanguageDictionnary.Add("MainWindow.AutomaticBackupButton.Content", FindString("MainWindow.AutomaticBackupButton.Content", FileName))
+        Dictionnary.Clear()
+        Dictionnary.Add("MainWindow.AutomaticBackupButton.Content", FindString("MainWindow.AutomaticBackupButton.Content", FileName))
+
+        Dictionnary.Add("Message.Error.Title", FindString("Message.Error.Title", FileName))
+        Dictionnary.Add("Message.Error.NoMinecraftInstall", FindString("Message.Error.NoMinecraftInstall", FileName))
+        Dictionnary.Add("Message.Info.MinecraftFolderSetTo", FindString("Message.Info.MinecraftFolderSetTo", FileName))
     End Sub
 
     Public Shared Function GetIDFromName(Name As String)

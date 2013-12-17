@@ -54,8 +54,6 @@ Public Class Options
             LanguagesListBox.Items.Add(MCBackup.Language.FindString("fullname", LanguageFile.ToString))
         Next
 
-        LanguagesListBox.SelectedIndex = 0
-
         AlwaysCloseCheckBox_Checked(New Object, New RoutedEventArgs)
     End Sub
 
@@ -210,5 +208,6 @@ Public Class Options
 
     Private Sub LanguagesListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles LanguagesListBox.SelectionChanged
         MCBackup.Language.Load(MCBackup.Language.GetIDFromName(LanguagesListBox.SelectedItem))
+        My.Settings.Language = MCBackup.Language.GetIDFromName(LanguagesListBox.SelectedItem)
     End Sub
 End Class

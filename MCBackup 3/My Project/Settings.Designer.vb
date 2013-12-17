@@ -171,15 +171,27 @@ Partial Friend NotInheritable Class MySettings
         End Set
     End Property
     
-    <Global.System.Configuration.UserScopedSettingAttribute(), _
-     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(), _
-     Global.System.Configuration.DefaultSettingValueAttribute("True")> _
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
     Public Property CreateThumbOnWorld() As Boolean
         Get
-            Return CType(Me("CreateThumbOnWorld"), Boolean)
+            Return CType(Me("CreateThumbOnWorld"),Boolean)
         End Get
-        Set(value As Boolean)
+        Set
             Me("CreateThumbOnWorld") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+    Public Property Language() As String
+        Get
+            Return CType(Me("Language"),String)
+        End Get
+        Set
+            Me("Language") = value
         End Set
     End Property
 End Class
