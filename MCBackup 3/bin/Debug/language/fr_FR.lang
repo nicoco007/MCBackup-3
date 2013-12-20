@@ -24,6 +24,13 @@ MainWindow.MenuBar.Items(3).Items(0).Header="Signaler un bogue"
 MainWindow.MenuBar.Items(3).Items(2).Header="Site Internet"
 MainWindow.MenuBar.Items(3).Items(3).Header="À propos"
 
+# Statuses
+Status.Ready="Prêt."
+Status.BackingUp="Sauvegarde... ({0}%)"
+Status.BackupComplete="Sauvegarde terminée; Prêt."
+Status.CreatingThumb="Creating thumbnail... This can take a while, you can disable this in the options."
+Status.CreatingThumb="Creating thumbnail... Ceci peut prendre un certain temps, vous pouvez désactiver"
+
 # Messages
 Message.Error.Title="Erreur!"
 Message.Error.NoMinecraftInstall="MCBackup n'a pas pu trouver d'installation de Minecraft. Veuillez sélectionner votre dossier Minecraft dans le dialogue suivant."

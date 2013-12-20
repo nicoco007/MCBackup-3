@@ -70,22 +70,17 @@ Class MainWindow
     Private Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs)
         Log.StartNew()
         Log.Print("Starting MCBackup")
-
-        If My.Settings.Language = "" Then
+        Log.Print(My.Settings.Language)
             Try
-                MCBackup.Language.Load("en_US")
-            Catch ex As Exception
+            MCBackup.Language.Load(My.Settings.Language & ".lang")
+        Catch ex As Exception
+            If My.Settings.Language = "" Then
+                MCBackup.Language.Load("en_US.lang")
+            Else
                 Log.Print("Language file not found for """ & My.Settings.Language & """; Reverted to English", Log.Type.Severe)
                 MessageBox.Show("Error: Language file not found for """ & My.Settings.Language & """; Reverted to English", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            End Try
-        Else
-            Try
-                MCBackup.Language.Load(My.Settings.Language)
-            Catch ex As Exception
-                Log.Print("Language file not found for """ & My.Settings.Language & """; Reverted to English", Log.Type.Severe)
-                MessageBox.Show("Error: Language file not found for """ & My.Settings.Language & """; Reverted to English", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            End Try
-        End If
+            End If
+        End Try
 
         If My.Settings.OpacityPercent = 0 Then
             My.Settings.OpacityPercent = 100
@@ -178,6 +173,7 @@ Class MainWindow
                 End If
             End If
         Else
+            Me.ClsType = CloseType.ForceClose
             Me.Close() ' Close program if "Cancel" or "X" buttons are pressed
         End If
     End Sub
@@ -329,7 +325,7 @@ Class MainWindow
 
         Do Until Int(PercentComplete) = 100
             PercentComplete = Int(GetFolderSize(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0)) / GetFolderSize(BackupInfo(2)) * 100)
-            StatusLabel.Content = "Backing up... (" & Math.Round(PercentComplete, 2) & "% Complete)"
+            StatusLabel.Content = String.Format(MCBackup.Language.Dictionnary("Status.BackingUp"), Math.Round(PercentComplete, 2))
             Dispatcher.Invoke(UpdateProgressBarDelegate, System.Windows.Threading.DispatcherPriority.Background, New Object() {ProgressBar.ValueProperty, PercentComplete})
         Loop
     End Sub

@@ -35,11 +35,17 @@ Public Class Language
         Main.MenuBar.Items(3).Items(0).Header = FindString("MainWindow.MenuBar.Items(3).Items(0).Header", FileName)
         Main.MenuBar.Items(3).Items(2).Header = FindString("MainWindow.MenuBar.Items(3).Items(2).Header", FileName)
         Main.MenuBar.Items(3).Items(3).Header = FindString("MainWindow.MenuBar.Items(3).Items(3).Header", FileName)
+
+        Main.StatusLabel.Content = FindString("Status.Ready", FileName)
     End Sub
 
     Public Shared Sub LoadDictionnary(FileName As String)
         Dictionnary.Clear()
         Dictionnary.Add("MainWindow.AutomaticBackupButton.Content", FindString("MainWindow.AutomaticBackupButton.Content", FileName))
+
+        Dictionnary.Add("Status.BackingUp", FindString("Status.BackingUp", FileName))
+        Dictionnary.Add("Status.BackupComplete", FindString("Status.BackupComplete", FileName))
+        Dictionnary.Add("Status.CreatingThumb", FindString("Status.CreatingThumb", FileName))
 
         Dictionnary.Add("Message.Error.Title", FindString("Message.Error.Title", FileName))
         Dictionnary.Add("Message.Error.NoMinecraftInstall", FindString("Message.Error.NoMinecraftInstall", FileName))
@@ -54,11 +60,10 @@ Public Class Language
         For Each LanguageFile In LanguageFiles
             Using SR As New StreamReader(Main.StartupPath & "\language\" & LanguageFile.Name)
                 If FindString("fullname", LanguageFile.Name) = Name Then
-                    Return LanguageFile.Name
+                    Return LanguageFile.Name.Replace(".lang", "")
                 End If
             End Using
         Next
-
         Return Nothing
     End Function
 

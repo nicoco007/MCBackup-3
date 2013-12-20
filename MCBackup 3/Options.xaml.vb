@@ -207,7 +207,7 @@ Public Class Options
     End Sub
 
     Private Sub LanguagesListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles LanguagesListBox.SelectionChanged
-        MCBackup.Language.Load(MCBackup.Language.GetIDFromName(LanguagesListBox.SelectedItem))
+        MCBackup.Language.Load(MCBackup.Language.GetIDFromName(LanguagesListBox.SelectedItem) & ".lang")
         My.Settings.Language = MCBackup.Language.GetIDFromName(LanguagesListBox.SelectedItem)
     End Sub
 End Class
