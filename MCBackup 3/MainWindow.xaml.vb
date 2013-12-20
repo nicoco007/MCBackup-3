@@ -333,12 +333,13 @@ Class MainWindow
     Private Sub BackupBackgroundWorker_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
         ProgressBar.Value = 100
         If BackupInfo(3) = "save" And My.Settings.CreateThumbOnWorld Then
-            StatusLabel.Content = "Creating thumbnail... This can take a while, you can disable this in the options."
+            StatusLabel.Content = String.Format(MCBackup.Language.Dictionnary("Status.CreatingThumb"), "0")
+            System.Threading.Thread.Sleep(500)
             Log.Print("Creating thumbnail")
             CreateThumb(BackupInfo(2))
         Else
             RefreshBackupsList()
-            StatusLabel.Content = "Backup Complete; Ready"
+            StatusLabel.Content = MCBackup.Language.Dictionnary("Status.BackupComplete")
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Backup Complete!", "Your backup is complete.", ToolTipIcon.Info)
             Log.Print("Backup Complete")
             ListView.IsEnabled = True
@@ -376,7 +377,7 @@ Class MainWindow
                             ProgressString = ProgressString.Replace(".", Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator)
                             Progress = CDbl(Math.Round(CDec(ProgressString)))
                         End If
-                        StatusLabel_Content("Creating thumbnail (" & Progress & "% complete)... This can take a while, you can disable this in the options.", False)
+                        StatusLabel_Content(String.Format(MCBackup.Language.Dictionnary("Status.CreatingThumb"), Progress), False)
                         UpdateProgress(Progress)
                         SR.Dispose()
                     End Using
@@ -394,7 +395,8 @@ Class MainWindow
 
     Private Sub ThumbnailBackgroundWorker_RunWorkerCompleted()
         RefreshBackupsList()
-        StatusLabel.Content = "Backup Complete; Ready"
+        StatusLabel.Content = MCBackup.Language.Dictionnary("Status.BackupComplete")
+        System.Threading.Thread.Sleep(500)
         If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Backup Complete!", "Your backup is complete.", ToolTipIcon.Info)
         Log.Print("Backup Complete")
         ListView.IsEnabled = True
@@ -435,6 +437,7 @@ Class MainWindow
             DeleteForRestoreBackgroundWorker.RunWorkerAsync()
             ProgressBar.IsIndeterminate = True
             StatusLabel.Content = "Removing old content, please wait..."
+            System.Threading.Thread.Sleep(500)
             Log.Print("Removing old content")
         Else
             Exit Sub
@@ -485,6 +488,7 @@ Class MainWindow
 
     Private Sub RestoreBackgroundWorker_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
         StatusLabel.Content = "Restore Complete; Ready"
+        System.Threading.Thread.Sleep(500)
         If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Restore Complete!", "Your restore is complete.", ToolTipIcon.Info)
         Log.Print("Restore Complete")
         RefreshBackupsList()
@@ -546,6 +550,7 @@ Class MainWindow
             StatusLabel.Dispatcher.Invoke(Sub() StatusLabel_Content(Text, True))
         Else
             StatusLabel.Content = Text
+            System.Threading.Thread.Sleep(500)
         End If
     End Sub
 #End Region
@@ -596,6 +601,7 @@ Class MainWindow
             ListView.SelectedIndex = -1
             DeleteBackgroundWorker.RunWorkerAsync()
             StatusLabel.Content = "Deleting..."
+            System.Threading.Thread.Sleep(500)
             ProgressBar.IsIndeterminate = True
         End If
     End Sub
@@ -612,6 +618,7 @@ Class MainWindow
 
     Private Sub DeleteBackgroundWorker_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs)
         StatusLabel.Content = "Delete Complete; Ready"
+        System.Threading.Thread.Sleep(500)
         ProgressBar.IsIndeterminate = False
         RefreshBackupsList()
     End Sub

@@ -28,8 +28,7 @@ MainWindow.MenuBar.Items(3).Items(3).Header="À propos"
 Status.Ready="Prêt."
 Status.BackingUp="Sauvegarde... ({0}%)"
 Status.BackupComplete="Sauvegarde terminée; Prêt."
-Status.CreatingThumb="Creating thumbnail... This can take a while, you can disable this in the options."
-Status.CreatingThumb="Creating thumbnail... Ceci peut prendre un certain temps, vous pouvez désactiver"
+Status.CreatingThumb="Création d'un aperçu ({0}%)... Ceci peut prendre un certain temps, vous pouvez la désactiver dans vos préférences."
 
 # Messages
 Message.Error.Title="Erreur!"

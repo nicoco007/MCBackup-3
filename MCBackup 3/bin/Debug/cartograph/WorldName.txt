@@ -1,46 +1,46 @@
-Map surface: 83200 square meters
+Map surface: 90368 square meters
 Block amounts:
-Air:                          	15244996
-Stone:                        	5048494
-Grass:                        	71517
-Dirt:                         	363594
-Cobblestone:                  	461
-Moss Cobblestone:             	203
-Monster Spawner:              	4
+Air:                          	17577242
+Stone:                        	2867258
+Grass:                        	533
+Dirt:                         	87590
+Cobblestone:                  	222
+Moss Cobblestone:             	79
+Monster Spawner:              	2
 Command block:                	0
-Bedrock:                      	249807
-Snow:                         	3983
+Bedrock:                      	270852
+Snow:                         	0
 
-Water:                        	18277
+Water:                        	2089267
 Ice:                          	0
-Lava:                         	23900
+Lava:                         	33616
 Fire:                         	0
 Portal field:                 	0
-Obsidian:                     	215
+Obsidian:                     	339
 
 Endportal frame:              	0
 Endportal field:              	0
 End stone:                    	0
 Enderdragon egg:              	0
 
-Wood:                         	6309
- > Oak:                       	2434
- > Spurce:                    	24
- > Birch:                     	3851
+Wood:                         	0
+ > Oak:                       	0
+ > Spurce:                    	0
+ > Birch:                     	0
  > Jungle:                    	0
 Sapling:                      	0
  > Oak:                       	0
  > Spurce:                    	0
  > Birch:                     	0
  > Jungle:                    	0
-Tall grass and ferns:         	5482
- > Tall grass:                	5482
+Tall grass and ferns:         	81
+ > Tall grass:                	81
  > Fern:                      	0
 Dead shrub:                   	0
-Leaves:                       	58183
- > Oak:                       	24865
- > Spurce:                    	257
- > Birch:                     	33061
+Leaves:                       	0
+ > Oak:                       	0
+ > Spurce:                    	0
+ > Birch:                     	0
  > Jungle:                    	0
 Wooden planks:                	0
  > Oak:                       	0
@@ -48,36 +48,36 @@ Wooden planks:                	0
  > Birch:                     	0
  > Jungle:                    	0
 Cactus:                       	0
-Yellow flower:                	229
-Red rose:                     	70
+Yellow flower:                	6
+Red rose:                     	4
 Mycelium:                     	0
 Lily pad:                     	0
-Brown mushroom:               	10
-Huge brown mushroom:          	51
+Brown mushroom:               	15
+Huge brown mushroom:          	0
  > Flesh:                     	0
- > Cap:                       	45
- > Stem:                      	6
-Red mushroom:                 	14
+ > Cap:                       	0
+ > Stem:                      	0
+Red mushroom:                 	10
 Huge red mushroom:            	0
  > Flesh:                     	0
  > Cap:	                     	0
  > Stem:                      	0
 Cobweb:                       	0
-Silverfish stone:             	2125
+Silverfish stone:             	0
 
-Sand:                         	7832
-Sandstone:                    	0
+Sand:                         	6567
+Sandstone:                    	2073
 Snow Block:                   	0
-Gravel:                       	79935
-Clay:                         	194
+Gravel:                       	131562
+Clay:                         	64
 
-Gold Ore:                     	2670
-Iron Ore:                     	28702
-Coal Ore:                     	58435
-Diamond Ore:                  	948
-Lapis Lazuli Ore:             	1034
-Emerald Ore:                  	293
-Redstone Ore:                 	8031
+Gold Ore:                     	2836
+Iron Ore:                     	19393
+Coal Ore:                     	33491
+Diamond Ore:                  	1054
+Lapis Lazuli Ore:             	1238
+Emerald Ore:                  	0
+Redstone Ore:                 	8804
 
 Gold:                         	0
 Iron:                         	0
@@ -108,7 +108,7 @@ Wheat:                        	0
 Carrots:                      	0
 Potatoes:                     	0
 Sugar cane:                   	0
-Vines:                        	33
+Vines:                        	0
 Cocoa pod:                    	0
 Flower pot:                   	0
 Cake:                         	0
@@ -118,7 +118,7 @@ Enchantment table:            	0
 Brewing stand:                	0
 Couldron:                     	0
 Anvil:                        	0
-Chest:                        	7
+Chest:                        	4
 Ender chest:                  	0
 Furnace:                      	0
 Dispenser:                    	0
@@ -177,7 +177,7 @@ TNT:                          	0
 Melon stem:                   	0
 Melon:                        	0
 Pumpkin stem:                 	0
-Pumpkin:                      	9
+Pumpkin:                      	0
 Jack-O-Lantern:               	0
 Head:                         	0
 
@@ -217,12 +217,12 @@ Tripwire:                     	0
 
 
 These numbers might not be correct
-Zombies: 14
+Zombies: 38
 Cows: 0
 Sheep: 0
-Pigs: 78
-Skeletons: 30
+Pigs: 0
+Skeletons: 31
 Creepers: 0
 Slimes: 0
-maxx = 13 maxy = 16 smax = 31 smaxy = 51
-minx = -11 miny = 4 smin = -5 sminy = 15
+maxx = 5 maxy = 16 smax = 31 smaxy = 39
+minx = -9 miny = -8 smin = -6 sminy = 1
