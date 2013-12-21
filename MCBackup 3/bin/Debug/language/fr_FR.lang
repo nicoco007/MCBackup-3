@@ -26,14 +26,14 @@ MainWindow.MenuBar.Items(3).Items(3).Header="À propos"
 
 # Statuses
 Status.Ready="Prêt."
-Status.BackingUp="Sauvegarde... ({0}%)"
+Status.BackingUp="Sauvegarde... ({0}% complétée)"
 Status.BackupComplete="Sauvegarde terminée; Prêt."
-Status.CreatingThumb="Création d'un aperçu ({0}%)... Ceci peut prendre un certain temps, vous pouvez la désactiver dans vos préférences."
-Status.RemovingOldContent=""
-Status.Restoring=""
-Status.RestoreComplete=""
-Status.Deleting=""
-Status.DeleteComplete=""
+Status.CreatingThumb="Création d'un aperçu ({0}% complété)... Ceci peut prendre un certain temps, vous pouvez la désactiver dans vos préférences."
+Status.RemovingOldContent="Suppression de l'ancien contenu, veuillez patienter..."
+Status.Restoring="Restauration... ({0}% complétée)"
+Status.RestoreComplete="Restauration terminée; Prêt."
+Status.Deleting="Suppression..."
+Status.DeleteComplete="Suppression terminée; Prêt."
 
 # Messages
 Message.Error.Title="Erreur!"

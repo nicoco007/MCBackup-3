@@ -436,7 +436,7 @@ Class MainWindow
 
             DeleteForRestoreBackgroundWorker.RunWorkerAsync()
             ProgressBar.IsIndeterminate = True
-            StatusLabel.Content = "Removing old content, please wait..."
+            StatusLabel.Content = MCBackup.Language.Dictionnary("Status.RemovingOldContent")
             System.Threading.Thread.Sleep(500)
             Log.Print("Removing old content")
         Else
@@ -480,14 +480,14 @@ Class MainWindow
         Do Until PercentComplete = 100
             If My.Computer.FileSystem.DirectoryExists(RestoreInfo(1)) Then
                 PercentComplete = GetFolderSize(RestoreInfo(1)) / GetFolderSize(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0)) * 100
-                StatusLabel.Content = "Restoring... (" & Math.Round(PercentComplete, 2) & "% Complete)"
+                StatusLabel.Content = String.Format(MCBackup.Language.Dictionnary("Status.Restoring"), PercentComplete)
                 Dispatcher.Invoke(UpdateRestoreProgressBarDelegate, System.Windows.Threading.DispatcherPriority.Background, New Object() {ProgressBar.ValueProperty, Convert.ToDouble(PercentComplete)})
             End If
         Loop
     End Sub
 
     Private Sub RestoreBackgroundWorker_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
-        StatusLabel.Content = "Restore Complete; Ready"
+        StatusLabel.Content = MCBackup.Language.Dictionnary("Status.RestoreComplete")
         System.Threading.Thread.Sleep(500)
         If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Restore Complete!", "Your restore is complete.", ToolTipIcon.Info)
         Log.Print("Restore Complete")

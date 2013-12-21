@@ -52,7 +52,6 @@ Public Class Language
         Dictionnary.Add("Status.Deleting", FindString("Status.Deleting", FileName))
         Dictionnary.Add("Status.DeleteComplete", FindString("Status.DeleteComplete", FileName))
 
-
         Dictionnary.Add("Message.Error.Title", FindString("Message.Error.Title", FileName))
         Dictionnary.Add("Message.Error.NoMinecraftInstall", FindString("Message.Error.NoMinecraftInstall", FileName))
         Dictionnary.Add("Message.Info.MinecraftFolderSetTo", FindString("Message.Info.MinecraftFolderSetTo", FileName))
@@ -79,6 +78,7 @@ Public Class Language
             While SR.Peek <> -1
                 LineNumber += 1
                 Dim Line As String = SR.ReadLine
+
                 If Line.StartsWith(Identifier) And Not Line.StartsWith("#") Then
                     Dim ReturnString = Line.Substring(Identifier.Length + 2)
 
@@ -86,6 +86,11 @@ Public Class Language
                         Log.Print("FORMATTING ERROR @ LINE " & LineNumber & ": Unknown string """ & ReturnString.Substring(ReturnString.LastIndexOf("""") + 1) & """", Log.Type.Severe)
                         Return "[ERROR]"
                         Exit Function
+                    End If
+
+                    If ReturnString.Length - 1 = 0 Then
+                        Log.Print("FORMATTING ERROR @ LINE " & LineNumber & ": Entry is empty!")
+                        Return "[ERROR]"
                     End If
 
                     ReturnString = ReturnString.Remove(ReturnString.LastIndexOf(""""))
@@ -96,7 +101,6 @@ Public Class Language
         Log.Print("FORMATTING ERROR: """ & Identifier & """ indentifier not found!", Log.Type.Severe)
         Using SW As New StreamWriter(Main.StartupPath & "\language\" & FileName, True)
             SW.WriteLine(Identifier & "=""""")
-            Log.Print("added " & Identifier & "=""""")
         End Using
         Return "[ERROR]"
     End Function

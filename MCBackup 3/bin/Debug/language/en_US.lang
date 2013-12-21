@@ -29,7 +29,12 @@ MainWindow.MenuBar.Items(3).Items(3).Header="About"
 Status.Ready="Ready"
 Status.BackingUp="Backing up... ({0}% Complete)"
 Status.BackupComplete="Backup Complete; Ready."
-Status.CreatingThumb="Creating thumbnail... This can take a while, you can disable this in the options."
+Status.CreatingThumb="Creating thumbnail ({0}% Complete)... This can take a while, you can disable this in the options."
+Status.RemovingOldContent="Removing old content, please wait..."
+Status.Restoring="Restoring... ({0}% Complete)"
+Status.RestoreComplete="Restore Complete; Ready"
+Status.Deleting="Deleting..."
+Status.DeleteComplete="Delete Complete; Ready"
 
 # Messages
 Message.Error.Title="Error!"
