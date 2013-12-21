@@ -51,10 +51,12 @@ Public Class Options
         Dim LanguageFile As IO.FileInfo
 
         For Each LanguageFile In LanguageFiles
-            LanguagesListBox.Items.Add(MCBackup.Language.FindString("fullname", LanguageFile.ToString))
+            LanguagesComboBox.Items.Add(MCBackup.Language.FindString("fullname", LanguageFile.ToString))
         Next
 
         AlwaysCloseCheckBox_Checked(New Object, New RoutedEventArgs)
+
+        LanguagesComboBox.SelectedItem = MCBackup.Language.FindString("fullname", My.Settings.Language & ".lang")
     End Sub
 
     Private Sub ListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles ListBox.SelectionChanged
@@ -63,22 +65,14 @@ Public Class Options
                 GeneralPanel.Visibility = Windows.Visibility.Visible
                 AppearancePanel.Visibility = Windows.Visibility.Hidden
                 FoldersPanel.Visibility = Windows.Visibility.Hidden
-                LanguagePanel.Visibility = Windows.Visibility.Hidden
             Case 1
                 GeneralPanel.Visibility = Windows.Visibility.Hidden
                 AppearancePanel.Visibility = Windows.Visibility.Visible
                 FoldersPanel.Visibility = Windows.Visibility.Hidden
-                LanguagePanel.Visibility = Windows.Visibility.Hidden
             Case 2
                 GeneralPanel.Visibility = Windows.Visibility.Hidden
                 AppearancePanel.Visibility = Windows.Visibility.Hidden
                 FoldersPanel.Visibility = Windows.Visibility.Visible
-                LanguagePanel.Visibility = Windows.Visibility.Hidden
-            Case 3
-                GeneralPanel.Visibility = Windows.Visibility.Hidden
-                AppearancePanel.Visibility = Windows.Visibility.Hidden
-                FoldersPanel.Visibility = Windows.Visibility.Hidden
-                LanguagePanel.Visibility = Windows.Visibility.Visible
         End Select
     End Sub
 
@@ -206,8 +200,8 @@ Public Class Options
         Main.RefreshBackupsList()
     End Sub
 
-    Private Sub LanguagesListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles LanguagesListBox.SelectionChanged
-        MCBackup.Language.Load(MCBackup.Language.GetIDFromName(LanguagesListBox.SelectedItem) & ".lang")
-        My.Settings.Language = MCBackup.Language.GetIDFromName(LanguagesListBox.SelectedItem)
+    Private Sub LanguagesListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles LanguagesComboBox.SelectionChanged
+        MCBackup.Language.Load(MCBackup.Language.GetIDFromName(LanguagesComboBox.SelectedItem) & ".lang")
+        My.Settings.Language = MCBackup.Language.GetIDFromName(LanguagesComboBox.SelectedItem)
     End Sub
 End Class

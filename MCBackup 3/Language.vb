@@ -100,7 +100,7 @@ Public Class Language
         End Using
         Log.Print("FORMATTING ERROR: """ & Identifier & """ indentifier not found!", Log.Type.Severe)
         Using SW As New StreamWriter(Main.StartupPath & "\language\" & FileName, True)
-            SW.WriteLine(Identifier & "=""""")
+            SW.Write(vbNewLine & Identifier & "=""""")
         End Using
         Return "[ERROR]"
     End Function

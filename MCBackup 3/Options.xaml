@@ -29,12 +29,13 @@
             <RadioButton x:Name="CloseToTrayRadioButton" Content="Close to tray" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="419" Canvas.Top="16"/>
             <TextBlock Text="Note: You can close MCBackup from the tray by right-clicking on it's icon." HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="358" Canvas.Top="61" Width="199" TextWrapping="WrapWithOverflow" Height="35"/>
             <CheckBox x:Name="CreateThumbOnWorldCheckBox" Content="Create thumbnail on world backup" Canvas.Left="9" Canvas.Top="75" IsChecked="True"/>
+            <ComboBox x:Name="LanguagesComboBox" Canvas.Left="77" Canvas.Top="131" Width="151"/>
+            <Label Content="Language" Canvas.Left="10" Canvas.Top="129"/>
         </Canvas>
         <ListBox x:Name="ListBox" HorizontalAlignment="Left" Width="102" Margin="10,10,0,35">
             <ListBoxItem Content="General"/>
             <ListBoxItem Content="Appearance"/>
             <ListBoxItem Content="Folders"/>
-            <ListBoxItem Content="Language"/>
         </ListBox>
         <Canvas x:Name="FoldersPanel" HorizontalAlignment="Left" Height="191" VerticalAlignment="Top" Width="567" Margin="117,10,0,0">
             <Label Content="Minecraft Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="6" Canvas.Top="6"/>
@@ -62,9 +63,6 @@
                 <ComboBoxItem Content="Zoom"/>
             </ComboBox>
             <Label Content="Size Mode" Canvas.Left="10" Canvas.Top="81" Width="110"/>
-        </Canvas>
-        <Canvas x:Name="LanguagePanel" HorizontalAlignment="Left" Height="191" VerticalAlignment="Top" Width="567" Margin="117,10,0,0">
-            <ListBox x:Name="LanguagesListBox" Width="100" Height="100"/>
         </Canvas>
     </Grid>
 </Window>
