@@ -46,6 +46,12 @@ Public Class Language
         Dictionnary.Add("Status.BackingUp", FindString("Status.BackingUp", FileName))
         Dictionnary.Add("Status.BackupComplete", FindString("Status.BackupComplete", FileName))
         Dictionnary.Add("Status.CreatingThumb", FindString("Status.CreatingThumb", FileName))
+        Dictionnary.Add("Status.RemovingOldContent", FindString("Status.RemovingOldContent", FileName))
+        Dictionnary.Add("Status.Restoring", FindString("Status.Restoring", FileName))
+        Dictionnary.Add("Status.RestoreComplete", FindString("Status.RestoreComplete", FileName))
+        Dictionnary.Add("Status.Deleting", FindString("Status.Deleting", FileName))
+        Dictionnary.Add("Status.DeleteComplete", FindString("Status.DeleteComplete", FileName))
+
 
         Dictionnary.Add("Message.Error.Title", FindString("Message.Error.Title", FileName))
         Dictionnary.Add("Message.Error.NoMinecraftInstall", FindString("Message.Error.NoMinecraftInstall", FileName))
@@ -67,14 +73,14 @@ Public Class Language
         Return Nothing
     End Function
 
-    Public Shared Function FindString(Name As String, FileName As String)
+    Public Shared Function FindString(Identifier As String, FileName As String)
         Using SR As New StreamReader(Main.StartupPath & "\language\" & FileName)
             Dim LineNumber As Integer = 0
             While SR.Peek <> -1
                 LineNumber += 1
                 Dim Line As String = SR.ReadLine
-                If Line.StartsWith(Name) And Not Line.StartsWith("#") Then
-                    Dim ReturnString = Line.Substring(Name.Length + 2)
+                If Line.StartsWith(Identifier) And Not Line.StartsWith("#") Then
+                    Dim ReturnString = Line.Substring(Identifier.Length + 2)
 
                     If Not ReturnString.Length - 1 = ReturnString.LastIndexOf("""") Then
                         Log.Print("FORMATTING ERROR @ LINE " & LineNumber & ": Unknown string """ & ReturnString.Substring(ReturnString.LastIndexOf("""") + 1) & """", Log.Type.Severe)
@@ -87,7 +93,11 @@ Public Class Language
                 End If
             End While
         End Using
-        Log.Print("FORMATTING ERROR: """ & Name & """ indentifier not found!", Log.Type.Severe)
+        Log.Print("FORMATTING ERROR: """ & Identifier & """ indentifier not found!", Log.Type.Severe)
+        Using SW As New StreamWriter(Main.StartupPath & "\language\" & FileName, True)
+            SW.WriteLine(Identifier & "=""""")
+            Log.Print("added " & Identifier & "=""""")
+        End Using
         Return "[ERROR]"
     End Function
 End Class

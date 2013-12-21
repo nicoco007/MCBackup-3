@@ -77,8 +77,8 @@ Class MainWindow
             If My.Settings.Language = "" Then
                 MCBackup.Language.Load("en_US.lang")
             Else
-                Log.Print("Language file not found for """ & My.Settings.Language & """; Reverted to English", Log.Type.Severe)
-                MessageBox.Show("Error: Language file not found for """ & My.Settings.Language & """; Reverted to English", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Log.Print("Language file not found: """ & My.Settings.Language & """", Log.Type.Severe)
+                MessageBox.Show("Error: Language file not found! (" & My.Settings.Language & "); Reverted to English", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
         End Try
 

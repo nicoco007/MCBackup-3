@@ -29,6 +29,11 @@ Status.Ready="Prêt."
 Status.BackingUp="Sauvegarde... ({0}%)"
 Status.BackupComplete="Sauvegarde terminée; Prêt."
 Status.CreatingThumb="Création d'un aperçu ({0}%)... Ceci peut prendre un certain temps, vous pouvez la désactiver dans vos préférences."
+Status.RemovingOldContent=""
+Status.Restoring=""
+Status.RestoreComplete=""
+Status.Deleting=""
+Status.DeleteComplete=""
 
 # Messages
 Message.Error.Title="Erreur!"
