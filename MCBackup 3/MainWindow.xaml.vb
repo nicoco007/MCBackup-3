@@ -79,7 +79,10 @@ Class MainWindow
                 My.Settings.Language = "en_US"
             Else
                 Log.Print("Language file not found: """ & My.Settings.Language & """", Log.Type.Severe)
-                MessageBox.Show("Error: Language file not found! (" & My.Settings.Language & "); Reverted to English", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("Error: Language file not found! (" & My.Settings.Language & ")" & vbNewLine & vbNewLine & "MCBackup will now exit.", MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButtons.OK, MessageBoxIcon.Error)
+                My.Settings.Language = "en_US"
+                Me.ClsType = CloseType.ForceClose
+                Me.Close()
             End If
         End Try
 
@@ -142,7 +145,7 @@ Class MainWindow
                 My.Settings.MinecraftFolderLocation = AppData & "\.minecraft" ' Set folder location to default Minecraft folder location
                 My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
             Else
-                MessageBox.Show(MCBackup.Language.Dictionnary("Message.Error.NoMinecraftInstall"), "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
+                MessageBox.Show(MCBackup.Language.Dictionnary("Message.Error.NoMinecraftInstall"), MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
                 Log.Print("Minecraft folder not found", Log.Type.Warning)
                 MinecraftFolderSearch()
                 Exit Sub
@@ -159,14 +162,14 @@ Class MainWindow
     Private Sub MinecraftFolderSearch()
         If FolderBrowserDialog.ShowDialog = Windows.Forms.DialogResult.OK Then
             If My.Computer.FileSystem.FileExists(FolderBrowserDialog.SelectedPath & "\launcher.jar") Then ' Check if Minecraft exists in that folder
-                MessageBox.Show(String.Format(MCBackup.Language.Dictionnary("Message.Info.MinecraftFolderSetTo"), FolderBrowserDialog.SelectedPath), "Information", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) ' Tell user that folder has been selected successfully
+                MessageBox.Show(String.Format(MCBackup.Language.Dictionnary("Message.Info.MinecraftFolderSetTo"), FolderBrowserDialog.SelectedPath), MCBackup.Language.Dictionnary("Message.Caption.Information"), MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) ' Tell user that folder has been selected successfully
                 My.Settings.MinecraftFolderLocation = FolderBrowserDialog.SelectedPath
                 My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
                 Log.Print("Minecraft folder set to """ & My.Settings.MinecraftFolderLocation & """")
                 Log.Print("Saves folder set to """ & My.Settings.SavesFolderLocation & """")
                 Exit Sub
             Else
-                If MessageBox.Show("Minecraft is not installed in that folder! Try again?", "Error!", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then ' Ask if user wants to try finding folder again
+                If MessageBox.Show(MCBackup.Language.Dictionnary("Message.NotInstalledInFolder"), MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then ' Ask if user wants to try finding folder again
                     MinecraftFolderSearch() ' Restart from beginning if "Yes"
                 Else
                     Me.ClsType = CloseType.ForceClose
@@ -312,7 +315,7 @@ Class MainWindow
                 SW.Write("desc=" & BackupInfo(1)) ' Write description if file
             End Using
         Catch ex As Exception
-            MessageBox.Show("An error occured during the backup." & vbNewLine & vbNewLine & ex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
+            MessageBox.Show(MCBackup.Language.Dictionnary("Message.BackupError") & vbNewLine & vbNewLine & ex.Message, MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Backup Error!", "An error occured during the backup.", ToolTipIcon.Error)
             Log.Print(ex.Message, Log.Type.Severe)
         End Try
@@ -407,7 +410,7 @@ Class MainWindow
 
 #Region "Restore"
     Private Sub RestoreButton_Click(sender As Object, e As EventArgs) Handles RestoreButton.Click
-        If MessageBox.Show("Are you sure you want to restore this backup? This will overwrite any existing content!", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = Forms.DialogResult.Yes Then
+        If MessageBox.Show(MCBackup.Language.Dictionnary("Message.RestoreAreYouSure"), MCBackup.Language.Dictionnary("Message.Caption.AreYouSure"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = Forms.DialogResult.Yes Then
             Log.Print("Starting Restore")
             RestoreInfo(0) = ListView.SelectedItems(0).Name ' Set place 0 of RestoreInfo array to the backup name
 
@@ -467,7 +470,7 @@ Class MainWindow
             My.Computer.FileSystem.CopyDirectory(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0), RestoreInfo(1))
             My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\info.mcb")
         Catch ex As Exception
-            MessageBox.Show("An error occured during the restore." & vbNewLine & vbNewLine & ex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
+            MessageBox.Show(MCBackup.Language.Dictionnary("Message.RestoreError") & vbNewLine & vbNewLine & ex.Message, MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Restore Error!", "An error occured during the restore.", ToolTipIcon.Error)
             Log.Print(ex.Message, Log.Type.Severe)
         End Try
@@ -594,7 +597,7 @@ Class MainWindow
     Private ListViewItems As New ArrayList
 
     Private Sub DeleteButton_Click(sender As Object, e As EventArgs) Handles DeleteButton.Click
-        If MessageBox.Show("Are you sure you want to delete the selected backup(s)?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
+        If MessageBox.Show(MCBackup.Language.Dictionnary("Message.DeleteAreYouSure"), MCBackup.Language.Dictionnary("Message.Caption.AreYouSure"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
             ListViewItems.Clear()
             For Each Item In ListView.SelectedItems
                 ListViewItems.Add(Item.Name)
@@ -612,13 +615,13 @@ Class MainWindow
             Try
                 My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & Item, FileIO.DeleteDirectoryOption.DeleteAllContents)
             Catch ex As Exception
-                MessageBox.Show("An error occured during the removal.", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
+                MessageBox.Show(MCBackup.Language.Dictionnary("Message.DeleteError"), MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
             End Try
         Next
     End Sub
 
     Private Sub DeleteBackgroundWorker_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs)
-        StatusLabel.Content = "Delete Complete; Ready"
+        StatusLabel.Content = MCBackup.Language.Dictionnary("Status.DeleteComplete")
         System.Threading.Thread.Sleep(500)
         ProgressBar.IsIndeterminate = False
         RefreshBackupsList()
@@ -722,6 +725,7 @@ Class MainWindow
         End Try
 
         Log.Print("Someone is closing me!")
+        My.Settings.Save()
     End Sub
 #End Region
 End Class

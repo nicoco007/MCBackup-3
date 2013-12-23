@@ -52,9 +52,17 @@ Public Class Language
         Dictionnary.Add("Status.Deleting", FindString("Status.Deleting", FileName))
         Dictionnary.Add("Status.DeleteComplete", FindString("Status.DeleteComplete", FileName))
 
-        Dictionnary.Add("Message.Error.Title", FindString("Message.Error.Title", FileName))
+        Dictionnary.Add("Message.Caption.Information", FindString("Message.Caption.Information", FileName))
+        Dictionnary.Add("Message.Caption.Error", FindString("Message.Caption.Error", FileName))
+        Dictionnary.Add("Message.Caption.AreYouSure", FindString("Message.Caption.AreYouSure", FileName))
         Dictionnary.Add("Message.Error.NoMinecraftInstall", FindString("Message.Error.NoMinecraftInstall", FileName))
         Dictionnary.Add("Message.Info.MinecraftFolderSetTo", FindString("Message.Info.MinecraftFolderSetTo", FileName))
+        Dictionnary.Add("Message.NotInstalledInFolder", FindString("Message.NotInstalledInFolder", FileName))
+        Dictionnary.Add("Message.BackupError", FindString("Message.BackupError", FileName))
+        Dictionnary.Add("Message.RestoreAreYouSure", FindString("Message.RestoreAreYouSure", FileName))
+        Dictionnary.Add("Message.RestoreError", FindString("Message.RestoreError", FileName))
+        Dictionnary.Add("Message.DeleteAreYouSure", FindString("Message.DeleteAreYouSure", FileName))
+        Dictionnary.Add("Message.DeleteError", FindString("Message.DeleteError", FileName))
     End Sub
 
     Public Shared Function GetIDFromName(Name As String)
