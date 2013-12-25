@@ -20,26 +20,26 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Backup" Height="424" Width="660" Icon="MCBackup.ico" WindowStyle="ToolWindow" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Loaded="Window_Loaded">
     <Grid Width="644" Height="386">
-        <GroupBox Header="Backup Details" HorizontalAlignment="Left" VerticalAlignment="Top" Height="136" Width="622" Margin="10,10,0,0"/>
-        <GroupBox Header="Backup Name" HorizontalAlignment="Left" VerticalAlignment="Top" Height="50" Width="602" Margin="20,29,0,0"/>
+        <GroupBox x:Name="BackupDetailsGroupBox" Header="Backup Details" HorizontalAlignment="Left" VerticalAlignment="Top" Height="136" Width="622" Margin="10,10,0,0"/>
+        <GroupBox x:Name="BackupNameGroupBox" Header="Backup Name" HorizontalAlignment="Left" VerticalAlignment="Top" Height="50" Width="602" Margin="20,29,0,0"/>
         <RadioButton x:Name="CustomNameRadioButton" Content="Custom Name" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="158,53,0,0" GroupName="BackupName"/>
         <RadioButton x:Name="DateAndTimeRadioButton" Content="Date and Time" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="33,53,0,0" IsChecked="True" GroupName="BackupName"/>
-        <TextBox x:Name="CustomNameTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="354" Margin="258,49,0,0" MaxLines="1"/>
-        <Label Content="Short Description (Max. 64 characters, optional)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,85,0,0" Width="264"/>
+        <TextBox x:Name="CustomNameTextBox" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Margin="0,49,32,0" MaxLines="1" HorizontalAlignment="Right" Width="354"/>
+        <Label x:Name="ShortDescriptionLabel" Content="Short Description (Max. 64 characters, optional)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,85,0,0" Width="264"/>
         <TextBox x:Name="DescriptionTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="602" Margin="20,111,0,0"/>
         <RadioButton x:Name="SaveRadioButton" Content="Save" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,151,0,0" Style="{StaticResource {x:Type ToggleButton}}" Width="204" IsChecked="True" GroupName="BackupType"/>
         <RadioButton x:Name="VersionRadioButton" Content="Version" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="430,151,0,0" Style="{StaticResource {x:Type ToggleButton}}" Width="204" GroupName="BackupType"/>
         <RadioButton x:Name="EverythingRadioButton" Content="Whole .minecraft Folder" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="219,151,0,0" Style="{StaticResource {x:Type ToggleButton}}" Width="206" GroupName="BackupType"/>
         <ListView x:Name="SavesListView" HorizontalAlignment="Left" Height="200" VerticalAlignment="Top" Width="204" Margin="10,176,0,0" SelectionMode="Single">
             <ListView.View>
-                <GridView>
+                <GridView x:Name="SavesListViewGridView">
                     <GridViewColumn Header="Name" Width="196"/>
                 </GridView>
             </ListView.View>
         </ListView>
         <ListView x:Name="VersionsListView" HorizontalAlignment="Left" Height="200" VerticalAlignment="Top" Width="204" Margin="430,176,0,0" SelectionMode="Single">
             <ListView.View>
-                <GridView>
+                <GridView x:Name="VersionsListViewGridView">
                     <GridViewColumn Header="Name" Width="196"/>
                 </GridView>
             </ListView.View>

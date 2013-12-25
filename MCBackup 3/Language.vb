@@ -6,43 +6,34 @@ Public Class Language
     Public Shared Dictionnary As New Dictionary(Of String, String)
 
     Public Shared Sub Load(FileName As String)
-        LoadDictionnary(FileName)
-        Main.BackupButton.Content = FindString("MainWindow.BackupButton.Content", FileName)
-        Main.RestoreButton.Content = FindString("MainWindow.RestoreButton.Content", FileName)
-        Main.DeleteButton.Content = FindString("MainWindow.DeleteButton.Content", FileName)
-        Main.RenameButton.Content = FindString("MainWindow.RenameButton.Content", FileName)
-
-        If Main.AutoBackupWindow.IsVisible Then
-            Main.AutomaticBackupButton.Content = Dictionnary("MainWindow.AutomaticBackupButton.Content") & " <"
-        Else
-            Main.AutomaticBackupButton.Content = Dictionnary("MainWindow.AutomaticBackupButton.Content") & " >"
-        End If
-
-        Main.ListViewGridView.Columns(0).Header = FindString("MainWindow.ListView.Columns(0).Header", FileName)
-        Main.ListViewGridView.Columns(1).Header = FindString("MainWindow.ListView.Columns(1).Header", FileName)
-        Main.ListViewGridView.Columns(2).Header = FindString("MainWindow.ListView.Columns(2).Header", FileName)
-        Main.OriginalNameLabel.Text = FindString("MainWindow.OriginalNameLabel.Text", FileName) & ":"
-        Main.TypeLabel.Text = FindString("MainWindow.TypeLabel.Text", FileName) & ":"
-
-        Main.MenuBar.Items(0).Header = FindString("MainWindow.MenuBar.Items(0).Header", FileName)
-        Main.MenuBar.Items(0).Items(0).Header = FindString("MainWindow.MenuBar.Items(0).Items(0).Header", FileName)
-        Main.MenuBar.Items(1).Header = FindString("MainWindow.MenuBar.Items(1).Header", FileName)
-        Main.MenuBar.Items(1).Items(0).Header = FindString("MainWindow.MenuBar.Items(1).Items(0).Header", FileName)
-        Main.MenuBar.Items(1).Items(1).Header = FindString("MainWindow.MenuBar.Items(1).Items(1).Header", FileName)
-        Main.MenuBar.Items(2).Header = FindString("MainWindow.MenuBar.Items(2).Header", FileName)
-        Main.MenuBar.Items(2).Items(0).Header = FindString("MainWindow.MenuBar.Items(2).Items(0).Header", FileName)
-        Main.MenuBar.Items(3).Header = FindString("MainWindow.MenuBar.Items(3).Header", FileName)
-        Main.MenuBar.Items(3).Items(0).Header = FindString("MainWindow.MenuBar.Items(3).Items(0).Header", FileName)
-        Main.MenuBar.Items(3).Items(2).Header = FindString("MainWindow.MenuBar.Items(3).Items(2).Header", FileName)
-        Main.MenuBar.Items(3).Items(3).Header = FindString("MainWindow.MenuBar.Items(3).Items(3).Header", FileName)
-
-        Main.StatusLabel.Content = FindString("Status.Ready", FileName)
-    End Sub
-
-    Public Shared Sub LoadDictionnary(FileName As String)
         Dictionnary.Clear()
+
+        ' = Main Window =
+        Dictionnary.Add("MainWindow.BackupButton.Content", FindString("MainWindow.BackupButton.Content", FileName))
+        Dictionnary.Add("MainWindow.RestoreButton.Content", FindString("MainWindow.RestoreButton.Content", FileName))
+        Dictionnary.Add("MainWindow.DeleteButton.Content", FindString("MainWindow.DeleteButton.Content", FileName))
+        Dictionnary.Add("MainWindow.RenameButton.Content", FindString("MainWindow.RenameButton.Content", FileName))
+
+        Dictionnary.Add("MainWindow.ListView.Columns(0).Header", FindString("MainWindow.ListView.Columns(0).Header", FileName))
+        Dictionnary.Add("MainWindow.ListView.Columns(1).Header", FindString("MainWindow.ListView.Columns(1).Header", FileName))
+        Dictionnary.Add("MainWindow.ListView.Columns(2).Header", FindString("MainWindow.ListView.Columns(2).Header", FileName))
+        Dictionnary.Add("MainWindow.OriginalNameLabel.Text", FindString("MainWindow.OriginalNameLabel.Text", FileName))
+        Dictionnary.Add("MainWindow.TypeLabel.Text", FindString("MainWindow.TypeLabel.Text", FileName))
+
+        Dictionnary.Add("MainWindow.MenuBar.Items(0).Header", FindString("MainWindow.MenuBar.Items(0).Header", FileName))
+        Dictionnary.Add("MainWindow.MenuBar.Items(0).Items(0).Header", FindString("MainWindow.MenuBar.Items(0).Items(0).Header", FileName))
+        Dictionnary.Add("MainWindow.MenuBar.Items(1).Header", FindString("MainWindow.MenuBar.Items(1).Header", FileName))
+        Dictionnary.Add("MainWindow.MenuBar.Items(1).Items(0).Header", FindString("MainWindow.MenuBar.Items(1).Items(0).Header", FileName))
+        Dictionnary.Add("MainWindow.MenuBar.Items(1).Items(1).Header", FindString("MainWindow.MenuBar.Items(1).Items(1).Header", FileName))
+        Dictionnary.Add("MainWindow.MenuBar.Items(2).Header", FindString("MainWindow.MenuBar.Items(2).Header", FileName))
+        Dictionnary.Add("MainWindow.MenuBar.Items(2).Items(0).Header", FindString("MainWindow.MenuBar.Items(2).Items(0).Header", FileName))
+        Dictionnary.Add("MainWindow.MenuBar.Items(3).Header", FindString("MainWindow.MenuBar.Items(3).Header", FileName))
+        Dictionnary.Add("MainWindow.MenuBar.Items(3).Items(0).Header", FindString("MainWindow.MenuBar.Items(3).Items(0).Header", FileName))
+        Dictionnary.Add("MainWindow.MenuBar.Items(3).Items(2).Header", FindString("MainWindow.MenuBar.Items(3).Items(2).Header", FileName))
+        Dictionnary.Add("MainWindow.MenuBar.Items(3).Items(3).Header", FindString("MainWindow.MenuBar.Items(3).Items(3).Header", FileName))
         Dictionnary.Add("MainWindow.AutomaticBackupButton.Content", FindString("MainWindow.AutomaticBackupButton.Content", FileName))
 
+        Dictionnary.Add("Status.Ready", FindString("Status.Ready", FileName))
         Dictionnary.Add("Status.BackingUp", FindString("Status.BackingUp", FileName))
         Dictionnary.Add("Status.BackupComplete", FindString("Status.BackupComplete", FileName))
         Dictionnary.Add("Status.CreatingThumb", FindString("Status.CreatingThumb", FileName))
@@ -63,6 +54,20 @@ Public Class Language
         Dictionnary.Add("Message.RestoreError", FindString("Message.RestoreError", FileName))
         Dictionnary.Add("Message.DeleteAreYouSure", FindString("Message.DeleteAreYouSure", FileName))
         Dictionnary.Add("Message.DeleteError", FindString("Message.DeleteError", FileName))
+
+        Main.LoadLanguage()
+
+        ' = Backup Window =
+        Dictionnary.Add("BackupWindow.BackupDetailsGroupBox.Header", FindString("BackupWindow.BackupDetailsGroupBox.Header", FileName))
+        Dictionnary.Add("BackupWindow.BackupDetailsGroupBox.BackupNameGroupBox.Header", FindString("BackupWindow.BackupDetailsGroupBox.BackupNameGroupBox.Header", FileName))
+        Dictionnary.Add("BackupWindow.BackupDetailsGroupBox.BackupNameGroupBox.DateAndTime", FindString("BackupWindow.BackupDetailsGroupBox.BackupNameGroupBox.DateAndTime", FileName))
+        Dictionnary.Add("BackupWindow.BackupDetailsGroupBox.BackupNameGroupBox.CustomName", FindString("BackupWindow.BackupDetailsGroupBox.BackupNameGroupBox.CustomName", FileName))
+        Dictionnary.Add("BackupWindow.BackupDetailsGroupBox.ShortDescription", FindString("BackupWindow.BackupDetailsGroupBox.ShortDescription", FileName))
+        Dictionnary.Add("BackupWindow.Save", FindString("BackupWindow.Save", FileName))
+        Dictionnary.Add("BackupWindow.WholeMinecraftFolder", FindString("BackupWindow.WholeMinecraftFolder", FileName))
+        Dictionnary.Add("BackupWindow.Version", FindString("BackupWindow.Version", FileName))
+        Dictionnary.Add("BackupWindow.ListBox.Columns(0).Header", FindString("BackupWindow.ListBox.Columns(0).Header", FileName))
+        Dictionnary.Add("BackupWindow.StartButton.Content", FindString("BackupWindow.StartButton.Content", FileName))
     End Sub
 
     Public Shared Function GetIDFromName(Name As String)

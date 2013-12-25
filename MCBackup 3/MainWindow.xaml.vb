@@ -26,9 +26,11 @@ Imports System.Windows.Interop.Imaging
 Imports MCBackup.CloseAction
 
 Class MainWindow
+
     Private AppData As String = Environ("APPDATA")
     Public BackupInfo(3) As String
     Public RestoreInfo(2) As String
+
     Private FolderBrowserDialog As New FolderBrowserDialog
 
     Private BackupBackgroundWorker As New BackgroundWorker()
@@ -43,6 +45,11 @@ Class MainWindow
 
     Public WithEvents NotifyIcon As New NotifyIcon
 
+    Public AboutWindow As New About
+    Public AutoBackupWindow As New AutoBackup
+    Public CloseToTrayWindow As New CloseToTray
+    Public RenameWindow As New Rename
+
     Public Sub New()
         InitializeComponent()
         AddHandler BackupBackgroundWorker.DoWork, New DoWorkEventHandler(AddressOf BackupBackgroundWorker_DoWork)
@@ -55,6 +62,8 @@ Class MainWindow
         AddHandler DeleteBackgroundWorker.RunWorkerCompleted, New RunWorkerCompletedEventHandler(AddressOf DeleteBackgroundWorker_RunWorkerCompleted)
         AddHandler ThumbnailBackgroundWorker.DoWork, New DoWorkEventHandler(AddressOf ThumbnailBackgroundWorker_DoWork)
         AddHandler ThumbnailBackgroundWorker.RunWorkerCompleted, New RunWorkerCompletedEventHandler(AddressOf ThumbnailBackgroundWorker_RunWorkerCompleted)
+
+        Dim Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
 
         NotifyIcon.Icon = New Icon(Application.GetResourceStream(New Uri("pack://application:,,,/Resources/MCBackup.ico")).Stream)
         Dim ContextMenu As New ContextMenu
@@ -283,6 +292,35 @@ Class MainWindow
             BackupType.ToolTip = "No backup selected."
         End If
     End Sub
+
+    Public Sub LoadLanguage()
+        Main.BackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.BackupButton.Content")
+        Main.RestoreButton.Content = MCBackup.Language.Dictionnary("MainWindow.RestoreButton.Content")
+        Main.DeleteButton.Content = MCBackup.Language.Dictionnary("MainWindow.DeleteButton.Content")
+        Main.RenameButton.Content = MCBackup.Language.Dictionnary("MainWindow.RenameButton.Content")
+
+        Main.AutomaticBackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.AutomaticBackupButton.Content") & " >>"
+
+        Main.ListViewGridView.Columns(0).Header = MCBackup.Language.Dictionnary("MainWindow.ListView.Columns(0).Header")
+        Main.ListViewGridView.Columns(1).Header = MCBackup.Language.Dictionnary("MainWindow.ListView.Columns(1).Header")
+        Main.ListViewGridView.Columns(2).Header = MCBackup.Language.Dictionnary("MainWindow.ListView.Columns(2).Header")
+        Main.OriginalNameLabel.Text = MCBackup.Language.Dictionnary("MainWindow.OriginalNameLabel.Text") & ":"
+        Main.TypeLabel.Text = MCBackup.Language.Dictionnary("MainWindow.TypeLabel.Text") & ":"
+
+        Main.MenuBar.Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(0).Header")
+        Main.MenuBar.Items(0).Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(0).Items(0).Header")
+        Main.MenuBar.Items(1).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Header")
+        Main.MenuBar.Items(1).Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Items(0).Header")
+        Main.MenuBar.Items(1).Items(1).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Items(1).Header")
+        Main.MenuBar.Items(2).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(2).Header")
+        Main.MenuBar.Items(2).Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(2).Items(0).Header")
+        Main.MenuBar.Items(3).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Header")
+        Main.MenuBar.Items(3).Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(0).Header")
+        Main.MenuBar.Items(3).Items(2).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(2).Header")
+        Main.MenuBar.Items(3).Items(3).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(3).Header")
+
+        Main.StatusLabel.Content = MCBackup.Language.Dictionnary("Status.Ready")
+    End Sub
 #End Region
 
 #Region "Backup"
@@ -338,13 +376,12 @@ Class MainWindow
         ProgressBar.Value = 100
         If BackupInfo(3) = "save" And My.Settings.CreateThumbOnWorld Then
             StatusLabel.Content = String.Format(MCBackup.Language.Dictionnary("Status.CreatingThumb"), "0")
-            System.Threading.Thread.Sleep(500)
             Log.Print("Creating thumbnail")
             CreateThumb(BackupInfo(2))
         Else
             RefreshBackupsList()
-            StatusLabel.Content = MCBackup.Language.Dictionnary("Status.BackupComplete")
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Backup Complete!", "Your backup is complete.", ToolTipIcon.Info)
+            StatusLabel.Content = MCBackup.Language.Dictionnary("Status.BackupComplete")
             Log.Print("Backup Complete")
             ListView.IsEnabled = True
             BackupButton.IsEnabled = True
@@ -377,10 +414,12 @@ Class MainWindow
             AddHandler MCMap.OutputDataReceived, AddressOf MCMap_OutputDataReceived
             AddHandler MCMap.ErrorDataReceived, AddressOf MCMap_ErrorDataReceived
 
-            MCMap.Start()
-            MCMap.BeginOutputReadLine()
-            MCMap.BeginErrorReadLine()
-            MCMap.WaitForExit()
+            With MCMap
+                .Start()
+                .BeginOutputReadLine()
+                .BeginErrorReadLine()
+                .WaitForExit()
+            End With
         Catch ex As Exception
             Log.Print(ex.Message, Log.Type.Severe)
         End Try
@@ -413,9 +452,9 @@ Class MainWindow
 
         If e.Data.Contains("[") And e.Data.Contains("]") Then
             Dim PercentComplete As Double = (Val(e.Data.Substring(2).Remove(1)) / 4) + (StepNumber * 25)
-            UpdateProgress(percentComplete)
-            Log.Print(percentComplete)
-            StatusLabel_Content(String.Format(MCBackup.Language.Dictionnary("Status.CreatingThumb"), Int(percentComplete)))
+            UpdateProgress(PercentComplete)
+            Log.Print(PercentComplete)
+            StatusLabel_Content(String.Format(MCBackup.Language.Dictionnary("Status.CreatingThumb"), Int(PercentComplete)))
         End If
     End Sub
 
@@ -423,7 +462,6 @@ Class MainWindow
         UpdateProgress(100)
         RefreshBackupsList()
         StatusLabel.Content = MCBackup.Language.Dictionnary("Status.BackupComplete")
-        System.Threading.Thread.Sleep(500)
         If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Backup Complete!", "Your backup is complete.", ToolTipIcon.Info)
         Log.Print("Backup Complete")
         ListView.IsEnabled = True
@@ -464,7 +502,6 @@ Class MainWindow
             DeleteForRestoreBackgroundWorker.RunWorkerAsync()
             ProgressBar.IsIndeterminate = True
             StatusLabel.Content = MCBackup.Language.Dictionnary("Status.RemovingOldContent")
-            System.Threading.Thread.Sleep(500)
             Log.Print("Removing old content")
         Else
             Exit Sub
@@ -474,7 +511,7 @@ Class MainWindow
     Private Sub DeleteForRestoreBackgroundWorker_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs)
         If My.Computer.FileSystem.DirectoryExists(RestoreInfo(1)) Then
             Try
-                My.Computer.FileSystem.DeleteDirectory(RestoreInfo(1), FileIO.DeleteDirectoryOption.DeleteAllContents)
+                My.Computer.FileSystem.DeleteDirectory(RestoreInfo(1), FileIO.DeleteDirectoryOption.DeleteAllContents, FileIO.RecycleOption.SendToRecycleBin)
             Catch ex As Exception
                 Log.Print(ex.Message, Log.Type.Severe)
             End Try
@@ -515,7 +552,6 @@ Class MainWindow
 
     Private Sub RestoreBackgroundWorker_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
         StatusLabel.Content = MCBackup.Language.Dictionnary("Status.RestoreComplete")
-        System.Threading.Thread.Sleep(500)
         If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Restore Complete!", "Your restore is complete.", ToolTipIcon.Info)
         Log.Print("Restore Complete")
         RefreshBackupsList()
@@ -601,7 +637,6 @@ Class MainWindow
     End Sub
 
     Private Sub AboutMenuItem_Click(sender As Object, e As RoutedEventArgs)
-        Dim AboutWindow As New About
         AboutWindow.Owner = Me
         AboutWindow.ShowDialog()
     End Sub
@@ -626,8 +661,7 @@ Class MainWindow
             Next
             ListView.SelectedIndex = -1
             DeleteBackgroundWorker.RunWorkerAsync()
-            StatusLabel.Content = "Deleting..."
-            System.Threading.Thread.Sleep(500)
+            StatusLabel.Content = MCBackup.Language.Dictionnary("Status.Deleting")
             ProgressBar.IsIndeterminate = True
         End If
     End Sub
@@ -644,7 +678,6 @@ Class MainWindow
 
     Private Sub DeleteBackgroundWorker_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs)
         StatusLabel.Content = MCBackup.Language.Dictionnary("Status.DeleteComplete")
-        System.Threading.Thread.Sleep(500)
         ProgressBar.IsIndeterminate = False
         RefreshBackupsList()
     End Sub
@@ -652,14 +685,12 @@ Class MainWindow
 
 #Region "Buttons"
     Private Sub RenameButton_Click(sender As Object, e As EventArgs) Handles RenameButton.Click
-        Dim RenameWindow As New Rename
         RenameWindow.Owner = Me
         RenameWindow.ShowDialog()
     End Sub
 #End Region
 
 #Region "Automatic Backup"
-    Public AutoBackupWindow As New AutoBackup
     Public IsMoving As Boolean
 
     Public Sub AutomaticBackupButton_Click(sender As Object, e As RoutedEventArgs) Handles AutomaticBackupButton.Click
@@ -667,11 +698,11 @@ Class MainWindow
         If AutoBackupWindow.IsVisible Then
             AutoBackupWindow.Hide()
             Me.Left = Me.Left + 155
-            AutomaticBackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.AutomaticBackupButton.Content") & " >"
+            AutomaticBackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.AutomaticBackupButton.Content") & " >>"
         Else
             AutoBackupWindow.Show()
             Me.Left = Me.Left - 155
-            AutomaticBackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.AutomaticBackupButton.Content") & " <"
+            AutomaticBackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.AutomaticBackupButton.Content") & " <<"
         End If
     End Sub
 
@@ -710,7 +741,6 @@ Class MainWindow
     Public ClsType As CloseType
 
     Private Sub Window_Closing(sender As Object, e As CancelEventArgs)
-        Dim CloseToTrayWindow As New CloseToTray
         CloseToTrayWindow.Owner = Me
 
         If Not ClsType = CloseType.ForceClose Then

@@ -17,6 +17,13 @@
 Public Class Backup
 
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
+    Private Backup As Backup = DirectCast(Application.Current.Windows.OfType(Of Backup).First, Backup)
+
+    Public Sub New()
+        InitializeComponent()
+
+        LoadLanguage()
+    End Sub
 
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
         CustomNameTextBox.Text = ""
@@ -56,6 +63,8 @@ Public Class Backup
 
         Name_CheckChanged(sender, e)
         BackupType_CheckChanged(sender, e)
+
+        CustomNameTextBox.Width = 449 - CustomNameRadioButton.ActualWidth
     End Sub
 
     Private Sub Name_CheckChanged(sender As Object, e As RoutedEventArgs) Handles DateAndTimeRadioButton.Checked, CustomNameRadioButton.Checked
@@ -118,4 +127,17 @@ Public Class Backup
 
         Return Year & "-" & Month & "-" & Day & " (" & Hours & "h" & Minutes & "m" & Seconds & "s)"
     End Function
+
+    Private Sub LoadLanguage()
+        BackupDetailsGroupBox.Header = MCBackup.Language.Dictionnary("BackupWindow.BackupDetailsGroupBox.Header")
+        BackupNameGroupBox.Header = MCBackup.Language.Dictionnary("BackupWindow.BackupDetailsGroupBox.BackupNameGroupBox.Header")
+        DateAndTimeRadioButton.Content = MCBackup.Language.Dictionnary("BackupWindow.BackupDetailsGroupBox.BackupNameGroupBox.DateAndTime")
+        CustomNameRadioButton.Content = MCBackup.Language.Dictionnary("BackupWindow.BackupDetailsGroupBox.BackupNameGroupBox.CustomName")
+        ShortDescriptionLabel.Content = MCBackup.Language.Dictionnary("BackupWindow.BackupDetailsGroupBox.ShortDescription")
+        SaveRadioButton.Content = MCBackup.Language.Dictionnary("BackupWindow.Save")
+        EverythingRadioButton.Content = MCBackup.Language.Dictionnary("BackupWindow.WholeMinecraftFolder")
+        VersionRadioButton.Content = MCBackup.Language.Dictionnary("BackupWindow.Version")
+        SavesListViewGridView.Columns(0).Header = MCBackup.Language.Dictionnary("BackupWindow.ListBox.Columns(0).Header")
+        StartButton.Content = MCBackup.Language.Dictionnary("BackupWindow.StartButton.Content")
+    End Sub
 End Class
