@@ -354,6 +354,8 @@ Class MainWindow
     Private WorldPath As String = ""
 
     Private Sub CreateThumb(Path As String)
+        ProgressBar.IsIndeterminate = True
+        StatusLabel.Content = "Creating thumbnail, please wait..."
         ThumbnailBackgroundWorker.RunWorkerAsync()
         WorldPath = Path
     End Sub
@@ -362,42 +364,21 @@ Class MainWindow
 
     Private Sub ThumbnailBackgroundWorker_DoWork()
         Try
-            UpdateProgress(0)
-            CartographProcess.StartInfo.FileName = Chr(34) & StartupPath & "\cartograph\cartograph_render.exe" & Chr(34)
-            CartographProcess.StartInfo.Arguments = "custom """ & WorldPath & """ name """ & "WorldName" & """ isometric solar-north showbeaconbeam rectangle -256 256 -256 256 automirror progress progress.log outfile output.png"
+            CartographProcess.StartInfo.FileName = Chr(34) & StartupPath & "\mcmap\mcmap.exe" & Chr(34)
+            CartographProcess.StartInfo.WorkingDirectory = StartupPath & "\mcmap\"
+            CartographProcess.StartInfo.Arguments = " -from -15 -15 -to 15 15 " & """" & WorldPath & """"
             CartographProcess.StartInfo.CreateNoWindow = False
             CartographProcess.StartInfo.UseShellExecute = False
             CartographProcess.Start()
-            Dim LastMD5 As String = ""
-            While CartographProcess.HasExited = False
-                Dim CurrentMD5 = GetMD5(StartupPath & "\cartograph\progress.log")
-                If LastMD5 <> CurrentMD5 And LastMD5 <> "" Then
-                    Using SR As New StreamReader("cartograph\progress.log")
-                        Dim ProgressString As String = SR.ReadLine
-                        Dim Progress As Double
-                        If Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator = "." Then
-                            Progress = CDbl(Math.Round(CDec(ProgressString)))
-                        Else
-                            ProgressString = ProgressString.Replace(".", Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator)
-                            Progress = CDbl(Math.Round(CDec(ProgressString)))
-                        End If
-                        StatusLabel_Content(String.Format(MCBackup.Language.Dictionnary("Status.CreatingThumb"), Progress), False)
-                        UpdateProgress(Progress)
-                        SR.Dispose()
-                    End Using
-                End If
-                LastMD5 = CurrentMD5
-                System.Threading.Thread.Sleep(500)
-            End While
             CartographProcess.WaitForExit()
-            UpdateProgress(100)
-            My.Computer.FileSystem.CopyFile(StartupPath & "\cartograph\output.png", WorldPath & "\thumb.png", True)
+            My.Computer.FileSystem.MoveFile(StartupPath & "\mcmap\output.png", My.Settings.BackupsFolderLocation & "\" & BackupInfo(0) & "\thumb.png")
         Catch ex As Exception
             Log.Print(ex.Message, Log.Type.Severe)
         End Try
     End Sub
 
     Private Sub ThumbnailBackgroundWorker_RunWorkerCompleted()
+        ProgressBar.IsIndeterminate = False
         RefreshBackupsList()
         StatusLabel.Content = MCBackup.Language.Dictionnary("Status.BackupComplete")
         System.Threading.Thread.Sleep(500)
