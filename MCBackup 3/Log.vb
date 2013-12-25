@@ -9,6 +9,10 @@ Public Class Log
 
     Public Shared Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
 
+    ''' <summary>
+    ''' Starts new logging session
+    ''' </summary>
+    ''' <remarks></remarks>
     Public Shared Sub StartNew()
         DPrint("")
         DPrint("---------- Starting MCBackup v" & Main.ApplicationVersion & " @ " & DebugTimeStamp() & " ----------")
@@ -18,6 +22,11 @@ Public Class Log
         Print(".NET Framework Version: " & Environment.Version.Major & "." & Environment.Version.Minor)
     End Sub
 
+    ''' <summary>
+    ''' Prints a plain message in the log, whithout timestamp.
+    ''' </summary>
+    ''' <param name="Message">Message to print in log</param>
+    ''' <remarks></remarks>
     Public Shared Sub DPrint(Message As String)
         Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
             Debug.Print(Message)
@@ -25,10 +34,21 @@ Public Class Log
         End Using
     End Sub
 
+    ''' <summary>
+    ''' Prints a message in the log, with a timestamp and INFO tag.
+    ''' </summary>
+    ''' <param name="Message">Message to print in log</param>
+    ''' <remarks></remarks>
     Public Shared Sub Print(Message As String)
         Print(Message, Type.Info)
     End Sub
 
+    ''' <summary>
+    ''' Prints a message in the log, with a timestamp and specified tag.
+    ''' </summary>
+    ''' <param name="Message">Message to print in log</param>
+    ''' <param name="LogType">Type of tag to show</param>
+    ''' <remarks></remarks>
     Public Shared Sub Print(Message As String, LogType As Type)
         Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
             Debug.Print(DebugTimeStamp() & " " & LogTypeToString(LogType) & " " & Message)
@@ -36,6 +56,11 @@ Public Class Log
         End Using
     End Sub
 
+    ''' <summary>
+    ''' Returns a log timestamp
+    ''' </summary>
+    ''' <returns>A timestamp in the form YYYY-MM-DD hh:mm:ss</returns>
+    ''' <remarks></remarks>
     Public Shared Function DebugTimeStamp()
         Dim Day As String = Format(Now(), "dd")
         Dim Month As String = Format(Now(), "MM")
@@ -59,6 +84,11 @@ Public Class Log
         Return ""
     End Function
 
+    ''' <summary>
+    ''' Converts Windows NT version to 'human-readable' name
+    ''' </summary>
+    ''' <returns>Windows OS Version name</returns>
+    ''' <remarks></remarks>
     Public Shared Function GetWindowsVersion()
         Select Case Environment.OSVersion.Version.Major
             Case 5
@@ -80,9 +110,14 @@ Public Class Log
                         Return "Windows 8.1"
                 End Select
         End Select
-        Return "Unknown"
+        Return "Unknown / Incompatible"
     End Function
 
+    ''' <summary>
+    ''' Gets windows architecture
+    ''' </summary>
+    ''' <returns>Windows architecture (32/64bit)</returns>
+    ''' <remarks></remarks>
     Public Shared Function GetWindowsArch()
         If Environment.Is64BitOperatingSystem Then
             Return "amd64"

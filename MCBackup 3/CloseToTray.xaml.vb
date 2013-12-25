@@ -3,6 +3,12 @@
 Public Class CloseToTray
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
 
+    Sub New()
+        InitializeComponent()
+
+        Me.Height = 125
+    End Sub
+
     Private Sub YesButton_Click(sender As Object, e As RoutedEventArgs) Handles YesButton.Click
         Main.ClsType = CloseType.CloseToTray
         My.Settings.SaveCloseState = SaveCheckBox.IsChecked
@@ -29,5 +35,10 @@ Public Class CloseToTray
 
     Private Sub SaveCheckBox_Click(sender As Object, e As RoutedEventArgs) Handles SaveCheckBox.Click
         CancelButton.IsEnabled = Not SaveCheckBox.IsChecked
+        If SaveCheckBox.IsChecked Then
+            Me.Height = 145
+        Else
+            Me.Height = 125
+        End If
     End Sub
 End Class

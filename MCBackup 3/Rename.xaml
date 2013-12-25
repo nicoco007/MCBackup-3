@@ -14,15 +14,15 @@
 ║     See the License for the specific language governing permissions and   ║
 ║                      limitations under the License.                       ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
---> 
+-->
 <Window x:Class="Rename"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Rename" Height="110" Width="300" WindowStyle="ToolWindow" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
-    <Grid Height="70" VerticalAlignment="Top">
-        <TextBox x:Name="TextBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="272" Margin="10,10,0,0"/>
+    Title="Rename" Height="99" Width="302" WindowStyle="ToolWindow" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid Height="67" VerticalAlignment="Top" HorizontalAlignment="Left" Width="292">
+        <TextBox x:Name="TextBox" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,10,0,0" HorizontalAlignment="Left" Width="272"/>
         <Button x:Name="RenameButton" Content="Rename" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="68,40,0,0" IsDefault="True"/>
-        <Button x:Name="CancelButton" Content="Cancel" VerticalAlignment="Top" Margin="149,40,68,0"/>
+        <Button x:Name="CancelButton" Content="Cancel" VerticalAlignment="Top" Margin="149,40,0,0" HorizontalAlignment="Left" Width="75"/>
 
     </Grid>
 </Window>
