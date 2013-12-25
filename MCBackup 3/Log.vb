@@ -50,10 +50,14 @@ Public Class Log
     ''' <param name="LogType">Type of tag to show</param>
     ''' <remarks></remarks>
     Public Shared Sub Print(Message As String, LogType As Type)
-        Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
-            Debug.Print(DebugTimeStamp() & " " & LogTypeToString(LogType) & " " & Message)
-            SW.WriteLine(DebugTimeStamp() & " " & LogTypeToString(LogType) & " " & Message)
-        End Using
+        Try
+            Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
+                Debug.Print(DebugTimeStamp() & " " & LogTypeToString(LogType) & " " & Message)
+                SW.WriteLine(DebugTimeStamp() & " " & LogTypeToString(LogType) & " " & Message)
+            End Using
+        Catch ex As Exception
+
+        End Try
     End Sub
 
     ''' <summary>

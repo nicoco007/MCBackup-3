@@ -354,31 +354,73 @@ Class MainWindow
     Private WorldPath As String = ""
 
     Private Sub CreateThumb(Path As String)
-        ProgressBar.IsIndeterminate = True
+        'ProgressBar.IsIndeterminate = True
         StatusLabel.Content = "Creating thumbnail, please wait..."
         ThumbnailBackgroundWorker.RunWorkerAsync()
         WorldPath = Path
     End Sub
 
-    Private CartographProcess As New Process()
+    Private MCMap As New Process()
 
     Private Sub ThumbnailBackgroundWorker_DoWork()
         Try
-            CartographProcess.StartInfo.FileName = Chr(34) & StartupPath & "\mcmap\mcmap.exe" & Chr(34)
-            CartographProcess.StartInfo.WorkingDirectory = StartupPath & "\mcmap\"
-            CartographProcess.StartInfo.Arguments = " -from -15 -15 -to 15 15 " & """" & WorldPath & """"
-            CartographProcess.StartInfo.CreateNoWindow = False
-            CartographProcess.StartInfo.UseShellExecute = False
-            CartographProcess.Start()
-            CartographProcess.WaitForExit()
-            My.Computer.FileSystem.MoveFile(StartupPath & "\mcmap\output.png", My.Settings.BackupsFolderLocation & "\" & BackupInfo(0) & "\thumb.png")
+            With MCMap.StartInfo
+                .FileName = Chr(34) & StartupPath & "\mcmap\mcmap.exe" & Chr(34)
+                .WorkingDirectory = StartupPath & "\mcmap\"
+                .Arguments = " -from -15 -15 -to 15 15 -file """ & My.Settings.BackupsFolderLocation & "\" & BackupInfo(0) & "\thumb.png"" " & """" & WorldPath & """"
+                .CreateNoWindow = True
+                .UseShellExecute = False
+                .RedirectStandardError = True
+                .RedirectStandardOutput = True
+            End With
+
+            AddHandler MCMap.OutputDataReceived, AddressOf MCMap_OutputDataReceived
+            AddHandler MCMap.ErrorDataReceived, AddressOf MCMap_ErrorDataReceived
+
+            MCMap.Start()
+            MCMap.BeginOutputReadLine()
+            MCMap.BeginErrorReadLine()
+            MCMap.WaitForExit()
         Catch ex As Exception
             Log.Print(ex.Message, Log.Type.Severe)
         End Try
     End Sub
 
+    Private Sub MCMap_OutputDataReceived(sender As Object, e As DataReceivedEventArgs)
+        MCMap_DataReceived(sender, e)
+    End Sub
+
+    Private Sub MCMap_ErrorDataReceived(sender As Object, e As DataReceivedEventArgs)
+        MCMap_DataReceived(sender, e)
+    End Sub
+
+    Private StepNumber As Integer
+    Private Sub MCMap_DataReceived(sender As Object, e As DataReceivedEventArgs)
+        If e.Data = Nothing Then
+            Exit Sub
+        End If
+
+        Select Case e.Data
+            Case "Loading all chunks.."
+                StepNumber = 0
+            Case "Optimizing terrain..."
+                StepNumber = 1
+            Case "Drawing map..."
+                StepNumber = 2
+            Case "Writing to file..."
+                StepNumber = 3
+        End Select
+
+        If e.Data.Contains("[") And e.Data.Contains("]") Then
+            Dim PercentComplete As Double = (Val(e.Data.Substring(2).Remove(1)) / 4) + (StepNumber * 25)
+            UpdateProgress(percentComplete)
+            Log.Print(percentComplete)
+            StatusLabel_Content(String.Format(MCBackup.Language.Dictionnary("Status.CreatingThumb"), Int(percentComplete)))
+        End If
+    End Sub
+
     Private Sub ThumbnailBackgroundWorker_RunWorkerCompleted()
-        ProgressBar.IsIndeterminate = False
+        UpdateProgress(100)
         RefreshBackupsList()
         StatusLabel.Content = MCBackup.Language.Dictionnary("Status.BackupComplete")
         System.Threading.Thread.Sleep(500)
@@ -530,13 +572,12 @@ Class MainWindow
         Dispatcher.Invoke(UpdateProgressBarDelegate, System.Windows.Threading.DispatcherPriority.Background, New Object() {ProgressBar.ValueProperty, Value})
     End Sub
 
-    Private Sub StatusLabel_Content(Text As String, invoked As Boolean)
-        If invoked = False Then
-            StatusLabel.Dispatcher.Invoke(Sub() StatusLabel_Content(Text, True))
-        Else
-            StatusLabel.Content = Text
-            System.Threading.Thread.Sleep(500)
-        End If
+    Private Sub StatusLabel_Content(Text As String)
+        StatusLabel.Dispatcher.Invoke(Sub() StatusLabel_ContentInvoked(Text))
+    End Sub
+
+    Private Sub StatusLabel_ContentInvoked(Text As String)
+        StatusLabel.Content = Text
     End Sub
 #End Region
 
@@ -700,7 +741,7 @@ Class MainWindow
 
         Try
             Log.Print("Killing Cartograph Process")
-            CartographProcess.Kill()
+            MCMap.Kill()
         Catch ex As Exception
 
         End Try
