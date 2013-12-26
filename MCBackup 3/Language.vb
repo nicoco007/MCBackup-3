@@ -58,6 +58,7 @@ Public Class Language
         Main.LoadLanguage()
 
         ' = Backup Window =
+        Dictionnary.Add("BackupWindow.Title", FindString("BackupWindow.Title", FileName))
         Dictionnary.Add("BackupWindow.BackupDetailsGroupBox.Header", FindString("BackupWindow.BackupDetailsGroupBox.Header", FileName))
         Dictionnary.Add("BackupWindow.BackupNameGroupBox.Header", FindString("BackupWindow.BackupNameGroupBox.Header", FileName))
         Dictionnary.Add("BackupWindow.DateAndTimeRadioButton.Content", FindString("BackupWindow.DateAndTimeRadioButton.Content", FileName))
@@ -69,6 +70,20 @@ Public Class Language
         Dictionnary.Add("BackupWindow.ListBox.Columns(0).Header", FindString("BackupWindow.ListBox.Columns(0).Header", FileName))
         Dictionnary.Add("BackupWindow.StartButton.Content", FindString("BackupWindow.StartButton.Content", FileName))
         Dictionnary.Add("BackupWindow.CancelButton.Content", FindString("BackupWindow.CancelButton.Content", FileName))
+
+        ' = Automatic Backup Window =
+        Dictionnary.Add("AutoBackupWindow.Title", FindString("AutoBackupWindow.Title", FileName))
+        Dictionnary.Add("AutoBackupWindow.BackupEveryLabel.Content", FindString("AutoBackupWindow.BackupEveryLabel.Content", FileName))
+        Dictionnary.Add("AutoBackupWindow.MinutesLabel.Content", FindString("AutoBackupWindow.MinutesLabel.Content", FileName))
+        Dictionnary.Add("AutoBackupWindow.WorldToBackUpLabel.Text", FindString("AutoBackupWindow.WorldToBackUpLabel.Text", FileName))
+        Dictionnary.Add("AutoBackupWindow.RefreshButton.Content", FindString("AutoBackupWindow.RefreshButton.Content", FileName))
+        Dictionnary.Add("AutoBackupWindow.SaveAsLabel.Content", FindString("AutoBackupWindow.SaveAsLabel.Content", FileName))
+        Dictionnary.Add("AutoBackupWindow.PrefixLabel.Content", FindString("AutoBackupWindow.PrefixLabel.Content", FileName))
+        Dictionnary.Add("AutoBackupWindow.SuffixLabel.Content", FindString("AutoBackupWindow.SuffixLabel.Content", FileName))
+        Dictionnary.Add("AutoBackupWindow.StartButton.Content.Start", FindString("AutoBackupWindow.StartButton.Content.Start", FileName))
+        Dictionnary.Add("AutoBackupWindow.StartButton.Content.Stop", FindString("AutoBackupWindow.StartButton.Content.Stop", FileName))
+
+        Main.AutoBackupWindow.LoadLanguage()
     End Sub
 
     Public Shared Function GetIDFromName(Name As String)

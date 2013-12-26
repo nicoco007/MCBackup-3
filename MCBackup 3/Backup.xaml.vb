@@ -127,6 +127,7 @@ Public Class Backup
     End Function
 
     Private Sub LoadLanguage()
+        Me.Title = MCBackup.Language.Dictionnary("BackupWindow.Title")
         BackupDetailsGroupBox.Header = MCBackup.Language.Dictionnary("BackupWindow.BackupDetailsGroupBox.Header")
         BackupNameGroupBox.Header = MCBackup.Language.Dictionnary("BackupWindow.BackupNameGroupBox.Header")
         DateAndTimeRadioButton.Content = MCBackup.Language.Dictionnary("BackupWindow.DateAndTimeRadioButton.Content")

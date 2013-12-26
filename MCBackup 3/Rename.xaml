@@ -21,8 +21,8 @@
     Title="Rename" Height="91.5" Width="302" WindowStyle="ToolWindow" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" SizeToContent="WidthAndHeight">
     <Grid Margin="0" Height="64" VerticalAlignment="Top" HorizontalAlignment="Left" Width="296">
         <TextBox x:Name="TextBox" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,10,0,0" HorizontalAlignment="Left" Width="276"/>
-        <Button x:Name="RenameButton" Content="Rename" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="70,40,0,0" IsDefault="True"/>
-        <Button x:Name="CancelButton" Content="Cancel" VerticalAlignment="Top" Margin="0,40,70,0" HorizontalAlignment="Right" Width="75"/>
+        <Button x:Name="RenameButton" Content="Rename" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,40,151,0" IsDefault="True" Padding="1" Width="100"/>
+        <Button x:Name="CancelButton" Content="Cancel" VerticalAlignment="Top" Margin="151,40,0,0" HorizontalAlignment="Left" Padding="1" Width="100"/>
 
     </Grid>
 </Window>

@@ -16,9 +16,22 @@ Public Class AutoBackup
         AddHandler Timer.Tick, New EventHandler(AddressOf Timer_Tick)
     End Sub
 
+    Public Sub LoadLanguage()
+        Me.Title = MCBackup.Language.Dictionnary("AutoBackupWindow.Title")
+        BackupEveryLabel.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.BackupEveryLabel.Content")
+        MinutesLabel.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.MinutesLabel.Content")
+        WorldToBackUpLabel.Text = MCBackup.Language.Dictionnary("AutoBackupWindow.WorldToBackUpLabel.Text")
+        RefreshButton.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.RefreshButton.Content")
+        SaveAsLabel.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.SaveAsLabel.Content")
+        PrefixLabel.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.PrefixLabel.Content")
+        SuffixLabel.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.SuffixLabel.Content")
+        StartButton.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.StartButton.Content.Start")
+    End Sub
+
 #Region "Window crap"
     Private Sub AutoBackupWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles AutoBackupWindow.Loaded
         ReloadSaves()
+        LoadLanguage()
     End Sub
 
     Private Sub AutoBackupWindow_Closing(sender As Object, e As ComponentModel.CancelEventArgs) Handles AutoBackupWindow.Closing
@@ -83,7 +96,7 @@ Public Class AutoBackup
         If TimerStarted Then
             Timer.Stop()
             TimeLabel.Content = "00:00"
-            StartButton.Content = "Start"
+            StartButton.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.StartButton.Content.Start")
             TimerStarted = False
 
             MinutesTextBox.IsEnabled = True
@@ -102,7 +115,7 @@ Public Class AutoBackup
             Seconds = 0
             TimeLabel.Content = IntToText(MinutesTextBox.Text) & ":00"
             Timer.Start()
-            StartButton.Content = "Stop"
+            StartButton.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.StartButton.Content.Stop")
             TimerStarted = True
 
             MinutesTextBox.IsEnabled = False
@@ -182,7 +195,6 @@ Public Class AutoBackup
     End Sub
 
     Private Sub SaveListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles SaveListBox.SelectionChanged
-        WorldNameLabel.Text = SaveListBox.SelectedItem
         WorldName = SaveListBox.SelectedItem
     End Sub
 End Class

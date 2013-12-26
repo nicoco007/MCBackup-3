@@ -78,7 +78,7 @@ Class MainWindow
     Private Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs)
         Log.StartNew()
         Log.Print("Starting MCBackup")
-        Log.Print(My.Settings.Language)
+
         Try
             MCBackup.Language.Load(My.Settings.Language & ".lang")
         Catch ex As Exception
