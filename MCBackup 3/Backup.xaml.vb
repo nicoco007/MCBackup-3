@@ -31,8 +31,6 @@ Public Class Backup
         DateAndTimeRadioButton.IsChecked = True
         SaveRadioButton.IsChecked = True
 
-        ' Look at the RefreshBackupsList() sub, it's very similar
-
         Try
             SavesListView.Items.Clear()
             Dim SavesDirectory As New IO.DirectoryInfo(My.Settings.SavesFolderLocation)
@@ -92,7 +90,7 @@ Public Class Backup
         End If
 
         If DateAndTimeRadioButton.IsChecked Then
-            Main.BackupInfo(0) = GetTimeAndDate()
+            Main.BackupInfo(0) = SavesListView.SelectedItem & " " & GetTimeAndDate()
         ElseIf Not CustomNameTextBox.Text = "" Then
             Main.BackupInfo(0) = CustomNameTextBox.Text
         Else
@@ -125,19 +123,24 @@ Public Class Backup
         Dim Minutes As String = Format(Now(), "mm")
         Dim Seconds As String = Format(Now(), "ss")
 
-        Return Year & "-" & Month & "-" & Day & " (" & Hours & "h" & Minutes & "m" & Seconds & "s)"
+        Return "(" & Year & "-" & Month & "-" & Day & " " & Hours & "h" & Minutes & "m" & Seconds & "s)"
     End Function
 
     Private Sub LoadLanguage()
         BackupDetailsGroupBox.Header = MCBackup.Language.Dictionnary("BackupWindow.BackupDetailsGroupBox.Header")
-        BackupNameGroupBox.Header = MCBackup.Language.Dictionnary("BackupWindow.BackupDetailsGroupBox.BackupNameGroupBox.Header")
-        DateAndTimeRadioButton.Content = MCBackup.Language.Dictionnary("BackupWindow.BackupDetailsGroupBox.BackupNameGroupBox.DateAndTime")
-        CustomNameRadioButton.Content = MCBackup.Language.Dictionnary("BackupWindow.BackupDetailsGroupBox.BackupNameGroupBox.CustomName")
-        ShortDescriptionLabel.Content = MCBackup.Language.Dictionnary("BackupWindow.BackupDetailsGroupBox.ShortDescription")
+        BackupNameGroupBox.Header = MCBackup.Language.Dictionnary("BackupWindow.BackupNameGroupBox.Header")
+        DateAndTimeRadioButton.Content = MCBackup.Language.Dictionnary("BackupWindow.DateAndTimeRadioButton.Content")
+        CustomNameRadioButton.Content = MCBackup.Language.Dictionnary("BackupWindow.CustomNameRadioButton.Content")
+        ShortDescriptionLabel.Content = MCBackup.Language.Dictionnary("BackupWindow.ShortDescriptionLabel.Content")
         SaveRadioButton.Content = MCBackup.Language.Dictionnary("BackupWindow.Save")
         EverythingRadioButton.Content = MCBackup.Language.Dictionnary("BackupWindow.WholeMinecraftFolder")
         VersionRadioButton.Content = MCBackup.Language.Dictionnary("BackupWindow.Version")
         SavesListViewGridView.Columns(0).Header = MCBackup.Language.Dictionnary("BackupWindow.ListBox.Columns(0).Header")
         StartButton.Content = MCBackup.Language.Dictionnary("BackupWindow.StartButton.Content")
+        CancelButton.Content = MCBackup.Language.Dictionnary("BackupWindow.CancelButton.Content")
+    End Sub
+
+    Private Sub CancelButton_Click(sender As Object, e As RoutedEventArgs) Handles CancelButton.Click
+        Me.Close()
     End Sub
 End Class

@@ -18,11 +18,11 @@
 <Window x:Class="Rename"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Rename" Height="99" Width="302" WindowStyle="ToolWindow" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
-    <Grid Height="67" VerticalAlignment="Top" HorizontalAlignment="Left" Width="292">
-        <TextBox x:Name="TextBox" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,10,0,0" HorizontalAlignment="Left" Width="272"/>
-        <Button x:Name="RenameButton" Content="Rename" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="68,40,0,0" IsDefault="True"/>
-        <Button x:Name="CancelButton" Content="Cancel" VerticalAlignment="Top" Margin="149,40,0,0" HorizontalAlignment="Left" Width="75"/>
+    Title="Rename" Height="91.5" Width="302" WindowStyle="ToolWindow" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" SizeToContent="WidthAndHeight">
+    <Grid Margin="0" Height="64" VerticalAlignment="Top" HorizontalAlignment="Left" Width="296">
+        <TextBox x:Name="TextBox" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,10,0,0" HorizontalAlignment="Left" Width="276"/>
+        <Button x:Name="RenameButton" Content="Rename" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="70,40,0,0" IsDefault="True"/>
+        <Button x:Name="CancelButton" Content="Cancel" VerticalAlignment="Top" Margin="0,40,70,0" HorizontalAlignment="Right" Width="75"/>
 
     </Grid>
 </Window>

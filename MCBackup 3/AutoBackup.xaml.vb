@@ -24,14 +24,14 @@ Public Class AutoBackup
     Private Sub AutoBackupWindow_Closing(sender As Object, e As ComponentModel.CancelEventArgs) Handles AutoBackupWindow.Closing
         e.Cancel = True
         Me.Hide()
-        Main.Left = Main.Left + 155
+        Main.Left = Main.Left + (Me.Width / 2)
         Main.AutomaticBackupButton.Content = "Automatic Backup >>"
     End Sub
 
     Private Sub AutoBackupWindow_LocationChanged(sender As Object, e As EventArgs) Handles AutoBackupWindow.LocationChanged
         If Not Main.IsMoving Then
             IsMoving = True
-            Main.Left = Me.Left - 855
+            Main.Left = Me.Left - (Main.Width + 5)
             Main.Top = Me.Top
             IsMoving = False
         End If

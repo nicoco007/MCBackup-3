@@ -26,7 +26,6 @@ Imports System.Windows.Interop.Imaging
 Imports MCBackup.CloseAction
 
 Class MainWindow
-
     Private AppData As String = Environ("APPDATA")
     Public BackupInfo(3) As String
     Public RestoreInfo(2) As String
@@ -697,11 +696,11 @@ Class MainWindow
         AutoBackupWindow.Owner = Me
         If AutoBackupWindow.IsVisible Then
             AutoBackupWindow.Hide()
-            Me.Left = Me.Left + 155
+            Me.Left = Me.Left + (AutoBackupWindow.Width / 2)
             AutomaticBackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.AutomaticBackupButton.Content") & " >>"
         Else
             AutoBackupWindow.Show()
-            Me.Left = Me.Left - 155
+            Me.Left = Me.Left - (AutoBackupWindow.Width / 2)
             AutomaticBackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.AutomaticBackupButton.Content") & " <<"
         End If
     End Sub
@@ -711,10 +710,14 @@ Class MainWindow
         Me.Focus()
     End Sub
 
+    Private Sub Main_SizeChanged(sender As Object, e As SizeChangedEventArgs) Handles Main.SizeChanged
+        Window_LocationChanged(sender, e)
+    End Sub
+
     Private Sub Window_LocationChanged(sender As Object, e As EventArgs)
         If Not AutoBackupWindow.IsMoving Then
             IsMoving = True
-            AutoBackupWindow.Left = Me.Left + 855
+            AutoBackupWindow.Left = Me.Left + (Me.Width + 5)
             AutoBackupWindow.Top = Me.Top
             IsMoving = False
         End If

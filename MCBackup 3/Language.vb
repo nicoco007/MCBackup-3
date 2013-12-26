@@ -59,15 +59,16 @@ Public Class Language
 
         ' = Backup Window =
         Dictionnary.Add("BackupWindow.BackupDetailsGroupBox.Header", FindString("BackupWindow.BackupDetailsGroupBox.Header", FileName))
-        Dictionnary.Add("BackupWindow.BackupDetailsGroupBox.BackupNameGroupBox.Header", FindString("BackupWindow.BackupDetailsGroupBox.BackupNameGroupBox.Header", FileName))
-        Dictionnary.Add("BackupWindow.BackupDetailsGroupBox.BackupNameGroupBox.DateAndTime", FindString("BackupWindow.BackupDetailsGroupBox.BackupNameGroupBox.DateAndTime", FileName))
-        Dictionnary.Add("BackupWindow.BackupDetailsGroupBox.BackupNameGroupBox.CustomName", FindString("BackupWindow.BackupDetailsGroupBox.BackupNameGroupBox.CustomName", FileName))
-        Dictionnary.Add("BackupWindow.BackupDetailsGroupBox.ShortDescription", FindString("BackupWindow.BackupDetailsGroupBox.ShortDescription", FileName))
+        Dictionnary.Add("BackupWindow.BackupNameGroupBox.Header", FindString("BackupWindow.BackupNameGroupBox.Header", FileName))
+        Dictionnary.Add("BackupWindow.DateAndTimeRadioButton.Content", FindString("BackupWindow.DateAndTimeRadioButton.Content", FileName))
+        Dictionnary.Add("BackupWindow.CustomNameRadioButton.Content", FindString("BackupWindow.CustomNameRadioButton.Content", FileName))
+        Dictionnary.Add("BackupWindow.ShortDescriptionLabel.Content", FindString("BackupWindow.ShortDescriptionLabel.Content", FileName))
         Dictionnary.Add("BackupWindow.Save", FindString("BackupWindow.Save", FileName))
         Dictionnary.Add("BackupWindow.WholeMinecraftFolder", FindString("BackupWindow.WholeMinecraftFolder", FileName))
         Dictionnary.Add("BackupWindow.Version", FindString("BackupWindow.Version", FileName))
         Dictionnary.Add("BackupWindow.ListBox.Columns(0).Header", FindString("BackupWindow.ListBox.Columns(0).Header", FileName))
         Dictionnary.Add("BackupWindow.StartButton.Content", FindString("BackupWindow.StartButton.Content", FileName))
+        Dictionnary.Add("BackupWindow.CancelButton.Content", FindString("BackupWindow.CancelButton.Content", FileName))
     End Sub
 
     Public Shared Function GetIDFromName(Name As String)
