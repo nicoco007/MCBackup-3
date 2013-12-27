@@ -18,19 +18,19 @@ Imports System.IO
 Imports System.Net
 Imports Scripting
 Imports System.Windows.Threading
-Imports System.Windows.Forms
-Imports System.Drawing
+Imports System.ComponentModel.BackgroundWorker
 Imports System.ComponentModel
 Imports System.Windows.Interop.Imaging
 
 Imports MCBackup.CloseAction
 
 Class MainWindow
+#Region "Variables"
     Private AppData As String = Environ("APPDATA")
     Public BackupInfo(3) As String
     Public RestoreInfo(2) As String
 
-    Private FolderBrowserDialog As New FolderBrowserDialog
+    Private FolderBrowserDialog As New System.Windows.Forms.FolderBrowserDialog
 
     Private BackupBackgroundWorker As New BackgroundWorker()
     Private DeleteForRestoreBackgroundWorker As New BackgroundWorker()
@@ -42,13 +42,12 @@ Class MainWindow
     Public ApplicationVersion As String = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()
     Public LatestVersion As String
 
-    Public WithEvents NotifyIcon As New NotifyIcon
+    Public WithEvents NotifyIcon As New System.Windows.Forms.NotifyIcon
 
-    Public AboutWindow As New About
     Public AutoBackupWindow As New AutoBackup
-    Public CloseToTrayWindow As New CloseToTray
-    Public RenameWindow As New Rename
+#End Region
 
+#Region "Load"
     Public Sub New()
         InitializeComponent()
         AddHandler BackupBackgroundWorker.DoWork, New DoWorkEventHandler(AddressOf BackupBackgroundWorker_DoWork)
@@ -64,9 +63,9 @@ Class MainWindow
 
         Dim Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
 
-        NotifyIcon.Icon = New Icon(Application.GetResourceStream(New Uri("pack://application:,,,/Resources/MCBackup.ico")).Stream)
-        Dim ContextMenu As New ContextMenu
-        Dim ExitToolbarMenuItem As New MenuItem
+        NotifyIcon.Icon = New System.Drawing.Icon(Application.GetResourceStream(New Uri("pack://application:,,,/Resources/MCBackup.ico")).Stream)
+        Dim ContextMenu As New System.Windows.Forms.ContextMenu
+        Dim ExitToolbarMenuItem As New System.Windows.Forms.MenuItem
         ExitToolbarMenuItem.Text = "E&xit"
         AddHandler ExitToolbarMenuItem.Click, AddressOf ExitToolbarMenuItem_Click
         ContextMenu.MenuItems.Add(ExitToolbarMenuItem)
@@ -74,24 +73,24 @@ Class MainWindow
         NotifyIcon.Visible = True
     End Sub
 
-#Region "Load"
     Private Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs)
         Log.StartNew()
         Log.Print("Starting MCBackup")
 
         Try
-            MCBackup.Language.Load(My.Settings.Language & ".lang")
-        Catch ex As Exception
             If My.Settings.Language = "" Then
-                MCBackup.Language.Load("en_US.lang")
                 My.Settings.Language = "en_US"
+                MCBackup.Language.Load(My.Settings.Language & ".lang")
             Else
-                Log.Print("Language file not found: """ & My.Settings.Language & """", Log.Type.Severe)
-                MessageBox.Show("Error: Language file not found! (" & My.Settings.Language & ")" & vbNewLine & vbNewLine & "MCBackup will now exit.", MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButtons.OK, MessageBoxIcon.Error)
-                My.Settings.Language = "en_US"
-                Me.ClsType = CloseType.ForceClose
-                Me.Close()
+                MCBackup.Language.Load(My.Settings.Language & ".lang")
             End If
+        Catch ex As Exception
+            Log.Print("Could not load language file: """ & My.Settings.Language & """", Log.Type.Severe)
+            Log.Print(ex.Message, Log.Type.Severe)
+            MessageBox.Show("Error: Language file not found! (" & My.Settings.Language & ")" & vbNewLine & vbNewLine & "MCBackup will now exit.", "Error!", MessageBoxButton.OK, MessageBoxImage.Error)
+            My.Settings.Language = "en_US"
+            Me.ClsType = CloseType.ForceClose
+            Me.Close()
         End Try
 
         If My.Settings.OpacityPercent = 0 Then
@@ -122,8 +121,8 @@ Class MainWindow
                 Dim WebClient As New WebClient
                 LatestVersion = WebClient.DownloadString("http://content.nicoco007.com/downloads/mcbackup-3/version")
 
-                Dim LatestVersionInt As Integer = LatestVersion.Split(".")(0) & LatestVersion.Split(".")(1) & LatestVersion.Split(".")(2) & LatestVersion.Split(".")(3)
-                Dim ApplicationVersionInt As Integer = ApplicationVersion.Split(".")(0) & ApplicationVersion.Split(".")(1) & ApplicationVersion.Split(".")(2) & ApplicationVersion.Split(".")(3)
+                Dim LatestVersionInt As Integer = LatestVersion.Replace(".", "")
+                Dim ApplicationVersionInt As Integer = ApplicationVersion.Replace(".", "")
 
                 If LatestVersionInt > ApplicationVersionInt Then
                     Log.Print("New MCBackup version available (Version " & LatestVersion & ")!")
@@ -153,7 +152,7 @@ Class MainWindow
                 My.Settings.MinecraftFolderLocation = AppData & "\.minecraft" ' Set folder location to default Minecraft folder location
                 My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
             Else
-                MessageBox.Show(MCBackup.Language.Dictionnary("Message.Error.NoMinecraftInstall"), MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
+                MessageBox.Show(MCBackup.Language.Dictionnary("Message.Error.NoMinecraftInstall"), MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
                 Log.Print("Minecraft folder not found", Log.Type.Warning)
                 MinecraftFolderSearch()
                 Exit Sub
@@ -170,14 +169,14 @@ Class MainWindow
     Private Sub MinecraftFolderSearch()
         If FolderBrowserDialog.ShowDialog = Windows.Forms.DialogResult.OK Then
             If My.Computer.FileSystem.FileExists(FolderBrowserDialog.SelectedPath & "\launcher.jar") Then ' Check if Minecraft exists in that folder
-                MessageBox.Show(String.Format(MCBackup.Language.Dictionnary("Message.Info.MinecraftFolderSetTo"), FolderBrowserDialog.SelectedPath), MCBackup.Language.Dictionnary("Message.Caption.Information"), MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1) ' Tell user that folder has been selected successfully
+                MessageBox.Show(String.Format(MCBackup.Language.Dictionnary("Message.Info.MinecraftFolderSetTo"), FolderBrowserDialog.SelectedPath), MCBackup.Language.Dictionnary("Message.Caption.Information"), MessageBoxButton.OK, MessageBoxImage.Error) ' Tell user that folder has been selected successfully
                 My.Settings.MinecraftFolderLocation = FolderBrowserDialog.SelectedPath
                 My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
                 Log.Print("Minecraft folder set to """ & My.Settings.MinecraftFolderLocation & """")
                 Log.Print("Saves folder set to """ & My.Settings.SavesFolderLocation & """")
                 Exit Sub
             Else
-                If MessageBox.Show(MCBackup.Language.Dictionnary("Message.NotInstalledInFolder"), MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then ' Ask if user wants to try finding folder again
+                If MessageBox.Show(MCBackup.Language.Dictionnary("Message.NotInstalledInFolder"), MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = Windows.Forms.DialogResult.Yes Then ' Ask if user wants to try finding folder again
                     MinecraftFolderSearch() ' Restart from beginning if "Yes"
                 Else
                     Me.ClsType = CloseType.ForceClose
@@ -197,15 +196,6 @@ Class MainWindow
         Dim Folder As IO.DirectoryInfo ' Used to designate a single folder in the backups folder
 
         For Each Folder In Folders ' For each folder in the backups folder
-            Dim ListViewItem As New ListViewItem()
-            Dim ListViewSubItemDate As New ListViewItem.ListViewSubItem()
-            Dim ListViewSubItemDescription As New ListViewItem.ListViewSubItem()
-
-            ListViewItem.Text = Folder.ToString ' Set ListViewItem text and name to the name of the folder
-            ListViewItem.Name = Folder.ToString
-
-            ListViewSubItemDate.Text = GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString) ' Set date subitem to the folder creation date
-
             Dim Type As String = "[ERROR]"                  ' <╗
             Dim Description As String = "[ERROR]"           ' <╬ Create variables with default value [ERROR], in case one of the values doesn't exist
             Dim OriginalFolderName As String = "[ERROR]"    ' <╝
@@ -229,12 +219,10 @@ Class MainWindow
                 Log.Print(ex.Message, Log.Type.Severe)
             End Try
 
-            ListView.Items.Add(New With {Key .Name = ListViewItem.Name, Key .DateCreated = GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Key .Description = Description})
+            ListView.Items.Add(New With {Key .Name = Folder.ToString, Key .DateCreated = GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Key .Description = Description})
         Next
 
-        Dim sender As Object = Nothing
-        Dim e As EventArgs = Nothing
-        ListView_SelectionChanged(sender, e)
+        ListView_SelectionChanged(New Object, New EventArgs)
     End Sub
 
     Private Sub ListView_SelectionChanged(sender As Object, e As EventArgs) Handles ListView.SelectionChanged
@@ -352,8 +340,8 @@ Class MainWindow
                 SW.Write("desc=" & BackupInfo(1)) ' Write description if file
             End Using
         Catch ex As Exception
-            MessageBox.Show(MCBackup.Language.Dictionnary("Message.BackupError") & vbNewLine & vbNewLine & ex.Message, MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
-            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Backup Error!", "An error occured during the backup.", ToolTipIcon.Error)
+            MessageBox.Show(MCBackup.Language.Dictionnary("Message.BackupError") & vbNewLine & vbNewLine & ex.Message, MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Backup Error!", "An error occured during the backup.", System.Windows.Forms.ToolTipIcon.Error)
             Log.Print(ex.Message, Log.Type.Severe)
         End Try
     End Sub
@@ -379,7 +367,7 @@ Class MainWindow
             CreateThumb(BackupInfo(2))
         Else
             RefreshBackupsList()
-            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Backup Complete!", "Your backup is complete.", ToolTipIcon.Info)
+            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Backup Complete!", "Your backup is complete.", System.Windows.Forms.ToolTipIcon.Info)
             StatusLabel.Content = MCBackup.Language.Dictionnary("Status.BackupComplete")
             Log.Print("Backup Complete")
             ListView.IsEnabled = True
@@ -452,7 +440,6 @@ Class MainWindow
         If e.Data.Contains("[") And e.Data.Contains("]") Then
             Dim PercentComplete As Double = (Val(e.Data.Substring(2).Remove(1)) / 4) + (StepNumber * 25)
             UpdateProgress(PercentComplete)
-            Log.Print(PercentComplete)
             StatusLabel_Content(String.Format(MCBackup.Language.Dictionnary("Status.CreatingThumb"), Int(PercentComplete)))
         End If
     End Sub
@@ -461,7 +448,7 @@ Class MainWindow
         UpdateProgress(100)
         RefreshBackupsList()
         StatusLabel.Content = MCBackup.Language.Dictionnary("Status.BackupComplete")
-        If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Backup Complete!", "Your backup is complete.", ToolTipIcon.Info)
+        If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Backup Complete!", "Your backup is complete.", System.Windows.Forms.ToolTipIcon.Info)
         Log.Print("Backup Complete")
         ListView.IsEnabled = True
         BackupButton.IsEnabled = True
@@ -470,7 +457,7 @@ Class MainWindow
 
 #Region "Restore"
     Private Sub RestoreButton_Click(sender As Object, e As EventArgs) Handles RestoreButton.Click
-        If MessageBox.Show(MCBackup.Language.Dictionnary("Message.RestoreAreYouSure"), MCBackup.Language.Dictionnary("Message.Caption.AreYouSure"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = Forms.DialogResult.Yes Then
+        If MessageBox.Show(MCBackup.Language.Dictionnary("Message.RestoreAreYouSure"), MCBackup.Language.Dictionnary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = Forms.DialogResult.Yes Then
             Log.Print("Starting Restore")
             RestoreInfo(0) = ListView.SelectedItems(0).Name ' Set place 0 of RestoreInfo array to the backup name
 
@@ -529,8 +516,8 @@ Class MainWindow
             My.Computer.FileSystem.CopyDirectory(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0), RestoreInfo(1))
             My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\info.mcb")
         Catch ex As Exception
-            MessageBox.Show(MCBackup.Language.Dictionnary("Message.RestoreError") & vbNewLine & vbNewLine & ex.Message, MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
-            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Restore Error!", "An error occured during the restore.", ToolTipIcon.Error)
+            MessageBox.Show(MCBackup.Language.Dictionnary("Message.RestoreError") & vbNewLine & vbNewLine & ex.Message, MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Restore Error!", "An error occured during the restore.", System.Windows.Forms.ToolTipIcon.Error)
             Log.Print(ex.Message, Log.Type.Severe)
         End Try
     End Sub
@@ -551,7 +538,7 @@ Class MainWindow
 
     Private Sub RestoreBackgroundWorker_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
         StatusLabel.Content = MCBackup.Language.Dictionnary("Status.RestoreComplete")
-        If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Restore Complete!", "Your restore is complete.", ToolTipIcon.Info)
+        If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Restore Complete!", "Your restore is complete.", System.Windows.Forms.ToolTipIcon.Info)
         Log.Print("Restore Complete")
         RefreshBackupsList()
     End Sub
@@ -578,7 +565,7 @@ Class MainWindow
         Return 0
     End Function
 
-    Public Shared Function BitmapToBitmapSource(bitmap As Bitmap) As BitmapSource
+    Public Shared Function BitmapToBitmapSource(bitmap As System.Drawing.Bitmap) As BitmapSource
         Return System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(bitmap.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
     End Function
 
@@ -636,6 +623,7 @@ Class MainWindow
     End Sub
 
     Private Sub AboutMenuItem_Click(sender As Object, e As RoutedEventArgs)
+        Dim AboutWindow As New About
         AboutWindow.Owner = Me
         AboutWindow.ShowDialog()
     End Sub
@@ -653,7 +641,7 @@ Class MainWindow
     Private ListViewItems As New ArrayList
 
     Private Sub DeleteButton_Click(sender As Object, e As EventArgs) Handles DeleteButton.Click
-        If MessageBox.Show(MCBackup.Language.Dictionnary("Message.DeleteAreYouSure"), MCBackup.Language.Dictionnary("Message.Caption.AreYouSure"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then
+        If MessageBox.Show(MCBackup.Language.Dictionnary("Message.DeleteAreYouSure"), MCBackup.Language.Dictionnary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = Windows.Forms.DialogResult.Yes Then
             ListViewItems.Clear()
             For Each Item In ListView.SelectedItems
                 ListViewItems.Add(Item.Name)
@@ -670,7 +658,7 @@ Class MainWindow
             Try
                 My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & Item, FileIO.DeleteDirectoryOption.DeleteAllContents)
             Catch ex As Exception
-                MessageBox.Show(MCBackup.Language.Dictionnary("Message.DeleteError"), MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
+                MessageBox.Show(MCBackup.Language.Dictionnary("Message.DeleteError"), MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             End Try
         Next
     End Sub
@@ -684,6 +672,7 @@ Class MainWindow
 
 #Region "Buttons"
     Private Sub RenameButton_Click(sender As Object, e As EventArgs) Handles RenameButton.Click
+        Dim RenameWindow As New Rename
         RenameWindow.Owner = Me
         RenameWindow.ShowDialog()
     End Sub
@@ -744,6 +733,7 @@ Class MainWindow
     Public ClsType As CloseType
 
     Private Sub Window_Closing(sender As Object, e As CancelEventArgs)
+        Dim CloseToTrayWindow As New CloseToTray
         CloseToTrayWindow.Owner = Me
 
         If Not ClsType = CloseType.ForceClose Then
@@ -761,7 +751,7 @@ Class MainWindow
                 Case CloseType.CloseToTray
                     e.Cancel = True
                     Me.Hide()
-                    NotifyIcon.ShowBalloonTip(2000, "I'm here!", "MCBackup is running in background.", ToolTipIcon.Info)
+                    NotifyIcon.ShowBalloonTip(2000, "I'm here!", "MCBackup is running in background.", System.Windows.Forms.ToolTipIcon.Info)
                     Log.Print("Closing to tray")
                     Exit Sub
                 Case CloseType.CloseCompletely

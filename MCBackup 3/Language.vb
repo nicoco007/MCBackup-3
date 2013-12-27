@@ -55,8 +55,6 @@ Public Class Language
         Dictionnary.Add("Message.DeleteAreYouSure", FindString("Message.DeleteAreYouSure", FileName))
         Dictionnary.Add("Message.DeleteError", FindString("Message.DeleteError", FileName))
 
-        Main.LoadLanguage()
-
         ' = Backup Window =
         Dictionnary.Add("BackupWindow.Title", FindString("BackupWindow.Title", FileName))
         Dictionnary.Add("BackupWindow.BackupDetailsGroupBox.Header", FindString("BackupWindow.BackupDetailsGroupBox.Header", FileName))
@@ -71,6 +69,8 @@ Public Class Language
         Dictionnary.Add("BackupWindow.StartButton.Content", FindString("BackupWindow.StartButton.Content", FileName))
         Dictionnary.Add("BackupWindow.CancelButton.Content", FindString("BackupWindow.CancelButton.Content", FileName))
 
+        Main.LoadLanguage()
+
         ' = Automatic Backup Window =
         Dictionnary.Add("AutoBackupWindow.Title", FindString("AutoBackupWindow.Title", FileName))
         Dictionnary.Add("AutoBackupWindow.BackupEveryLabel.Content", FindString("AutoBackupWindow.BackupEveryLabel.Content", FileName))
@@ -84,6 +84,22 @@ Public Class Language
         Dictionnary.Add("AutoBackupWindow.StartButton.Content.Stop", FindString("AutoBackupWindow.StartButton.Content.Stop", FileName))
 
         Main.AutoBackupWindow.LoadLanguage()
+
+        ' = Options Window =
+        Dictionnary.Add("OptionsWindow.GeneralPanel.ListBox.Items(0).Content", FindString("OptionsWindow.GeneralPanel.ListBox.Items(0).Content", FileName))
+        Dictionnary.Add("OptionsWindow.GeneralPanel.ListBox.Items(1).Content", FindString("OptionsWindow.GeneralPanel.ListBox.Items(1).Content", FileName))
+        Dictionnary.Add("OptionsWindow.GeneralPanel.ListBox.Items(2).Content", FindString("OptionsWindow.GeneralPanel.ListBox.Items(2).Content", FileName))
+        Dictionnary.Add("OptionsWindow.GeneralPanel.ShowBalloonTipsCheckBox.Content", FindString("OptionsWindow.GeneralPanel.ShowBalloonTipsCheckBox.Content", FileName))
+        Dictionnary.Add("OptionsWindow.GeneralPanel.ShowDeleteConfirmationCheckBox.Content", FindString("OptionsWindow.GeneralPanel.ShowDeleteConfirmationCheckBox.Content", FileName))
+        Dictionnary.Add("OptionsWindow.GeneralPanel.CheckForUpdatesCheckBox.Content", FindString("OptionsWindow.GeneralPanel.CheckForUpdatesCheckBox.Content", FileName))
+        Dictionnary.Add("OptionsWindow.GeneralPanel.CreateThumbOnWorldCheckBox.Content", FindString("OptionsWindow.GeneralPanel.CreateThumbOnWorldCheckBox.Content", FileName))
+        Dictionnary.Add("OptionsWindow.GeneralPanel.AlwaysCloseCheckBox.Content", FindString("OptionsWindow.GeneralPanel.AlwaysCloseCheckBox.Content", FileName))
+        Dictionnary.Add("OptionsWindow.GeneralPanel.CloseToTrayRadioButton.Content", FindString("OptionsWindow.GeneralPanel.CloseToTrayRadioButton.Content", FileName))
+        Dictionnary.Add("OptionsWindow.GeneralPanel.CloseCompletelyRadioButton.Content", FindString("OptionsWindow.GeneralPanel.CloseCompletelyRadioButton.Content", FileName))
+        Dictionnary.Add("OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text", FindString("OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text", FileName))
+        Dictionnary.Add("OptionsWindow.GeneralPanel.LanguageLabel.Content", FindString("OptionsWindow.GeneralPanel.LanguageLabel.Content", FileName))
+        'Dictionnary.Add("OptionsWindow.", FindString("OptionsWindow.", FileName))
+        'Dictionnary.Add("OptionsWindow.", FindString("OptionsWindow.", FileName))
     End Sub
 
     Public Shared Function GetIDFromName(Name As String)

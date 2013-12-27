@@ -43,6 +43,8 @@ Public Class Options
         AlwaysCloseCheckBox.IsChecked = My.Settings.SaveCloseState
         CloseToTrayRadioButton.IsChecked = My.Settings.CloseToTray
         CloseCompletelyRadioButton.IsChecked = Not My.Settings.CloseToTray
+
+        LoadLanguage()
     End Sub
 
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
@@ -203,5 +205,21 @@ Public Class Options
     Private Sub LanguagesListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles LanguagesComboBox.SelectionChanged
         MCBackup.Language.Load(MCBackup.Language.GetIDFromName(LanguagesComboBox.SelectedItem) & ".lang")
         My.Settings.Language = MCBackup.Language.GetIDFromName(LanguagesComboBox.SelectedItem)
+        LoadLanguage()
+    End Sub
+
+    Private Sub LoadLanguage()
+        ListBox.Items(0).Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.ListBox.Items(0).Content")
+        ListBox.Items(1).Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.ListBox.Items(1).Content")
+        ListBox.Items(2).Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.ListBox.Items(2).Content")
+        ShowBalloonTipsCheckBox.Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.ShowBalloonTipsCheckBox.Content")
+        ShowDeleteConfirmationCheckBox.Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.ShowDeleteConfirmationCheckBox.Content")
+        CheckForUpdatesCheckBox.Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.CheckForUpdatesCheckBox.Content")
+        CreateThumbOnWorldCheckBox.Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.CreateThumbOnWorldCheckBox.Content")
+        AlwaysCloseCheckBox.Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.AlwaysCloseCheckBox.Content")
+        CloseToTrayRadioButton.Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.CloseToTrayRadioButton.Content")
+        CloseCompletelyRadioButton.Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.CloseCompletelyRadioButton.Content")
+        AlwaysCloseNoteTextBlock.Text = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text")
+        LanguageLabel.Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.LanguageLabel.Content")
     End Sub
 End Class
