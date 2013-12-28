@@ -341,7 +341,7 @@ Class MainWindow
             End Using
         Catch ex As Exception
             MessageBox.Show(MCBackup.Language.Dictionnary("Message.BackupError") & vbNewLine & vbNewLine & ex.Message, MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
-            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Backup Error!", "An error occured during the backup.", System.Windows.Forms.ToolTipIcon.Error)
+            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionnary("BalloonTip.Title.BackupError"), MCBackup.Language.Dictionnary("BalloonTip.BackupError"), System.Windows.Forms.ToolTipIcon.Error)
             Log.Print(ex.Message, Log.Type.Severe)
         End Try
     End Sub
@@ -367,7 +367,7 @@ Class MainWindow
             CreateThumb(BackupInfo(2))
         Else
             RefreshBackupsList()
-            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Backup Complete!", "Your backup is complete.", System.Windows.Forms.ToolTipIcon.Info)
+            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionnary("BalloonTip.Title.BackupComplete"), MCBackup.Language.Dictionnary("BalloonTip.BackupComplete"), System.Windows.Forms.ToolTipIcon.Info)
             StatusLabel.Content = MCBackup.Language.Dictionnary("Status.BackupComplete")
             Log.Print("Backup Complete")
             ListView.IsEnabled = True
@@ -448,7 +448,7 @@ Class MainWindow
         UpdateProgress(100)
         RefreshBackupsList()
         StatusLabel.Content = MCBackup.Language.Dictionnary("Status.BackupComplete")
-        If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Backup Complete!", "Your backup is complete.", System.Windows.Forms.ToolTipIcon.Info)
+        If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionnary("BalloonTip.Title.BackupComplete"), MCBackup.Language.Dictionnary("BalloonTip.BackupComplete"), System.Windows.Forms.ToolTipIcon.Info)
         Log.Print("Backup Complete")
         ListView.IsEnabled = True
         BackupButton.IsEnabled = True
@@ -513,11 +513,14 @@ Class MainWindow
 
     Private Sub RestoreBackgroundWorker_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs)
         Try
-            My.Computer.FileSystem.CopyDirectory(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0), RestoreInfo(1))
+            My.Computer.FileSystem.CopyDirectory(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0), RestoreInfo(1), True)
             My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\info.mcb")
+            If My.Computer.FileSystem.FileExists(RestoreInfo(1) & "\thumb.png") Then
+                My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\thumb.png")
+            End If
         Catch ex As Exception
             MessageBox.Show(MCBackup.Language.Dictionnary("Message.RestoreError") & vbNewLine & vbNewLine & ex.Message, MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
-            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Restore Error!", "An error occured during the restore.", System.Windows.Forms.ToolTipIcon.Error)
+            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionnary("BalloonTip.Title.RestoreError"), MCBackup.Language.Dictionnary("BalloonTip.RestoreError"), System.Windows.Forms.ToolTipIcon.Error)
             Log.Print(ex.Message, Log.Type.Severe)
         End Try
     End Sub
@@ -538,7 +541,7 @@ Class MainWindow
 
     Private Sub RestoreBackgroundWorker_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
         StatusLabel.Content = MCBackup.Language.Dictionnary("Status.RestoreComplete")
-        If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, "Restore Complete!", "Your restore is complete.", System.Windows.Forms.ToolTipIcon.Info)
+        If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionnary("BalloonTip.Title.RestoreComplete"), MCBackup.Language.Dictionnary("BalloonTip.RestoreComplete"), System.Windows.Forms.ToolTipIcon.Info)
         Log.Print("Restore Complete")
         RefreshBackupsList()
     End Sub
@@ -570,12 +573,16 @@ Class MainWindow
     End Function
 
     Public Function BitmapFromUri(Source As Uri) As ImageSource
-        Dim Bitmap = New BitmapImage()
-        Bitmap.BeginInit()
-        Bitmap.UriSource = Source
-        Bitmap.CacheOption = BitmapCacheOption.OnLoad
-        Bitmap.EndInit()
-        Return Bitmap
+        Try
+            Dim Bitmap = New BitmapImage()
+            Bitmap.BeginInit()
+            Bitmap.UriSource = Source
+            Bitmap.CacheOption = BitmapCacheOption.OnLoad
+            Bitmap.EndInit()
+            Return Bitmap
+        Catch ex As Exception
+            Log.Print(ex.Message)
+        End Try
     End Function
 
     Private Function GetMD5(FilePath As String)
@@ -751,7 +758,7 @@ Class MainWindow
                 Case CloseType.CloseToTray
                     e.Cancel = True
                     Me.Hide()
-                    NotifyIcon.ShowBalloonTip(2000, "I'm here!", "MCBackup is running in background.", System.Windows.Forms.ToolTipIcon.Info)
+                    NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionnary("BalloonTip.Title.RunningBackground"), MCBackup.Language.Dictionnary("BalloonTip.RunningBackground"), System.Windows.Forms.ToolTipIcon.Info)
                     Log.Print("Closing to tray")
                     Exit Sub
                 Case CloseType.CloseCompletely

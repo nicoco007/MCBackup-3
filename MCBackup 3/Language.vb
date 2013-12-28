@@ -33,6 +33,7 @@ Public Class Language
         Dictionnary.Add("MainWindow.MenuBar.Items(3).Items(3).Header", FindString("MainWindow.MenuBar.Items(3).Items(3).Header", FileName))
         Dictionnary.Add("MainWindow.AutomaticBackupButton.Content", FindString("MainWindow.AutomaticBackupButton.Content", FileName))
 
+        ' = Statuses =
         Dictionnary.Add("Status.Ready", FindString("Status.Ready", FileName))
         Dictionnary.Add("Status.BackingUp", FindString("Status.BackingUp", FileName))
         Dictionnary.Add("Status.BackupComplete", FindString("Status.BackupComplete", FileName))
@@ -43,6 +44,7 @@ Public Class Language
         Dictionnary.Add("Status.Deleting", FindString("Status.Deleting", FileName))
         Dictionnary.Add("Status.DeleteComplete", FindString("Status.DeleteComplete", FileName))
 
+        ' = Messages =
         Dictionnary.Add("Message.Caption.Information", FindString("Message.Caption.Information", FileName))
         Dictionnary.Add("Message.Caption.Error", FindString("Message.Caption.Error", FileName))
         Dictionnary.Add("Message.Caption.AreYouSure", FindString("Message.Caption.AreYouSure", FileName))
@@ -54,6 +56,19 @@ Public Class Language
         Dictionnary.Add("Message.RestoreError", FindString("Message.RestoreError", FileName))
         Dictionnary.Add("Message.DeleteAreYouSure", FindString("Message.DeleteAreYouSure", FileName))
         Dictionnary.Add("Message.DeleteError", FindString("Message.DeleteError", FileName))
+
+        ' = Balloon Tips =
+        Dictionnary.Add("BalloonTip.Title.BackupError", FindString("BalloonTip.Title.BackupError", FileName))
+        Dictionnary.Add("BalloonTip.BackupError", FindString("BalloonTip.BackupError", FileName))
+        Dictionnary.Add("BalloonTip.Title.BackupComplete", FindString("BalloonTip.Title.BackupComplete", FileName))
+        Dictionnary.Add("BalloonTip.BackupComplete", FindString("BalloonTip.BackupComplete", FileName))
+        Dictionnary.Add("BalloonTip.Title.RestoreError", FindString("BalloonTip.Title.RestoreError", FileName))
+        Dictionnary.Add("BalloonTip.RestoreError", FindString("BalloonTip.RestoreError", FileName))
+        Dictionnary.Add("BalloonTip.Title.RestoreComplete", FindString("BalloonTip.Title.RestoreComplete", FileName))
+        Dictionnary.Add("BalloonTip.RestoreComplete", FindString("BalloonTip.RestoreComplete", FileName))
+        Dictionnary.Add("BalloonTip.Title.RunningBackground", FindString("BalloonTip.Title.RunningBackground", FileName))
+        Dictionnary.Add("BalloonTip.RunningBackground", FindString("BalloonTip.RunningBackground", FileName))
+
 
         ' = Backup Window =
         Dictionnary.Add("BackupWindow.Title", FindString("BackupWindow.Title", FileName))
@@ -152,13 +167,13 @@ Public Class Language
                     Dim ReturnString = Line.Substring(Identifier.Length + 2)
 
                     If Not ReturnString.Length - 1 = ReturnString.LastIndexOf("""") Then
-                        Log.Print("FORMATTING ERROR @ LINE " & LineNumber & ": Unknown string """ & ReturnString.Substring(ReturnString.LastIndexOf("""") + 1) & """", Log.Type.Severe)
+                        Log.Print("FORMATTING ERROR @ LINE " & LineNumber & ": Unknown string """ & ReturnString.Substring(ReturnString.LastIndexOf("""") + 1) & """", Log.Type.Warning)
                         Return "[ERROR]"
                         Exit Function
                     End If
 
                     If ReturnString.Length - 1 = 0 Then
-                        Log.Print("FORMATTING ERROR @ LINE " & LineNumber & ": Entry is empty!")
+                        Log.Print("FORMATTING ERROR @ LINE " & LineNumber & ": Entry is empty!", Log.Type.Warning)
                         Return "[ERROR]"
                     End If
 
@@ -167,7 +182,7 @@ Public Class Language
                 End If
             End While
         End Using
-        Log.Print("FORMATTING ERROR: """ & Identifier & """ indentifier not found!", Log.Type.Severe)
+        Log.Print("FORMATTING ERROR: """ & Identifier & """ indentifier not found!", Log.Type.Warning)
         Using SW As New StreamWriter(Main.StartupPath & "\language\" & FileName, True)
             SW.Write(vbNewLine & Identifier & "=""""")
         End Using
