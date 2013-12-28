@@ -35,7 +35,7 @@ Public Class Options
         SavesFolderTextBox.Text = My.Settings.SavesFolderLocation
         ListViewOpacitySlider.Value = My.Settings.OpacityPercent
         OpacityPercentLabel.Content = Int(ListViewOpacitySlider.Value).ToString & "%"
-        BackgroundImageStyle.SelectedIndex = My.Settings.BackgroundImageStretch
+        SizeModeComboBox.SelectedIndex = My.Settings.BackgroundImageStretch
         CheckForUpdatesCheckBox.IsChecked = My.Settings.CheckForUpdates
         ShowBalloonTipsCheckBox.IsChecked = My.Settings.ShowBalloonTips
         CreateThumbOnWorldCheckBox.IsChecked = My.Settings.CreateThumbOnWorld
@@ -151,14 +151,14 @@ Public Class Options
         My.Settings.BackgroundImageLocation = ""
     End Sub
 
-    Private Sub BackgroundImageStyle_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles BackgroundImageStyle.SelectionChanged
+    Private Sub BackgroundImageStyle_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles SizeModeComboBox.SelectionChanged
         If Not Me.IsLoaded Or My.Settings.BackgroundImageLocation = "" Then
             Exit Sub
         End If
 
         Try
             Dim Brush As New ImageBrush(New BitmapImage(New Uri(My.Settings.BackgroundImageLocation)))
-            Select Case BackgroundImageStyle.SelectedIndex
+            Select Case SizeModeComboBox.SelectedIndex
                 Case 0
                     Brush.Stretch = Stretch.None
                 Case 1
@@ -209,9 +209,11 @@ Public Class Options
     End Sub
 
     Private Sub LoadLanguage()
-        ListBox.Items(0).Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.ListBox.Items(0).Content")
-        ListBox.Items(1).Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.ListBox.Items(1).Content")
-        ListBox.Items(2).Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.ListBox.Items(2).Content")
+        ListBox.Items(0).Content = MCBackup.Language.Dictionnary("OptionsWindow.ListBox.Items(0).Content")
+        ListBox.Items(1).Content = MCBackup.Language.Dictionnary("OptionsWindow.ListBox.Items(1).Content")
+        ListBox.Items(2).Content = MCBackup.Language.Dictionnary("OptionsWindow.ListBox.Items(2).Content")
+
+        ' General Tab
         ShowBalloonTipsCheckBox.Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.ShowBalloonTipsCheckBox.Content")
         ShowDeleteConfirmationCheckBox.Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.ShowDeleteConfirmationCheckBox.Content")
         CheckForUpdatesCheckBox.Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.CheckForUpdatesCheckBox.Content")
@@ -221,5 +223,16 @@ Public Class Options
         CloseCompletelyRadioButton.Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.CloseCompletelyRadioButton.Content")
         AlwaysCloseNoteTextBlock.Text = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text")
         LanguageLabel.Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.LanguageLabel.Content")
+
+        ' Appearance 
+        ListViewOpacityLabel.Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.ListViewOpacityLabel.Content")
+        BackgroundImageLabel.Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.BackgroundImageLabel.Content")
+        SizeModeLabel.Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.SizeModeLabel.Content")
+        SizeModeComboBox.Items(0).Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(0).Content")
+        SizeModeComboBox.Items(1).Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(1).Content")
+        SizeModeComboBox.Items(2).Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(2).Content")
+        SizeModeComboBox.Items(3).Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content")
+        BackgroundImageBrowseButton.Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content")
+        BackgroundImageRemoveButton.Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content")
     End Sub
 End Class

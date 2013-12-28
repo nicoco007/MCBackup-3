@@ -38,31 +38,31 @@
             <ListBoxItem Content="Folders"/>
         </ListBox>
         <Canvas x:Name="FoldersPanel" HorizontalAlignment="Left" Height="191" VerticalAlignment="Top" Width="567" Margin="117,10,0,0">
-            <Label Content="Minecraft Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="6" Width="159" HorizontalContentAlignment="Right"/>
-            <Label Content="Backups Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="64" Width="159" HorizontalContentAlignment="Right"/>
+            <Label Content="Minecraft Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="6" Width="159"/>
+            <Label Content="Backups Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="64" Width="159"/>
             <TextBox x:Name="MinecraftFolderTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="321" IsReadOnly="True" Canvas.Left="164" Canvas.Top="7"/>
             <TextBox x:Name="BackupsFolderTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="321" IsReadOnly="True" Canvas.Left="164" Canvas.Top="65"/>
             <Button x:Name="BrowseBackupsFolderButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Canvas.Left="490" Canvas.Top="66"/>
             <Button x:Name="BrowseMinecraftFolderButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Canvas.Left="490" Canvas.Top="8"/>
-            <Label Content="Saves Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="35" Width="159" HorizontalContentAlignment="Right"/>
+            <Label Content="Saves Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="35" Width="159"/>
             <TextBox x:Name="SavesFolderTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="321" IsReadOnly="True" Canvas.Left="164" Canvas.Top="36"/>
             <Button x:Name="BrowseSavesFolderButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Canvas.Left="490" Canvas.Top="37"/>
         </Canvas>
         <Button x:Name="CloseButton" Content="Close" VerticalAlignment="Top" Margin="309,206,0,0" HorizontalAlignment="Left" Width="77"/>
         <Canvas x:Name="AppearancePanel" HorizontalAlignment="Left" Height="191" VerticalAlignment="Top" Width="567" Margin="117,10,0,0">
-            <Label Content="ListView Opacity" Canvas.Left="10" Canvas.Top="10"/>
-            <Slider x:Name="ListViewOpacitySlider" Width="412" Canvas.Left="112" Canvas.Top="14" ValueChanged="ListViewOpacitySlider_ValueChanged" Maximum="100" Minimum="50" Value="75"/>
-            <Label Content="Background Image" Canvas.Left="10" Canvas.Top="46"/>
-            <Button x:Name="BackgroundImageBrowseButton" Content="Browse" Canvas.Left="126" Canvas.Top="49" Width="77"/>
-            <Label x:Name="OpacityPercentLabel" Content="100%" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="524" Canvas.Top="6"/>
-            <Button x:Name="BackgroundImageRemoveButton" Content="Remove" HorizontalAlignment="Left" VerticalAlignment="Top" Width="77" Canvas.Left="207" Canvas.Top="49"/>
-            <ComboBox x:Name="BackgroundImageStyle" Width="120" Canvas.Left="126" Canvas.Top="85" SelectedIndex="0">
+            <Label x:Name="ListViewOpacityLabel" Content="Interface Opacity" Canvas.Left="10" Canvas.Top="10" Width="144"/>
+            <Slider x:Name="ListViewOpacitySlider" Width="370" Canvas.Left="154" Canvas.Top="14" ValueChanged="ListViewOpacitySlider_ValueChanged" Maximum="100" Minimum="50" Value="75"/>
+            <Label x:Name="BackgroundImageLabel" Content="Background Image" Canvas.Left="10" Canvas.Top="46" Width="144"/>
+            <Button x:Name="BackgroundImageBrowseButton" Content="Browse" Canvas.Left="159" Canvas.Top="46" Width="77"/>
+            <Label x:Name="OpacityPercentLabel" Content="100%" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="523" Canvas.Top="9"/>
+            <Button x:Name="BackgroundImageRemoveButton" Content="Remove" HorizontalAlignment="Left" VerticalAlignment="Top" Width="77" Canvas.Left="240" Canvas.Top="46"/>
+            <ComboBox x:Name="SizeModeComboBox" Width="120" Canvas.Left="159" Canvas.Top="81" SelectedIndex="0">
                 <ComboBoxItem Content="Normal"/>
                 <ComboBoxItem Content="Stretch"/>
                 <ComboBoxItem Content="Auto Size"/>
                 <ComboBoxItem Content="Zoom"/>
             </ComboBox>
-            <Label Content="Size Mode" Canvas.Left="10" Canvas.Top="81" Width="110"/>
+            <Label x:Name="SizeModeLabel" Content="Size Mode" Canvas.Left="10" Canvas.Top="81" Width="144"/>
         </Canvas>
     </Grid>
 </Window>

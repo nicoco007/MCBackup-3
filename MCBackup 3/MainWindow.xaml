@@ -79,7 +79,7 @@
             <GridSplitter x:Name="GridSplitter" HorizontalAlignment="Left" Width="3" Margin="3,0,0,0" Grid.Column="1"/>
             <Grid x:Name="Sidebar" Grid.Column="1" Margin="10,0,0,0" Background="White" Opacity="0.75">
                 <Border BorderBrush="#FFBDBDBD" BorderThickness="1"/>
-                <Image x:Name="ThumbnailImage" Margin="10,10,10,70"/>
+                <Image x:Name="ThumbnailImage" Margin="10,10,10,70" Opacity="1.5"/>
                 <TextBlock x:Name="OriginalNameLabel" Text="Original Name:" HorizontalAlignment="Left" Margin="3,0,0,26" Height="26" VerticalAlignment="Bottom"/>
                 <TextBlock x:Name="TypeLabel" Text="Type:" HorizontalAlignment="Left" Width="92" Margin="3,0,0,0" Height="26" VerticalAlignment="Bottom"/>
                 <TextBlock x:Name="OriginalBackupName" Text="" Margin="87,0,2,26" TextTrimming="WordEllipsis" Height="26" VerticalAlignment="Bottom"/>

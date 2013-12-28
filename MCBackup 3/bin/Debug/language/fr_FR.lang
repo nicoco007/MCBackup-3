@@ -88,3 +88,13 @@ OptionsWindow.GeneralPanel.CloseToTrayRadioButton.Content="Fermer dans la barre 
 OptionsWindow.GeneralPanel.CloseCompletelyRadioButton.Content="Fermer complètement"
 OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text="Note: Vous pouvez fermer MCBackup de la barre de tâches en faisant un clic-droit sur son icône."
 OptionsWindow.GeneralPanel.LanguageLabel.Content="Langue:"
+
+OptionsWindow.AppearancePanel.ListViewOpacityLabel.Content="Opacité de l'interface"
+OptionsWindow.AppearancePanel.BackgroundImageLabel.Content="Arrière-plan"
+OptionsWindow.AppearancePanel.SizeModeLabel.Content="Mode d'étirement"
+OptionsWindow.AppearancePanel.SizeModeComboBox.Items(0).Content="Normal"
+OptionsWindow.AppearancePanel.SizeModeComboBox.Items(1).Content="Étirer"
+OptionsWindow.AppearancePanel.SizeModeComboBox.Items(2).Content="Ajuster"
+OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content="Remplir"
+OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content="Parcourir..."
+OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content="Retirer"

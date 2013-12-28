@@ -86,9 +86,10 @@ Public Class Language
         Main.AutoBackupWindow.LoadLanguage()
 
         ' = Options Window =
-        Dictionnary.Add("OptionsWindow.GeneralPanel.ListBox.Items(0).Content", FindString("OptionsWindow.GeneralPanel.ListBox.Items(0).Content", FileName))
-        Dictionnary.Add("OptionsWindow.GeneralPanel.ListBox.Items(1).Content", FindString("OptionsWindow.GeneralPanel.ListBox.Items(1).Content", FileName))
-        Dictionnary.Add("OptionsWindow.GeneralPanel.ListBox.Items(2).Content", FindString("OptionsWindow.GeneralPanel.ListBox.Items(2).Content", FileName))
+        Dictionnary.Add("OptionsWindow.ListBox.Items(0).Content", FindString("OptionsWindow.GeneralPanel.ListBox.Items(0).Content", FileName))
+        Dictionnary.Add("OptionsWindow.ListBox.Items(1).Content", FindString("OptionsWindow.GeneralPanel.ListBox.Items(1).Content", FileName))
+        Dictionnary.Add("OptionsWindow.ListBox.Items(2).Content", FindString("OptionsWindow.GeneralPanel.ListBox.Items(2).Content", FileName))
+
         Dictionnary.Add("OptionsWindow.GeneralPanel.ShowBalloonTipsCheckBox.Content", FindString("OptionsWindow.GeneralPanel.ShowBalloonTipsCheckBox.Content", FileName))
         Dictionnary.Add("OptionsWindow.GeneralPanel.ShowDeleteConfirmationCheckBox.Content", FindString("OptionsWindow.GeneralPanel.ShowDeleteConfirmationCheckBox.Content", FileName))
         Dictionnary.Add("OptionsWindow.GeneralPanel.CheckForUpdatesCheckBox.Content", FindString("OptionsWindow.GeneralPanel.CheckForUpdatesCheckBox.Content", FileName))
@@ -98,8 +99,16 @@ Public Class Language
         Dictionnary.Add("OptionsWindow.GeneralPanel.CloseCompletelyRadioButton.Content", FindString("OptionsWindow.GeneralPanel.CloseCompletelyRadioButton.Content", FileName))
         Dictionnary.Add("OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text", FindString("OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text", FileName))
         Dictionnary.Add("OptionsWindow.GeneralPanel.LanguageLabel.Content", FindString("OptionsWindow.GeneralPanel.LanguageLabel.Content", FileName))
-        'Dictionnary.Add("OptionsWindow.", FindString("OptionsWindow.", FileName))
-        'Dictionnary.Add("OptionsWindow.", FindString("OptionsWindow.", FileName))
+
+        Dictionnary.Add("OptionsWindow.AppearancePanel.ListViewOpacityLabel.Content", FindString("OptionsWindow.AppearancePanel.ListViewOpacityLabel.Content", FileName))
+        Dictionnary.Add("OptionsWindow.AppearancePanel.BackgroundImageLabel.Content", FindString("OptionsWindow.AppearancePanel.BackgroundImageLabel.Content", FileName))
+        Dictionnary.Add("OptionsWindow.AppearancePanel.SizeModeLabel.Content", FindString("OptionsWindow.AppearancePanel.SizeModeLabel.Content", FileName))
+        Dictionnary.Add("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(0).Content", FindString("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(0).Content", FileName))
+        Dictionnary.Add("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(1).Content", FindString("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(1).Content", FileName))
+        Dictionnary.Add("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(2).Content", FindString("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(2).Content", FileName))
+        Dictionnary.Add("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content", FindString("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content", FileName))
+        Dictionnary.Add("OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content", FindString("OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content", FileName))
+        Dictionnary.Add("OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content", FindString("OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content", FileName))
     End Sub
 
     Public Shared Function GetIDFromName(Name As String)
