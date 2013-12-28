@@ -234,5 +234,13 @@ Public Class Options
         SizeModeComboBox.Items(3).Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content")
         BackgroundImageBrowseButton.Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content")
         BackgroundImageRemoveButton.Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content")
+
+        ' Folders
+        MinecraftFolderLocationLabel.Content = MCBackup.Language.Dictionnary("OptionsWindow.FoldersPanel.MinecraftFolderLocationLabel.Content")
+        SavesFolderLocationLabel.Content = MCBackup.Language.Dictionnary("OptionsWindow.FoldersPanel.SavesFolderLocationLabel.Content")
+        BackupsFolderLocationLabel.Content = MCBackup.Language.Dictionnary("OptionsWindow.FoldersPanel.BackupsFolderLocationLabel.Content")
+        BrowseMinecraftFolderButton.Content = MCBackup.Language.Dictionnary("OptionsWindow.FoldersPanel.BrowseButton.Content")
+        BrowseSavesFolderButton.Content = MCBackup.Language.Dictionnary("OptionsWindow.FoldersPanel.BrowseButton.Content")
+        BrowseBackupsFolderButton.Content = MCBackup.Language.Dictionnary("OptionsWindow.FoldersPanel.BrowseButton.Content")
     End Sub
 End Class

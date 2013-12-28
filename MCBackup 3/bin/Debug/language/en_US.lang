@@ -96,3 +96,8 @@ OptionsWindow.AppearancePanel.SizeModeComboBox.Items(2).Content="Auto Size"
 OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content="Zoom"
 OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content="Browse..."
 OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content="Remove"
+
+OptionsWindow.FoldersPanel.MinecraftFolderLocationLabel.Content="Minecraft Folder Location"
+OptionsWindow.FoldersPanel.SavesFolderLocationLabel.Content="Saves Folder Location"
+OptionsWindow.FoldersPanel.BackupsFolderLocationLabel.Content="Backups Folder Location"
+OptionsWindow.FoldersPanel.BrowseButton.Content="Browse"

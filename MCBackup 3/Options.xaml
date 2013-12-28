@@ -19,7 +19,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Options" Height="265" Width="690" Loaded="Window_Loaded" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Background="White" SizeToContent="WidthAndHeight">
-    <Grid Height="236" Width="684" HorizontalAlignment="Left" VerticalAlignment="Top">
+    <Grid Height="236" VerticalAlignment="Top">
         <Canvas x:Name="GeneralPanel" HorizontalAlignment="Left" Height="191" VerticalAlignment="Top" Width="567" Margin="117,10,0,0">
             <CheckBox x:Name="ShowBalloonTipsCheckBox" Content="Show balloon tips" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="9" Canvas.Top="13" ToolTipService.ShowOnDisabled="True" IsChecked="True" ToolTip="Show a ballon tip when a backup/restore finishes or fails"/>
             <CheckBox x:Name="ShowDeleteConfirmationCheckBox" Content="Show delete confirmation" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="9" Canvas.Top="35" ToolTip="Not Implemented" ToolTipService.ShowOnDisabled="True" IsEnabled="False" IsChecked="True"/>
@@ -38,25 +38,25 @@
             <ListBoxItem Content="Folders"/>
         </ListBox>
         <Canvas x:Name="FoldersPanel" HorizontalAlignment="Left" Height="191" VerticalAlignment="Top" Width="567" Margin="117,10,0,0">
-            <Label Content="Minecraft Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="6" Width="159"/>
-            <Label Content="Backups Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="64" Width="159"/>
-            <TextBox x:Name="MinecraftFolderTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="321" IsReadOnly="True" Canvas.Left="164" Canvas.Top="7"/>
-            <TextBox x:Name="BackupsFolderTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="321" IsReadOnly="True" Canvas.Left="164" Canvas.Top="65"/>
-            <Button x:Name="BrowseBackupsFolderButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Canvas.Left="490" Canvas.Top="66"/>
-            <Button x:Name="BrowseMinecraftFolderButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Canvas.Left="490" Canvas.Top="8"/>
-            <Label Content="Saves Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="35" Width="159"/>
-            <TextBox x:Name="SavesFolderTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="321" IsReadOnly="True" Canvas.Left="164" Canvas.Top="36"/>
-            <Button x:Name="BrowseSavesFolderButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Canvas.Left="490" Canvas.Top="37"/>
+            <Label x:Name="MinecraftFolderLocationLabel" Content="Minecraft Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="6" Width="159"/>
+            <Label x:Name="BackupsFolderLocationLabel" Content="Backups Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="64" Width="159"/>
+            <TextBox x:Name="MinecraftFolderTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="313" IsReadOnly="True" Canvas.Left="164" Canvas.Top="8"/>
+            <TextBox x:Name="BackupsFolderTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="313" IsReadOnly="True" Canvas.Left="164" Canvas.Top="66"/>
+            <Button x:Name="BrowseBackupsFolderButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Canvas.Left="482" Canvas.Top="67"/>
+            <Button x:Name="BrowseMinecraftFolderButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Canvas.Left="482" Canvas.Top="9"/>
+            <Label x:Name="SavesFolderLocationLabel" Content="Saves Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="35" Width="159"/>
+            <TextBox x:Name="SavesFolderTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="313" IsReadOnly="True" Canvas.Left="164" Canvas.Top="37"/>
+            <Button x:Name="BrowseSavesFolderButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Canvas.Left="482" Canvas.Top="38"/>
         </Canvas>
         <Button x:Name="CloseButton" Content="Close" VerticalAlignment="Top" Margin="309,206,0,0" HorizontalAlignment="Left" Width="77"/>
         <Canvas x:Name="AppearancePanel" HorizontalAlignment="Left" Height="191" VerticalAlignment="Top" Width="567" Margin="117,10,0,0">
             <Label x:Name="ListViewOpacityLabel" Content="Interface Opacity" Canvas.Left="10" Canvas.Top="10" Width="144"/>
             <Slider x:Name="ListViewOpacitySlider" Width="370" Canvas.Left="154" Canvas.Top="14" ValueChanged="ListViewOpacitySlider_ValueChanged" Maximum="100" Minimum="50" Value="75"/>
             <Label x:Name="BackgroundImageLabel" Content="Background Image" Canvas.Left="10" Canvas.Top="46" Width="144"/>
-            <Button x:Name="BackgroundImageBrowseButton" Content="Browse" Canvas.Left="159" Canvas.Top="46" Width="77"/>
+            <Button x:Name="BackgroundImageBrowseButton" Content="Browse" Canvas.Left="159" Canvas.Top="49" Width="77"/>
             <Label x:Name="OpacityPercentLabel" Content="100%" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="523" Canvas.Top="9"/>
-            <Button x:Name="BackgroundImageRemoveButton" Content="Remove" HorizontalAlignment="Left" VerticalAlignment="Top" Width="77" Canvas.Left="240" Canvas.Top="46"/>
-            <ComboBox x:Name="SizeModeComboBox" Width="120" Canvas.Left="159" Canvas.Top="81" SelectedIndex="0">
+            <Button x:Name="BackgroundImageRemoveButton" Content="Remove" HorizontalAlignment="Left" VerticalAlignment="Top" Width="77" Canvas.Left="240" Canvas.Top="49"/>
+            <ComboBox x:Name="SizeModeComboBox" Width="120" Canvas.Left="159" Canvas.Top="83" SelectedIndex="0">
                 <ComboBoxItem Content="Normal"/>
                 <ComboBoxItem Content="Stretch"/>
                 <ComboBoxItem Content="Auto Size"/>

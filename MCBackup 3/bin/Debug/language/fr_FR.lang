@@ -98,3 +98,8 @@ OptionsWindow.AppearancePanel.SizeModeComboBox.Items(2).Content="Ajuster"
 OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content="Remplir"
 OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content="Parcourir..."
 OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content="Retirer"
+
+OptionsWindow.FoldersPanel.MinecraftFolderLocationLabel.Content="Dossier Minecraft"
+OptionsWindow.FoldersPanel.SavesFolderLocationLabel.Content="Dossier des mondes"
+OptionsWindow.FoldersPanel.BackupsFolderLocationLabel.Content="Dossier des sauvegardes"
+OptionsWindow.FoldersPanel.BrowseButton.Content="Parcourir"
