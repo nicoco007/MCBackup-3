@@ -132,16 +132,16 @@ Public Class Language
         Dictionnary.Add("OptionsWindow.FoldersPanel.BackupsFolderLocationLabel.Content", FindString("OptionsWindow.FoldersPanel.BackupsFolderLocationLabel.Content", FileName))
         Dictionnary.Add("OptionsWindow.FoldersPanel.BrowseButton.Content", FindString("OptionsWindow.FoldersPanel.BrowseButton.Content", FileName))
 
-        ' Rename Window
+        ' = Rename Window =
         Dictionnary.Add("RenameWindow.Title", FindString("RenameWindow.Title", FileName))
         Dictionnary.Add("RenameWindow.RenameButton.Content", FindString("RenameWindow.RenameButton.Content", FileName))
         Dictionnary.Add("RenameWindow.CancelButton.Content", FindString("RenameWindow.CancelButton.Content", FileName))
 
-        ' About Window
+        ' = About Window =
         MCBackup.Language.Dictionnary.Add("AboutWindow.Title", FindString("AboutWindow.Title", FileName))
         MCBackup.Language.Dictionnary.Add("AboutWindow.Text", FindString("AboutWindow.Text", FileName))
 
-        ' Close to tray window
+        ' = Close to tray window =
         MCBackup.Language.Dictionnary.Add("CloseToTrayWindow.Title", FindString("CloseToTrayWindow.Title", FileName))
         MCBackup.Language.Dictionnary.Add("CloseToTrayWindow.MessageLabel.Content", FindString("CloseToTrayWindow.MessageLabel.Content", FileName))
         MCBackup.Language.Dictionnary.Add("CloseToTrayWindow.YesButton.Content", FindString("CloseToTrayWindow.YesButton.Content", FileName))
@@ -149,6 +149,10 @@ Public Class Language
         MCBackup.Language.Dictionnary.Add("CloseToTrayWindow.CancelButton.Content", FindString("CloseToTrayWindow.CancelButton.Content", FileName))
         MCBackup.Language.Dictionnary.Add("CloseToTrayWindow.SaveCheckBox.Content", FindString("CloseToTrayWindow.SaveCheckBox.Content", FileName))
         MCBackup.Language.Dictionnary.Add("CloseToTrayWindow.RevertLabel.Content", FindString("CloseToTrayWindow.RevertLabel.Content", FileName))
+
+        ' = Error form =
+        MCBackup.Language.Dictionnary.Add("ErrorForm.ContinueButton.Content", FindString("ErrorForm.ContinueButton.Content", FileName))
+        MCBackup.Language.Dictionnary.Add("ErrorForm.CopyToClipboardButton.Content", FindString("ErrorForm.CopyToClipboardButton.Content", FileName))
     End Sub
 
     Public Shared Function GetIDFromName(Name As String)

@@ -17,15 +17,18 @@ Public Class AutoBackup
     End Sub
 
     Public Sub LoadLanguage()
-        Me.Title = MCBackup.Language.Dictionnary("AutoBackupWindow.Title")
-        BackupEveryLabel.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.BackupEveryLabel.Content")
-        MinutesLabel.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.MinutesLabel.Content")
-        WorldToBackUpLabel.Text = MCBackup.Language.Dictionnary("AutoBackupWindow.WorldToBackUpLabel.Text")
-        RefreshButton.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.RefreshButton.Content")
-        SaveAsLabel.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.SaveAsLabel.Content")
-        PrefixLabel.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.PrefixLabel.Content")
-        SuffixLabel.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.SuffixLabel.Content")
-        StartButton.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.StartButton.Content.Start")
+        Try
+            Me.Title = MCBackup.Language.Dictionnary("AutoBackupWindow.Title")
+            BackupEveryLabel.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.BackupEveryLabel.Content")
+            MinutesLabel.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.MinutesLabel.Content")
+            WorldToBackUpLabel.Text = MCBackup.Language.Dictionnary("AutoBackupWindow.WorldToBackUpLabel.Text")
+            RefreshButton.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.RefreshButton.Content")
+            SaveAsLabel.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.SaveAsLabel.Content")
+            PrefixLabel.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.PrefixLabel.Content")
+            SuffixLabel.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.SuffixLabel.Content")
+            StartButton.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.StartButton.Content.Start")
+        Catch
+        End Try
     End Sub
 
 #Region "Window crap"
@@ -38,7 +41,10 @@ Public Class AutoBackup
         e.Cancel = True
         Me.Hide()
         Main.Left = Main.Left + (Me.Width / 2)
-        Main.AutomaticBackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.AutomaticBackupButton.Content") & ">>"
+        Try
+            Main.AutomaticBackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.AutomaticBackupButton.Content") & ">>"
+        Catch
+        End Try
     End Sub
 
     Private Sub AutoBackupWindow_LocationChanged(sender As Object, e As EventArgs) Handles AutoBackupWindow.LocationChanged

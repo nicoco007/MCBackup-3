@@ -87,10 +87,12 @@ Class MainWindow
         Catch ex As Exception
             Log.Print("Could not load language file: """ & My.Settings.Language & """", Log.Type.Severe)
             Log.Print(ex.Message, Log.Type.Severe)
-            MessageBox.Show("Error: Language file not found! (" & My.Settings.Language & ")" & vbNewLine & vbNewLine & "MCBackup will now exit.", "Error!", MessageBoxButton.OK, MessageBoxImage.Error)
+            ErrorWindow.ShowBox("Error!", "Error: Language file not found (" & My.Settings.Language & ")! MCBackup will now exit.", ex, True)
             My.Settings.Language = "en_US"
             Me.ClsType = CloseType.ForceClose
+            Log.Print(Me.ClsType)
             Me.Close()
+            Log.Print(Me.ClsType)
         End Try
 
         Main.ListView.Opacity = My.Settings.InterfaceOpacity / 100
@@ -281,32 +283,35 @@ Class MainWindow
     End Sub
 
     Public Sub LoadLanguage()
-        Main.BackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.BackupButton.Content")
-        Main.RestoreButton.Content = MCBackup.Language.Dictionnary("MainWindow.RestoreButton.Content")
-        Main.DeleteButton.Content = MCBackup.Language.Dictionnary("MainWindow.DeleteButton.Content")
-        Main.RenameButton.Content = MCBackup.Language.Dictionnary("MainWindow.RenameButton.Content")
+        Try
+            Main.BackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.BackupButton.Content")
+            Main.RestoreButton.Content = MCBackup.Language.Dictionnary("MainWindow.RestoreButton.Content")
+            Main.DeleteButton.Content = MCBackup.Language.Dictionnary("MainWindow.DeleteButton.Content")
+            Main.RenameButton.Content = MCBackup.Language.Dictionnary("MainWindow.RenameButton.Content")
 
-        Main.AutomaticBackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.AutomaticBackupButton.Content") & " >>"
+            Main.AutomaticBackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.AutomaticBackupButton.Content") & " >>"
 
-        Main.ListViewGridView.Columns(0).Header = MCBackup.Language.Dictionnary("MainWindow.ListView.Columns(0).Header")
-        Main.ListViewGridView.Columns(1).Header = MCBackup.Language.Dictionnary("MainWindow.ListView.Columns(1).Header")
-        Main.ListViewGridView.Columns(2).Header = MCBackup.Language.Dictionnary("MainWindow.ListView.Columns(2).Header")
-        Main.OriginalNameLabel.Text = MCBackup.Language.Dictionnary("MainWindow.OriginalNameLabel.Text") & ":"
-        Main.TypeLabel.Text = MCBackup.Language.Dictionnary("MainWindow.TypeLabel.Text") & ":"
+            Main.ListViewGridView.Columns(0).Header = MCBackup.Language.Dictionnary("MainWindow.ListView.Columns(0).Header")
+            Main.ListViewGridView.Columns(1).Header = MCBackup.Language.Dictionnary("MainWindow.ListView.Columns(1).Header")
+            Main.ListViewGridView.Columns(2).Header = MCBackup.Language.Dictionnary("MainWindow.ListView.Columns(2).Header")
+            Main.OriginalNameLabel.Text = MCBackup.Language.Dictionnary("MainWindow.OriginalNameLabel.Text") & ":"
+            Main.TypeLabel.Text = MCBackup.Language.Dictionnary("MainWindow.TypeLabel.Text") & ":"
 
-        Main.MenuBar.Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(0).Header")
-        Main.MenuBar.Items(0).Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(0).Items(0).Header")
-        Main.MenuBar.Items(1).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Header")
-        Main.MenuBar.Items(1).Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Items(0).Header")
-        Main.MenuBar.Items(1).Items(1).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Items(1).Header")
-        Main.MenuBar.Items(2).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(2).Header")
-        Main.MenuBar.Items(2).Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(2).Items(0).Header")
-        Main.MenuBar.Items(3).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Header")
-        Main.MenuBar.Items(3).Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(0).Header")
-        Main.MenuBar.Items(3).Items(2).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(2).Header")
-        Main.MenuBar.Items(3).Items(3).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(3).Header")
+            Main.MenuBar.Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(0).Header")
+            Main.MenuBar.Items(0).Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(0).Items(0).Header")
+            Main.MenuBar.Items(1).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Header")
+            Main.MenuBar.Items(1).Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Items(0).Header")
+            Main.MenuBar.Items(1).Items(1).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Items(1).Header")
+            Main.MenuBar.Items(2).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(2).Header")
+            Main.MenuBar.Items(2).Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(2).Items(0).Header")
+            Main.MenuBar.Items(3).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Header")
+            Main.MenuBar.Items(3).Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(0).Header")
+            Main.MenuBar.Items(3).Items(2).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(2).Header")
+            Main.MenuBar.Items(3).Items(3).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(3).Header")
 
-        Main.StatusLabel.Content = MCBackup.Language.Dictionnary("Status.Ready")
+            Main.StatusLabel.Content = MCBackup.Language.Dictionnary("Status.Ready")
+        Catch
+        End Try
     End Sub
 #End Region
 
@@ -340,7 +345,7 @@ Class MainWindow
                 SW.Write("desc=" & BackupInfo(1)) ' Write description if file
             End Using
         Catch ex As Exception
-            MessageBox.Show(MCBackup.Language.Dictionnary("Message.BackupError") & vbNewLine & vbNewLine & ex.Message, MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            ErrorWindow.ShowBox(MCBackup.Language.Dictionnary("Message.Caption.Error"), MCBackup.Language.Dictionnary("Message.BackupError"), ex)
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionnary("BalloonTip.Title.BackupError"), MCBackup.Language.Dictionnary("BalloonTip.BackupError"), System.Windows.Forms.ToolTipIcon.Error)
             Log.Print(ex.Message, Log.Type.Severe)
         End Try
@@ -519,7 +524,7 @@ Class MainWindow
                 My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\thumb.png")
             End If
         Catch ex As Exception
-            MessageBox.Show(MCBackup.Language.Dictionnary("Message.RestoreError") & vbNewLine & vbNewLine & ex.Message, MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            ErrorWindow.ShowBox(MCBackup.Language.Dictionnary("Message.Caption.Error"), MCBackup.Language.Dictionnary("Message.RestoreError"), ex)
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionnary("BalloonTip.Title.RestoreError"), MCBackup.Language.Dictionnary("BalloonTip.RestoreError"), System.Windows.Forms.ToolTipIcon.Error)
             Log.Print(ex.Message, Log.Type.Severe)
         End Try
@@ -655,7 +660,7 @@ Class MainWindow
             Try
                 My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & Item, FileIO.DeleteDirectoryOption.DeleteAllContents)
             Catch ex As Exception
-                MessageBox.Show(MCBackup.Language.Dictionnary("Message.DeleteError"), MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                ErrorWindow.ShowBox(MCBackup.Language.Dictionnary("Message.Caption.Error"), MCBackup.Language.Dictionnary("Message.DeleteError"), ex)
             End Try
         Next
     End Sub
@@ -730,10 +735,9 @@ Class MainWindow
     Public ClsType As CloseType
 
     Private Sub Window_Closing(sender As Object, e As CancelEventArgs)
-        Dim CloseToTrayWindow As New CloseToTray
-        CloseToTrayWindow.Owner = Me
-
         If Not ClsType = CloseType.ForceClose Then
+            Dim CloseToTrayWindow As New CloseToTray
+            CloseToTrayWindow.Owner = Me
             If My.Settings.SaveCloseState Then
                 If My.Settings.CloseToTray Then
                     ClsType = CloseType.CloseToTray

@@ -81,6 +81,9 @@
     <Compile Include="CloseToTray.xaml.vb">
       <DependentUpon>CloseToTray.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ErrorWindow.xaml.vb">
+      <DependentUpon>ErrorWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Language.vb" />
     <Compile Include="Log.vb" />
     <Compile Include="Options.xaml.vb">
@@ -108,6 +111,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CloseToTray.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ErrorWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
