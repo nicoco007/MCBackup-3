@@ -26,7 +26,6 @@ Public Class Options
 
     Sub New()
         InitializeComponent()
-
         OpenFileDialog.Filter = "All Supported Image Files (*bmp, *.jpg, *.jpeg, *.png)|*bmp;*.gif;*.png;*.jpg;*.jpeg|BMP (*.bmp)|*.bmp|JPEG (*.jpg, *.jpeg)|*.jpg;*.jpeg|PNG (*.png)|*.png"
 
         ListBox.SelectedIndex = 0
@@ -43,6 +42,11 @@ Public Class Options
         AlwaysCloseCheckBox.IsChecked = My.Settings.SaveCloseState
         CloseToTrayRadioButton.IsChecked = My.Settings.CloseToTray
         CloseCompletelyRadioButton.IsChecked = Not My.Settings.CloseToTray
+
+        Dim StatusLabelColor = My.Settings.StatusLabelColor
+        RedColorSlider.Value = StatusLabelColor.R
+        GreenColorSlider.Value = StatusLabelColor.G
+        BlueColorSlider.Value = StatusLabelColor.B
 
         LoadLanguage()
     End Sub
@@ -235,6 +239,7 @@ Public Class Options
         SizeModeComboBox.Items(3).Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content")
         BackgroundImageBrowseButton.Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content")
         BackgroundImageRemoveButton.Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content")
+        StatusLabelColor.Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.StatusLabelColor.Content")
 
         ' Folders
         MinecraftFolderLocationLabel.Content = MCBackup.Language.Dictionnary("OptionsWindow.FoldersPanel.MinecraftFolderLocationLabel.Content")
@@ -245,11 +250,12 @@ Public Class Options
         BrowseBackupsFolderButton.Content = MCBackup.Language.Dictionnary("OptionsWindow.FoldersPanel.BrowseButton.Content")
     End Sub
 
-    Private Sub TextBox_TextChanged(sender As Object, e As TextChangedEventArgs)
-        Try
-            ColorRectangle.Fill = New SolidColorBrush(Color.FromRgb(RedColorSlider.Value, GreenColorSlider.Value, BlueColorSlider.Value))
-        Catch ex As Exception
-
-        End Try
+    Private Sub ColorSlider_ValueChanged(sender As Object, e As RoutedPropertyChangedEventArgs(Of Double)) Handles RedColorSlider.ValueChanged, GreenColorSlider.ValueChanged, BlueColorSlider.ValueChanged
+        RedColorLabel.Content = CInt(RedColorSlider.Value)
+        GreenColorLabel.Content = CInt(GreenColorSlider.Value)
+        BlueColorLabel.Content = CInt(BlueColorSlider.Value)
+        My.Settings.StatusLabelColor = Color.FromRgb(RedColorSlider.Value, GreenColorSlider.Value, BlueColorSlider.Value)
+        ColorRectangle.Fill = New SolidColorBrush(My.Settings.StatusLabelColor)
+        Main.StatusLabel.Foreground = New SolidColorBrush(My.Settings.StatusLabelColor)
     End Sub
 End Class

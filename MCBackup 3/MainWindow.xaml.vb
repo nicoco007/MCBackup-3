@@ -97,6 +97,12 @@ Class MainWindow
             My.Settings.OpacityPercent = 100
         End If
 
+        If My.Settings.StatusLabelColor = Nothing Then
+            My.Settings.StatusLabelColor = Color.FromRgb(0, 0, 0)
+        End If
+
+        StatusLabel.Foreground = New SolidColorBrush(My.Settings.StatusLabelColor)
+
         Dim OpacityDecimal As Double = My.Settings.OpacityPercent / 100
 
         ListView.Opacity = OpacityDecimal
@@ -219,12 +225,10 @@ Class MainWindow
             If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
                 ListView.Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(255, 0, 0))))
             ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
-                ListView.Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(255, 200, 0))))
+                ListView.Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(225, 175, 0))))
             Else
                 ListView.Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(0, 200, 0))))
             End If
-
-
         Next
 
         ListView_SelectionChanged(New Object, New EventArgs)

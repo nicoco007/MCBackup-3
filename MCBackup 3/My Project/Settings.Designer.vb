@@ -185,13 +185,25 @@ Partial Friend NotInheritable Class MySettings
     
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-     Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+     Global.System.Configuration.DefaultSettingValueAttribute("en_US")>  _
     Public Property Language() As String
         Get
             Return CType(Me("Language"),String)
         End Get
         Set
             Me("Language") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("#00000000")>  _
+    Public Property StatusLabelColor() As Global.System.Windows.Media.Color
+        Get
+            Return CType(Me("StatusLabelColor"),Global.System.Windows.Media.Color)
+        End Get
+        Set
+            Me("StatusLabelColor") = value
         End Set
     End Property
 End Class
