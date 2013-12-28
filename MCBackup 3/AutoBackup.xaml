@@ -1,7 +1,7 @@
 ﻿<Window x:Name="AutoBackupWindow" x:Class="AutoBackup"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Automatic Backup" Height="480" Width="317" MinWidth="317" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight">
+    Title="Automatic Backup" Height="480" Width="317" MinWidth="317" ResizeMode="NoResize" SizeToContent="WidthAndHeight">
     <Grid Margin="0" Height="451" VerticalAlignment="Top" HorizontalAlignment="Left" Width="311">
         <Label x:Name="TimeLabel" Content="00:00" Margin="10,0,15,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="64" Height="100" VerticalAlignment="Top"/>
         <TextBox x:Name="PrefixTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="[AUTO] " VerticalAlignment="Bottom" Width="89" Margin="42,0,0,90" HorizontalContentAlignment="Right"/>

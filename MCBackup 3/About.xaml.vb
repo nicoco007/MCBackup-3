@@ -18,6 +18,7 @@ Public Class About
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
 
     Private Sub AboutWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles AboutWindow.Loaded
-        VersionLabel.Content = "Version " & Main.ApplicationVersion
+        Me.Title = MCBackup.Language.Dictionnary("AboutWindow.Title")
+        TextBlock1.Text = String.Format(MCBackup.Language.Dictionnary("AboutWindow.Text").Replace("\n", vbNewLine), Main.ApplicationVersion)
     End Sub
 End Class

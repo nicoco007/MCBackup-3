@@ -86,6 +86,7 @@ Public Class Language
         Main.AutoBackupWindow.LoadLanguage()
 
         ' = Options Window =
+        Dictionnary.Add("OptionsWindow.Title", FindString("OptionsWindow.Title", FileName))
         Dictionnary.Add("OptionsWindow.ListBox.Items(0).Content", FindString("OptionsWindow.GeneralPanel.ListBox.Items(0).Content", FileName))
         Dictionnary.Add("OptionsWindow.ListBox.Items(1).Content", FindString("OptionsWindow.GeneralPanel.ListBox.Items(1).Content", FileName))
         Dictionnary.Add("OptionsWindow.ListBox.Items(2).Content", FindString("OptionsWindow.GeneralPanel.ListBox.Items(2).Content", FileName))
@@ -114,6 +115,15 @@ Public Class Language
         Dictionnary.Add("OptionsWindow.FoldersPanel.SavesFolderLocationLabel.Content", FindString("OptionsWindow.FoldersPanel.SavesFolderLocationLabel.Content", FileName))
         Dictionnary.Add("OptionsWindow.FoldersPanel.BackupsFolderLocationLabel.Content", FindString("OptionsWindow.FoldersPanel.BackupsFolderLocationLabel.Content", FileName))
         Dictionnary.Add("OptionsWindow.FoldersPanel.BrowseButton.Content", FindString("OptionsWindow.FoldersPanel.BrowseButton.Content", FileName))
+
+        ' Rename Window
+        Dictionnary.Add("RenameWindow.Title", FindString("RenameWindow.Title", FileName))
+        Dictionnary.Add("RenameWindow.RenameButton.Content", FindString("RenameWindow.RenameButton.Content", FileName))
+        Dictionnary.Add("RenameWindow.CancelButton.Content", FindString("RenameWindow.CancelButton.Content", FileName))
+
+        ' About Window
+        MCBackup.Language.Dictionnary.Add("AboutWindow.Title", FindString("AboutWindow.Title", FileName))
+        MCBackup.Language.Dictionnary.Add("AboutWindow.Text", FindString("AboutWindow.Text", FileName))
     End Sub
 
     Public Shared Function GetIDFromName(Name As String)

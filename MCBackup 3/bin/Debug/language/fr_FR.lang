@@ -75,6 +75,7 @@ AutoBackupWindow.SuffixLabel.Content="Suffixe"
 AutoBackupWindow.StartButton.Content.Start="Démarrer"
 AutoBackupWindow.StartButton.Content.Stop="Arrêter"
 
+OptionsWindow.Title="Préférences"
 OptionsWindow.GeneralPanel.ListBox.Items(0).Content="Général"
 OptionsWindow.GeneralPanel.ListBox.Items(1).Content="Apparence"
 OptionsWindow.GeneralPanel.ListBox.Items(2).Content="Dossiers"
@@ -103,3 +104,10 @@ OptionsWindow.FoldersPanel.MinecraftFolderLocationLabel.Content="Dossier Minecra
 OptionsWindow.FoldersPanel.SavesFolderLocationLabel.Content="Dossier des mondes"
 OptionsWindow.FoldersPanel.BackupsFolderLocationLabel.Content="Dossier des sauvegardes"
 OptionsWindow.FoldersPanel.BrowseButton.Content="Parcourir"
+
+RenameWindow.Title="Renommer"
+RenameWindow.RenameButton.Content="Renommer"
+RenameWindow.CancelButton.Content="Annuler"
+
+AboutWindow.Title="À propos"
+AboutWindow.Text="MCBackup Solo\nVersion {0}\n\nCopyright © 2013 nicoco007\n\nLicensé sous la License Apache Version 2.0 (la "License");\nVous ne pouvez utiliser ce fichier qu'en conformité avec la License.\nVous pouvez obtenir une copie de la License (anglais seulement) à\n\nhttp://www.apache.org/licenses/LICENSE-2.0\n\nSauf si requis par la loi en vigueur ou accord écrit, le logiciel\ndistribué sous la License est distribué « TEL QUEL », SANS\nGARANTIES OU CONDITIONS D'AUCUNE SORTE, expresses ou implicites.\nVoir la License pour les autorisations d'administration linguistiques spécifiques\net des limitation de la License."

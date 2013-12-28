@@ -14,15 +14,15 @@
 ║     See the License for the specific language governing permissions and   ║
 ║                      limitations under the License.                       ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
--->   
-    <Window x:Name="AboutWindow" x:Class="About"
+-->
+<Window x:Name="AboutWindow" x:Class="About"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="About" Height="431" Width="478" ResizeMode="NoResize" WindowStyle="ToolWindow" WindowStartupLocation="CenterOwner">
-    <Grid Background="#FFF0F0F0">
-        <TextBlock x:Name="TextBlock1" TextWrapping="Wrap" Margin="10,0,10,5" TextAlignment="Center" Height="259" VerticalAlignment="Bottom" xml:space="preserve">
+    Title="About" Height="431" Width="478" ResizeMode="NoResize" WindowStyle="ToolWindow" WindowStartupLocation="CenterOwner" SizeToContent="WidthAndHeight">
+    <Grid Background="#FFF0F0F0" HorizontalAlignment="Left" Width="472" Height="403" VerticalAlignment="Top">
+        <TextBlock x:Name="TextBlock1" TextWrapping="Wrap" Margin="10,139,0,0" TextAlignment="Center" Height="259" VerticalAlignment="Top" xml:space="preserve" HorizontalAlignment="Left" Width="452">
             <TextBlock.Text>MCBackup Singleplayer
-
+Version 0.0.0.0
                 
 Copyright 2013 nicoco007
                 
@@ -40,6 +40,5 @@ limitations under the License.
             </TextBlock.Text>
         </TextBlock>
         <Image Height="134" VerticalAlignment="Top" Source="Resources/logo.png" Margin="26,0"/>
-        <Label x:Name="VersionLabel" Content="Version 0.0.0.0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,140,0,0" Width="452" HorizontalContentAlignment="Center"/>
     </Grid>
 </Window>

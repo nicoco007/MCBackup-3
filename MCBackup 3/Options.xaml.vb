@@ -209,6 +209,7 @@ Public Class Options
     End Sub
 
     Private Sub LoadLanguage()
+        Me.Title = MCBackup.Language.Dictionnary("OptionsWindow.Title")
         ListBox.Items(0).Content = MCBackup.Language.Dictionnary("OptionsWindow.ListBox.Items(0).Content")
         ListBox.Items(1).Content = MCBackup.Language.Dictionnary("OptionsWindow.ListBox.Items(1).Content")
         ListBox.Items(2).Content = MCBackup.Language.Dictionnary("OptionsWindow.ListBox.Items(2).Content")

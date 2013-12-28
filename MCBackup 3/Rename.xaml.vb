@@ -17,6 +17,12 @@
 Public Class Rename
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
 
+    Public Sub New()
+        InitializeComponent()
+
+        LoadLanguage()
+    End Sub
+
     Private Sub Rename_Load(sender As Object, e As EventArgs) Handles MyBase.Loaded
         TextBox.Text = Main.ListView.SelectedItem.Name
     End Sub
@@ -44,5 +50,11 @@ Public Class Rename
 
     Private Sub CancelButton_Click(sender As Object, e As EventArgs) Handles CancelButton.Click
         Me.Close()
+    End Sub
+
+    Private Sub LoadLanguage()
+        Me.Title = MCBackup.Language.Dictionnary("RenameWindow.Title")
+        RenameButton.Content = MCBackup.Language.Dictionnary("RenameWindow.RenameButton.Content")
+        CancelButton.Content = MCBackup.Language.Dictionnary("RenameWindow.CancelButton.Content")
     End Sub
 End Class

@@ -38,7 +38,7 @@ Public Class AutoBackup
         e.Cancel = True
         Me.Hide()
         Main.Left = Main.Left + (Me.Width / 2)
-        Main.AutomaticBackupButton.Content = "Automatic Backup >>"
+        Main.AutomaticBackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.AutomaticBackupLabel.Content") & ">>"
     End Sub
 
     Private Sub AutoBackupWindow_LocationChanged(sender As Object, e As EventArgs) Handles AutoBackupWindow.LocationChanged
