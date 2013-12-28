@@ -5,7 +5,7 @@ Public Class CloseToTray
 
     Sub New()
         InitializeComponent()
-
+        LoadLanguage()
         Me.Height = 125
     End Sub
 
@@ -40,5 +40,14 @@ Public Class CloseToTray
         Else
             Me.Height = 125
         End If
+    End Sub
+
+    Private Sub LoadLanguage()
+        MessageLabel.Content = MCBackup.Language.Dictionnary("CloseToTrayWindow.MessageLabel.Content")
+        YesButton.Content = MCBackup.Language.Dictionnary("CloseToTrayWindow.YesButton.Content")
+        NoButton.Content = MCBackup.Language.Dictionnary("CloseToTrayWindow.NoButton.Content")
+        CancelButton.Content = MCBackup.Language.Dictionnary("CloseToTrayWindow.CancelButton.Content")
+        SaveCheckBox.Content = MCBackup.Language.Dictionnary("CloseToTrayWindow.SaveCheckBox.Content")
+        RevertLabel.Content = MCBackup.Language.Dictionnary("CloseToTrayWindow.RevertLabel.Content")
     End Sub
 End Class

@@ -140,6 +140,14 @@ Public Class Language
         ' About Window
         MCBackup.Language.Dictionnary.Add("AboutWindow.Title", FindString("AboutWindow.Title", FileName))
         MCBackup.Language.Dictionnary.Add("AboutWindow.Text", FindString("AboutWindow.Text", FileName))
+
+        ' Close to tray window
+        MCBackup.Language.Dictionnary.Add("CloseToTrayWindow.MessageLabel.Content", FindString("CloseToTrayWindow.MessageLabel.Content", FileName))
+        MCBackup.Language.Dictionnary.Add("CloseToTrayWindow.YesButton.Content", FindString("CloseToTrayWindow.YesButton.Content", FileName))
+        MCBackup.Language.Dictionnary.Add("CloseToTrayWindow.NoButton.Content", FindString("CloseToTrayWindow.NoButton.Content", FileName))
+        MCBackup.Language.Dictionnary.Add("CloseToTrayWindow.CancelButton.Content", FindString("CloseToTrayWindow.CancelButton.Content", FileName))
+        MCBackup.Language.Dictionnary.Add("CloseToTrayWindow.SaveCheckBox.Content", FindString("CloseToTrayWindow.SaveCheckBox.Content", FileName))
+        MCBackup.Language.Dictionnary.Add("CloseToTrayWindow.RevertLabel.Content", FindString("CloseToTrayWindow.RevertLabel.Content", FileName))
     End Sub
 
     Public Shared Function GetIDFromName(Name As String)

@@ -67,7 +67,7 @@
                 <ColumnDefinition Width="70*" MinWidth="300"/>
                 <ColumnDefinition Width="30*" MinWidth="240"/>
             </Grid.ColumnDefinitions>
-            <ListView x:Name="ListView" Opacity="0.75">
+            <ListView x:Name="ListView">
                 <ListView.View>
                     <GridView x:Name="ListViewGridView">
                         <GridViewColumn Header="Name" Width="155">
@@ -95,7 +95,7 @@
                 </ListView.View>
             </ListView>
             <GridSplitter x:Name="GridSplitter" HorizontalAlignment="Left" Width="3" Margin="3,0,0,0" Grid.Column="1"/>
-            <Grid x:Name="Sidebar" Grid.Column="1" Margin="10,0,0,0" Background="White" Opacity="0.75">
+            <Grid x:Name="Sidebar" Grid.Column="1" Margin="10,0,0,0" Background="White">
                 <Border BorderBrush="#FFBDBDBD" BorderThickness="1"/>
                 <Image x:Name="ThumbnailImage" Margin="10,10,10,70" Opacity="1.5"/>
                 <TextBlock x:Name="OriginalNameLabel" Text="Original Name:" HorizontalAlignment="Left" Margin="3,0,0,26" Height="26" VerticalAlignment="Bottom"/>

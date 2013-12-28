@@ -32,7 +32,7 @@ Public Class Options
         MinecraftFolderTextBox.Text = My.Settings.MinecraftFolderLocation
         BackupsFolderTextBox.Text = My.Settings.BackupsFolderLocation
         SavesFolderTextBox.Text = My.Settings.SavesFolderLocation
-        ListViewOpacitySlider.Value = My.Settings.OpacityPercent
+        ListViewOpacitySlider.Value = My.Settings.InterfaceOpacity
         OpacityPercentLabel.Content = Int(ListViewOpacitySlider.Value).ToString & "%"
         SizeModeComboBox.SelectedIndex = My.Settings.BackgroundImageStretch
         CheckForUpdatesCheckBox.IsChecked = My.Settings.CheckForUpdates
@@ -134,9 +134,9 @@ Public Class Options
 
     Private Sub ListViewOpacitySlider_ValueChanged(sender As Object, e As RoutedPropertyChangedEventArgs(Of Double))
         If Me.IsLoaded Then
-            Dim Value As Double = ListViewOpacitySlider.Value / 100
-            Main.ListView.Opacity = Value
-            Main.Sidebar.Opacity = Value
+            Main.ListView.Opacity = ListViewOpacitySlider.Value / 100
+            Main.Sidebar.Background = New SolidColorBrush(Color.FromArgb(ListViewOpacitySlider.Value * 2.55, 255, 255, 255))
+            Main.MenuBar.Opacity = ListViewOpacitySlider.Value / 100
             OpacityPercentLabel.Content = Math.Round(ListViewOpacitySlider.Value, 0).ToString & "%"
         End If
     End Sub
@@ -190,7 +190,7 @@ Public Class Options
         Log.Print("Saves folder location set to " & My.Settings.SavesFolderLocation)
         My.Settings.BackupsFolderLocation = BackupsFolderTextBox.Text
         Log.Print("Backups folder location set to " & My.Settings.BackupsFolderLocation)
-        My.Settings.OpacityPercent = ListViewOpacitySlider.Value
+        My.Settings.InterfaceOpacity = ListViewOpacitySlider.Value
         My.Settings.CheckForUpdates = CheckForUpdatesCheckBox.IsChecked
         My.Settings.ShowBalloonTips = ShowBalloonTipsCheckBox.IsChecked
         My.Settings.CreateThumbOnWorld = CreateThumbOnWorldCheckBox.IsChecked

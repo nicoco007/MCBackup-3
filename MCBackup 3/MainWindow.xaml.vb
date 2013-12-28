@@ -93,20 +93,11 @@ Class MainWindow
             Me.Close()
         End Try
 
-        If My.Settings.OpacityPercent = 0 Then
-            My.Settings.OpacityPercent = 100
-        End If
-
-        If My.Settings.StatusLabelColor = Nothing Then
-            My.Settings.StatusLabelColor = Color.FromRgb(0, 0, 0)
-        End If
+        Main.ListView.Opacity = My.Settings.InterfaceOpacity / 100
+        Main.Sidebar.Background = New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, 255, 255, 255))
+        Main.MenuBar.Opacity = My.Settings.InterfaceOpacity / 100
 
         StatusLabel.Foreground = New SolidColorBrush(My.Settings.StatusLabelColor)
-
-        Dim OpacityDecimal As Double = My.Settings.OpacityPercent / 100
-
-        ListView.Opacity = OpacityDecimal
-        Sidebar.Opacity = OpacityDecimal
 
         If My.Settings.BackgroundImageLocation = "" Then
             Me.Background = New SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 240, 240, 240))

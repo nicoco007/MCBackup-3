@@ -89,14 +89,15 @@ Partial Friend NotInheritable Class MySettings
         End Set
     End Property
     
-    <Global.System.Configuration.UserScopedSettingAttribute(),  _
-     Global.System.Diagnostics.DebuggerNonUserCodeAttribute()>  _
-    Public Property OpacityPercent() As Integer
+    <Global.System.Configuration.UserScopedSettingAttribute(), _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(), _
+     Global.System.Configuration.DefaultSettingValueAttribute("100")> _
+    Public Property InterfaceOpacity() As Integer
         Get
-            Return CType(Me("OpacityPercent"),Integer)
+            Return CType(Me("InterfaceOpacity"), Integer)
         End Get
-        Set
-            Me("OpacityPercent") = value
+        Set(value As Integer)
+            Me("InterfaceOpacity") = value
         End Set
     End Property
     

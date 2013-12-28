@@ -5,9 +5,9 @@
     <Grid Height="111" VerticalAlignment="Top" HorizontalAlignment="Left" Width="294">
         <Button x:Name="YesButton" Content="Yes" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="30,38,0,0"/>
         <Button x:Name="NoButton" Content="No" VerticalAlignment="Top" Margin="110,38,109,0"/>
-        <Label Content="Would you like to close MCBackup to tray?" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="0.763,0.923" Margin="10,2,0,0" Width="272" HorizontalContentAlignment="Center"/>
+        <Label x:Name="MessageLabel" Content="Would you like to close MCBackup to tray?" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="0.763,0.923" Margin="10,2,0,0" Width="272" HorizontalContentAlignment="Center"/>
         <CheckBox x:Name="SaveCheckBox" Content="Always do this in the future" VerticalAlignment="Top" Margin="61,66,61,0"/>
-        <Label Content="You can always revert this in the options menu." VerticalAlignment="Top" Margin="38,83,0,0" FontSize="10" HorizontalAlignment="Left" Width="218"/>
+        <Label x:Name="RevertLabel" Content="You can always revert this in the options menu." VerticalAlignment="Top" Margin="38,83,0,0" FontSize="10" HorizontalAlignment="Left" Width="218"/>
         <Button x:Name="CancelButton" Content="Cancel" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="190,38,0,0"/>
     </Grid>
 </Window>
