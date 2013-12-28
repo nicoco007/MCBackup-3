@@ -31,6 +31,7 @@ Public Class CloseToTray
         My.Settings.CloseToTray = False
         My.Settings.Save()
         Me.Close()
+        Log.Print(SaveCheckBox.ActualWidth)
     End Sub
 
     Private Sub SaveCheckBox_Click(sender As Object, e As RoutedEventArgs) Handles SaveCheckBox.Click
@@ -43,11 +44,19 @@ Public Class CloseToTray
     End Sub
 
     Private Sub LoadLanguage()
+        Me.Title = MCBackup.Language.Dictionnary("CloseToTrayWindow.Title")
         MessageLabel.Content = MCBackup.Language.Dictionnary("CloseToTrayWindow.MessageLabel.Content")
         YesButton.Content = MCBackup.Language.Dictionnary("CloseToTrayWindow.YesButton.Content")
         NoButton.Content = MCBackup.Language.Dictionnary("CloseToTrayWindow.NoButton.Content")
         CancelButton.Content = MCBackup.Language.Dictionnary("CloseToTrayWindow.CancelButton.Content")
         SaveCheckBox.Content = MCBackup.Language.Dictionnary("CloseToTrayWindow.SaveCheckBox.Content")
         RevertLabel.Content = MCBackup.Language.Dictionnary("CloseToTrayWindow.RevertLabel.Content")
+    End Sub
+
+    Private Sub CloseToTrayWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles CloseToTrayWindow.Loaded
+        Dim Margin = SaveCheckBox.Margin
+        Log.Print(SaveCheckBox.ActualWidth)
+        Margin.Left = (Grid.Width / 2) - (SaveCheckBox.ActualWidth / 2)
+        SaveCheckBox.Margin = Margin
     End Sub
 End Class

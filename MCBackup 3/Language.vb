@@ -142,6 +142,7 @@ Public Class Language
         MCBackup.Language.Dictionnary.Add("AboutWindow.Text", FindString("AboutWindow.Text", FileName))
 
         ' Close to tray window
+        MCBackup.Language.Dictionnary.Add("CloseToTrayWindow.Title", FindString("CloseToTrayWindow.Title", FileName))
         MCBackup.Language.Dictionnary.Add("CloseToTrayWindow.MessageLabel.Content", FindString("CloseToTrayWindow.MessageLabel.Content", FileName))
         MCBackup.Language.Dictionnary.Add("CloseToTrayWindow.YesButton.Content", FindString("CloseToTrayWindow.YesButton.Content", FileName))
         MCBackup.Language.Dictionnary.Add("CloseToTrayWindow.NoButton.Content", FindString("CloseToTrayWindow.NoButton.Content", FileName))
