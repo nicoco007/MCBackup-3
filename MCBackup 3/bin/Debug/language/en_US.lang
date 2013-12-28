@@ -129,5 +129,6 @@ CloseToTrayWindow.NoButton.Content="No"
 CloseToTrayWindow.CancelButton.Content="Cancel"
 CloseToTrayWindow.SaveCheckBox.Content="Always do this in the future"
 CloseToTrayWindow.RevertLabel.Content="You can always revert this in the options menu."
-ErrorForm.ContinueButton.Content=""
-ErrorForm.CopyToClipboardButton.Content=""
+
+ErrorForm.ContinueButton.Content="Continue"
+ErrorForm.CopyToClipboardButton.Content="Copy to clipboard"

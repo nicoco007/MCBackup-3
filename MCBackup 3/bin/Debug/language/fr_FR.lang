@@ -131,3 +131,6 @@ CloseToTrayWindow.NoButton.Content="Non"
 CloseToTrayWindow.CancelButton.Content="Annuler"
 CloseToTrayWindow.SaveCheckBox.Content="Toujours faire ceci"
 CloseToTrayWindow.RevertLabel.Content="Vous pouvez changer cette option dans les préférences."
+
+ErrorForm.ContinueButton.Content="Continuer"
+ErrorForm.CopyToClipboardButton.Content="Copier dans le presse-papiers"

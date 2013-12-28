@@ -89,14 +89,14 @@ Partial Friend NotInheritable Class MySettings
         End Set
     End Property
     
-    <Global.System.Configuration.UserScopedSettingAttribute(), _
-     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(), _
-     Global.System.Configuration.DefaultSettingValueAttribute("100")> _
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("100")>  _
     Public Property InterfaceOpacity() As Integer
         Get
-            Return CType(Me("InterfaceOpacity"), Integer)
+            Return CType(Me("InterfaceOpacity"),Integer)
         End Get
-        Set(value As Integer)
+        Set
             Me("InterfaceOpacity") = value
         End Set
     End Property
@@ -186,7 +186,7 @@ Partial Friend NotInheritable Class MySettings
     
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-     Global.System.Configuration.DefaultSettingValueAttribute("en_US")>  _
+     Global.System.Configuration.DefaultSettingValueAttribute("")>  _
     Public Property Language() As String
         Get
             Return CType(Me("Language"),String)

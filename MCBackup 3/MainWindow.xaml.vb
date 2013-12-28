@@ -54,6 +54,7 @@ Class MainWindow
 
         Log.StartNew()
         Log.Print("Starting MCBackup")
+
         InitializeComponent()
         AddHandler BackupBackgroundWorker.DoWork, New DoWorkEventHandler(AddressOf BackupBackgroundWorker_DoWork)
         AddHandler BackupBackgroundWorker.RunWorkerCompleted, New RunWorkerCompletedEventHandler(AddressOf BackupBackgroundWorker_RunWorkerCompleted)
@@ -77,9 +78,17 @@ Class MainWindow
         NotifyIcon.ContextMenu = ContextMenu
         NotifyIcon.Visible = True
 
+        Dim DefaultLanguage As String = "en_US"
+
+        For Each Str As String In Environment.GetCommandLineArgs()
+            If Str.StartsWith("-defLang=") Then
+                DefaultLanguage = Str.Substring("-defLang=".Length)
+            End If
+        Next
+
         Try
             If My.Settings.Language = "" Then
-                My.Settings.Language = "en_US"
+                My.Settings.Language = DefaultLanguage
                 MCBackup.Language.Load(My.Settings.Language & ".lang")
             Else
                 MCBackup.Language.Load(My.Settings.Language & ".lang")
@@ -88,7 +97,7 @@ Class MainWindow
             Log.Print("Could not load language file: """ & My.Settings.Language & """", Log.Type.Severe)
             Log.Print(ex.Message, Log.Type.Severe)
             ErrorWindow.ShowBox("Error!", "Error: Language file not found (" & My.Settings.Language & ")! MCBackup will now exit.", ex, True)
-            My.Settings.Language = "en_US"
+            My.Settings.Language = DefaultLanguage
             Me.ClsType = CloseType.ForceClose
             Log.Print(Me.ClsType)
             Me.Close()
@@ -339,8 +348,7 @@ Class MainWindow
         Try
             My.Computer.FileSystem.CopyDirectory(BackupInfo(2), My.Settings.BackupsFolderLocation & "\" & BackupInfo(0), True) ' Copy selected save/version/everything to backups folder
             Using SW As New StreamWriter(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0) & "\info.mcb") ' Create information fie (stores description and type)
-                Dim BaseFolderName = BackupInfo(2).Split("\")
-                SW.WriteLine("baseFolderName=" & BaseFolderName.Last) ' Write save/version folder name
+                SW.WriteLine("baseFolderName=" & BackupInfo(2).Split("\").Last) ' Write save/version folder name
                 SW.WriteLine("type=" & BackupInfo(3)) ' Write type in file
                 SW.Write("desc=" & BackupInfo(1)) ' Write description if file
             End Using
