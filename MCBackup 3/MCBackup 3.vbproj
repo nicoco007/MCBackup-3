@@ -89,6 +89,9 @@
     <Compile Include="Rename.xaml.vb">
       <DependentUpon>Rename.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Splash.xaml.vb">
+      <DependentUpon>Splash.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UpdateDialog.xaml.vb">
       <DependentUpon>UpdateDialog.xaml</DependentUpon>
     </Compile>
@@ -131,6 +134,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Rename.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Splash.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -213,7 +220,7 @@
     <Resource Include="Resources\MCBackup.ico" />
     <Resource Include="Resources\MCBackup.png" />
     <Resource Include="Resources\nothumb.png" />
-    <SplashScreen Include="Resources\Splash.png" />
+    <Resource Include="Resources\Splash.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

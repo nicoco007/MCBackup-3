@@ -45,10 +45,15 @@ Class MainWindow
     Public WithEvents NotifyIcon As New System.Windows.Forms.NotifyIcon
 
     Public AutoBackupWindow As New AutoBackup
+    Private Splash As New Splash
 #End Region
 
 #Region "Load"
     Public Sub New()
+        Splash.Show()
+
+        Log.StartNew()
+        Log.Print("Starting MCBackup")
         InitializeComponent()
         AddHandler BackupBackgroundWorker.DoWork, New DoWorkEventHandler(AddressOf BackupBackgroundWorker_DoWork)
         AddHandler BackupBackgroundWorker.RunWorkerCompleted, New RunWorkerCompletedEventHandler(AddressOf BackupBackgroundWorker_RunWorkerCompleted)
@@ -71,11 +76,6 @@ Class MainWindow
         ContextMenu.MenuItems.Add(ExitToolbarMenuItem)
         NotifyIcon.ContextMenu = ContextMenu
         NotifyIcon.Visible = True
-    End Sub
-
-    Private Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs)
-        Log.StartNew()
-        Log.Print("Starting MCBackup")
 
         Try
             If My.Settings.Language = "" Then
@@ -102,12 +102,6 @@ Class MainWindow
         ListView.Opacity = OpacityDecimal
         Sidebar.Opacity = OpacityDecimal
 
-        If My.Settings.CheckForUpdates Then
-            Log.Print("Automatic update checking is ON")
-        Else
-            Log.Print("Automatic update checking is OFF")
-        End If
-
         If My.Settings.BackgroundImageLocation = "" Then
             Me.Background = New SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 240, 240, 240))
         Else
@@ -116,6 +110,16 @@ Class MainWindow
             Me.Background = Brush
         End If
 
+        If My.Settings.BackupsFolderLocation = "" Then
+            My.Settings.BackupsFolderLocation = StartupPath & "\backups"
+        End If
+
+        Log.Print("Set Backups folder location to """ & My.Settings.BackupsFolderLocation & """")
+
+        My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation)
+    End Sub
+
+    Private Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs)
         If My.Settings.CheckForUpdates Then
             Try
                 Dim WebClient As New WebClient
@@ -139,14 +143,6 @@ Class MainWindow
             End Try
         End If
 
-        If My.Settings.BackupsFolderLocation = "" Then
-            My.Settings.BackupsFolderLocation = StartupPath & "\backups"
-        End If
-
-        Log.Print("Set Backups folder location to """ & My.Settings.BackupsFolderLocation & """")
-
-        My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation)
-
         If Not My.Computer.FileSystem.FileExists(My.Settings.MinecraftFolderLocation & "\launcher.jar") Then ' Check if saved directory exists AND still has Minecraft installed in it
             If My.Computer.FileSystem.FileExists(AppData & "\.minecraft\launcher.jar") Then ' If not, check for the usual Minecraft folder location
                 My.Settings.MinecraftFolderLocation = AppData & "\.minecraft" ' Set folder location to default Minecraft folder location
@@ -164,6 +160,7 @@ Class MainWindow
         Log.Print("Minecraft folder set to """ & My.Settings.MinecraftFolderLocation & """")
         Log.Print("Saves folder set to """ & My.Settings.SavesFolderLocation & """")
         RefreshBackupsList()
+        Splash.Hide()
     End Sub
 
     Private Sub MinecraftFolderSearch()

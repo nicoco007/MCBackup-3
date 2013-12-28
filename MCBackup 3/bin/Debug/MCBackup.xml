@@ -58,6 +58,14 @@ InitializeComponent
 	<summary>
 Backup
 </summary>
+</member><member name="M:MCBackup.Splash.InitializeComponent">
+	<summary>
+InitializeComponent
+</summary>
+</member><member name="T:MCBackup.Splash">
+	<summary>
+Splash
+</summary>
 </member><member name="M:MCBackup.MainWindow.InitializeComponent">
 	<summary>
 InitializeComponent
