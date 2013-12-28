@@ -70,9 +70,27 @@
             <ListView x:Name="ListView" Opacity="0.75">
                 <ListView.View>
                     <GridView x:Name="ListViewGridView">
-                        <GridViewColumn Header="Name" Width="155" DisplayMemberBinding="{Binding Path=Name}"/>
-                        <GridViewColumn Header="Date Created" Width="150" DisplayMemberBinding="{Binding Path=DateCreated}"/>
-                        <GridViewColumn Header="Description" Width="250" DisplayMemberBinding="{Binding Path=Description}"/>
+                        <GridViewColumn Header="Name" Width="155">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}" Foreground="{Binding Color}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Date Created" Width="150">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding DateCreated}" Foreground="{Binding Color}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Description" Width="250">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Description}" Foreground="{Binding Color}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
                     </GridView>
                 </ListView.View>
             </ListView>

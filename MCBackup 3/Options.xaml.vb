@@ -244,4 +244,12 @@ Public Class Options
         BrowseSavesFolderButton.Content = MCBackup.Language.Dictionnary("OptionsWindow.FoldersPanel.BrowseButton.Content")
         BrowseBackupsFolderButton.Content = MCBackup.Language.Dictionnary("OptionsWindow.FoldersPanel.BrowseButton.Content")
     End Sub
+
+    Private Sub TextBox_TextChanged(sender As Object, e As TextChangedEventArgs)
+        Try
+            ColorRectangle.Fill = New SolidColorBrush(Color.FromRgb(RedColorSlider.Value, GreenColorSlider.Value, BlueColorSlider.Value))
+        Catch ex As Exception
+
+        End Try
+    End Sub
 End Class

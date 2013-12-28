@@ -219,7 +219,15 @@ Class MainWindow
                 Log.Print(ex.Message, Log.Type.Severe)
             End Try
 
-            ListView.Items.Add(New With {Key .Name = Folder.ToString, Key .DateCreated = GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Key .Description = Description})
+            If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
+                ListView.Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(255, 0, 0))))
+            ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
+                ListView.Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(255, 200, 0))))
+            Else
+                ListView.Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(0, 200, 0))))
+            End If
+
+
         Next
 
         ListView_SelectionChanged(New Object, New EventArgs)
@@ -583,17 +591,7 @@ Class MainWindow
         Catch ex As Exception
             Log.Print(ex.Message)
         End Try
-    End Function
-
-    Private Function GetMD5(FilePath As String)
-        Using MD5 As New System.Security.Cryptography.MD5CryptoServiceProvider
-            Dim buffer = MD5.ComputeHash(IO.File.ReadAllBytes(FilePath))
-            Dim sb As New System.Text.StringBuilder
-            For i As Integer = 0 To buffer.Length - 1
-                sb.Append(buffer(i).ToString("x2"))
-            Next
-            Return sb.ToString()
-        End Using
+        Return Nothing
     End Function
 
     Private Sub UpdateProgress(Value As Double)
@@ -602,11 +600,11 @@ Class MainWindow
     End Sub
 
     Private Sub StatusLabel_Content(Text As String)
-        StatusLabel.Dispatcher.Invoke(Sub() StatusLabel_ContentInvoked(Text))
-    End Sub
-
-    Private Sub StatusLabel_ContentInvoked(Text As String)
-        StatusLabel.Content = Text
+        If StatusLabel.Dispatcher.CheckAccess() Then
+            StatusLabel.Content = Text
+        Else
+            StatusLabel.Dispatcher.Invoke(Sub() StatusLabel_Content(Text))
+        End If
     End Sub
 #End Region
 
@@ -789,4 +787,53 @@ Public Class CloseAction
         Cancel
         ForceClose
     End Enum
+End Class
+
+Public Class ListViewBackupItem
+    Private m_Name As String
+    Public Property Name() As String
+        Get
+            Return m_Name
+        End Get
+        Set(value As String)
+            m_Name = value
+        End Set
+    End Property
+
+    Private m_DateCreated As String
+    Public Property DateCreated() As String
+        Get
+            Return m_DateCreated
+        End Get
+        Set(value As String)
+            m_DateCreated = value
+        End Set
+    End Property
+
+    Private m_Description As String
+    Public Property Description() As String
+        Get
+            Return m_Description
+        End Get
+        Set(value As String)
+            m_Description = value
+        End Set
+    End Property
+
+    Private m_Color As SolidColorBrush
+    Public Property Color() As SolidColorBrush
+        Get
+            Return m_Color
+        End Get
+        Set(value As SolidColorBrush)
+            m_Color = value
+        End Set
+    End Property
+
+    Public Sub New(Name As String, DateCreated As String, Description As String, Color As SolidColorBrush)
+        Me.Name = Name
+        Me.DateCreated = DateCreated
+        Me.Description = Description
+        Me.Color = Color
+    End Sub
 End Class
