@@ -23,6 +23,7 @@ Imports System.ComponentModel
 Imports System.Windows.Interop.Imaging
 
 Imports MCBackup.CloseAction
+Imports System.Globalization
 
 Class MainWindow
 #Region "Variables"
@@ -80,11 +81,12 @@ Class MainWindow
 
         Dim DefaultLanguage As String = "en_US"
 
-        For Each Str As String In Environment.GetCommandLineArgs()
-            If Str.StartsWith("-defLang=") Then
-                DefaultLanguage = Str.Substring("-defLang=".Length)
-            End If
-        Next
+        Select Case CultureInfo.CurrentCulture.ThreeLetterISOLanguageName
+            Case "eng"
+                DefaultLanguage = "en_US"
+            Case "fra"
+                DefaultLanguage = "fr_FR"
+        End Select
 
         Try
             If My.Settings.Language = "" Then
