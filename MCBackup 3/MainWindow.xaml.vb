@@ -68,8 +68,6 @@ Class MainWindow
         AddHandler ThumbnailBackgroundWorker.DoWork, New DoWorkEventHandler(AddressOf ThumbnailBackgroundWorker_DoWork)
         AddHandler ThumbnailBackgroundWorker.RunWorkerCompleted, New RunWorkerCompletedEventHandler(AddressOf ThumbnailBackgroundWorker_RunWorkerCompleted)
 
-        Dim Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
-
         NotifyIcon.Icon = New System.Drawing.Icon(Application.GetResourceStream(New Uri("pack://application:,,,/Resources/MCBackup.ico")).Stream)
         Dim ContextMenu As New System.Windows.Forms.ContextMenu
         Dim ExitToolbarMenuItem As New System.Windows.Forms.MenuItem
@@ -128,6 +126,8 @@ Class MainWindow
 
         My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation)
     End Sub
+
+
 
     Private Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs)
         If My.Settings.CheckForUpdates Then
