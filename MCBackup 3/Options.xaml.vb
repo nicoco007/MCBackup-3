@@ -47,6 +47,7 @@ Public Class Options
         RedColorSlider.Value = StatusLabelColor.R
         GreenColorSlider.Value = StatusLabelColor.G
         BlueColorSlider.Value = StatusLabelColor.B
+        Log.Print(StatusLabelColor.ToString)
 
         LoadLanguage()
     End Sub

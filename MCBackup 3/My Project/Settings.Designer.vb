@@ -198,7 +198,7 @@ Partial Friend NotInheritable Class MySettings
     
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-     Global.System.Configuration.DefaultSettingValueAttribute("#00000000")>  _
+     Global.System.Configuration.DefaultSettingValueAttribute("#FF000000")>  _
     Public Property StatusLabelColor() As Global.System.Windows.Media.Color
         Get
             Return CType(Me("StatusLabelColor"),Global.System.Windows.Media.Color)

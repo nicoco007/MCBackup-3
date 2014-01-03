@@ -6,7 +6,7 @@ Public Class CloseToTray
     Sub New()
         InitializeComponent()
         LoadLanguage()
-        Me.Height = 125
+        Me.Height = 120
     End Sub
 
     Private Sub YesButton_Click(sender As Object, e As RoutedEventArgs) Handles YesButton.Click
@@ -31,7 +31,6 @@ Public Class CloseToTray
         My.Settings.CloseToTray = False
         My.Settings.Save()
         Me.Close()
-        Log.Print(SaveCheckBox.ActualWidth)
     End Sub
 
     Private Sub SaveCheckBox_Click(sender As Object, e As RoutedEventArgs) Handles SaveCheckBox.Click
@@ -39,7 +38,7 @@ Public Class CloseToTray
         If SaveCheckBox.IsChecked Then
             Me.Height = 145
         Else
-            Me.Height = 125
+            Me.Height = 120
         End If
     End Sub
 
