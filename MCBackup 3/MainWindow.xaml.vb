@@ -170,6 +170,7 @@ Partial Class MainWindow
         Log.Print("Saves folder set to """ & My.Settings.SavesFolderLocation & """")
         RefreshBackupsList()
         Splash.Hide()
+        MetroMessageBox.Show("message", "caption", MessageBoxButton.YesNoCancel, MessageBoxImage.Question)
     End Sub
 
     Private Sub MinecraftFolderSearch()

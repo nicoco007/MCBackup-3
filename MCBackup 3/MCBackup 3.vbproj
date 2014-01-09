@@ -95,6 +95,9 @@
     </Compile>
     <Compile Include="Language.vb" />
     <Compile Include="Log.vb" />
+    <Compile Include="MetroMessageBox.xaml.vb">
+      <DependentUpon>MetroMessageBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Options.xaml.vb">
       <DependentUpon>Options.xaml</DependentUpon>
     </Compile>
@@ -145,6 +148,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="MetroMessageBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Options.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -201,8 +208,9 @@
     </Compile>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources1.Designer.vb</LastGenOutput>
     </EmbeddedResource>
     <None Include="My Project\app.manifest" />
     <None Include="My Project\Settings.settings">
@@ -238,6 +246,11 @@
     <Resource Include="Resources\MCBackup.png" />
     <Resource Include="Resources\nothumb.png" />
     <Resource Include="Resources\Splash.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\msgbox.error.png" />
+    <Resource Include="Resources\msgbox.info.png" />
+    <Resource Include="Resources\msgbox.question.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

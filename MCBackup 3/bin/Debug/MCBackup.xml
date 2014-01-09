@@ -6,7 +6,15 @@ MCBackup
 </name>
 </assembly>
 <members>
-<member name="M:MCBackup.AutoBackup.InitializeComponent">
+<member name="M:MCBackup.MainWindow.InitializeComponent">
+	<summary>
+InitializeComponent
+</summary>
+</member><member name="T:MCBackup.MainWindow">
+	<summary>
+MainWindow
+</summary>
+</member><member name="M:MCBackup.AutoBackup.InitializeComponent">
 	<summary>
 InitializeComponent
 </summary>
@@ -38,14 +46,6 @@ InitializeComponent
 	<summary>
 CloseToTray
 </summary>
-</member><member name="M:MCBackup.About.InitializeComponent">
-	<summary>
-InitializeComponent
-</summary>
-</member><member name="T:MCBackup.About">
-	<summary>
-About
-</summary>
 </member><member name="M:MCBackup.Application.InitializeComponent">
 	<summary>
 InitializeComponent
@@ -66,6 +66,14 @@ InitializeComponent
 	<summary>
 Backup
 </summary>
+</member><member name="M:MCBackup.MetroMessageBox.InitializeComponent">
+	<summary>
+InitializeComponent
+</summary>
+</member><member name="T:MCBackup.MetroMessageBox">
+	<summary>
+MetroMessageBox
+</summary>
 </member><member name="M:MCBackup.Splash.InitializeComponent">
 	<summary>
 InitializeComponent
@@ -73,22 +81,6 @@ InitializeComponent
 </member><member name="T:MCBackup.Splash">
 	<summary>
 Splash
-</summary>
-</member><member name="M:MCBackup.MainWindow.InitializeComponent">
-	<summary>
-InitializeComponent
-</summary>
-</member><member name="T:MCBackup.MainWindow">
-	<summary>
-MainWindow
-</summary>
-</member><member name="M:MCBackup.Options.InitializeComponent">
-	<summary>
-InitializeComponent
-</summary>
-</member><member name="T:MCBackup.Options">
-	<summary>
-Options
 </summary>
 </member><member name="M:MCBackup.UpdateDialog.InitializeComponent">
 	<summary>
@@ -98,6 +90,22 @@ InitializeComponent
 	<summary>
 UpdateDialog
 </summary>
+</member><member name="M:MCBackup.Options.InitializeComponent">
+	<summary>
+InitializeComponent
+</summary>
+</member><member name="T:MCBackup.Options">
+	<summary>
+Options
+</summary>
+</member><member name="M:MCBackup.About.InitializeComponent">
+	<summary>
+InitializeComponent
+</summary>
+</member><member name="T:MCBackup.About">
+	<summary>
+About
+</summary>
 </member><member name="P:MCBackup.My.Resources.Resources.ResourceManager">
 	<summary>
   Retourne l'instance ResourceManager mise en cache utilisée par cette classe.
@@ -106,6 +114,18 @@ UpdateDialog
 	<summary>
   Remplace la propriété CurrentUICulture du thread actuel pour toutes
   les recherches de ressources à l'aide de cette classe de ressource fortement typée.
+</summary>
+</member><member name="P:MCBackup.My.Resources.Resources.msgbox_error">
+	<summary>
+  Recherche une ressource localisée de type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:MCBackup.My.Resources.Resources.msgbox_info">
+	<summary>
+  Recherche une ressource localisée de type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:MCBackup.My.Resources.Resources.msgbox_question">
+	<summary>
+  Recherche une ressource localisée de type System.Drawing.Bitmap.
 </summary>
 </member><member name="T:MCBackup.My.Resources.Resources">
 	<summary>
