@@ -36,7 +36,7 @@ Public Class CloseToTray
     Private Sub SaveCheckBox_Click(sender As Object, e As RoutedEventArgs) Handles SaveCheckBox.Click
         CancelButton.IsEnabled = Not SaveCheckBox.IsChecked
         If SaveCheckBox.IsChecked Then
-            Me.Height = 145
+            Me.Height = 140
         Else
             Me.Height = 120
         End If
@@ -54,7 +54,6 @@ Public Class CloseToTray
 
     Private Sub CloseToTrayWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles CloseToTrayWindow.Loaded
         Dim Margin = SaveCheckBox.Margin
-        Log.Print(SaveCheckBox.ActualWidth)
         Margin.Left = (Grid.Width / 2) - (SaveCheckBox.ActualWidth / 2)
         SaveCheckBox.Margin = Margin
     End Sub

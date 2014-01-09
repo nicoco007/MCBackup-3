@@ -5,7 +5,7 @@ Public Class ErrorWindow
     Shared newMessageBox As ErrorWindow
     Shared Button As Integer
 
-    Public Shared Function ShowBox(Title As String, Message As String, Exception As Exception, IsLanguageError As Boolean) As Integer
+    Public Overloads Shared Function Show(Title As String, Message As String, Exception As Exception, IsLanguageError As Boolean) As Integer
         newMessageBox = New ErrorWindow
         newMessageBox.Title = Title
         newMessageBox.MessageLabel.Content = Message
@@ -15,7 +15,7 @@ Public Class ErrorWindow
         Return Button
     End Function
 
-    Public Shared Sub ShowBox(Title As String, Message As String, Exception As Exception)
+    Public Overloads Shared Function Show(Title As String, Message As String, Exception As Exception)
         If Application.Current.Dispatcher.CheckAccess() Then
             newMessageBox = New ErrorWindow
             newMessageBox.Title = Title
@@ -25,10 +25,11 @@ Public Class ErrorWindow
             newMessageBox.CopyToClipboardButton.Content = MCBackup.Language.Dictionnary("ErrorForm.CopyToClipboardButton.Content")
             System.Media.SystemSounds.Hand.Play()
             newMessageBox.ShowDialog()
+            Return Button
         Else
-            Application.Current.Dispatcher.Invoke(Sub() ShowBox(Title, Message, Exception))
+            Return Application.Current.Dispatcher.Invoke(Function() Show(Title, Message, Exception))
         End If
-    End Sub
+    End Function
 
     Private Sub CopyToClipboardButton_Click(sender As Object, e As RoutedEventArgs) Handles CopyToClipboardButton.Click
         Clipboard.SetData(DataFormats.Text, newMessageBox.ErrorTextBlock.Text)

@@ -25,7 +25,7 @@ Imports System.Windows.Interop.Imaging
 Imports MCBackup.CloseAction
 Imports System.Globalization
 
-Class MainWindow
+Partial Class MainWindow
 #Region "Variables"
     Private AppData As String = Environ("APPDATA")
     Public BackupInfo(3) As String
@@ -57,6 +57,7 @@ Class MainWindow
         Log.Print("Starting MCBackup")
 
         InitializeComponent()
+
         AddHandler BackupBackgroundWorker.DoWork, New DoWorkEventHandler(AddressOf BackupBackgroundWorker_DoWork)
         AddHandler BackupBackgroundWorker.RunWorkerCompleted, New RunWorkerCompletedEventHandler(AddressOf BackupBackgroundWorker_RunWorkerCompleted)
         AddHandler DeleteForRestoreBackgroundWorker.DoWork, New DoWorkEventHandler(AddressOf DeleteForRestoreBackgroundWorker_DoWork)
@@ -67,6 +68,8 @@ Class MainWindow
         AddHandler DeleteBackgroundWorker.RunWorkerCompleted, New RunWorkerCompletedEventHandler(AddressOf DeleteBackgroundWorker_RunWorkerCompleted)
         AddHandler ThumbnailBackgroundWorker.DoWork, New DoWorkEventHandler(AddressOf ThumbnailBackgroundWorker_DoWork)
         AddHandler ThumbnailBackgroundWorker.RunWorkerCompleted, New RunWorkerCompletedEventHandler(AddressOf ThumbnailBackgroundWorker_RunWorkerCompleted)
+
+        Me.Title = "MCBackup " & ApplicationVersion
 
         NotifyIcon.Icon = New System.Drawing.Icon(Application.GetResourceStream(New Uri("pack://application:,,,/Resources/MCBackup.ico")).Stream)
         Dim ContextMenu As New System.Windows.Forms.ContextMenu
@@ -96,17 +99,14 @@ Class MainWindow
         Catch ex As Exception
             Log.Print("Could not load language file: """ & My.Settings.Language & """", Log.Type.Severe)
             Log.Print(ex.Message, Log.Type.Severe)
-            ErrorWindow.ShowBox("Error!", "Error: Language file not found (" & My.Settings.Language & ")! MCBackup will now exit.", ex, True)
+            ErrorWindow.Show("Error!", "Error: Language file not found (" & My.Settings.Language & ")! MCBackup will now exit.", ex, True)
             My.Settings.Language = DefaultLanguage
             Me.ClsType = CloseType.ForceClose
-            Log.Print(Me.ClsType)
             Me.Close()
-            Log.Print(Me.ClsType)
         End Try
 
         Main.ListView.Opacity = My.Settings.InterfaceOpacity / 100
         Main.Sidebar.Background = New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, 255, 255, 255))
-        Main.MenuBar.Opacity = My.Settings.InterfaceOpacity / 100
 
         StatusLabel.Foreground = New SolidColorBrush(My.Settings.StatusLabelColor)
 
@@ -127,8 +127,6 @@ Class MainWindow
         My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation)
     End Sub
 
-
-
     Private Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs)
         If My.Settings.CheckForUpdates Then
             Try
@@ -145,6 +143,7 @@ Class MainWindow
                     UpdateDialog.Show()
                 ElseIf LatestVersionInt < ApplicationVersionInt Then
                     Log.Print("MCBackup is running in beta mode (Version " & ApplicationVersion & ")")
+                    Me.Title += " BETA"
                 Else
                     Log.Print("MCBackup is up-to-date (Version " & ApplicationVersion & ")")
                 End If
@@ -231,7 +230,7 @@ Class MainWindow
             ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
                 ListView.Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(225, 175, 0))))
             Else
-                ListView.Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(0, 200, 0))))
+                ListView.Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(0, 100, 0))))
             End If
         Next
 
@@ -308,17 +307,16 @@ Class MainWindow
             Main.OriginalNameLabel.Text = MCBackup.Language.Dictionnary("MainWindow.OriginalNameLabel.Text") & ":"
             Main.TypeLabel.Text = MCBackup.Language.Dictionnary("MainWindow.TypeLabel.Text") & ":"
 
-            Main.MenuBar.Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(0).Header")
-            Main.MenuBar.Items(0).Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(0).Items(0).Header")
-            Main.MenuBar.Items(1).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Header")
-            Main.MenuBar.Items(1).Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Items(0).Header")
-            Main.MenuBar.Items(1).Items(1).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Items(1).Header")
-            Main.MenuBar.Items(2).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(2).Header")
-            Main.MenuBar.Items(2).Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(2).Items(0).Header")
-            Main.MenuBar.Items(3).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Header")
-            Main.MenuBar.Items(3).Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(0).Header")
-            Main.MenuBar.Items(3).Items(2).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(2).Header")
-            Main.MenuBar.Items(3).Items(3).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(3).Header")
+            Main.EditToolbarButton.Content = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Header")
+            Main.EditContextMenu.Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Items(0).Header")
+            Main.EditContextMenu.Items(1).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Items(1).Header")
+            Main.ToolsToolbarButton.Content = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(2).Header")
+            Main.ToolsContextMenu.Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(2).Items(0).Header")
+            Main.HelpToolbarButton.Content = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Header")
+            Main.HelpContextMenu.Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(0).Header")
+            Main.HelpContextMenu.Items(2).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(2).Header")
+            Main.HelpContextMenu.Items(3).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(3).Header")
+
 
             Main.StatusLabel.Content = MCBackup.Language.Dictionnary("Status.Ready")
         Catch
@@ -355,7 +353,7 @@ Class MainWindow
                 SW.Write("desc=" & BackupInfo(1)) ' Write description if file
             End Using
         Catch ex As Exception
-            ErrorWindow.ShowBox(MCBackup.Language.Dictionnary("Message.Caption.Error"), MCBackup.Language.Dictionnary("Message.BackupError"), ex)
+            ErrorWindow.Show(MCBackup.Language.Dictionnary("Message.Caption.Error"), MCBackup.Language.Dictionnary("Message.BackupError"), ex)
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionnary("BalloonTip.Title.BackupError"), MCBackup.Language.Dictionnary("BalloonTip.BackupError"), System.Windows.Forms.ToolTipIcon.Error)
             Log.Print(ex.Message, Log.Type.Severe)
         End Try
@@ -534,7 +532,7 @@ Class MainWindow
                 My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\thumb.png")
             End If
         Catch ex As Exception
-            ErrorWindow.ShowBox(MCBackup.Language.Dictionnary("Message.Caption.Error"), MCBackup.Language.Dictionnary("Message.RestoreError"), ex)
+            ErrorWindow.Show(MCBackup.Language.Dictionnary("Message.Caption.Error"), MCBackup.Language.Dictionnary("Message.RestoreError"), ex)
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionnary("BalloonTip.Title.RestoreError"), MCBackup.Language.Dictionnary("BalloonTip.RestoreError"), System.Windows.Forms.ToolTipIcon.Error)
             Log.Print(ex.Message, Log.Type.Severe)
         End Try
@@ -670,7 +668,7 @@ Class MainWindow
             Try
                 My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & Item, FileIO.DeleteDirectoryOption.DeleteAllContents)
             Catch ex As Exception
-                ErrorWindow.ShowBox(MCBackup.Language.Dictionnary("Message.Caption.Error"), MCBackup.Language.Dictionnary("Message.DeleteError"), ex)
+                ErrorWindow.Show(MCBackup.Language.Dictionnary("Message.Caption.Error"), MCBackup.Language.Dictionnary("Message.DeleteError"), ex)
             End Try
         Next
     End Sub
@@ -774,16 +772,35 @@ Class MainWindow
         End If
 
         Try
-            Log.Print("Killing Cartograph Process")
-            MCMap.Kill()
-        Catch ex As Exception
-
+            If Process.GetProcessesByName("mcmap").Count > 0 Then
+                Log.Print("Killing Cartograph Process")
+                MCMap.Kill()
+            End If
+        Catch
         End Try
 
         Log.Print("Someone is closing me!")
         My.Settings.Save()
     End Sub
 #End Region
+
+    Private Sub EditToolbarButton_Click(sender As Object, e As RoutedEventArgs) Handles EditToolbarButton.Click
+        EditContextMenu.PlacementTarget = EditToolbarButton
+        EditContextMenu.Placement = Primitives.PlacementMode.Bottom
+        EditContextMenu.IsOpen = True
+    End Sub
+
+    Private Sub ToolsToolbarButton_Click(sender As Object, e As RoutedEventArgs) Handles ToolsToolbarButton.Click
+        ToolsContextMenu.PlacementTarget = ToolsToolbarButton
+        ToolsContextMenu.Placement = Primitives.PlacementMode.Bottom
+        ToolsContextMenu.IsOpen = True
+    End Sub
+
+    Private Sub HelpToolbarButton_Click(sender As Object, e As RoutedEventArgs) Handles HelpToolbarButton.Click
+        HelpContextMenu.PlacementTarget = HelpToolbarButton
+        HelpContextMenu.Placement = Primitives.PlacementMode.Bottom
+        HelpContextMenu.IsOpen = True
+    End Sub
 End Class
 
 Public Class CloseAction

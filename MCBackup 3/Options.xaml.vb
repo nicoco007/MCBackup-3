@@ -19,7 +19,7 @@ Imports System.Linq
 Imports System.Security.Permissions
 Imports System.Security
 
-Public Class Options
+Partial Public Class Options
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
     Private FolderBrowserDialog As New FolderBrowserDialog
     Private OpenFileDialog As New OpenFileDialog
@@ -47,7 +47,6 @@ Public Class Options
         RedColorSlider.Value = StatusLabelColor.R
         GreenColorSlider.Value = StatusLabelColor.G
         BlueColorSlider.Value = StatusLabelColor.B
-        Log.Print(StatusLabelColor.ToString)
 
         LoadLanguage()
     End Sub
@@ -137,7 +136,6 @@ Public Class Options
         If Me.IsLoaded Then
             Main.ListView.Opacity = ListViewOpacitySlider.Value / 100
             Main.Sidebar.Background = New SolidColorBrush(Color.FromArgb(ListViewOpacitySlider.Value * 2.55, 255, 255, 255))
-            Main.MenuBar.Opacity = ListViewOpacitySlider.Value / 100
             OpacityPercentLabel.Content = Math.Round(ListViewOpacitySlider.Value, 0).ToString & "%"
         End If
     End Sub

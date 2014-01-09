@@ -1,6 +1,6 @@
 ﻿Imports System.Windows.Threading
 
-Public Class AutoBackup
+Partial Public Class AutoBackup
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
     Public IsMoving As Boolean
 
@@ -31,7 +31,7 @@ Public Class AutoBackup
         End Try
     End Sub
 
-#Region "Window crap"
+#Region "Window Handles"
     Private Sub AutoBackupWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles AutoBackupWindow.Loaded
         ReloadSaves()
         LoadLanguage()
@@ -42,7 +42,7 @@ Public Class AutoBackup
         Me.Hide()
         Main.Left = Main.Left + (Me.Width / 2)
         Try
-            Main.AutomaticBackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.AutomaticBackupButton.Content") & ">>"
+            Main.AutomaticBackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.AutomaticBackupButton.Content") & " >>"
         Catch
         End Try
     End Sub
@@ -53,44 +53,6 @@ Public Class AutoBackup
             Main.Left = Me.Left - (Main.Width + 5)
             Main.Top = Me.Top
             IsMoving = False
-        End If
-    End Sub
-#End Region
-    
-#Region "NumericUpDown"
-    Private Sub PlusRepeatButton_Click(sender As Object, e As RoutedEventArgs) Handles PlusRepeatButton.Click
-        If Not MinutesTextBox.Text = "60" Then
-            MinutesTextBox.Text = MinutesTextBox.Text + 1
-        End If
-    End Sub
-
-    Private Sub MinusRepeatButton_Click(sender As Object, e As RoutedEventArgs) Handles MinusRepeatButton.Click
-        If Not MinutesTextBox.Text = "5" Then
-            MinutesTextBox.Text = MinutesTextBox.Text - 1
-        End If
-    End Sub
-
-    Private Sub MinutesTextBox_KeyDown(sender As Object, e As KeyEventArgs) Handles MinutesTextBox.KeyDown
-        If e.Key < 34 Or e.Key > 43 Then
-            If e.Key < 74 Or e.Key > 83 Then
-                e.Handled = True
-            End If
-        End If
-
-        If e.Key = Key.Return Then
-            MinutesTextBox_LostFocus(New Object, New RoutedEventArgs)
-        End If
-    End Sub
-
-    Private Sub MinutesTextBox_LostFocus(sender As Object, e As RoutedEventArgs) Handles MinutesTextBox.LostFocus
-        If MinutesTextBox.Text < 5 Then
-            System.Media.SystemSounds.Exclamation.Play()
-            MinutesTextBox.Text = "5"
-        End If
-
-        If MinutesTextBox.Text > 60 Then
-            System.Media.SystemSounds.Exclamation.Play()
-            MinutesTextBox.Text = "60"
         End If
     End Sub
 #End Region
@@ -105,9 +67,7 @@ Public Class AutoBackup
             StartButton.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.StartButton.Content.Start")
             TimerStarted = False
 
-            MinutesTextBox.IsEnabled = True
-            MinusRepeatButton.IsEnabled = True
-            PlusRepeatButton.IsEnabled = True
+            MinutesNumUpDown.IsEnabled = True
             SaveListBox.IsEnabled = True
             RefreshButton.IsEnabled = True
             PrefixTextBox.IsEnabled = True
@@ -117,16 +77,14 @@ Public Class AutoBackup
                 MessageBox.Show("Please select a world to automatically back up.", "Error!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK)
                 Exit Sub
             End If
-            Minutes = MinutesTextBox.Text
+            Minutes = MinutesNumUpDown.Value
             Seconds = 0
-            TimeLabel.Content = IntToText(MinutesTextBox.Text) & ":00"
+            TimeLabel.Content = IntToText(MinutesNumUpDown.Value) & ":00"
             Timer.Start()
             StartButton.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.StartButton.Content.Stop")
             TimerStarted = True
 
-            MinutesTextBox.IsEnabled = False
-            MinusRepeatButton.IsEnabled = False
-            PlusRepeatButton.IsEnabled = False
+            MinutesNumUpDown.IsEnabled = False
             SaveListBox.IsEnabled = False
             RefreshButton.IsEnabled = False
             PrefixTextBox.IsEnabled = False
@@ -156,9 +114,9 @@ Public Class AutoBackup
 
             If My.Settings.ShowBalloonTips Then Main.NotifyIcon.ShowBalloonTip(2000, "Automated Backup Started", "An automated backup started for """ & WorldName & """", Forms.ToolTipIcon.Info)
 
-            Minutes = MinutesTextBox.Text
+            Minutes = MinutesNumUpDown.Value
             Seconds = 0
-            TimeLabel.Content = IntToText(MinutesTextBox.Text) & ":00"
+            TimeLabel.Content = IntToText(MinutesNumUpDown.Value) & ":00"
         End If
     End Sub
 #End Region
@@ -194,7 +152,7 @@ Public Class AutoBackup
         Return Year & "-" & Month & "-" & Day & " (" & Hours & "h" & Minutes & "m" & Seconds & "s)"
     End Function
 #End Region
-    
+
 
     Private Sub RefreshButton_Click(sender As Object, e As RoutedEventArgs) Handles RefreshButton.Click
         ReloadSaves()
