@@ -1,10 +1,13 @@
 ﻿<Window x:Class="Splash"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Splash" Height="320" Width="530" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None" Topmost="True">
+    Title="Splash" Height="340" Width="530" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None">
     <Grid>
-        <Grid.Background>
-            <ImageBrush ImageSource="Resources/Splash.png"/>
-        </Grid.Background>
+        <Image Source="Resources/Splash.png" Height="320" Width="530" VerticalAlignment="Top"/>
+        <ProgressBar x:Name="Progress" HorizontalAlignment="Left" VerticalAlignment="Top" Width="530" Margin="0,320,0,0" Height="20" Maximum="5"/>
+        <Label x:Name="Status" Content="Starting..." HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,294,0,0" RenderTransformOrigin="-1.632,4.885" Width="530" Foreground="White" HorizontalContentAlignment="Center"/>
+        <Label Content="MCBackup v3.5.0.0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,255,0,0" Foreground="White" FontFamily="Arial" FontSize="16"/>
+        <Label Content="Copyright © 2013 nicoco007" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="14,275,0,0" Foreground="White" FontFamily="Arial" FontSize="13"/>
     </Grid>
 </Window>

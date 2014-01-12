@@ -53,6 +53,9 @@ Partial Class MainWindow
     Public Sub New()
         Splash.Show()
 
+        Splash.Status.Content = "Starting..."
+        Splash.Progress.Value = 0
+
         Log.StartNew()
         Log.Print("Starting MCBackup")
 
@@ -80,6 +83,9 @@ Partial Class MainWindow
         NotifyIcon.ContextMenu = ContextMenu
         NotifyIcon.Visible = True
 
+        Splash.Status.Content = "Loading Language..."
+        Splash.Progress.Value = 1
+
         Dim DefaultLanguage As String = "en_US"
 
         Select Case CultureInfo.CurrentCulture.ThreeLetterISOLanguageName
@@ -105,6 +111,9 @@ Partial Class MainWindow
             Me.Close()
         End Try
 
+        Splash.Status.Content = "Loading properties..."
+        Splash.Progress.Value = 2
+
         Main.ListView.Opacity = My.Settings.InterfaceOpacity / 100
         Main.Sidebar.Background = New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, 255, 255, 255))
 
@@ -128,10 +137,13 @@ Partial Class MainWindow
     End Sub
 
     Private Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs)
+        Splash.Status.Content = "Checking for updates..."
+        Splash.Progress.Value = 3
+
         If My.Settings.CheckForUpdates Then
             Try
                 Dim WebClient As New WebClient
-                LatestVersion = WebClient.DownloadString("http://content.nicoco007.com/downloads/mcbackup-3/version")
+                WebClient.DownloadString("http://content.nicoco007.com/downloads/mcbackup-3/version")
 
                 Dim LatestVersionInt As Integer = LatestVersion.Replace(".", "")
                 Dim ApplicationVersionInt As Integer = ApplicationVersion.Replace(".", "")
@@ -152,12 +164,15 @@ Partial Class MainWindow
             End Try
         End If
 
+        Splash.Status.Content = "Finding Minecraft..."
+        Splash.Progress.Value = 4
+
         If Not My.Computer.FileSystem.FileExists(My.Settings.MinecraftFolderLocation & "\launcher.jar") Then ' Check if saved directory exists AND still has Minecraft installed in it
             If My.Computer.FileSystem.FileExists(AppData & "\.minecraft\launcher.jar") Then ' If not, check for the usual Minecraft folder location
                 My.Settings.MinecraftFolderLocation = AppData & "\.minecraft" ' Set folder location to default Minecraft folder location
                 My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
             Else
-                MessageBox.Show(MCBackup.Language.Dictionnary("Message.Error.NoMinecraftInstall"), MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                MetroMessageBox.Show(MCBackup.Language.Dictionnary("Message.Error.NoMinecraftInstall"), MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
                 Log.Print("Minecraft folder not found", Log.Type.Warning)
                 MinecraftFolderSearch()
                 Exit Sub
@@ -169,21 +184,22 @@ Partial Class MainWindow
         Log.Print("Minecraft folder set to """ & My.Settings.MinecraftFolderLocation & """")
         Log.Print("Saves folder set to """ & My.Settings.SavesFolderLocation & """")
         RefreshBackupsList()
+        Splash.Status.Content = "Done."
+        Splash.Progress.Value = 5
         Splash.Hide()
-        MetroMessageBox.Show("message", "caption", MessageBoxButton.YesNoCancel, MessageBoxImage.Question)
     End Sub
 
     Private Sub MinecraftFolderSearch()
         If FolderBrowserDialog.ShowDialog = Windows.Forms.DialogResult.OK Then
             If My.Computer.FileSystem.FileExists(FolderBrowserDialog.SelectedPath & "\launcher.jar") Then ' Check if Minecraft exists in that folder
-                MessageBox.Show(String.Format(MCBackup.Language.Dictionnary("Message.Info.MinecraftFolderSetTo"), FolderBrowserDialog.SelectedPath), MCBackup.Language.Dictionnary("Message.Caption.Information"), MessageBoxButton.OK, MessageBoxImage.Error) ' Tell user that folder has been selected successfully
+                MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionnary("Message.Info.MinecraftFolderSetTo"), FolderBrowserDialog.SelectedPath), MCBackup.Language.Dictionnary("Message.Caption.Information"), MessageBoxButton.OK, MessageBoxImage.Error) ' Tell user that folder has been selected successfully
                 My.Settings.MinecraftFolderLocation = FolderBrowserDialog.SelectedPath
                 My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
                 Log.Print("Minecraft folder set to """ & My.Settings.MinecraftFolderLocation & """")
                 Log.Print("Saves folder set to """ & My.Settings.SavesFolderLocation & """")
                 Exit Sub
             Else
-                If MessageBox.Show(MCBackup.Language.Dictionnary("Message.NotInstalledInFolder"), MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = Windows.Forms.DialogResult.Yes Then ' Ask if user wants to try finding folder again
+                If MetroMessageBox.Show(MCBackup.Language.Dictionnary("Message.NotInstalledInFolder"), MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = Windows.Forms.DialogResult.Yes Then ' Ask if user wants to try finding folder again
                     MinecraftFolderSearch() ' Restart from beginning if "Yes"
                 Else
                     Me.ClsType = CloseType.ForceClose
@@ -471,7 +487,7 @@ Partial Class MainWindow
 
 #Region "Restore"
     Private Sub RestoreButton_Click(sender As Object, e As EventArgs) Handles RestoreButton.Click
-        If MessageBox.Show(MCBackup.Language.Dictionnary("Message.RestoreAreYouSure"), MCBackup.Language.Dictionnary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = Forms.DialogResult.Yes Then
+        If MetroMessageBox.Show(MCBackup.Language.Dictionnary("Message.RestoreAreYouSure"), MCBackup.Language.Dictionnary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = Forms.DialogResult.Yes Then
             Log.Print("Starting Restore")
             RestoreInfo(0) = ListView.SelectedItems(0).Name ' Set place 0 of RestoreInfo array to the backup name
 
@@ -652,7 +668,7 @@ Partial Class MainWindow
     Private ListViewItems As New ArrayList
 
     Private Sub DeleteButton_Click(sender As Object, e As EventArgs) Handles DeleteButton.Click
-        If MessageBox.Show(MCBackup.Language.Dictionnary("Message.DeleteAreYouSure"), MCBackup.Language.Dictionnary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = Windows.Forms.DialogResult.Yes Then
+        If MetroMessageBox.Show(MCBackup.Language.Dictionnary("Message.DeleteAreYouSure"), MCBackup.Language.Dictionnary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = Windows.Forms.DialogResult.Yes Then
             ListViewItems.Clear()
             For Each Item In ListView.SelectedItems
                 ListViewItems.Add(Item.Name)

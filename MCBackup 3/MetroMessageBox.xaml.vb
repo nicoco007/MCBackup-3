@@ -86,12 +86,15 @@
             Case 16
                 MsgBox.Image.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/msgbox.error.png"))
                 MsgBox.Message.Margin = New Thickness(40, 0, 0, 44)
+                System.Media.SystemSounds.Hand.Play()
             Case 32
                 MsgBox.Image.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/msgbox.question.png"))
                 MsgBox.Message.Margin = New Thickness(40, 0, 0, 44)
+                System.Media.SystemSounds.Asterisk.Play()
             Case 64
                 MsgBox.Image.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/msgbox.info.png"))
                 MsgBox.Message.Margin = New Thickness(40, 0, 0, 44)
+                System.Media.SystemSounds.Asterisk.Play()
         End Select
     End Sub
 
