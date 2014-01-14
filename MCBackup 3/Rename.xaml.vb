@@ -29,7 +29,7 @@ Public Class Rename
 
     Private Sub RenameButton_Click(sender As Object, e As EventArgs) Handles RenameButton.Click
         If TextBox.Text = "" Then
-            MessageBox.Show("Please enter a valid name.", "Error!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK)
+            MetroMessageBox.Show("Please enter a valid name.", "Error!", MessageBoxButton.OK, MessageBoxImage.Error)
             Exit Sub
         End If
 
@@ -37,11 +37,11 @@ Public Class Rename
             If Not My.Computer.FileSystem.DirectoryExists(My.Settings.BackupsFolderLocation & "\" & TextBox.Text) Then
                 My.Computer.FileSystem.RenameDirectory(My.Settings.BackupsFolderLocation & "\" & Main.ListView.SelectedItem.Name, TextBox.Text)
             Else
-                MessageBox.Show("That backup already exists! Please enter another name.", "Error!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK)
+                MetroMessageBox.Show("That backup already exists! Please enter another name.", "Error!", MessageBoxButton.OK, MessageBoxImage.Error)
                 Exit Sub
             End If
         Catch ex As Exception
-            MessageBox.Show("Could not rename backup: " & vbNewLine & ex.Message)
+            ErrorWindow.Show("Could not rename backup: ", ex)
             Log.Print(ex.Message, Log.Type.Severe)
         End Try
         Main.RefreshBackupsList()

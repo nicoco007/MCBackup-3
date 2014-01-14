@@ -105,7 +105,7 @@ Partial Class MainWindow
         Catch ex As Exception
             Log.Print("Could not load language file: """ & My.Settings.Language & """", Log.Type.Severe)
             Log.Print(ex.Message, Log.Type.Severe)
-            ErrorWindow.Show("Error!", "Error: Language file not found (" & My.Settings.Language & ")! MCBackup will now exit.", ex, True)
+            ErrorWindow.Show("Error: Language file not found (" & My.Settings.Language & ")! MCBackup will now exit.", ex)
             My.Settings.Language = DefaultLanguage
             Me.ClsType = CloseType.ForceClose
             Me.Close()
@@ -136,32 +136,18 @@ Partial Class MainWindow
         My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation)
     End Sub
 
+    Private Sub WebClient_DownloadStringCompleted(sender As Object, e As DownloadStringCompletedEventArgs)
+        
+    End Sub
+
     Private Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs)
         Splash.Status.Content = "Checking for updates..."
         Splash.Progress.Value = 3
 
         If My.Settings.CheckForUpdates Then
-            Try
                 Dim WebClient As New WebClient
-                WebClient.DownloadString("http://content.nicoco007.com/downloads/mcbackup-3/version")
-
-                Dim LatestVersionInt As Integer = LatestVersion.Replace(".", "")
-                Dim ApplicationVersionInt As Integer = ApplicationVersion.Replace(".", "")
-
-                If LatestVersionInt > ApplicationVersionInt Then
-                    Log.Print("New MCBackup version available (Version " & LatestVersion & ")!")
-                    Dim UpdateDialog As New UpdateDialog
-                    UpdateDialog.Owner = Me
-                    UpdateDialog.Show()
-                ElseIf LatestVersionInt < ApplicationVersionInt Then
-                    Log.Print("MCBackup is running in beta mode (Version " & ApplicationVersion & ")")
-                    Me.Title += " BETA"
-                Else
-                    Log.Print("MCBackup is up-to-date (Version " & ApplicationVersion & ")")
-                End If
-            Catch ex As Exception
-                Log.Print(ex.Message, Log.Type.Severe)
-            End Try
+                AddHandler WebClient.DownloadStringCompleted, AddressOf WebClient_DownloadStringCompleted
+                WebClient.DownloadStringAsync(New Uri("http://content.nicoco007.com/downloads/mcbackup-3/version"))
         End If
 
         Splash.Status.Content = "Finding Minecraft..."
@@ -370,7 +356,7 @@ Partial Class MainWindow
                 SW.Write("desc=" & BackupInfo(1)) ' Write description if file
             End Using
         Catch ex As Exception
-            ErrorWindow.Show(MCBackup.Language.Dictionnary("Message.Caption.Error"), MCBackup.Language.Dictionnary("Message.BackupError"), ex)
+            ErrorWindow.Show(MCBackup.Language.Dictionnary("Message.BackupError"), ex)
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionnary("BalloonTip.Title.BackupError"), MCBackup.Language.Dictionnary("BalloonTip.BackupError"), System.Windows.Forms.ToolTipIcon.Error)
             Log.Print(ex.Message, Log.Type.Severe)
         End Try
@@ -549,7 +535,7 @@ Partial Class MainWindow
                 My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\thumb.png")
             End If
         Catch ex As Exception
-            ErrorWindow.Show(MCBackup.Language.Dictionnary("Message.Caption.Error"), MCBackup.Language.Dictionnary("Message.RestoreError"), ex)
+            ErrorWindow.Show(MCBackup.Language.Dictionnary("Message.RestoreError"), ex)
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionnary("BalloonTip.Title.RestoreError"), MCBackup.Language.Dictionnary("BalloonTip.RestoreError"), System.Windows.Forms.ToolTipIcon.Error)
             Log.Print(ex.Message, Log.Type.Severe)
         End Try
@@ -685,7 +671,7 @@ Partial Class MainWindow
             Try
                 My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & Item, FileIO.DeleteDirectoryOption.DeleteAllContents)
             Catch ex As Exception
-                ErrorWindow.Show(MCBackup.Language.Dictionnary("Message.Caption.Error"), MCBackup.Language.Dictionnary("Message.DeleteError"), ex)
+                ErrorWindow.Show(MCBackup.Language.Dictionnary("Message.DeleteError"), ex)
             End Try
         Next
     End Sub

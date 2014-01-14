@@ -5,29 +5,28 @@ Public Class ErrorWindow
     Shared newMessageBox As ErrorWindow
     Shared Button As Integer
 
-    Public Overloads Shared Function Show(Title As String, Message As String, Exception As Exception, IsLanguageError As Boolean) As Integer
-        newMessageBox = New ErrorWindow
-        newMessageBox.Title = Title
-        newMessageBox.MessageLabel.Content = Message
-        newMessageBox.ErrorTextBlock.Text = Exception.Message
-        System.Media.SystemSounds.Hand.Play()
-        newMessageBox.ShowDialog()
-        Return Button
-    End Function
-
-    Public Overloads Shared Function Show(Title As String, Message As String, Exception As Exception)
+    Public Overloads Shared Function Show(Message As String, Exception As Exception)
         If Application.Current.Dispatcher.CheckAccess() Then
-            newMessageBox = New ErrorWindow
-            newMessageBox.Title = Title
-            newMessageBox.MessageLabel.Content = Message
-            newMessageBox.ErrorTextBlock.Text = Exception.Message
-            newMessageBox.ContinueButton.Content = MCBackup.Language.Dictionnary("ErrorForm.ContinueButton.Content")
-            newMessageBox.CopyToClipboardButton.Content = MCBackup.Language.Dictionnary("ErrorForm.CopyToClipboardButton.Content")
-            System.Media.SystemSounds.Hand.Play()
-            newMessageBox.ShowDialog()
-            Return Button
+            Try
+                newMessageBox = New ErrorWindow
+                newMessageBox.MessageLabel.Content = Message
+                newMessageBox.ErrorTextBlock.Text = Exception.Message
+                newMessageBox.Title = MCBackup.Language.Dictionnary("Message.Caption.Error")
+                newMessageBox.ContinueButton.Content = MCBackup.Language.Dictionnary("ErrorForm.ContinueButton.Content")
+                newMessageBox.CopyToClipboardButton.Content = MCBackup.Language.Dictionnary("ErrorForm.CopyToClipboardButton.Content")
+                System.Media.SystemSounds.Hand.Play()
+                newMessageBox.ShowDialog()
+                Return Button
+            Catch ex As Exception
+                newMessageBox = New ErrorWindow
+                newMessageBox.MessageLabel.Content = Message
+                newMessageBox.ErrorTextBlock.Text = Exception.Message
+                System.Media.SystemSounds.Hand.Play()
+                newMessageBox.ShowDialog()
+                Return Button
+            End Try
         Else
-            Return Application.Current.Dispatcher.Invoke(Function() Show(Title, Message, Exception))
+            Return Application.Current.Dispatcher.Invoke(Function() Show(Message, Exception))
         End If
     End Function
 
