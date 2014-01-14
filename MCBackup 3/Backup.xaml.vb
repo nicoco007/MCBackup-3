@@ -42,7 +42,7 @@ Public Class Backup
             Next
         Catch ex As Exception
             Log.Print(ex.Message, Log.Type.Severe)
-            MessageBox.Show("Error: " & ex.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error)
+            MetroMessageBox.Show("Error: " & ex.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error)
         End Try
 
         Try
@@ -56,7 +56,7 @@ Public Class Backup
             Next
         Catch ex As Exception
             Log.Print(ex.Message, Log.Type.Severe)
-            MessageBox.Show("Error: " & ex.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error)
+            MetroMessageBox.Show("Error: " & ex.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error)
         End Try
 
         Name_CheckChanged(sender, e)
@@ -79,22 +79,22 @@ Public Class Backup
     End Sub
 
     Private Sub StartButton_Click(sender As Object, e As EventArgs) Handles StartButton.Click
-        If SavesListView.SelectedItems.Count = 0 And SaveRadioButton.IsChecked Then
-            MessageBox.Show("Please choose a save to back up.", "Error!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK)
-            Exit Sub
-        End If
-
-        If VersionsListView.SelectedItems.Count = 0 And VersionRadioButton.IsChecked Then
-            MessageBox.Show("Please choose a version to back up.", "Error!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK)
-            Exit Sub
-        End If
-
         If DateAndTimeRadioButton.IsChecked Then
             Main.BackupInfo(0) = SavesListView.SelectedItem & " " & GetTimeAndDate()
         ElseIf Not CustomNameTextBox.Text = "" Then
             Main.BackupInfo(0) = CustomNameTextBox.Text
         Else
-            MessageBox.Show("Please enter a valid name.", "Error!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK)
+            MetroMessageBox.Show(MCBackup.Language.Dictionnary("Message.EnterValidName"), MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            Exit Sub
+        End If
+
+        If SavesListView.SelectedItems.Count = 0 And SaveRadioButton.IsChecked Then
+            MetroMessageBox.Show(MCBackup.Language.Dictionnary("Message.ChooseSave"), MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            Exit Sub
+        End If
+
+        If VersionsListView.SelectedItems.Count = 0 And VersionRadioButton.IsChecked Then
+            MetroMessageBox.Show(MCBackup.Language.Dictionnary("Message.ChooseVersion"), MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             Exit Sub
         End If
 

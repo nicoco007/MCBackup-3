@@ -6,21 +6,21 @@ MCBackup
 </name>
 </assembly>
 <members>
-<member name="M:MCBackup.MainWindow.InitializeComponent">
-	<summary>
-InitializeComponent
-</summary>
-</member><member name="T:MCBackup.MainWindow">
-	<summary>
-MainWindow
-</summary>
-</member><member name="M:MCBackup.AutoBackup.InitializeComponent">
+<member name="M:MCBackup.AutoBackup.InitializeComponent">
 	<summary>
 InitializeComponent
 </summary>
 </member><member name="T:MCBackup.AutoBackup">
 	<summary>
 AutoBackup
+</summary>
+</member><member name="M:MCBackup.MetroMessageBox.InitializeComponent">
+	<summary>
+InitializeComponent
+</summary>
+</member><member name="T:MCBackup.MetroMessageBox">
+	<summary>
+MetroMessageBox
 </summary>
 </member><member name="M:MCBackup.Rename.InitializeComponent">
 	<summary>
@@ -46,6 +46,14 @@ InitializeComponent
 	<summary>
 CloseToTray
 </summary>
+</member><member name="M:MCBackup.About.InitializeComponent">
+	<summary>
+InitializeComponent
+</summary>
+</member><member name="T:MCBackup.About">
+	<summary>
+About
+</summary>
 </member><member name="M:MCBackup.Application.InitializeComponent">
 	<summary>
 InitializeComponent
@@ -66,14 +74,6 @@ InitializeComponent
 	<summary>
 Backup
 </summary>
-</member><member name="M:MCBackup.MetroMessageBox.InitializeComponent">
-	<summary>
-InitializeComponent
-</summary>
-</member><member name="T:MCBackup.MetroMessageBox">
-	<summary>
-MetroMessageBox
-</summary>
 </member><member name="M:MCBackup.Splash.InitializeComponent">
 	<summary>
 InitializeComponent
@@ -82,13 +82,13 @@ InitializeComponent
 	<summary>
 Splash
 </summary>
-</member><member name="M:MCBackup.UpdateDialog.InitializeComponent">
+</member><member name="M:MCBackup.MainWindow.InitializeComponent">
 	<summary>
 InitializeComponent
 </summary>
-</member><member name="T:MCBackup.UpdateDialog">
+</member><member name="T:MCBackup.MainWindow">
 	<summary>
-UpdateDialog
+MainWindow
 </summary>
 </member><member name="M:MCBackup.Options.InitializeComponent">
 	<summary>
@@ -98,13 +98,13 @@ InitializeComponent
 	<summary>
 Options
 </summary>
-</member><member name="M:MCBackup.About.InitializeComponent">
+</member><member name="M:MCBackup.UpdateDialog.InitializeComponent">
 	<summary>
 InitializeComponent
 </summary>
-</member><member name="T:MCBackup.About">
+</member><member name="T:MCBackup.UpdateDialog">
 	<summary>
-About
+UpdateDialog
 </summary>
 </member><member name="P:MCBackup.My.Resources.Resources.ResourceManager">
 	<summary>

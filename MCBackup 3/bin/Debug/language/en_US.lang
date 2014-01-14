@@ -48,6 +48,9 @@ Message.RestoreAreYouSure="Are you sure you want to restore this backup? This wi
 Message.RestoreError="An error occured during the restore."
 Message.DeleteAreYouSure="Are you sure you want to delete the selected backup(s)?"
 Message.DeleteError="An error occured during the removal."
+Message.EnterValidName="Please enter a valid name."
+Message.ChooseSave="Please choose a save to back up."
+Message.ChooseVersion="Please choose a version to back up."
 
 BalloonTip.Title.BackupError="Backup Error!"
 BalloonTip.BackupError="An error occured during the backup."

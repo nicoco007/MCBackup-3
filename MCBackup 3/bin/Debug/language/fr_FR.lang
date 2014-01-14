@@ -50,6 +50,9 @@ Message.DeleteAreYouSure="Êtes-vous sûr de vouloir supprimer cette/ces sauvega
 Message.DeleteError="Une erreur est survenue durant la suppression."
 Message.DeleteAreYouSure="Are you sure you want to delete the selected backup(s)?"
 Message.DeleteError="An error occured during the removal."
+Message.EnterValidName="Veuillez entrer un nom valide."
+Message.ChooseSave="Veuillez choisir un monde à sauvegarder."
+Message.ChooseVersion="Veuillez choisir une version à sauvegarder."
 
 BalloonTip.Title.BackupError="Erreur de sauvegarde!"
 BalloonTip.BackupError="Une erreur est survenue lors de la sauvegarde."

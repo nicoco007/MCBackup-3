@@ -56,6 +56,9 @@ Public Class Language
         Dictionnary.Add("Message.RestoreError", FindString("Message.RestoreError", FileName))
         Dictionnary.Add("Message.DeleteAreYouSure", FindString("Message.DeleteAreYouSure", FileName))
         Dictionnary.Add("Message.DeleteError", FindString("Message.DeleteError", FileName))
+        Dictionnary.Add("Message.EnterValidName", FindString("Message.EnterValidName", FileName))
+        Dictionnary.Add("Message.ChooseSave", FindString("Message.ChooseSave", FileName))
+        Dictionnary.Add("Message.ChooseVersion", FindString("Message.ChooseVersion", FileName))
 
         ' = Balloon Tips =
         Dictionnary.Add("BalloonTip.Title.BackupError", FindString("BalloonTip.Title.BackupError", FileName))

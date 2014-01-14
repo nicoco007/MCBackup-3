@@ -15,14 +15,15 @@
 ║                      limitations under the License.                       ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 -->
-<Window x:Class="Rename"
+<Controls:MetroWindow x:Class="Rename"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Rename" Height="91.5" Width="302" WindowStyle="ToolWindow" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" SizeToContent="WidthAndHeight">
+    Title="Rename" Height="91.5" Width="302" WindowStyle="ToolWindow" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" SizeToContent="WidthAndHeight" WindowTransitionsEnabled="False">
     <Grid Margin="0" Height="64" VerticalAlignment="Top" HorizontalAlignment="Left" Width="296">
         <TextBox x:Name="TextBox" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,10,0,0" HorizontalAlignment="Left" Width="276"/>
         <Button x:Name="RenameButton" Content="Rename" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,40,151,0" IsDefault="True" Padding="1" Width="100"/>
         <Button x:Name="CancelButton" Content="Cancel" VerticalAlignment="Top" Margin="151,40,0,0" HorizontalAlignment="Left" Padding="1" Width="100"/>
 
     </Grid>
-</Window>
+</Controls:MetroWindow>

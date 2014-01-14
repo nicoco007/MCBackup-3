@@ -801,6 +801,7 @@ Partial Class MainWindow
     End Sub
 #End Region
 
+#Region "Toolbar"
     Private Sub EditToolbarButton_Click(sender As Object, e As RoutedEventArgs) Handles EditToolbarButton.Click
         EditContextMenu.PlacementTarget = EditToolbarButton
         EditContextMenu.Placement = Primitives.PlacementMode.Bottom
@@ -818,6 +819,7 @@ Partial Class MainWindow
         HelpContextMenu.Placement = Primitives.PlacementMode.Bottom
         HelpContextMenu.IsOpen = True
     End Sub
+#End Region
 End Class
 
 Public Class CloseAction
