@@ -137,3 +137,11 @@ CloseToTrayWindow.RevertLabel.Content="Vous pouvez changer cette option dans les
 
 ErrorForm.ContinueButton.Content="Continuer"
 ErrorForm.CopyToClipboardButton.Content="Copier dans le presse-papiers"
+
+Splash.Status.Starting="Démarrage..."
+Splash.Status.LoadingLang="Chargement de la langue..."
+Splash.Status.LoadingProps="Chargement des paramètres..."
+Splash.Status.CheckingUpdates="Recherche de mises à jour..."
+Splash.Status.FindingMinecraft="Recherche de Minecraft.."
+Splash.Status.Done="Terminé."
+Splash.Status.FindMinecraft=""

@@ -15,7 +15,7 @@
         <ListBox x:Name="SaveListBox" Margin="10,191,0,178" HorizontalAlignment="Left" Width="288" BorderBrush="#FF727171" BorderThickness="1"/>
         <TextBlock x:Name="WorldToBackUpLabel" Text="World to back up:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,171,0,0" Height="20"/>
         <Button x:Name="RefreshButton" Content="Refresh" Margin="212,286,0,0" Height="27" VerticalAlignment="Top" HorizontalAlignment="Left" Width="85"/>
-        <Controls:NumericUpDown x:Name="MinutesNumUpDown" Margin="107,114,0,0" HorizontalAlignment="Left" Width="95" Height="32" VerticalAlignment="Top" Minimum="5" Maximum="60" Value="15"/>
+        <Controls:NumericUpDown x:Name="MinutesNumUpDown" Margin="107,114,0,0" HorizontalAlignment="Left" Width="95" Height="32" VerticalAlignment="Top" Minimum="1" Maximum="60" Value="15"/>
         <Label x:Name="BackupEveryLabel" Content="Backup every" VerticalAlignment="Top" Margin="10,88,10,0" HorizontalContentAlignment="Center"/>
         <Label x:Name="MinutesLabel" Content="minutes" VerticalAlignment="Top" Margin="10,146,10,0" HorizontalContentAlignment="Center"/>
     </Grid>

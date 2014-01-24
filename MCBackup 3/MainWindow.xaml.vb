@@ -39,7 +39,7 @@ Partial Class MainWindow
     Private DeleteBackgroundWorker As New BackgroundWorker()
     Private ThumbnailBackgroundWorker As New BackgroundWorker()
 
-    Public StartupPath As String = System.IO.Directory.GetCurrentDirectory()
+    Public StartupPath As String = Directory.GetCurrentDirectory()
     Public ApplicationVersion As String = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()
     Public LatestVersion As String
 
@@ -53,7 +53,12 @@ Partial Class MainWindow
     Public Sub New()
         Splash.Show()
 
-        Splash.Status.Content = "Starting..."
+        Try
+            Splash.Status.Content = MCBackup.Language.FindString("Splash.Status.Starting", My.Settings.Language & ".lang")
+        Catch ex As Exception
+            Splash.Status.Content = "Starting..."
+        End Try
+
         Splash.Progress.Value = 0
 
         Log.StartNew()
@@ -74,16 +79,12 @@ Partial Class MainWindow
 
         Me.Title = "MCBackup " & ApplicationVersion
 
-        NotifyIcon.Icon = New System.Drawing.Icon(Application.GetResourceStream(New Uri("pack://application:,,,/Resources/MCBackup.ico")).Stream)
-        Dim ContextMenu As New System.Windows.Forms.ContextMenu
-        Dim ExitToolbarMenuItem As New System.Windows.Forms.MenuItem
-        ExitToolbarMenuItem.Text = "E&xit"
-        AddHandler ExitToolbarMenuItem.Click, AddressOf ExitToolbarMenuItem_Click
-        ContextMenu.MenuItems.Add(ExitToolbarMenuItem)
-        NotifyIcon.ContextMenu = ContextMenu
-        NotifyIcon.Visible = True
+        Try
+            Splash.Status.Content = MCBackup.Language.FindString("Splash.Status.LoadingLang", My.Settings.Language & ".lang")
+        Catch ex As Exception
+            Splash.Status.Content = "Loading Language..."
+        End Try
 
-        Splash.Status.Content = "Loading Language..."
         Splash.Progress.Value = 1
 
         Dim DefaultLanguage As String = "en_US"
@@ -96,7 +97,7 @@ Partial Class MainWindow
         End Select
 
         Try
-            If My.Settings.Language = "" Then
+            If My.Settings.Language = "" Or My.Settings.Language Is Nothing Then
                 My.Settings.Language = DefaultLanguage
                 MCBackup.Language.Load(My.Settings.Language & ".lang")
             Else
@@ -109,9 +110,25 @@ Partial Class MainWindow
             My.Settings.Language = DefaultLanguage
             Me.ClsType = CloseType.ForceClose
             Me.Close()
+            Exit Sub
         End Try
 
-        Splash.Status.Content = "Loading properties..."
+        NotifyIcon.Text = "MCBackup " & ApplicationVersion
+        NotifyIcon.Icon = New System.Drawing.Icon(Application.GetResourceStream(New Uri("pack://application:,,,/Resources/MCBackup.ico")).Stream)
+        Dim ContextMenu As New System.Windows.Forms.ContextMenu
+        Dim ExitToolbarMenuItem As New System.Windows.Forms.MenuItem
+        ExitToolbarMenuItem.Text = "&Exit"
+        AddHandler ExitToolbarMenuItem.Click, AddressOf ExitToolbarMenuItem_Click
+        ContextMenu.MenuItems.Add(ExitToolbarMenuItem)
+        NotifyIcon.ContextMenu = ContextMenu
+        NotifyIcon.Visible = True
+
+        Try
+            Splash.Status.Content = MCBackup.Language.FindString("Splash.Status.LoadingProps", My.Settings.Language & ".lang")
+        Catch ex As Exception
+            Splash.Status.Content = "Loading Properties..."
+        End Try
+
         Splash.Progress.Value = 2
 
         Main.ListView.Opacity = My.Settings.InterfaceOpacity / 100
@@ -134,23 +151,42 @@ Partial Class MainWindow
         Log.Print("Set Backups folder location to """ & My.Settings.BackupsFolderLocation & """")
 
         My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation)
-    End Sub
 
-    Private Sub WebClient_DownloadStringCompleted(sender As Object, e As DownloadStringCompletedEventArgs)
-        
+        Try
+            Splash.Status.Content = MCBackup.Language.FindString("Splash.Status.CheckingUpdates", My.Settings.Language & ".lang")
+        Catch ex As Exception
+            Splash.Status.Content = "Checking for Updates..."
+        End Try
+
+        Splash.Progress.Value = 3
     End Sub
 
     Private Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs)
-        Splash.Status.Content = "Checking for updates..."
-        Splash.Progress.Value = 3
-
         If My.Settings.CheckForUpdates Then
-                Dim WebClient As New WebClient
-                AddHandler WebClient.DownloadStringCompleted, AddressOf WebClient_DownloadStringCompleted
-                WebClient.DownloadStringAsync(New Uri("http://content.nicoco007.com/downloads/mcbackup-3/version"))
+            Dim WebClient As New WebClient
+            LatestVersion = WebClient.DownloadString("http://content.nicoco007.com/downloads/mcbackup-3/version")
+
+            Dim ApplicationVersionInt = ApplicationVersion.Replace(".", "")
+            Dim LatestVersionInt = LatestVersion.Replace(".", "")
+            If ApplicationVersionInt < LatestVersionInt Then
+                Log.Print("A new version is available (version " & LatestVersion & ")!")
+                Dim UpdateDialog As New UpdateDialog
+                UpdateDialog.Owner = Me
+                UpdateDialog.Show()
+            ElseIf ApplicationVersionInt > LatestVersionInt Then
+                Log.Print("MCBackup is running in beta mode (version " & ApplicationVersion & ")!")
+                Me.Title += " Beta"
+            ElseIf ApplicationVersionInt = LatestVersionInt Then
+                Log.Print("MCBackup is up-to-date (version " & ApplicationVersion & ").")
+            End If
         End If
 
-        Splash.Status.Content = "Finding Minecraft..."
+        Try
+            Splash.Status.Content = MCBackup.Language.FindString("Splash.Status.FindMinecraft", My.Settings.Language & ".lang")
+        Catch ex As Exception
+            Splash.Status.Content = "Finding Minecraft..."
+        End Try
+
         Splash.Progress.Value = 4
 
         If Not My.Computer.FileSystem.FileExists(My.Settings.MinecraftFolderLocation & "\launcher.jar") Then ' Check if saved directory exists AND still has Minecraft installed in it
@@ -170,7 +206,13 @@ Partial Class MainWindow
         Log.Print("Minecraft folder set to """ & My.Settings.MinecraftFolderLocation & """")
         Log.Print("Saves folder set to """ & My.Settings.SavesFolderLocation & """")
         RefreshBackupsList()
-        Splash.Status.Content = "Done."
+
+        Try
+            Splash.Status.Content = MCBackup.Language.FindString("Splash.Status.Done", My.Settings.Language & ".lang")
+        Catch ex As Exception
+            Splash.Status.Content = "Done."
+        End Try
+
         Splash.Progress.Value = 5
         Splash.Hide()
     End Sub
@@ -297,31 +339,30 @@ Partial Class MainWindow
 
     Public Sub LoadLanguage()
         Try
-            Main.BackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.BackupButton.Content")
-            Main.RestoreButton.Content = MCBackup.Language.Dictionnary("MainWindow.RestoreButton.Content")
-            Main.DeleteButton.Content = MCBackup.Language.Dictionnary("MainWindow.DeleteButton.Content")
-            Main.RenameButton.Content = MCBackup.Language.Dictionnary("MainWindow.RenameButton.Content")
+            BackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.BackupButton.Content")
+            RestoreButton.Content = MCBackup.Language.Dictionnary("MainWindow.RestoreButton.Content")
+            DeleteButton.Content = MCBackup.Language.Dictionnary("MainWindow.DeleteButton.Content")
+            RenameButton.Content = MCBackup.Language.Dictionnary("MainWindow.RenameButton.Content")
 
-            Main.AutomaticBackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.AutomaticBackupButton.Content") & " >>"
+            AutomaticBackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.AutomaticBackupButton.Content") & " >>"
 
-            Main.ListViewGridView.Columns(0).Header = MCBackup.Language.Dictionnary("MainWindow.ListView.Columns(0).Header")
-            Main.ListViewGridView.Columns(1).Header = MCBackup.Language.Dictionnary("MainWindow.ListView.Columns(1).Header")
-            Main.ListViewGridView.Columns(2).Header = MCBackup.Language.Dictionnary("MainWindow.ListView.Columns(2).Header")
-            Main.OriginalNameLabel.Text = MCBackup.Language.Dictionnary("MainWindow.OriginalNameLabel.Text") & ":"
-            Main.TypeLabel.Text = MCBackup.Language.Dictionnary("MainWindow.TypeLabel.Text") & ":"
+            ListViewGridView.Columns(0).Header = MCBackup.Language.Dictionnary("MainWindow.ListView.Columns(0).Header")
+            ListViewGridView.Columns(1).Header = MCBackup.Language.Dictionnary("MainWindow.ListView.Columns(1).Header")
+            ListViewGridView.Columns(2).Header = MCBackup.Language.Dictionnary("MainWindow.ListView.Columns(2).Header")
+            OriginalNameLabel.Text = MCBackup.Language.Dictionnary("MainWindow.OriginalNameLabel.Text") & ":"
+            TypeLabel.Text = MCBackup.Language.Dictionnary("MainWindow.TypeLabel.Text") & ":"
 
-            Main.EditToolbarButton.Content = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Header")
-            Main.EditContextMenu.Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Items(0).Header")
-            Main.EditContextMenu.Items(1).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Items(1).Header")
-            Main.ToolsToolbarButton.Content = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(2).Header")
-            Main.ToolsContextMenu.Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(2).Items(0).Header")
-            Main.HelpToolbarButton.Content = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Header")
-            Main.HelpContextMenu.Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(0).Header")
-            Main.HelpContextMenu.Items(2).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(2).Header")
-            Main.HelpContextMenu.Items(3).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(3).Header")
+            EditToolbarButton.Content = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Header")
+            EditContextMenu.Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Items(0).Header")
+            EditContextMenu.Items(1).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Items(1).Header")
+            ToolsToolbarButton.Content = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(2).Header")
+            ToolsContextMenu.Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(2).Items(0).Header")
+            HelpToolbarButton.Content = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Header")
+            HelpContextMenu.Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(0).Header")
+            HelpContextMenu.Items(2).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(2).Header")
+            HelpContextMenu.Items(3).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(3).Header")
 
-
-            Main.StatusLabel.Content = MCBackup.Language.Dictionnary("Status.Ready")
+            StatusLabel.Content = MCBackup.Language.Dictionnary("Status.Ready")
         Catch
         End Try
     End Sub

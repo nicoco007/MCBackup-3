@@ -135,3 +135,11 @@ CloseToTrayWindow.RevertLabel.Content="You can always revert this in the options
 
 ErrorForm.ContinueButton.Content="Continue"
 ErrorForm.CopyToClipboardButton.Content="Copy to clipboard"
+
+Splash.Status.Starting="Starting..."
+Splash.Status.LoadingLang="Loading Language..."
+Splash.Status.LoadingProps="Loading Properties..."
+Splash.Status.CheckingUpdates="Checking for Updates..."
+Splash.Status.FindingMinecraft="Finding Minecraft.."
+Splash.Status.Done="Done."
+Splash.Status.FindMinecraft=""

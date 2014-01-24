@@ -1,12 +1,18 @@
 ﻿Imports System.IO
 
 Public Class Language
-    Public Shared Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
+    Private Shared Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
 
     Public Shared Dictionnary As New Dictionary(Of String, String)
 
     Public Shared Sub Load(FileName As String)
         Dictionnary.Clear()
+        Dictionnary.Add("Splash.Status.Starting", FindString("Splash.Status.Starting", FileName))
+        Dictionnary.Add("Splash.Status.LoadingLang", FindString("Splash.Status.LoadingLang", FileName))
+        Dictionnary.Add("Splash.Status.LoadingProps", FindString("Splash.Status.LoadingProps", FileName))
+        Dictionnary.Add("Splash.Status.CheckingUpdates", FindString("Splash.Status.CheckingUpdates", FileName))
+        Dictionnary.Add("Splash.Status.FindingMinecraft", FindString("Splash.Status.FindingMinecraft", FileName))
+        Dictionnary.Add("Splash.Status.Done", FindString("Splash.Status.Done", FileName))
 
         ' = Main Window =
         Dictionnary.Add("MainWindow.BackupButton.Content", FindString("MainWindow.BackupButton.Content", FileName))
@@ -141,21 +147,21 @@ Public Class Language
         Dictionnary.Add("RenameWindow.CancelButton.Content", FindString("RenameWindow.CancelButton.Content", FileName))
 
         ' = About Window =
-        MCBackup.Language.Dictionnary.Add("AboutWindow.Title", FindString("AboutWindow.Title", FileName))
-        MCBackup.Language.Dictionnary.Add("AboutWindow.Text", FindString("AboutWindow.Text", FileName))
+        Dictionnary.Add("AboutWindow.Title", FindString("AboutWindow.Title", FileName))
+        Dictionnary.Add("AboutWindow.Text", FindString("AboutWindow.Text", FileName))
 
         ' = Close to tray window =
-        MCBackup.Language.Dictionnary.Add("CloseToTrayWindow.Title", FindString("CloseToTrayWindow.Title", FileName))
-        MCBackup.Language.Dictionnary.Add("CloseToTrayWindow.MessageLabel.Content", FindString("CloseToTrayWindow.MessageLabel.Content", FileName))
-        MCBackup.Language.Dictionnary.Add("CloseToTrayWindow.YesButton.Content", FindString("CloseToTrayWindow.YesButton.Content", FileName))
-        MCBackup.Language.Dictionnary.Add("CloseToTrayWindow.NoButton.Content", FindString("CloseToTrayWindow.NoButton.Content", FileName))
-        MCBackup.Language.Dictionnary.Add("CloseToTrayWindow.CancelButton.Content", FindString("CloseToTrayWindow.CancelButton.Content", FileName))
-        MCBackup.Language.Dictionnary.Add("CloseToTrayWindow.SaveCheckBox.Content", FindString("CloseToTrayWindow.SaveCheckBox.Content", FileName))
-        MCBackup.Language.Dictionnary.Add("CloseToTrayWindow.RevertLabel.Content", FindString("CloseToTrayWindow.RevertLabel.Content", FileName))
+        Dictionnary.Add("CloseToTrayWindow.Title", FindString("CloseToTrayWindow.Title", FileName))
+        Dictionnary.Add("CloseToTrayWindow.MessageLabel.Content", FindString("CloseToTrayWindow.MessageLabel.Content", FileName))
+        Dictionnary.Add("CloseToTrayWindow.YesButton.Content", FindString("CloseToTrayWindow.YesButton.Content", FileName))
+        Dictionnary.Add("CloseToTrayWindow.NoButton.Content", FindString("CloseToTrayWindow.NoButton.Content", FileName))
+        Dictionnary.Add("CloseToTrayWindow.CancelButton.Content", FindString("CloseToTrayWindow.CancelButton.Content", FileName))
+        Dictionnary.Add("CloseToTrayWindow.SaveCheckBox.Content", FindString("CloseToTrayWindow.SaveCheckBox.Content", FileName))
+        Dictionnary.Add("CloseToTrayWindow.RevertLabel.Content", FindString("CloseToTrayWindow.RevertLabel.Content", FileName))
 
         ' = Error form =
-        MCBackup.Language.Dictionnary.Add("ErrorForm.ContinueButton.Content", FindString("ErrorForm.ContinueButton.Content", FileName))
-        MCBackup.Language.Dictionnary.Add("ErrorForm.CopyToClipboardButton.Content", FindString("ErrorForm.CopyToClipboardButton.Content", FileName))
+        Dictionnary.Add("ErrorForm.ContinueButton.Content", FindString("ErrorForm.ContinueButton.Content", FileName))
+        Dictionnary.Add("ErrorForm.CopyToClipboardButton.Content", FindString("ErrorForm.CopyToClipboardButton.Content", FileName))
     End Sub
 
     Public Shared Function GetIDFromName(Name As String)
@@ -174,7 +180,7 @@ Public Class Language
     End Function
 
     Public Shared Function FindString(Identifier As String, FileName As String)
-        Using SR As New StreamReader(Main.StartupPath & "\language\" & FileName)
+        Using SR As New StreamReader(Directory.GetCurrentDirectory & "\language\" & FileName)
             Dim LineNumber As Integer = 0
             While SR.Peek <> -1
                 LineNumber += 1
