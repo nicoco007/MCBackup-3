@@ -1,0 +1,12 @@
+﻿<Controls:MetroWindow x:Name="Cull" x:Class="CullWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    Title="Selective Cull" Height="114" Width="325" Background="#FFF0F0F0" WindowTransitionsEnabled="False" WindowStartupLocation="CenterOwner">
+    <Grid>
+        <Controls:NumericUpDown x:Name="DaysNumUpDown" Margin="175,7,0,0" HorizontalAlignment="Left" Width="80" Height="32" VerticalAlignment="Top" Minimum="1" Maximum="365" Value="7"/>
+        <Label x:Name="Label1" Content="Delete all backups older than" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="6,10,0,0" Width="Auto"/>
+        <Label x:Name="Label2" Content="days." HorizontalAlignment="Left" VerticalAlignment="Top" Margin="266,10,0,0" RenderTransformOrigin="0.108,0.5"/>
+        <Button x:Name="CullButton" Content="Cull!" VerticalAlignment="Top" Margin="121,45,0,0" HorizontalAlignment="Left" Width="75"/>
+    </Grid>
+</Controls:MetroWindow>

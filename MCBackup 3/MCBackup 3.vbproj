@@ -90,6 +90,9 @@
     <Compile Include="CloseToTray.xaml.vb">
       <DependentUpon>CloseToTray.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CullWindow.xaml.vb">
+      <DependentUpon>CullWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ErrorWindow.xaml.vb">
       <DependentUpon>ErrorWindow.xaml</DependentUpon>
     </Compile>
@@ -123,6 +126,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CloseToTray.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CullWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

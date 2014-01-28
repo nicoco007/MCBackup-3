@@ -18,7 +18,6 @@ Imports System.IO
 Imports System.Net
 Imports Scripting
 Imports System.Windows.Threading
-Imports System.ComponentModel.BackgroundWorker
 Imports System.ComponentModel
 Imports System.Windows.Interop.Imaging
 
@@ -47,6 +46,8 @@ Partial Class MainWindow
 
     Public AutoBackupWindow As New AutoBackup
     Private Splash As New Splash
+
+    Private ListViewItems As New ArrayList
 #End Region
 
 #Region "Load"
@@ -615,7 +616,7 @@ Partial Class MainWindow
         Return 0
     End Function
 
-    Private Function GetFolderDateCreated(FolderPath As String)
+    Public Function GetFolderDateCreated(FolderPath As String)
         Try
             Dim FSO As FileSystemObject = New FileSystemObject
             Return FSO.GetFolder(FolderPath).DateCreated ' Get FolderPath's date of creation
@@ -692,8 +693,6 @@ Partial Class MainWindow
 #End Region
 
 #Region "Delete"
-    Private ListViewItems As New ArrayList
-
     Private Sub DeleteButton_Click(sender As Object, e As EventArgs) Handles DeleteButton.Click
         If MetroMessageBox.Show(MCBackup.Language.Dictionnary("Message.DeleteAreYouSure"), MCBackup.Language.Dictionnary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = Windows.Forms.DialogResult.Yes Then
             ListViewItems.Clear()
@@ -847,6 +846,12 @@ Partial Class MainWindow
         HelpContextMenu.IsOpen = True
     End Sub
 #End Region
+
+    Private Sub CullButton_Click(sender As Object, e As RoutedEventArgs) Handles CullButton.Click
+        Dim CullWindow As New CullWindow
+        CullWindow.Owner = Me
+        CullWindow.Show()
+    End Sub
 End Class
 
 Public Class CloseAction
