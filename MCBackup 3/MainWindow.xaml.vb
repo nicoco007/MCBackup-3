@@ -20,6 +20,8 @@ Imports Scripting
 Imports System.Windows.Threading
 Imports System.ComponentModel
 Imports System.Windows.Interop.Imaging
+Imports Microsoft.WindowsAPICodePack
+Imports Microsoft.WindowsAPICodePack.Taskbar
 
 Imports MCBackup.CloseAction
 Imports System.Globalization
@@ -183,7 +185,7 @@ Partial Class MainWindow
         End If
 
         Try
-            Splash.Status.Content = MCBackup.Language.FindString("Splash.Status.FindMinecraft", My.Settings.Language & ".lang")
+            Splash.Status.Content = MCBackup.Language.FindString("Splash.Status.FindingMinecraft", My.Settings.Language & ".lang")
         Catch ex As Exception
             Splash.Status.Content = "Finding Minecraft..."
         End Try
@@ -414,11 +416,17 @@ Partial Class MainWindow
             PercentComplete = Int(GetFolderSize(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0)) / GetFolderSize(BackupInfo(2)) * 100)
             StatusLabel.Content = String.Format(MCBackup.Language.Dictionnary("Status.BackingUp"), Math.Round(PercentComplete, 2))
             Dispatcher.Invoke(UpdateProgressBarDelegate, System.Windows.Threading.DispatcherPriority.Background, New Object() {ProgressBar.ValueProperty, PercentComplete})
+            If Environment.OSVersion.Version.Major > 5 Then
+                TaskbarManager.Instance.SetProgressValue(PercentComplete, 100)
+            End If
         Loop
     End Sub
 
     Private Sub BackupBackgroundWorker_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
         ProgressBar.Value = 100
+        If Environment.OSVersion.Version.Major > 5 Then
+            TaskbarManager.Instance.SetProgressValue(100, 100)
+        End If
         If BackupInfo(3) = "save" And My.Settings.CreateThumbOnWorld Then
             StatusLabel.Content = String.Format(MCBackup.Language.Dictionnary("Status.CreatingThumb"), "0")
             Log.Print("Creating thumbnail")
@@ -436,7 +444,6 @@ Partial Class MainWindow
     Private WorldPath As String = ""
 
     Private Sub CreateThumb(Path As String)
-        'ProgressBar.IsIndeterminate = True
         StatusLabel.Content = "Creating thumbnail, please wait..."
         ThumbnailBackgroundWorker.RunWorkerAsync()
         WorldPath = Path
@@ -545,6 +552,9 @@ Partial Class MainWindow
 
             DeleteForRestoreBackgroundWorker.RunWorkerAsync()
             ProgressBar.IsIndeterminate = True
+            If Environment.OSVersion.Version.Major > 5 Then
+                TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate)
+            End If
             StatusLabel.Content = MCBackup.Language.Dictionnary("Status.RemovingOldContent")
             Log.Print("Removing old content")
         Else
@@ -564,6 +574,9 @@ Partial Class MainWindow
 
     Private Sub DeleteForRestoreBackgroundWorker_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs)
         ProgressBar.IsIndeterminate = False
+        If Environment.OSVersion.Version.Major > 5 Then
+            TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal)
+        End If
         RestoreBackgroundWorker.RunWorkerAsync()
         UpdateRestoreProgress()
         Log.Print("Removed old content, restoring...")
@@ -593,6 +606,9 @@ Partial Class MainWindow
                 PercentComplete = GetFolderSize(RestoreInfo(1)) / GetFolderSize(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0)) * 100
                 StatusLabel.Content = String.Format(MCBackup.Language.Dictionnary("Status.Restoring"), PercentComplete)
                 Dispatcher.Invoke(UpdateRestoreProgressBarDelegate, System.Windows.Threading.DispatcherPriority.Background, New Object() {ProgressBar.ValueProperty, Convert.ToDouble(PercentComplete)})
+                If Environment.OSVersion.Version.Major > 5 Then
+                    TaskbarManager.Instance.SetProgressValue(PercentComplete, 100)
+                End If
             End If
         Loop
     End Sub
@@ -647,6 +663,9 @@ Partial Class MainWindow
     Private Sub UpdateProgress(Value As Double)
         Dim UpdateProgressBarDelegate As New UpdateProgressBarDelegate(AddressOf ProgressBar.SetValue)
         Dispatcher.Invoke(UpdateProgressBarDelegate, System.Windows.Threading.DispatcherPriority.Background, New Object() {ProgressBar.ValueProperty, Value})
+        If Environment.OSVersion.Version.Major > 5 Then
+            TaskbarManager.Instance.SetProgressValue(Value, 100)
+        End If
     End Sub
 
     Private Sub StatusLabel_Content(Text As String)
@@ -703,6 +722,9 @@ Partial Class MainWindow
             DeleteBackgroundWorker.RunWorkerAsync()
             StatusLabel.Content = MCBackup.Language.Dictionnary("Status.Deleting")
             ProgressBar.IsIndeterminate = True
+            If Environment.OSVersion.Version.Major > 5 Then
+                TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate)
+            End If
         End If
     End Sub
 
@@ -719,6 +741,9 @@ Partial Class MainWindow
     Private Sub DeleteBackgroundWorker_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs)
         StatusLabel.Content = MCBackup.Language.Dictionnary("Status.DeleteComplete")
         ProgressBar.IsIndeterminate = False
+        If Environment.OSVersion.Version.Major > 6 And Environment.OSVersion.Version.Minor > 0 Then
+            TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal)
+        End If
         RefreshBackupsList()
     End Sub
 #End Region
