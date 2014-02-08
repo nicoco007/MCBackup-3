@@ -48,6 +48,8 @@ Partial Public Class Options
         GreenColorSlider.Value = StatusLabelColor.G
         BlueColorSlider.Value = StatusLabelColor.B
 
+        ColorSlider_ValueChanged(Nothing, Nothing)
+
         LoadLanguage()
     End Sub
 
