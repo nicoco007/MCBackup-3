@@ -43,13 +43,13 @@ Public Class CloseToTray
     End Sub
 
     Private Sub LoadLanguage()
-        Me.Title = MCBackup.Language.Dictionnary("CloseToTrayWindow.Title")
-        MessageLabel.Content = MCBackup.Language.Dictionnary("CloseToTrayWindow.MessageLabel.Content")
-        YesButton.Content = MCBackup.Language.Dictionnary("CloseToTrayWindow.YesButton.Content")
-        NoButton.Content = MCBackup.Language.Dictionnary("CloseToTrayWindow.NoButton.Content")
-        CancelButton.Content = MCBackup.Language.Dictionnary("CloseToTrayWindow.CancelButton.Content")
-        SaveCheckBox.Content = MCBackup.Language.Dictionnary("CloseToTrayWindow.SaveCheckBox.Content")
-        RevertLabel.Content = MCBackup.Language.Dictionnary("CloseToTrayWindow.RevertLabel.Content")
+        Me.Title = MCBackup.Language.Dictionary("CloseToTrayWindow.Title")
+        MessageLabel.Content = MCBackup.Language.Dictionary("CloseToTrayWindow.MessageLabel.Content")
+        YesButton.Content = MCBackup.Language.Dictionary("CloseToTrayWindow.YesButton.Content")
+        NoButton.Content = MCBackup.Language.Dictionary("CloseToTrayWindow.NoButton.Content")
+        CancelButton.Content = MCBackup.Language.Dictionary("CloseToTrayWindow.CancelButton.Content")
+        SaveCheckBox.Content = MCBackup.Language.Dictionary("CloseToTrayWindow.SaveCheckBox.Content")
+        RevertLabel.Content = MCBackup.Language.Dictionary("CloseToTrayWindow.RevertLabel.Content")
     End Sub
 
     Private Sub CloseToTrayWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles CloseToTrayWindow.Loaded

@@ -18,15 +18,15 @@ Partial Public Class AutoBackup
 
     Public Sub LoadLanguage()
         Try
-            Me.Title = MCBackup.Language.Dictionnary("AutoBackupWindow.Title")
-            BackupEveryLabel.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.BackupEveryLabel.Content")
-            MinutesLabel.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.MinutesLabel.Content")
-            WorldToBackUpLabel.Text = MCBackup.Language.Dictionnary("AutoBackupWindow.WorldToBackUpLabel.Text")
-            RefreshButton.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.RefreshButton.Content")
-            SaveAsLabel.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.SaveAsLabel.Content")
-            PrefixLabel.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.PrefixLabel.Content")
-            SuffixLabel.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.SuffixLabel.Content")
-            StartButton.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.StartButton.Content.Start")
+            Me.Title = MCBackup.Language.Dictionary("AutoBackupWindow.Title")
+            BackupEveryLabel.Content = MCBackup.Language.Dictionary("AutoBackupWindow.BackupEveryLabel.Content")
+            MinutesLabel.Content = MCBackup.Language.Dictionary("AutoBackupWindow.MinutesLabel.Content")
+            WorldToBackUpLabel.Text = MCBackup.Language.Dictionary("AutoBackupWindow.WorldToBackUpLabel.Text")
+            RefreshButton.Content = MCBackup.Language.Dictionary("AutoBackupWindow.RefreshButton.Content")
+            SaveAsLabel.Content = MCBackup.Language.Dictionary("AutoBackupWindow.SaveAsLabel.Content")
+            PrefixLabel.Content = MCBackup.Language.Dictionary("AutoBackupWindow.PrefixLabel.Content")
+            SuffixLabel.Content = MCBackup.Language.Dictionary("AutoBackupWindow.SuffixLabel.Content")
+            StartButton.Content = MCBackup.Language.Dictionary("AutoBackupWindow.StartButton.Content.Start")
         Catch
         End Try
     End Sub
@@ -42,7 +42,7 @@ Partial Public Class AutoBackup
         Me.Hide()
         Main.Left = Main.Left + (Me.Width / 2)
         Try
-            Main.AutomaticBackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.AutomaticBackupButton.Content") & " >>"
+            Main.AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " >>"
         Catch
         End Try
     End Sub
@@ -64,7 +64,7 @@ Partial Public Class AutoBackup
         If TimerStarted Then
             Timer.Stop()
             TimeLabel.Content = "00:00"
-            StartButton.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.StartButton.Content.Start")
+            StartButton.Content = MCBackup.Language.Dictionary("AutoBackupWindow.StartButton.Content.Start")
             TimerStarted = False
 
             MinutesNumUpDown.IsEnabled = True
@@ -81,7 +81,7 @@ Partial Public Class AutoBackup
             Seconds = 0
             TimeLabel.Content = IntToText(MinutesNumUpDown.Value) & ":00"
             Timer.Start()
-            StartButton.Content = MCBackup.Language.Dictionnary("AutoBackupWindow.StartButton.Content.Stop")
+            StartButton.Content = MCBackup.Language.Dictionary("AutoBackupWindow.StartButton.Content.Stop")
             TimerStarted = True
 
             MinutesNumUpDown.IsEnabled = False

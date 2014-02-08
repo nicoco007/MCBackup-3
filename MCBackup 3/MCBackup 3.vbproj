@@ -109,6 +109,7 @@
     <Compile Include="MetroMessageBox.xaml.vb">
       <DependentUpon>MetroMessageBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ExtensionModule.vb" />
     <Compile Include="Options.xaml.vb">
       <DependentUpon>Options.xaml</DependentUpon>
     </Compile>

@@ -84,17 +84,17 @@ Public Class Backup
         ElseIf Not CustomNameTextBox.Text = "" Then
             Main.BackupInfo(0) = CustomNameTextBox.Text
         Else
-            MetroMessageBox.Show(MCBackup.Language.Dictionnary("Message.EnterValidName"), MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.EnterValidName"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             Exit Sub
         End If
 
         If SavesListView.SelectedItems.Count = 0 And SaveRadioButton.IsChecked Then
-            MetroMessageBox.Show(MCBackup.Language.Dictionnary("Message.ChooseSave"), MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.ChooseSave"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             Exit Sub
         End If
 
         If VersionsListView.SelectedItems.Count = 0 And VersionRadioButton.IsChecked Then
-            MetroMessageBox.Show(MCBackup.Language.Dictionnary("Message.ChooseVersion"), MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.ChooseVersion"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             Exit Sub
         End If
 
@@ -127,18 +127,18 @@ Public Class Backup
     End Function
 
     Private Sub LoadLanguage()
-        Me.Title = MCBackup.Language.Dictionnary("BackupWindow.Title")
-        BackupDetailsGroupBox.Header = MCBackup.Language.Dictionnary("BackupWindow.BackupDetailsGroupBox.Header")
-        BackupNameGroupBox.Header = MCBackup.Language.Dictionnary("BackupWindow.BackupNameGroupBox.Header")
-        DateAndTimeRadioButton.Content = MCBackup.Language.Dictionnary("BackupWindow.DateAndTimeRadioButton.Content")
-        CustomNameRadioButton.Content = MCBackup.Language.Dictionnary("BackupWindow.CustomNameRadioButton.Content")
-        ShortDescriptionLabel.Content = MCBackup.Language.Dictionnary("BackupWindow.ShortDescriptionLabel.Content")
-        SaveRadioButton.Content = MCBackup.Language.Dictionnary("BackupWindow.Save")
-        EverythingRadioButton.Content = MCBackup.Language.Dictionnary("BackupWindow.WholeMinecraftFolder")
-        VersionRadioButton.Content = MCBackup.Language.Dictionnary("BackupWindow.Version")
-        SavesListViewGridView.Columns(0).Header = MCBackup.Language.Dictionnary("BackupWindow.ListBox.Columns(0).Header")
-        StartButton.Content = MCBackup.Language.Dictionnary("BackupWindow.StartButton.Content")
-        CancelButton.Content = MCBackup.Language.Dictionnary("BackupWindow.CancelButton.Content")
+        Me.Title = MCBackup.Language.Dictionary("BackupWindow.Title")
+        BackupDetailsGroupBox.Header = MCBackup.Language.Dictionary("BackupWindow.BackupDetailsGroupBox.Header")
+        BackupNameGroupBox.Header = MCBackup.Language.Dictionary("BackupWindow.BackupNameGroupBox.Header")
+        DateAndTimeRadioButton.Content = MCBackup.Language.Dictionary("BackupWindow.DateAndTimeRadioButton.Content")
+        CustomNameRadioButton.Content = MCBackup.Language.Dictionary("BackupWindow.CustomNameRadioButton.Content")
+        ShortDescriptionLabel.Content = MCBackup.Language.Dictionary("BackupWindow.ShortDescriptionLabel.Content")
+        SaveRadioButton.Content = MCBackup.Language.Dictionary("BackupWindow.Save")
+        EverythingRadioButton.Content = MCBackup.Language.Dictionary("BackupWindow.WholeMinecraftFolder")
+        VersionRadioButton.Content = MCBackup.Language.Dictionary("BackupWindow.Version")
+        SavesListViewGridView.Columns(0).Header = MCBackup.Language.Dictionary("BackupWindow.ListBox.Columns(0).Header")
+        StartButton.Content = MCBackup.Language.Dictionary("BackupWindow.StartButton.Content")
+        CancelButton.Content = MCBackup.Language.Dictionary("BackupWindow.CancelButton.Content")
     End Sub
 
     Private Sub CancelButton_Click(sender As Object, e As RoutedEventArgs) Handles CancelButton.Click

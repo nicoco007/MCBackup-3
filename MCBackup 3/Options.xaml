@@ -23,7 +23,7 @@
 
     <Grid Height="236" VerticalAlignment="Top">
         <Canvas x:Name="GeneralPanel" HorizontalAlignment="Left" Height="191" VerticalAlignment="Top" Width="567" Margin="117,10,0,0">
-            <CheckBox x:Name="ShowBalloonTipsCheckBox" Content="Show balloon tips" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="9" Canvas.Top="13" ToolTipService.ShowOnDisabled="True" IsChecked="True" ToolTip="Show a ballon tip when a backup/restore finishes or fails"/>
+            <CheckBox x:Name="ShowBalloonTipsCheckBox" Content="Show balloon tips" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="10" Canvas.Top="13" ToolTipService.ShowOnDisabled="True" IsChecked="True" ToolTip="Show a ballon tip when a backup/restore finishes or fails"/>
             <CheckBox x:Name="ShowDeleteConfirmationCheckBox" Content="Show delete confirmation" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="10" Canvas.Top="36" ToolTip="Not Implemented" ToolTipService.ShowOnDisabled="True" IsEnabled="False" IsChecked="True"/>
             <CheckBox x:Name="CheckForUpdatesCheckBox" Content="Check for updates" Canvas.Left="10" Canvas.Top="59" ToolTip="Automatically check for updates on startup" IsChecked="True"/>
             <CheckBox x:Name="AlwaysCloseCheckBox" Content="Always..." Canvas.Left="346" Canvas.Top="13"/>

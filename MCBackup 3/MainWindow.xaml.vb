@@ -64,6 +64,9 @@ Partial Class MainWindow
 
         Splash.Progress.Value = 0
 
+        Splash.Status.Refresh()
+        Splash.Progress.Refresh()
+
         Log.StartNew()
         Log.Print("Starting MCBackup")
 
@@ -89,6 +92,9 @@ Partial Class MainWindow
         End Try
 
         Splash.Progress.Value = 1
+
+        Splash.Status.Refresh()
+        Splash.Progress.Refresh()
 
         Dim DefaultLanguage As String = "en_US"
 
@@ -134,6 +140,9 @@ Partial Class MainWindow
 
         Splash.Progress.Value = 2
 
+        Splash.Status.Refresh()
+        Splash.Progress.Refresh()
+
         Main.ListView.Opacity = My.Settings.InterfaceOpacity / 100
         Main.Sidebar.Background = New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, 255, 255, 255))
 
@@ -154,18 +163,21 @@ Partial Class MainWindow
         Log.Print("Set Backups folder location to """ & My.Settings.BackupsFolderLocation & """")
 
         My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation)
-
-        Try
-            Splash.Status.Content = MCBackup.Language.FindString("Splash.Status.CheckingUpdates", My.Settings.Language & ".lang")
-        Catch ex As Exception
-            Splash.Status.Content = "Checking for Updates..."
-        End Try
-
-        Splash.Progress.Value = 3
     End Sub
 
     Private Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs)
         If My.Settings.CheckForUpdates Then
+            Try
+                Splash.Status.Content = MCBackup.Language.FindString("Splash.Status.CheckingUpdates", My.Settings.Language & ".lang")
+            Catch ex As Exception
+                Splash.Status.Content = "Checking for Updates..."
+            End Try
+
+            Splash.Progress.Value = 3
+
+            Splash.Status.Refresh()
+            Splash.Progress.Refresh()
+
             Dim WebClient As New WebClient
             LatestVersion = WebClient.DownloadString("http://content.nicoco007.com/downloads/mcbackup-3/version")
 
@@ -192,12 +204,15 @@ Partial Class MainWindow
 
         Splash.Progress.Value = 4
 
+        Splash.Status.Refresh()
+        Splash.Progress.Refresh()
+
         If Not My.Computer.FileSystem.FileExists(My.Settings.MinecraftFolderLocation & "\launcher.jar") Then ' Check if saved directory exists AND still has Minecraft installed in it
             If My.Computer.FileSystem.FileExists(AppData & "\.minecraft\launcher.jar") Then ' If not, check for the usual Minecraft folder location
                 My.Settings.MinecraftFolderLocation = AppData & "\.minecraft" ' Set folder location to default Minecraft folder location
                 My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
             Else
-                MetroMessageBox.Show(MCBackup.Language.Dictionnary("Message.Error.NoMinecraftInstall"), MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.Error.NoMinecraftInstall"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
                 Log.Print("Minecraft folder not found", Log.Type.Warning)
                 MinecraftFolderSearch()
                 Exit Sub
@@ -217,20 +232,23 @@ Partial Class MainWindow
         End Try
 
         Splash.Progress.Value = 5
+
+        Splash.Status.Refresh()
+        Splash.Progress.Refresh()
         Splash.Hide()
     End Sub
 
     Private Sub MinecraftFolderSearch()
         If FolderBrowserDialog.ShowDialog = Windows.Forms.DialogResult.OK Then
             If My.Computer.FileSystem.FileExists(FolderBrowserDialog.SelectedPath & "\launcher.jar") Then ' Check if Minecraft exists in that folder
-                MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionnary("Message.Info.MinecraftFolderSetTo"), FolderBrowserDialog.SelectedPath), MCBackup.Language.Dictionnary("Message.Caption.Information"), MessageBoxButton.OK, MessageBoxImage.Error) ' Tell user that folder has been selected successfully
+                MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.Info.MinecraftFolderSetTo"), FolderBrowserDialog.SelectedPath), MCBackup.Language.Dictionary("Message.Caption.Information"), MessageBoxButton.OK, MessageBoxImage.Error) ' Tell user that folder has been selected successfully
                 My.Settings.MinecraftFolderLocation = FolderBrowserDialog.SelectedPath
                 My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
                 Log.Print("Minecraft folder set to """ & My.Settings.MinecraftFolderLocation & """")
                 Log.Print("Saves folder set to """ & My.Settings.SavesFolderLocation & """")
                 Exit Sub
             Else
-                If MetroMessageBox.Show(MCBackup.Language.Dictionnary("Message.NotInstalledInFolder"), MCBackup.Language.Dictionnary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = Windows.Forms.DialogResult.Yes Then ' Ask if user wants to try finding folder again
+                If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.NotInstalledInFolder"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = Windows.Forms.DialogResult.Yes Then ' Ask if user wants to try finding folder again
                     MinecraftFolderSearch() ' Restart from beginning if "Yes"
                 Else
                     Me.ClsType = CloseType.ForceClose
@@ -342,30 +360,31 @@ Partial Class MainWindow
 
     Public Sub LoadLanguage()
         Try
-            BackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.BackupButton.Content")
-            RestoreButton.Content = MCBackup.Language.Dictionnary("MainWindow.RestoreButton.Content")
-            DeleteButton.Content = MCBackup.Language.Dictionnary("MainWindow.DeleteButton.Content")
-            RenameButton.Content = MCBackup.Language.Dictionnary("MainWindow.RenameButton.Content")
+            BackupButton.Content = MCBackup.Language.Dictionary("MainWindow.BackupButton.Content")
+            RestoreButton.Content = MCBackup.Language.Dictionary("MainWindow.RestoreButton.Content")
+            DeleteButton.Content = MCBackup.Language.Dictionary("MainWindow.DeleteButton.Content")
+            RenameButton.Content = MCBackup.Language.Dictionary("MainWindow.RenameButton.Content")
+            CullButton.Content = MCBackup.Language.Dictionary("MainWindow.CullButton.Content")
 
-            AutomaticBackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.AutomaticBackupButton.Content") & " >>"
+            AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " >>"
 
-            ListViewGridView.Columns(0).Header = MCBackup.Language.Dictionnary("MainWindow.ListView.Columns(0).Header")
-            ListViewGridView.Columns(1).Header = MCBackup.Language.Dictionnary("MainWindow.ListView.Columns(1).Header")
-            ListViewGridView.Columns(2).Header = MCBackup.Language.Dictionnary("MainWindow.ListView.Columns(2).Header")
-            OriginalNameLabel.Text = MCBackup.Language.Dictionnary("MainWindow.OriginalNameLabel.Text") & ":"
-            TypeLabel.Text = MCBackup.Language.Dictionnary("MainWindow.TypeLabel.Text") & ":"
+            ListViewGridView.Columns(0).Header = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(0).Header")
+            ListViewGridView.Columns(1).Header = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(1).Header")
+            ListViewGridView.Columns(2).Header = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(2).Header")
+            OriginalNameLabel.Text = MCBackup.Language.Dictionary("MainWindow.OriginalNameLabel.Text") & ":"
+            TypeLabel.Text = MCBackup.Language.Dictionary("MainWindow.TypeLabel.Text") & ":"
 
-            EditToolbarButton.Content = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Header")
-            EditContextMenu.Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Items(0).Header")
-            EditContextMenu.Items(1).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(1).Items(1).Header")
-            ToolsToolbarButton.Content = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(2).Header")
-            ToolsContextMenu.Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(2).Items(0).Header")
-            HelpToolbarButton.Content = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Header")
-            HelpContextMenu.Items(0).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(0).Header")
-            HelpContextMenu.Items(2).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(2).Header")
-            HelpContextMenu.Items(3).Header = MCBackup.Language.Dictionnary("MainWindow.MenuBar.Items(3).Items(3).Header")
+            EditToolbarButton.Content = MCBackup.Language.Dictionary("MainWindow.MenuBar.Items(1).Header")
+            EditContextMenu.Items(0).Header = MCBackup.Language.Dictionary("MainWindow.MenuBar.Items(1).Items(0).Header")
+            EditContextMenu.Items(1).Header = MCBackup.Language.Dictionary("MainWindow.MenuBar.Items(1).Items(1).Header")
+            ToolsToolbarButton.Content = MCBackup.Language.Dictionary("MainWindow.MenuBar.Items(2).Header")
+            ToolsContextMenu.Items(0).Header = MCBackup.Language.Dictionary("MainWindow.MenuBar.Items(2).Items(0).Header")
+            HelpToolbarButton.Content = MCBackup.Language.Dictionary("MainWindow.MenuBar.Items(3).Header")
+            HelpContextMenu.Items(0).Header = MCBackup.Language.Dictionary("MainWindow.MenuBar.Items(3).Items(0).Header")
+            HelpContextMenu.Items(2).Header = MCBackup.Language.Dictionary("MainWindow.MenuBar.Items(3).Items(2).Header")
+            HelpContextMenu.Items(3).Header = MCBackup.Language.Dictionary("MainWindow.MenuBar.Items(3).Items(3).Header")
 
-            StatusLabel.Content = MCBackup.Language.Dictionnary("Status.Ready")
+            StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
         Catch
         End Try
     End Sub
@@ -400,8 +419,8 @@ Partial Class MainWindow
                 SW.Write("desc=" & BackupInfo(1)) ' Write description if file
             End Using
         Catch ex As Exception
-            ErrorWindow.Show(MCBackup.Language.Dictionnary("Message.BackupError"), ex)
-            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionnary("BalloonTip.Title.BackupError"), MCBackup.Language.Dictionnary("BalloonTip.BackupError"), System.Windows.Forms.ToolTipIcon.Error)
+            ErrorWindow.Show(MCBackup.Language.Dictionary("Message.BackupError"), ex)
+            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupError"), MCBackup.Language.Dictionary("BalloonTip.BackupError"), System.Windows.Forms.ToolTipIcon.Error)
             Log.Print(ex.Message, Log.Type.Severe)
         End Try
     End Sub
@@ -414,7 +433,7 @@ Partial Class MainWindow
 
         Do Until Int(PercentComplete) = 100
             PercentComplete = Int(GetFolderSize(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0)) / GetFolderSize(BackupInfo(2)) * 100)
-            StatusLabel.Content = String.Format(MCBackup.Language.Dictionnary("Status.BackingUp"), Math.Round(PercentComplete, 2))
+            StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), Math.Round(PercentComplete, 2))
             Dispatcher.Invoke(UpdateProgressBarDelegate, System.Windows.Threading.DispatcherPriority.Background, New Object() {ProgressBar.ValueProperty, PercentComplete})
             If Environment.OSVersion.Version.Major > 5 Then
                 TaskbarManager.Instance.SetProgressValue(PercentComplete, 100)
@@ -428,13 +447,13 @@ Partial Class MainWindow
             TaskbarManager.Instance.SetProgressValue(100, 100)
         End If
         If BackupInfo(3) = "save" And My.Settings.CreateThumbOnWorld Then
-            StatusLabel.Content = String.Format(MCBackup.Language.Dictionnary("Status.CreatingThumb"), "0")
+            StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), "0")
             Log.Print("Creating thumbnail")
             CreateThumb(BackupInfo(2))
         Else
             RefreshBackupsList()
-            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionnary("BalloonTip.Title.BackupComplete"), MCBackup.Language.Dictionnary("BalloonTip.BackupComplete"), System.Windows.Forms.ToolTipIcon.Info)
-            StatusLabel.Content = MCBackup.Language.Dictionnary("Status.BackupComplete")
+            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupComplete"), MCBackup.Language.Dictionary("BalloonTip.BackupComplete"), System.Windows.Forms.ToolTipIcon.Info)
+            StatusLabel.Content = MCBackup.Language.Dictionary("Status.BackupComplete")
             Log.Print("Backup Complete")
             ListView.IsEnabled = True
             BackupButton.IsEnabled = True
@@ -505,15 +524,15 @@ Partial Class MainWindow
         If e.Data.Contains("[") And e.Data.Contains("]") Then
             Dim PercentComplete As Double = (Val(e.Data.Substring(2).Remove(1)) / 4) + (StepNumber * 25)
             UpdateProgress(PercentComplete)
-            StatusLabel_Content(String.Format(MCBackup.Language.Dictionnary("Status.CreatingThumb"), Int(PercentComplete)))
+            StatusLabel_Content(String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), Int(PercentComplete)))
         End If
     End Sub
 
     Private Sub ThumbnailBackgroundWorker_RunWorkerCompleted()
         UpdateProgress(100)
         RefreshBackupsList()
-        StatusLabel.Content = MCBackup.Language.Dictionnary("Status.BackupComplete")
-        If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionnary("BalloonTip.Title.BackupComplete"), MCBackup.Language.Dictionnary("BalloonTip.BackupComplete"), System.Windows.Forms.ToolTipIcon.Info)
+        StatusLabel.Content = MCBackup.Language.Dictionary("Status.BackupComplete")
+        If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupComplete"), MCBackup.Language.Dictionary("BalloonTip.BackupComplete"), System.Windows.Forms.ToolTipIcon.Info)
         Log.Print("Backup Complete")
         ListView.IsEnabled = True
         BackupButton.IsEnabled = True
@@ -522,7 +541,7 @@ Partial Class MainWindow
 
 #Region "Restore"
     Private Sub RestoreButton_Click(sender As Object, e As EventArgs) Handles RestoreButton.Click
-        If MetroMessageBox.Show(MCBackup.Language.Dictionnary("Message.RestoreAreYouSure"), MCBackup.Language.Dictionnary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = Forms.DialogResult.Yes Then
+        If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.RestoreAreYouSure"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = Forms.DialogResult.Yes Then
             Log.Print("Starting Restore")
             RestoreInfo(0) = ListView.SelectedItems(0).Name ' Set place 0 of RestoreInfo array to the backup name
 
@@ -555,7 +574,7 @@ Partial Class MainWindow
             If Environment.OSVersion.Version.Major > 5 Then
                 TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate)
             End If
-            StatusLabel.Content = MCBackup.Language.Dictionnary("Status.RemovingOldContent")
+            StatusLabel.Content = MCBackup.Language.Dictionary("Status.RemovingOldContent")
             Log.Print("Removing old content")
         Else
             Exit Sub
@@ -590,8 +609,8 @@ Partial Class MainWindow
                 My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\thumb.png")
             End If
         Catch ex As Exception
-            ErrorWindow.Show(MCBackup.Language.Dictionnary("Message.RestoreError"), ex)
-            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionnary("BalloonTip.Title.RestoreError"), MCBackup.Language.Dictionnary("BalloonTip.RestoreError"), System.Windows.Forms.ToolTipIcon.Error)
+            ErrorWindow.Show(MCBackup.Language.Dictionary("Message.RestoreError"), ex)
+            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RestoreError"), MCBackup.Language.Dictionary("BalloonTip.RestoreError"), System.Windows.Forms.ToolTipIcon.Error)
             Log.Print(ex.Message, Log.Type.Severe)
         End Try
     End Sub
@@ -604,7 +623,7 @@ Partial Class MainWindow
         Do Until PercentComplete = 100
             If My.Computer.FileSystem.DirectoryExists(RestoreInfo(1)) Then
                 PercentComplete = GetFolderSize(RestoreInfo(1)) / GetFolderSize(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0)) * 100
-                StatusLabel.Content = String.Format(MCBackup.Language.Dictionnary("Status.Restoring"), PercentComplete)
+                StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete)
                 Dispatcher.Invoke(UpdateRestoreProgressBarDelegate, System.Windows.Threading.DispatcherPriority.Background, New Object() {ProgressBar.ValueProperty, Convert.ToDouble(PercentComplete)})
                 If Environment.OSVersion.Version.Major > 5 Then
                     TaskbarManager.Instance.SetProgressValue(PercentComplete, 100)
@@ -614,8 +633,8 @@ Partial Class MainWindow
     End Sub
 
     Private Sub RestoreBackgroundWorker_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
-        StatusLabel.Content = MCBackup.Language.Dictionnary("Status.RestoreComplete")
-        If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionnary("BalloonTip.Title.RestoreComplete"), MCBackup.Language.Dictionnary("BalloonTip.RestoreComplete"), System.Windows.Forms.ToolTipIcon.Info)
+        StatusLabel.Content = MCBackup.Language.Dictionary("Status.RestoreComplete")
+        If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RestoreComplete"), MCBackup.Language.Dictionary("BalloonTip.RestoreComplete"), System.Windows.Forms.ToolTipIcon.Info)
         Log.Print("Restore Complete")
         RefreshBackupsList()
     End Sub
@@ -713,14 +732,14 @@ Partial Class MainWindow
 
 #Region "Delete"
     Private Sub DeleteButton_Click(sender As Object, e As EventArgs) Handles DeleteButton.Click
-        If MetroMessageBox.Show(MCBackup.Language.Dictionnary("Message.DeleteAreYouSure"), MCBackup.Language.Dictionnary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = Windows.Forms.DialogResult.Yes Then
+        If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.DeleteAreYouSure"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = Windows.Forms.DialogResult.Yes Then
             ListViewItems.Clear()
             For Each Item In ListView.SelectedItems
                 ListViewItems.Add(Item.Name)
             Next
             ListView.SelectedIndex = -1
             DeleteBackgroundWorker.RunWorkerAsync()
-            StatusLabel.Content = MCBackup.Language.Dictionnary("Status.Deleting")
+            StatusLabel.Content = MCBackup.Language.Dictionary("Status.Deleting")
             ProgressBar.IsIndeterminate = True
             If Environment.OSVersion.Version.Major > 5 Then
                 TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate)
@@ -733,13 +752,13 @@ Partial Class MainWindow
             Try
                 My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & Item, FileIO.DeleteDirectoryOption.DeleteAllContents)
             Catch ex As Exception
-                ErrorWindow.Show(MCBackup.Language.Dictionnary("Message.DeleteError"), ex)
+                ErrorWindow.Show(MCBackup.Language.Dictionary("Message.DeleteError"), ex)
             End Try
         Next
     End Sub
 
     Private Sub DeleteBackgroundWorker_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs)
-        StatusLabel.Content = MCBackup.Language.Dictionnary("Status.DeleteComplete")
+        StatusLabel.Content = MCBackup.Language.Dictionary("Status.DeleteComplete")
         ProgressBar.IsIndeterminate = False
         If Environment.OSVersion.Version.Major > 6 And Environment.OSVersion.Version.Minor > 0 Then
             TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal)
@@ -764,11 +783,11 @@ Partial Class MainWindow
         If AutoBackupWindow.IsVisible Then
             AutoBackupWindow.Hide()
             Me.Left = Me.Left + (AutoBackupWindow.Width / 2)
-            AutomaticBackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.AutomaticBackupButton.Content") & " >>"
+            AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " >>"
         Else
             AutoBackupWindow.Show()
             Me.Left = Me.Left - (AutoBackupWindow.Width / 2)
-            AutomaticBackupButton.Content = MCBackup.Language.Dictionnary("MainWindow.AutomaticBackupButton.Content") & " <<"
+            AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " <<"
         End If
     End Sub
 
@@ -828,7 +847,7 @@ Partial Class MainWindow
                 Case CloseType.CloseToTray
                     e.Cancel = True
                     Me.Hide()
-                    NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionnary("BalloonTip.Title.RunningBackground"), MCBackup.Language.Dictionnary("BalloonTip.RunningBackground"), System.Windows.Forms.ToolTipIcon.Info)
+                    NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RunningBackground"), MCBackup.Language.Dictionary("BalloonTip.RunningBackground"), System.Windows.Forms.ToolTipIcon.Info)
                     Log.Print("Closing to tray")
                     Exit Sub
                 Case CloseType.CloseCompletely

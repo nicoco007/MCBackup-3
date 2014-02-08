@@ -11,9 +11,9 @@ Public Class ErrorWindow
                 newMessageBox = New ErrorWindow
                 newMessageBox.MessageLabel.Content = Message
                 newMessageBox.ErrorTextBlock.Text = Exception.Message
-                newMessageBox.Title = MCBackup.Language.Dictionnary("Message.Caption.Error")
-                newMessageBox.ContinueButton.Content = MCBackup.Language.Dictionnary("ErrorForm.ContinueButton.Content")
-                newMessageBox.CopyToClipboardButton.Content = MCBackup.Language.Dictionnary("ErrorForm.CopyToClipboardButton.Content")
+                newMessageBox.Title = MCBackup.Language.Dictionary("Message.Caption.Error")
+                newMessageBox.ContinueButton.Content = MCBackup.Language.Dictionary("ErrorForm.ContinueButton.Content")
+                newMessageBox.CopyToClipboardButton.Content = MCBackup.Language.Dictionary("ErrorForm.CopyToClipboardButton.Content")
                 System.Media.SystemSounds.Hand.Play()
                 newMessageBox.ShowDialog()
                 Return Button

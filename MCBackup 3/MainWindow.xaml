@@ -105,6 +105,6 @@
             </Grid>
         </Grid>
         <Button x:Name="AutomaticBackupButton" Content="Automatic Backup &gt;&gt;" VerticalAlignment="Bottom" Margin="0,0,10,101" Opacity="0.85" HorizontalAlignment="Right" Padding="10,1"/>
-        <Button x:Name="CullButton" Content="Selective Cull" HorizontalAlignment="Left" Width="125" Margin="465,0,0,103" Opacity="0.85" Height="20" VerticalAlignment="Bottom" Padding="0"/>
+        <Button x:Name="CullButton" Content="Selective Cull" HorizontalAlignment="Left" Width="150" Margin="465,0,0,103" Opacity="0.85" Padding="0" Height="20" VerticalAlignment="Bottom"/>
     </Grid>
 </Controls:MetroWindow>

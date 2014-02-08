@@ -26,7 +26,7 @@ Partial Public Class Options
 
     Sub New()
         InitializeComponent()
-        OpenFileDialog.Filter = "All Supported Image Files (*bmp, *.jpg, *.jpeg, *.png)|*bmp;*.gif;*.png;*.jpg;*.jpeg|BMP (*.bmp)|*.bmp|JPEG (*.jpg, *.jpeg)|*.jpg;*.jpeg|PNG (*.png)|*.png"
+        OpenFileDialog.Filter = MCBackup.Language.Dictionary("OptionsWindow.AllSupportedImages") & " (*bmp, *.jpg, *.jpeg, *.png)|*bmp;*.gif;*.png;*.jpg;*.jpeg|BMP (*.bmp)|*.bmp|JPEG (*.jpg, *.jpeg)|*.jpg;*.jpeg|PNG (*.png)|*.png"
 
         ListBox.SelectedIndex = 0
         MinecraftFolderTextBox.Text = My.Settings.MinecraftFolderLocation
@@ -214,41 +214,41 @@ Partial Public Class Options
     End Sub
 
     Private Sub LoadLanguage()
-        Me.Title = MCBackup.Language.Dictionnary("OptionsWindow.Title")
-        ListBox.Items(0).Content = MCBackup.Language.Dictionnary("OptionsWindow.ListBox.Items(0).Content")
-        ListBox.Items(1).Content = MCBackup.Language.Dictionnary("OptionsWindow.ListBox.Items(1).Content")
-        ListBox.Items(2).Content = MCBackup.Language.Dictionnary("OptionsWindow.ListBox.Items(2).Content")
+        Me.Title = MCBackup.Language.Dictionary("OptionsWindow.Title")
+        ListBox.Items(0).Content = MCBackup.Language.Dictionary("OptionsWindow.ListBox.Items(0).Content")
+        ListBox.Items(1).Content = MCBackup.Language.Dictionary("OptionsWindow.ListBox.Items(1).Content")
+        ListBox.Items(2).Content = MCBackup.Language.Dictionary("OptionsWindow.ListBox.Items(2).Content")
 
         ' General Tab
-        ShowBalloonTipsCheckBox.Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.ShowBalloonTipsCheckBox.Content")
-        ShowDeleteConfirmationCheckBox.Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.ShowDeleteConfirmationCheckBox.Content")
-        CheckForUpdatesCheckBox.Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.CheckForUpdatesCheckBox.Content")
-        CreateThumbOnWorldCheckBox.Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.CreateThumbOnWorldCheckBox.Content")
-        AlwaysCloseCheckBox.Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.AlwaysCloseCheckBox.Content")
-        CloseToTrayRadioButton.Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.CloseToTrayRadioButton.Content")
-        CloseCompletelyRadioButton.Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.CloseCompletelyRadioButton.Content")
-        AlwaysCloseNoteTextBlock.Text = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text")
-        LanguageLabel.Content = MCBackup.Language.Dictionnary("OptionsWindow.GeneralPanel.LanguageLabel.Content")
+        ShowBalloonTipsCheckBox.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.ShowBalloonTipsCheckBox.Content")
+        ShowDeleteConfirmationCheckBox.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.ShowDeleteConfirmationCheckBox.Content")
+        CheckForUpdatesCheckBox.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.CheckForUpdatesCheckBox.Content")
+        CreateThumbOnWorldCheckBox.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.CreateThumbOnWorldCheckBox.Content")
+        AlwaysCloseCheckBox.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.AlwaysCloseCheckBox.Content")
+        CloseToTrayRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.CloseToTrayRadioButton.Content")
+        CloseCompletelyRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.CloseCompletelyRadioButton.Content")
+        AlwaysCloseNoteTextBlock.Text = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text")
+        LanguageLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.LanguageLabel.Content")
 
         ' Appearance 
-        ListViewOpacityLabel.Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.ListViewOpacityLabel.Content")
-        BackgroundImageLabel.Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.BackgroundImageLabel.Content")
-        SizeModeLabel.Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.SizeModeLabel.Content")
-        SizeModeComboBox.Items(0).Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(0).Content")
-        SizeModeComboBox.Items(1).Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(1).Content")
-        SizeModeComboBox.Items(2).Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(2).Content")
-        SizeModeComboBox.Items(3).Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content")
-        BackgroundImageBrowseButton.Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content")
-        BackgroundImageRemoveButton.Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content")
-        StatusLabelColor.Content = MCBackup.Language.Dictionnary("OptionsWindow.AppearancePanel.StatusLabelColor.Content")
+        ListViewOpacityLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.ListViewOpacityLabel.Content")
+        BackgroundImageLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.BackgroundImageLabel.Content")
+        SizeModeLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SizeModeLabel.Content")
+        SizeModeComboBox.Items(0).Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(0).Content")
+        SizeModeComboBox.Items(1).Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(1).Content")
+        SizeModeComboBox.Items(2).Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(2).Content")
+        SizeModeComboBox.Items(3).Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content")
+        BackgroundImageBrowseButton.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content")
+        BackgroundImageRemoveButton.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content")
+        StatusLabelColor.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.StatusLabelColor.Content")
 
         ' Folders
-        MinecraftFolderLocationLabel.Content = MCBackup.Language.Dictionnary("OptionsWindow.FoldersPanel.MinecraftFolderLocationLabel.Content")
-        SavesFolderLocationLabel.Content = MCBackup.Language.Dictionnary("OptionsWindow.FoldersPanel.SavesFolderLocationLabel.Content")
-        BackupsFolderLocationLabel.Content = MCBackup.Language.Dictionnary("OptionsWindow.FoldersPanel.BackupsFolderLocationLabel.Content")
-        BrowseMinecraftFolderButton.Content = MCBackup.Language.Dictionnary("OptionsWindow.FoldersPanel.BrowseButton.Content")
-        BrowseSavesFolderButton.Content = MCBackup.Language.Dictionnary("OptionsWindow.FoldersPanel.BrowseButton.Content")
-        BrowseBackupsFolderButton.Content = MCBackup.Language.Dictionnary("OptionsWindow.FoldersPanel.BrowseButton.Content")
+        MinecraftFolderLocationLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersPanel.MinecraftFolderLocationLabel.Content")
+        SavesFolderLocationLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersPanel.SavesFolderLocationLabel.Content")
+        BackupsFolderLocationLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersPanel.BackupsFolderLocationLabel.Content")
+        BrowseMinecraftFolderButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersPanel.BrowseButton.Content")
+        BrowseSavesFolderButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersPanel.BrowseButton.Content")
+        BrowseBackupsFolderButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersPanel.BrowseButton.Content")
     End Sub
 
     Private Sub ColorSlider_ValueChanged(sender As Object, e As RoutedPropertyChangedEventArgs(Of Double)) Handles RedColorSlider.ValueChanged, GreenColorSlider.ValueChanged, BlueColorSlider.ValueChanged
