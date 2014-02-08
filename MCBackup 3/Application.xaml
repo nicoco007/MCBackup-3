@@ -10,72 +10,9 @@ ShutdownMode="OnMainWindowClose">
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/cyan.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            
-            <Style x:Key="MetroFlatButton" TargetType="{x:Type Button}">
-                <Setter Property="Background" Value="#0077CC" />
-                <Setter Property="Foreground" Value="White" />
-                <Setter Property="FontSize" Value="{DynamicResource FlatButtonFontSize}" />
-                <Setter Property="Padding" Value="10,5,10,5" />
-                <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type Button}">
-                            <Border x:Name="Border" Margin="0" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" RecognizesAccessKey="True" />
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsPressed" Value="True">
-                                    <Setter Property="Background" Value="#005999" TargetName="Border" />
-                                </Trigger>
-                                <Trigger Property="IsEnabled" Value="False">
-                                    <Setter Property="Foreground" Value="{DynamicResource GrayBrush2}" />
-                                </Trigger>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="#199FFF" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <Style TargetType="{x:Type Button}"
-                BasedOn="{StaticResource MetroFlatButton}" />
-
-            <!--ACCENT COLORS-->
-            <Color x:Key="HighlightColor">#FF199FFF</Color>
-
-            <!--80%-->
-            <Color x:Key="AccentColor">#CC0085E5</Color>
-            <!--60%-->
-            <Color x:Key="AccentColor2">#990085E5</Color>
-            <!--40%-->
-            <Color x:Key="AccentColor3">#660085E5</Color>
-            <!--20%-->
-            <Color x:Key="AccentColor4">#330085E5</Color>
-
-            <!-- re-set brushes too -->
-            <SolidColorBrush x:Key="HighlightBrush" Color="{StaticResource HighlightColor}" />
-            <SolidColorBrush x:Key="AccentColorBrush" Color="{StaticResource AccentColor}"/>
-            <SolidColorBrush x:Key="AccentColorBrush2" Color="{StaticResource AccentColor2}"/>
-            <SolidColorBrush x:Key="AccentColorBrush3" Color="{StaticResource AccentColor3}"/>
-            <SolidColorBrush x:Key="AccentColorBrush4" Color="{StaticResource AccentColor4}"/>
-
-            <SolidColorBrush x:Key="WindowTitleColorBrush" Color="{StaticResource AccentColor}" />
-
-            <SolidColorBrush x:Key="AccentSelectedColorBrush" Color="White" />
-
-            <LinearGradientBrush x:Key="ProgressBrush" EndPoint="0.001,0.5" StartPoint="1.002,0.5">
-                <GradientStop Color="{StaticResource HighlightColor}" Offset="0" />
-                <GradientStop Color="{StaticResource AccentColor3}" Offset="1" />
-            </LinearGradientBrush>
-
-            <SolidColorBrush x:Key="CheckmarkFill" Color="{StaticResource AccentColor}" />
-            <SolidColorBrush x:Key="RightArrowFill" Color="{StaticResource AccentColor}" />
-
-            <Color x:Key="IdealForegroundColor">White</Color>
-            <SolidColorBrush x:Key="IdealForegroundColorBrush" Color="{StaticResource IdealForegroundColor}"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
