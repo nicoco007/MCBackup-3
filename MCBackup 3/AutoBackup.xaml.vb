@@ -1,4 +1,6 @@
 ﻿Imports System.Windows.Threading
+Imports System.Windows.Input
+Imports System.Text.RegularExpressions
 
 Partial Public Class AutoBackup
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
@@ -35,6 +37,8 @@ Partial Public Class AutoBackup
     Private Sub AutoBackupWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles AutoBackupWindow.Loaded
         ReloadSaves()
         LoadLanguage()
+        PrefixTextBox.Text = My.Settings.AutoBkpPrefix
+        SuffixTextBox.Text = My.Settings.AutoBkpSuffix
     End Sub
 
     Private Sub AutoBackupWindow_Closing(sender As Object, e As ComponentModel.CancelEventArgs) Handles AutoBackupWindow.Closing

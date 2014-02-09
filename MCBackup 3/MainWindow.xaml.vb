@@ -867,7 +867,12 @@ Partial Class MainWindow
             End If
         Catch
         End Try
+
         My.Settings.SidebarWidth = MainSidebar.Width.Value
+
+        My.Settings.AutoBkpPrefix = AutoBackupWindow.PrefixTextBox.Text
+        My.Settings.AutoBkpSuffix = AutoBackupWindow.SuffixTextBox.Text
+
         Log.Print("Someone is closing me!")
         My.Settings.Save()
     End Sub
