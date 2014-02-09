@@ -64,8 +64,8 @@
         <Label x:Name="StatusLabel" Content="Ready" Margin="10,0,10,32" FontSize="14" FontWeight="Bold" Height="29" VerticalAlignment="Bottom"/>
         <Grid x:Name="Grid" Margin="10,10,10,128">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="70*" MinWidth="300"/>
-                <ColumnDefinition Width="30*" MinWidth="240"/>
+                <ColumnDefinition Width="100*" MinWidth="300"/>
+                <ColumnDefinition x:Name="MainSidebar" Width="240" MinWidth="240"/>
             </Grid.ColumnDefinitions>
             <ListView x:Name="ListView" BorderThickness="1" BorderBrush="#FF646464">
                 <ListView.View>

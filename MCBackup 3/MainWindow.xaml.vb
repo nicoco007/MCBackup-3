@@ -113,8 +113,8 @@ Partial Class MainWindow
                 MCBackup.Language.Load(My.Settings.Language & ".lang")
             End If
         Catch ex As Exception
-            Log.Print("Could not load language file: """ & My.Settings.Language & """", Log.Type.Severe)
-            Log.Print(ex.Message, Log.Type.Severe)
+            Log.Print("Could not load language file """ & My.Settings.Language & """", Log.Type.Severe)
+            Log.Print("Could not load language file:" & ex.Message, Log.Type.Severe)
             ErrorWindow.Show("Error: Language file not found (" & My.Settings.Language & ")! MCBackup will now exit.", ex)
             My.Settings.Language = DefaultLanguage
             Me.ClsType = CloseType.ForceClose
@@ -166,6 +166,8 @@ Partial Class MainWindow
     End Sub
 
     Private Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs)
+        MainSidebar.Width = New System.Windows.GridLength(My.Settings.SidebarWidth)
+
         If My.Settings.CheckForUpdates Then
             Try
                 Splash.Status.Content = MCBackup.Language.FindString("Splash.Status.CheckingUpdates", My.Settings.Language & ".lang")
@@ -865,7 +867,7 @@ Partial Class MainWindow
             End If
         Catch
         End Try
-
+        My.Settings.SidebarWidth = MainSidebar.Width.Value
         Log.Print("Someone is closing me!")
         My.Settings.Save()
     End Sub

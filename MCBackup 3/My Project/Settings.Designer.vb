@@ -207,6 +207,42 @@ Partial Friend NotInheritable Class MySettings
             Me("StatusLabelColor") = value
         End Set
     End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("[AUTO]")>  _
+    Public Property AutoBkpPrefix() As String
+        Get
+            Return CType(Me("AutoBkpPrefix"),String)
+        End Get
+        Set
+            Me("AutoBkpPrefix") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+    Public Property AutoBkpSuffix() As String
+        Get
+            Return CType(Me("AutoBkpSuffix"),String)
+        End Get
+        Set
+            Me("AutoBkpSuffix") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("240")>  _
+    Public Property SidebarWidth() As Integer
+        Get
+            Return CType(Me("SidebarWidth"),Integer)
+        End Get
+        Set
+            Me("SidebarWidth") = value
+        End Set
+    End Property
 End Class
 
 Namespace My

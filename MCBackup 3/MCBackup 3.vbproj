@@ -116,6 +116,7 @@
     <Compile Include="Rename.xaml.vb">
       <DependentUpon>Rename.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Settings.vb" />
     <Compile Include="Splash.xaml.vb">
       <DependentUpon>Splash.xaml</DependentUpon>
     </Compile>

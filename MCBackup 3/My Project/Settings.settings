@@ -41,5 +41,14 @@
     <Setting Name="StatusLabelColor" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#FF000000</Value>
     </Setting>
+    <Setting Name="AutoBkpPrefix" Type="System.String" Scope="User">
+      <Value Profile="(Default)">[AUTO]</Value>
+    </Setting>
+    <Setting Name="AutoBkpSuffix" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SidebarWidth" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">240</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
