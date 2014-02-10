@@ -1,8 +1,7 @@
 ﻿Imports System.Windows.Threading
-Imports System.Windows.Input
 Imports System.Text.RegularExpressions
 
-Partial Public Class AutoBackup
+Public Class AutoBackup
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
     Public IsMoving As Boolean
 
@@ -78,9 +77,15 @@ Partial Public Class AutoBackup
             SuffixTextBox.IsEnabled = True
         Else
             If WorldName = "" Then
-                MessageBox.Show("Please select a world to automatically back up.", "Error!", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK)
+                MetroMessageBox.Show("Please select a world to automatically back up.", "Error!", MessageBoxButton.OK, MessageBoxImage.Error)
                 Exit Sub
             End If
+
+            If Regex.IsMatch(PrefixTextBox.Text, "[\/?""|:<>*]") Or Regex.IsMatch(SuffixTextBox.Text, "[\/?""|:<>*]") Then
+                MetroMessageBox.Show("Backup name cannot contain characters" & vbNewLine & "\ / : * ? "" < > |" & vbNewLine & "Check the prefix/suffix boxes.", "Error!", MessageBoxButton.OK, MessageBoxImage.Error)
+                Exit Sub
+            End If
+
             Minutes = MinutesNumUpDown.Value
             Seconds = 0
             TimeLabel.Content = IntToText(MinutesNumUpDown.Value) & ":00"
