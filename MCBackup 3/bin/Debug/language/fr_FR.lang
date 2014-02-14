@@ -145,7 +145,7 @@ Splash.Status.Starting="Démarrage..."
 Splash.Status.LoadingLang="Chargement de la langue..."
 Splash.Status.LoadingProps="Chargement des paramètres..."
 Splash.Status.CheckingUpdates="Recherche de mises à jour..."
-Splash.Status.FindingMinecraft="Recherche de Minecraft.."
+Splash.Status.FindingMinecraft="Recherche de Minecraft..."
 Splash.Status.Done="Terminé."
 
 CullWindow.Title="Supression sélective"

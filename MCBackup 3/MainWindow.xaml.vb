@@ -62,13 +62,13 @@ Partial Class MainWindow
             Splash.Status.Content = "Starting..."
         End Try
 
-        Splash.Progress.Value = 0
-
         Splash.Status.Refresh()
-        Splash.Progress.Refresh()
 
         Log.StartNew()
         Log.Print("Starting MCBackup")
+
+        Splash.Progress.Value += 1
+        Splash.Progress.Refresh()
 
         InitializeComponent()
 
@@ -83,6 +83,9 @@ Partial Class MainWindow
         AddHandler ThumbnailBackgroundWorker.DoWork, New DoWorkEventHandler(AddressOf ThumbnailBackgroundWorker_DoWork)
         AddHandler ThumbnailBackgroundWorker.RunWorkerCompleted, New RunWorkerCompletedEventHandler(AddressOf ThumbnailBackgroundWorker_RunWorkerCompleted)
 
+        Splash.Progress.Value += 1
+        Splash.Progress.Refresh()
+
         Me.Title = "MCBackup " & ApplicationVersion
 
         Try
@@ -91,10 +94,10 @@ Partial Class MainWindow
             Splash.Status.Content = "Loading Language..."
         End Try
 
-        Splash.Progress.Value = 1
+        Splash.Progress.Value += 1
+        Splash.Progress.Refresh()
 
         Splash.Status.Refresh()
-        Splash.Progress.Refresh()
 
         Dim DefaultLanguage As String = "en_US"
 
@@ -104,6 +107,9 @@ Partial Class MainWindow
             Case "fra"
                 DefaultLanguage = "fr_FR"
         End Select
+
+        Splash.Progress.Value += 1
+        Splash.Progress.Refresh()
 
         Try
             If My.Settings.Language = "" Or My.Settings.Language Is Nothing Then
@@ -122,6 +128,9 @@ Partial Class MainWindow
             Exit Sub
         End Try
 
+        Splash.Progress.Value += 1
+        Splash.Progress.Refresh()
+
         NotifyIcon.Text = "MCBackup " & ApplicationVersion
         NotifyIcon.Icon = New System.Drawing.Icon(Application.GetResourceStream(New Uri("pack://application:,,,/Resources/MCBackup.ico")).Stream)
         Dim ContextMenu As New System.Windows.Forms.ContextMenu
@@ -132,21 +141,27 @@ Partial Class MainWindow
         NotifyIcon.ContextMenu = ContextMenu
         NotifyIcon.Visible = True
 
+        Splash.Progress.Value += 1
+        Splash.Progress.Refresh()
+
         Try
             Splash.Status.Content = MCBackup.Language.FindString("Splash.Status.LoadingProps", My.Settings.Language & ".lang")
         Catch ex As Exception
             Splash.Status.Content = "Loading Properties..."
         End Try
 
-        Splash.Progress.Value = 2
-
         Splash.Status.Refresh()
+
+        Splash.Progress.Value += 1
         Splash.Progress.Refresh()
 
         Main.ListView.Opacity = My.Settings.InterfaceOpacity / 100
         Main.Sidebar.Background = New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, 255, 255, 255))
 
         StatusLabel.Foreground = New SolidColorBrush(My.Settings.StatusLabelColor)
+
+        Splash.Progress.Value += 1
+        Splash.Progress.Refresh()
 
         If My.Settings.BackgroundImageLocation = "" Then
             Me.Background = New SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 240, 240, 240))
@@ -156,47 +171,72 @@ Partial Class MainWindow
             Me.Background = Brush
         End If
 
+        Splash.Progress.Value += 1
+        Splash.Progress.Refresh()
+
         If My.Settings.BackupsFolderLocation = "" Then
             My.Settings.BackupsFolderLocation = StartupPath & "\backups"
         End If
 
+        My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation)
+
         Log.Print("Set Backups folder location to """ & My.Settings.BackupsFolderLocation & """")
 
-        My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation)
+        Splash.Progress.Value += 1
+        Splash.Progress.Refresh()
     End Sub
 
     Private Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs)
+        Me.Hide()
         MainSidebar.Width = New System.Windows.GridLength(My.Settings.SidebarWidth)
 
+        Splash.Progress.Value += 1
+        Splash.Progress.Refresh()
+
         If My.Settings.CheckForUpdates Then
+            Log.Print("Searching for updates...")
             Try
                 Splash.Status.Content = MCBackup.Language.FindString("Splash.Status.CheckingUpdates", My.Settings.Language & ".lang")
             Catch ex As Exception
                 Splash.Status.Content = "Checking for Updates..."
             End Try
 
-            Splash.Progress.Value = 3
-
             Splash.Status.Refresh()
+
+            Splash.Progress.Value += 1
             Splash.Progress.Refresh()
 
             Dim WebClient As New WebClient
-            LatestVersion = WebClient.DownloadString("http://content.nicoco007.com/downloads/mcbackup-3/version")
-
-            Dim ApplicationVersionInt = ApplicationVersion.Replace(".", "")
-            Dim LatestVersionInt = LatestVersion.Replace(".", "")
-            If ApplicationVersionInt < LatestVersionInt Then
-                Log.Print("A new version is available (version " & LatestVersion & ")!")
-                Dim UpdateDialog As New UpdateDialog
-                UpdateDialog.Owner = Me
-                UpdateDialog.Show()
-            ElseIf ApplicationVersionInt > LatestVersionInt Then
-                Log.Print("MCBackup is running in beta mode (version " & ApplicationVersion & ")!")
-                Me.Title += " Beta"
-            ElseIf ApplicationVersionInt = LatestVersionInt Then
-                Log.Print("MCBackup is up-to-date (version " & ApplicationVersion & ").")
-            End If
+            AddHandler WebClient.DownloadStringCompleted, AddressOf WebClient_DownloadedStringAsync
+            WebClient.DownloadStringAsync(New Uri("http://content.nicoco007.com/downloads/mcbackup-3/version"))
+            Exit Sub
+        Else
+            Log.Print("Update checking disabled, skipping...")
         End If
+        Load2()
+    End Sub
+
+    Private Sub WebClient_DownloadedStringAsync(sender As Object, e As DownloadStringCompletedEventArgs)
+        LatestVersion = e.Result
+        Dim ApplicationVersionInt = ApplicationVersion.Replace(".", "")
+        Dim LatestVersionInt = LatestVersion.Replace(".", "")
+        If ApplicationVersionInt < LatestVersionInt Then
+            Log.Print("A new version is available (version " & LatestVersion & ")!")
+            Dim UpdateDialog As New UpdateDialog
+            UpdateDialog.Owner = Me
+            UpdateDialog.Show()
+        ElseIf ApplicationVersionInt > LatestVersionInt Then
+            Log.Print("MCBackup is running in beta mode (version " & ApplicationVersion & ")!")
+            Me.Title += " Beta"
+        ElseIf ApplicationVersionInt = LatestVersionInt Then
+            Log.Print("MCBackup is up-to-date (version " & ApplicationVersion & ").")
+        End If
+        Load2()
+    End Sub
+
+    Private Sub Load2()
+        Splash.Progress.Value += 1
+        Splash.Progress.Refresh()
 
         Try
             Splash.Status.Content = MCBackup.Language.FindString("Splash.Status.FindingMinecraft", My.Settings.Language & ".lang")
@@ -204,9 +244,9 @@ Partial Class MainWindow
             Splash.Status.Content = "Finding Minecraft..."
         End Try
 
-        Splash.Progress.Value = 4
-
         Splash.Status.Refresh()
+
+        Splash.Progress.Value += 1
         Splash.Progress.Refresh()
 
         If Not My.Computer.FileSystem.FileExists(My.Settings.MinecraftFolderLocation & "\launcher.jar") Then ' Check if saved directory exists AND still has Minecraft installed in it
@@ -221,6 +261,9 @@ Partial Class MainWindow
             End If
         End If
 
+        Splash.Progress.Value += 1
+        Splash.Progress.Refresh()
+
         My.Computer.FileSystem.CreateDirectory(My.Settings.SavesFolderLocation)
 
         Log.Print("Minecraft folder set to """ & My.Settings.MinecraftFolderLocation & """")
@@ -233,11 +276,14 @@ Partial Class MainWindow
             Splash.Status.Content = "Done."
         End Try
 
-        Splash.Progress.Value = 5
+        Splash.Progress.Value += 1
+        Splash.Progress.Refresh()
 
         Splash.Status.Refresh()
-        Splash.Progress.Refresh()
+
         Splash.Hide()
+        Me.Show()
+        Log.Print(Splash.Progress.Value)
     End Sub
 
     Private Sub MinecraftFolderSearch()
