@@ -18,6 +18,7 @@ Imports System.Windows.Forms
 Imports System.Linq
 Imports System.Security.Permissions
 Imports System.Security
+Imports MahApps.Metro
 
 Partial Public Class Options
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
@@ -65,6 +66,8 @@ Partial Public Class Options
         AlwaysCloseCheckBox_Checked(New Object, New RoutedEventArgs)
 
         LanguagesComboBox.SelectedItem = MCBackup.Language.FindString("fullname", My.Settings.Language & ".lang")
+
+        ThemeComboBox.Text = ThemeManager.DetectTheme(My.Application).Item2.Name
     End Sub
 
     Private Sub ListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles ListBox.SelectionChanged
@@ -195,6 +198,7 @@ Partial Public Class Options
         My.Settings.CheckForUpdates = CheckForUpdatesCheckBox.IsChecked
         My.Settings.ShowBalloonTips = ShowBalloonTipsCheckBox.IsChecked
         My.Settings.CreateThumbOnWorld = CreateThumbOnWorldCheckBox.IsChecked
+        My.Settings.Theme = ThemeComboBox.SelectedValue.ToString
 
         If AlwaysCloseCheckBox.IsChecked Then
             My.Settings.SaveCloseState = True
@@ -258,5 +262,9 @@ Partial Public Class Options
         My.Settings.StatusLabelColor = Color.FromRgb(RedColorSlider.Value, GreenColorSlider.Value, BlueColorSlider.Value)
         ColorRectangle.Fill = New SolidColorBrush(My.Settings.StatusLabelColor)
         Main.StatusLabel.Foreground = New SolidColorBrush(My.Settings.StatusLabelColor)
+    End Sub
+
+    Private Sub ThemeComboBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles ThemeComboBox.SelectionChanged
+        ThemeManager.ChangeTheme(My.Application, New Accent(ThemeComboBox.SelectedValue.ToString, New Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/" & ThemeComboBox.SelectedValue.ToString & ".xaml")), Theme.Light)
     End Sub
 End Class

@@ -22,14 +22,14 @@
     Title="Options" Height="265" Width="690" Loaded="Window_Loaded" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Background="White" SizeToContent="WidthAndHeight">
 
     <Grid Height="236" VerticalAlignment="Top">
-        <Canvas x:Name="GeneralPanel" HorizontalAlignment="Left" Height="191" VerticalAlignment="Top" Width="567" Margin="117,10,0,0">
+        <Canvas x:Name="GeneralPanel" HorizontalAlignment="Left" Height="191" VerticalAlignment="Top" Width="567" Margin="107,10,0,0">
             <CheckBox x:Name="ShowBalloonTipsCheckBox" Content="Show balloon tips" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="10" Canvas.Top="13" ToolTipService.ShowOnDisabled="True" IsChecked="True" ToolTip="Show a ballon tip when a backup/restore finishes or fails"/>
             <CheckBox x:Name="ShowDeleteConfirmationCheckBox" Content="Show delete confirmation" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="10" Canvas.Top="36" ToolTip="Not Implemented" ToolTipService.ShowOnDisabled="True" IsEnabled="False" IsChecked="True"/>
             <CheckBox x:Name="CheckForUpdatesCheckBox" Content="Check for updates" Canvas.Left="10" Canvas.Top="59" ToolTip="Automatically check for updates on startup" IsChecked="True"/>
             <CheckBox x:Name="AlwaysCloseCheckBox" Content="Always..." Canvas.Left="346" Canvas.Top="13"/>
             <RadioButton x:Name="CloseCompletelyRadioButton" Content="Close completely" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="346" Canvas.Top="59"/>
             <RadioButton x:Name="CloseToTrayRadioButton" Content="Close to tray" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="346" Canvas.Top="36"/>
-            <TextBlock x:Name="AlwaysCloseNoteTextBlock" Text="Note: You can close MCBackup from the tray by right-clicking on it's icon." HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="346" Canvas.Top="82" Width="199" TextWrapping="WrapWithOverflow" Height="67"/>
+            <TextBlock x:Name="AlwaysCloseNoteTextBlock" Text="Note: You can close MCBackup from the tray by right-clicking on it's icon." HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="346" Canvas.Top="87" Width="199" TextWrapping="WrapWithOverflow" Height="67"/>
             <CheckBox x:Name="CreateThumbOnWorldCheckBox" Content="Create thumbnail on world backup" Canvas.Left="10" Canvas.Top="82" IsChecked="True"/>
             <ComboBox x:Name="LanguagesComboBox" Canvas.Left="10" Canvas.Top="142" Width="151"/>
             <Label x:Name="LanguageLabel" Content="Language:" Canvas.Left="10" Canvas.Top="116"/>
@@ -39,7 +39,7 @@
             <ListBoxItem Content="Appearance"/>
             <ListBoxItem Content="Folders"/>
         </ListBox>
-        <Canvas x:Name="FoldersPanel" HorizontalAlignment="Left" Height="191" VerticalAlignment="Top" Width="567" Margin="117,10,0,0">
+        <Canvas x:Name="FoldersPanel" HorizontalAlignment="Left" Height="191" VerticalAlignment="Top" Width="567" Margin="107,11,0,0">
             <Label x:Name="MinecraftFolderLocationLabel" Content="Minecraft Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="8" Width="159"/>
             <Label x:Name="BackupsFolderLocationLabel" Content="Backups Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="76" Width="159"/>
             <TextBox x:Name="MinecraftFolderTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="313" IsReadOnly="True" Canvas.Left="164" Canvas.Top="8"/>
@@ -51,28 +51,53 @@
             <Button x:Name="BrowseSavesFolderButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Canvas.Left="482" Canvas.Top="40"/>
         </Canvas>
         <Button x:Name="CloseButton" Content="Close" VerticalAlignment="Top" Margin="302,200,302,0"/>
-        <Canvas x:Name="AppearancePanel" HorizontalAlignment="Left" Height="191" VerticalAlignment="Top" Width="567" Margin="117,10,0,0">
-            <Label x:Name="ListViewOpacityLabel" Content="Interface Opacity" Canvas.Left="5" Canvas.Top="10" Width="144"/>
-            <Slider x:Name="ListViewOpacitySlider" Width="370" Canvas.Left="154" Canvas.Top="14" ValueChanged="ListViewOpacitySlider_ValueChanged" Maximum="100" Minimum="50" Value="75"/>
-            <Label x:Name="BackgroundImageLabel" Content="Background Image" Canvas.Left="5" Canvas.Top="41" Width="144"/>
-            <Button x:Name="BackgroundImageBrowseButton" Content="Browse" Canvas.Left="159" Canvas.Top="45" Width="90"/>
-            <Label x:Name="OpacityPercentLabel" Content="100%" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="523" Canvas.Top="9"/>
-            <Button x:Name="BackgroundImageRemoveButton" Content="Remove" HorizontalAlignment="Left" VerticalAlignment="Top" Width="90" Canvas.Left="254" Canvas.Top="45"/>
-            <ComboBox x:Name="SizeModeComboBox" Width="120" Canvas.Left="159" Canvas.Top="81" SelectedIndex="0">
+        <Canvas x:Name="AppearancePanel" HorizontalAlignment="Left" Height="191" VerticalAlignment="Top" Width="567" Margin="107,10,0,0">
+            <Label x:Name="ListViewOpacityLabel" Content="Interface Opacity" Canvas.Left="5" Width="144"/>
+            <Slider x:Name="ListViewOpacitySlider" Width="370" Canvas.Left="154" Canvas.Top="4" ValueChanged="ListViewOpacitySlider_ValueChanged" Maximum="100" Minimum="50" Value="75"/>
+            <Label x:Name="BackgroundImageLabel" Content="Background Image" Canvas.Left="5" Canvas.Top="27" Width="144"/>
+            <Button x:Name="BackgroundImageBrowseButton" Content="Browse" Canvas.Left="159" Canvas.Top="31" Width="90"/>
+            <Label x:Name="OpacityPercentLabel" Content="100%" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="523" Canvas.Top="-1"/>
+            <Button x:Name="BackgroundImageRemoveButton" Content="Remove" HorizontalAlignment="Left" VerticalAlignment="Top" Width="90" Canvas.Left="254" Canvas.Top="31"/>
+            <ComboBox x:Name="SizeModeComboBox" Width="120" Canvas.Left="159" Canvas.Top="96" SelectedIndex="0">
                 <ComboBoxItem Content="Normal"/>
                 <ComboBoxItem Content="Stretch"/>
                 <ComboBoxItem Content="Auto Size"/>
                 <ComboBoxItem Content="Zoom"/>
             </ComboBox>
-            <Label x:Name="SizeModeLabel" Content="Size Mode" Canvas.Left="5" Canvas.Top="81" Width="144"/>
-            <Label x:Name="StatusLabelColor" Content="Status Text Color" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="5" Canvas.Top="134"/>
-            <Slider x:Name="RedColorSlider" Width="300" Canvas.Left="159" Canvas.Top="116" Maximum="255" Margin="0" HorizontalAlignment="Right"/>
-            <Slider x:Name="GreenColorSlider" Width="300" Canvas.Left="159" Canvas.Top="139" Maximum="255" HorizontalAlignment="Right"/>
-            <Slider x:Name="BlueColorSlider" Width="300" Canvas.Left="159" Canvas.Top="162" Maximum="255" HorizontalAlignment="Right"/>
-            <Label x:Name="RedColorLabel" Content="255" Canvas.Left="459" Canvas.Top="111"/>
-            <Label x:Name="GreenColorLabel" Content="255" Canvas.Left="459" Canvas.Top="134"/>
-            <Label x:Name="BlueColorLabel" Content="255" Canvas.Left="459" Canvas.Top="158"/>
-            <Rectangle x:Name="ColorRectangle" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="64" Stroke="Black" VerticalAlignment="Top" Width="64" Canvas.Left="488" Canvas.Top="116"/>
+            <Label x:Name="SizeModeLabel" Content="Size Mode" Canvas.Left="5" Canvas.Top="96" Width="144"/>
+            <Label x:Name="StatusLabelColor" Content="Status Text Color" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="5" Canvas.Top="144"/>
+            <Slider x:Name="RedColorSlider" Width="300" Canvas.Left="159" Canvas.Top="126" Maximum="255" Margin="0" HorizontalAlignment="Right"/>
+            <Slider x:Name="GreenColorSlider" Width="300" Canvas.Left="159" Canvas.Top="149" Maximum="255" HorizontalAlignment="Right"/>
+            <Slider x:Name="BlueColorSlider" Width="300" Canvas.Left="159" Canvas.Top="172" Maximum="255" HorizontalAlignment="Right"/>
+            <Label x:Name="RedColorLabel" Content="255" Canvas.Left="459" Canvas.Top="121"/>
+            <Label x:Name="GreenColorLabel" Content="255" Canvas.Left="459" Canvas.Top="144"/>
+            <Label x:Name="BlueColorLabel" Content="255" Canvas.Left="459" Canvas.Top="168"/>
+            <Rectangle x:Name="ColorRectangle" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="64" Stroke="Black" VerticalAlignment="Top" Width="64" Canvas.Left="488" Canvas.Top="126"/>
+            <ComboBox x:Name="ThemeComboBox" SelectedValuePath="Content" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Canvas.Left="159" Canvas.Top="65" IsReadOnly="True">
+                <ComboBoxItem Content="Amber"/>
+                <ComboBoxItem Content="Blue"/>
+                <ComboBoxItem Content="Brown"/>
+                <ComboBoxItem Content="Cobalt"/>
+                <ComboBoxItem Content="Crimson"/>
+                <ComboBoxItem Content="Cyan"/>
+                <ComboBoxItem Content="Emerald"/>
+                <ComboBoxItem Content="Green"/>
+                <ComboBoxItem Content="Indigo"/>
+                <ComboBoxItem Content="Lime"/>
+                <ComboBoxItem Content="Magenta"/>
+                <ComboBoxItem Content="Mauve"/>
+                <ComboBoxItem Content="Olive"/>
+                <ComboBoxItem Content="Orange"/>
+                <ComboBoxItem Content="Pink"/>
+                <ComboBoxItem Content="Purple"/>
+                <ComboBoxItem Content="Red"/>
+                <ComboBoxItem Content="Sienna"/>
+                <ComboBoxItem Content="Steel"/>
+                <ComboBoxItem Content="Teal"/>
+                <ComboBoxItem Content="Violet"/>
+                <ComboBoxItem Content="Yellow"/>
+            </ComboBox>
+            <Label x:Name="SizeModeLabel_Copy" Content="Theme" Canvas.Left="5" Canvas.Top="65" Width="144"/>
         </Canvas>
     </Grid>
 </Controls:MetroWindow>

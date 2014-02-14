@@ -25,6 +25,7 @@ Imports Microsoft.WindowsAPICodePack.Taskbar
 
 Imports MCBackup.CloseAction
 Imports System.Globalization
+Imports MahApps.Metro
 
 Partial Class MainWindow
 #Region "Variables"
@@ -66,6 +67,8 @@ Partial Class MainWindow
 
         Log.StartNew()
         Log.Print("Starting MCBackup")
+
+        ThemeManager.ChangeTheme(My.Application, New Accent(My.Settings.Theme, New Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/" & My.Settings.Theme & ".xaml")), Theme.Light)
 
         Splash.Progress.Value += 1
         Splash.Progress.Refresh()
