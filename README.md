@@ -2,11 +2,9 @@ MCBackup 3
 ==========
 
 ###Quick Links
-[Downloads] [1]<br />
-[Bug Tracker] [2]<br />
-
-[1]:http://www.nicoco007.com/minecraft/applications/mcbackup-3/downloads/   "Downloads"
-[2]:http://bugtracker.nicoco007.com/index.php?project=2                     "Bug Tracker"
+[Downloads][1]<br>
+[Bug Tracker][2]<br>
+[Jenkins CI Job][3]<br>
 
 Overview
 --------
@@ -29,3 +27,13 @@ MCBackup offers the most to its users. This is the list of **currently included 
 * Ability to close to tray - Unclutter you taskbar!
 * Minecraft, saves and backup folder selection
 * Ongoing support
+
+Support
+-------
+You can contact me using [support@nicoco007.com][4].<br>
+To submit bugs, please go go to our [Bug Tracker][2].
+
+[1]:http://www.nicoco007.com/minecraft/applications/mcbackup-3/downloads/     "Downloads"
+[2]:http://bugtracker.nicoco007.com/index.php?project=2                       "Bug Tracker"
+[3]:http://ci.nicoco007.com:8080/job/MCBackup%203                             "MCBackup 3 Jenkins Job"
+[4]:mailto:support@nicoco007.com                                              "Support Email"
