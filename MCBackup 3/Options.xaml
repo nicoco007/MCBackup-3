@@ -98,6 +98,7 @@
                 <ComboBoxItem Content="Yellow"/>
             </ComboBox>
             <Label x:Name="SizeModeLabel_Copy" Content="Theme" Canvas.Left="5" Canvas.Top="65" Width="144"/>
+            <Slider x:Name="ListViewTextColorIntensitySlider" Width="236" Canvas.Left="316" Canvas.Top="65" Maximum="255"/>
         </Canvas>
     </Grid>
 </Controls:MetroWindow>
