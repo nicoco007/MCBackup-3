@@ -234,7 +234,7 @@ Partial Public Class Options
         CloseToTrayRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.CloseToTrayRadioButton.Content")
         CloseCompletelyRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.CloseCompletelyRadioButton.Content")
         AlwaysCloseNoteTextBlock.Text = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text")
-        LanguageLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.LanguageLabel.Content")
+        'LanguageLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.LanguageLabel.Content")
 
         ' Appearance 
         ListViewOpacityLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.ListViewOpacityLabel.Content")
@@ -246,7 +246,7 @@ Partial Public Class Options
         SizeModeComboBox.Items(3).Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content")
         BackgroundImageBrowseButton.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content")
         BackgroundImageRemoveButton.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content")
-        StatusLabelColor.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.StatusLabelColor.Content")
+        StatusTextColorGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.StatusLabelColor.Content")
 
         ' Folders
         MinecraftFolderLocationLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersPanel.MinecraftFolderLocationLabel.Content")
@@ -272,6 +272,8 @@ Partial Public Class Options
 
     Private Sub ListViewTextColorIntensitySlider_ValueChanged(sender As Object, e As RoutedPropertyChangedEventArgs(Of Double)) Handles ListViewTextColorIntensitySlider.ValueChanged
         My.Settings.ListViewTextColorIntensity = ListViewTextColorIntensitySlider.Value
-        Main.RefreshBackupsList()
+        SampleTextR1.Foreground = New SolidColorBrush(Color.FromRgb(ListViewTextColorIntensitySlider.Value, 0, 0))
+        SampleTextY1.Foreground = New SolidColorBrush(Color.FromRgb(ListViewTextColorIntensitySlider.Value, ListViewTextColorIntensitySlider.Value, 0))
+        SampleTextG1.Foreground = New SolidColorBrush(Color.FromRgb(0, ListViewTextColorIntensitySlider.Value, 0))
     End Sub
 End Class
