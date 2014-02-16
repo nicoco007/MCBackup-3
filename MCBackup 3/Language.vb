@@ -121,6 +121,10 @@ Public Class Language
 
         Dictionary.Add("OptionsWindow.AllSupportedImages", FindString("OptionsWindow.AllSupportedImages", FileName))
 
+        Dictionary.Add("OptionsWindow.GeneralPanel.GeneralOptionsGroupBox.Header", FindString("OptionsWindow.GeneralPanel.GeneralOptionsGroupBox.Header", FileName))
+        Dictionary.Add("OptionsWindow.GeneralPanel.CloseToTrayOptionsGroupBox.Header", FindString("OptionsWindow.GeneralPanel.CloseToTrayOptionsGroupBox.Header", FileName))
+        Dictionary.Add("OptionsWindow.GeneralPanel.LanguageGroupBox.Header", FindString("OptionsWindow.GeneralPanel.LanguageGroupBox.Header", FileName))
+
         Dictionary.Add("OptionsWindow.GeneralPanel.ShowBalloonTipsCheckBox.Content", FindString("OptionsWindow.GeneralPanel.ShowBalloonTipsCheckBox.Content", FileName))
         Dictionary.Add("OptionsWindow.GeneralPanel.ShowDeleteConfirmationCheckBox.Content", FindString("OptionsWindow.GeneralPanel.ShowDeleteConfirmationCheckBox.Content", FileName))
         Dictionary.Add("OptionsWindow.GeneralPanel.CheckForUpdatesCheckBox.Content", FindString("OptionsWindow.GeneralPanel.CheckForUpdatesCheckBox.Content", FileName))
@@ -129,7 +133,10 @@ Public Class Language
         Dictionary.Add("OptionsWindow.GeneralPanel.CloseToTrayRadioButton.Content", FindString("OptionsWindow.GeneralPanel.CloseToTrayRadioButton.Content", FileName))
         Dictionary.Add("OptionsWindow.GeneralPanel.CloseCompletelyRadioButton.Content", FindString("OptionsWindow.GeneralPanel.CloseCompletelyRadioButton.Content", FileName))
         Dictionary.Add("OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text", FindString("OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text", FileName))
-        Dictionary.Add("OptionsWindow.GeneralPanel.LanguageLabel.Content", FindString("OptionsWindow.GeneralPanel.LanguageLabel.Content", FileName))
+
+        Dictionary.Add("OptionsWindow.AppearancePanel.GeneralAppearanceGroupBox.Header", FindString("OptionsWindow.AppearancePanel.GeneralAppearanceGroupBox.Header", FileName))
+        Dictionary.Add("OptionsWindow.AppearancePanel.StatusTextColorGroupBox.Header", FindString("OptionsWindow.AppearancePanel.StatusTextColorGroupBox.Header", FileName))
+        Dictionary.Add("OptionsWindow.AppearancePanel.ListViewTextColorIntensityGroupBox.Header", FindString("OptionsWindow.AppearancePanel.ListViewTextColorIntensityGroupBox.Header", FileName))
 
         Dictionary.Add("OptionsWindow.AppearancePanel.ListViewOpacityLabel.Content", FindString("OptionsWindow.AppearancePanel.ListViewOpacityLabel.Content", FileName))
         Dictionary.Add("OptionsWindow.AppearancePanel.BackgroundImageLabel.Content", FindString("OptionsWindow.AppearancePanel.BackgroundImageLabel.Content", FileName))
@@ -140,7 +147,8 @@ Public Class Language
         Dictionary.Add("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content", FindString("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content", FileName))
         Dictionary.Add("OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content", FindString("OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content", FileName))
         Dictionary.Add("OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content", FindString("OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content", FileName))
-        Dictionary.Add("OptionsWindow.AppearancePanel.StatusLabelColor.Content", FindString("OptionsWindow.AppearancePanel.StatusLabelColor.Content", FileName))
+
+        Dictionary.Add("OptionsWindow.FoldersPanel.GeneralFoldersGroupBox.Header", FindString("OptionsWindow.FoldersPanel.GeneralFoldersGroupBox.Header", FileName))
 
         Dictionary.Add("OptionsWindow.FoldersPanel.MinecraftFolderLocationLabel.Content", FindString("OptionsWindow.FoldersPanel.MinecraftFolderLocationLabel.Content", FileName))
         Dictionary.Add("OptionsWindow.FoldersPanel.SavesFolderLocationLabel.Content", FindString("OptionsWindow.FoldersPanel.SavesFolderLocationLabel.Content", FileName))

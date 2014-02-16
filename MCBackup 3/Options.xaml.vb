@@ -226,6 +226,10 @@ Partial Public Class Options
         ListBox.Items(2).Content = MCBackup.Language.Dictionary("OptionsWindow.ListBox.Items(2).Content")
 
         ' General Tab
+        GeneralOptionsGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.GeneralOptionsGroupBox.Header")
+        CloseToTrayOptionsGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.CloseToTrayOptionsGroupBox.Header")
+        LanguageGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.LanguageGroupBox.Header")
+
         ShowBalloonTipsCheckBox.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.ShowBalloonTipsCheckBox.Content")
         ShowDeleteConfirmationCheckBox.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.ShowDeleteConfirmationCheckBox.Content")
         CheckForUpdatesCheckBox.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.CheckForUpdatesCheckBox.Content")
@@ -234,9 +238,12 @@ Partial Public Class Options
         CloseToTrayRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.CloseToTrayRadioButton.Content")
         CloseCompletelyRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.CloseCompletelyRadioButton.Content")
         AlwaysCloseNoteTextBlock.Text = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text")
-        'LanguageLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.LanguageLabel.Content")
 
         ' Appearance 
+        GeneralAppearanceGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.GeneralAppearanceGroupBox.Header")
+        StatusTextColorGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.StatusTextColorGroupBox.Header")
+        ListViewTextColorIntensityGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.ListViewTextColorIntensityGroupBox.Header")
+
         ListViewOpacityLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.ListViewOpacityLabel.Content")
         BackgroundImageLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.BackgroundImageLabel.Content")
         SizeModeLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SizeModeLabel.Content")
@@ -246,9 +253,10 @@ Partial Public Class Options
         SizeModeComboBox.Items(3).Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content")
         BackgroundImageBrowseButton.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content")
         BackgroundImageRemoveButton.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content")
-        StatusTextColorGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.StatusLabelColor.Content")
 
         ' Folders
+        GeneralFoldersGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.FoldersPanel.GeneralFoldersGroupBox.Header")
+
         MinecraftFolderLocationLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersPanel.MinecraftFolderLocationLabel.Content")
         SavesFolderLocationLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersPanel.SavesFolderLocationLabel.Content")
         BackupsFolderLocationLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersPanel.BackupsFolderLocationLabel.Content")

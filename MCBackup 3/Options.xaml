@@ -23,12 +23,12 @@
 
     <Grid Height="373" VerticalAlignment="Top" Margin="0,0,0,0">
         <Canvas x:Name="GeneralPanel" HorizontalAlignment="Left" Height="313" VerticalAlignment="Top" Width="667" Margin="117,10,0,0">
-            <GroupBox Header="Language" Margin="0" Canvas.Left="10" Canvas.Top="146" Height="86" Width="320">
+            <GroupBox x:Name="LanguageGroupBox" Header="Language" Margin="0" Canvas.Left="10" Canvas.Top="146" Height="86" Width="320">
                 <Grid>
                     <ComboBox x:Name="LanguagesComboBox" Margin="10,10,10,0" Height="26" VerticalAlignment="Top"/>
                 </Grid>
             </GroupBox>
-            <GroupBox Header="Close to tray options" Margin="0" Canvas.Left="337" Canvas.Top="10" Height="Auto" Width="320">
+            <GroupBox x:Name="CloseToTrayOptionsGroupBox" Header="Close to tray options" Margin="0" Canvas.Left="337" Canvas.Top="10" Height="Auto" Width="320">
                 <Grid Height="Auto">
                     <CheckBox x:Name="AlwaysCloseCheckBox" Content="Always..." Margin="5,4,0,0" Height="18" VerticalAlignment="Top" HorizontalAlignment="Left" Width="293"/>
                     <RadioButton x:Name="CloseCompletelyRadioButton" Content="Close completely" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,50,0,0" Width="293"/>
@@ -37,7 +37,7 @@
 
                 </Grid>
             </GroupBox>
-            <GroupBox Header="General Options" Margin="0" Canvas.Left="10" Canvas.Top="10" Height="131" Width="320">
+            <GroupBox x:Name="GeneralOptionsGroupBox" Header="General Options" Margin="0" Canvas.Left="10" Canvas.Top="10" Height="131" Width="320">
                 <Grid>
                     <CheckBox x:Name="ShowBalloonTipsCheckBox" Content="Show balloon tips" HorizontalAlignment="Left" VerticalAlignment="Top" ToolTipService.ShowOnDisabled="True" IsChecked="True" ToolTip="Show a ballon tip when a backup/restore finishes or fails" Margin="0,2,0,0" Width="308"/>
                     <CheckBox x:Name="ShowDeleteConfirmationCheckBox" Content="Show delete confirmation" HorizontalAlignment="Left" VerticalAlignment="Top" ToolTip="Not Implemented" ToolTipService.ShowOnDisabled="True" IsEnabled="False" IsChecked="True" Margin="0,25,0,0" Width="308"/>
@@ -47,13 +47,13 @@
                 </Grid>
             </GroupBox>
         </Canvas>
-        <ListBox x:Name="ListBox" HorizontalAlignment="Left" Width="102" Margin="10,10,0,45">
+        <ListBox x:Name="ListBox" HorizontalAlignment="Left" Width="102" Margin="10,10,0,45" BorderThickness="1">
             <ListBoxItem Content="General"/>
             <ListBoxItem Content="Appearance"/>
             <ListBoxItem Content="Folders"/>
         </ListBox>
-        <Canvas x:Name="FoldersPanel" HorizontalAlignment="Left" Height="313" VerticalAlignment="Top" Width="667" Margin="-709,15,0,0">
-            <GroupBox Header="General Folders" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Canvas.Left="10" Canvas.Top="10" Height="145" Width="647">
+        <Canvas x:Name="FoldersPanel" HorizontalAlignment="Left" Height="313" VerticalAlignment="Top" Width="667" Margin="117,10,0,0">
+            <GroupBox x:Name="GeneralFoldersGroupBox" Header="General Folders" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Canvas.Left="10" Canvas.Top="10" Height="145" Width="647">
                 <Grid>
                     <Label x:Name="MinecraftFolderLocationLabel" Content="Minecraft Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Width="159" Margin="4,6,0,0"/>
                     <Label x:Name="BackupsFolderLocationLabel" Content="Backups Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Width="159" Margin="4,74,0,0"/>
@@ -69,7 +69,7 @@
             </GroupBox>
         </Canvas>
         <Button x:Name="CloseButton" Content="Close" VerticalAlignment="Top" Margin="356,334,356,0"/>
-        <Canvas x:Name="AppearancePanel" HorizontalAlignment="Left" Height="318" VerticalAlignment="Top" Width="667" Margin="88,434,0,-379">
+        <Canvas x:Name="AppearancePanel" HorizontalAlignment="Left" Height="318" VerticalAlignment="Top" Width="667" Margin="117,10,0,0">
             <GroupBox x:Name="StatusTextColorGroupBox" Header="Status Text Color" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Canvas.Left="10" Canvas.Top="193" Height="115" Width="320">
                 <Grid>
                     <Slider x:Name="GreenColorSlider" Width="212" Maximum="255" HorizontalAlignment="Left" Margin="1,29,0,0" Height="18" VerticalAlignment="Top"/>
@@ -89,7 +89,7 @@
                     <Label x:Name="SampleTextG1" Content="Sample Text" Margin="0,36,185,0" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Right" Width="Auto" Padding="2"/>
                 </Grid>
             </GroupBox>
-            <GroupBox Header="General Appearance" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Canvas.Left="10" Canvas.Top="10" Height="178" Width="647">
+            <GroupBox x:Name="GeneralAppearanceGroupBox" Header="General Appearance" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Canvas.Left="10" Canvas.Top="10" Height="178" Width="647">
                 <Grid>
                     <Label x:Name="ListViewOpacityLabel" Content="Interface Opacity" HorizontalContentAlignment="Right" Margin="0,5,491,108"/>
                     <Slider x:Name="ListViewOpacitySlider" ValueChanged="ListViewOpacitySlider_ValueChanged" Maximum="100" Minimum="50" Value="75" Margin="154,9,39,112"/>
