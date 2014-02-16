@@ -122,9 +122,8 @@ Partial Class MainWindow
                 MCBackup.Language.Load(My.Settings.Language & ".lang")
             End If
         Catch ex As Exception
-            Log.Print("Could not load language file """ & My.Settings.Language & """", Log.Type.Severe)
-            Log.Print("Could not load language file:" & ex.Message, Log.Type.Severe)
-            ErrorWindow.Show("Error: Language file not found (" & My.Settings.Language & ")! MCBackup will now exit.", ex)
+            Log.Print("Could not load language file '" & My.Settings.Language & "': " & ex.Message, Log.Type.Severe)
+            ErrorWindow.Show("Error: Could not load language file (" & My.Settings.Language & ")! MCBackup will now exit.", ex)
             My.Settings.Language = DefaultLanguage
             Me.ClsType = CloseType.ForceClose
             Me.Close()
@@ -138,7 +137,7 @@ Partial Class MainWindow
         NotifyIcon.Icon = New System.Drawing.Icon(Application.GetResourceStream(New Uri("pack://application:,,,/Resources/MCBackup.ico")).Stream)
         Dim ContextMenu As New System.Windows.Forms.ContextMenu
         Dim ExitToolbarMenuItem As New System.Windows.Forms.MenuItem
-        ExitToolbarMenuItem.Text = "&Exit"
+        ExitToolbarMenuItem.Text = MCBackup.Language.FindString("NotifyIcon.ContextMenu.ExitItem.Text", My.Settings.Language & ".lang")
         AddHandler ExitToolbarMenuItem.Click, AddressOf ExitToolbarMenuItem_Click
         ContextMenu.MenuItems.Add(ExitToolbarMenuItem)
         NotifyIcon.ContextMenu = ContextMenu
@@ -146,7 +145,6 @@ Partial Class MainWindow
 
         Splash.Progress.Value += 1
         Splash.Progress.Refresh()
-
         Try
             Splash.Status.Content = MCBackup.Language.FindString("Splash.Status.LoadingProps", My.Settings.Language & ".lang")
         Catch ex As Exception

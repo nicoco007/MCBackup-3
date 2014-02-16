@@ -192,7 +192,6 @@ Public Class Language
         Else
             Log.Print("Language loaded. No errors occured.")
         End If
-
     End Sub
 
     Public Shared Function GetIDFromName(Name As String)

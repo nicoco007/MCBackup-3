@@ -162,3 +162,5 @@ CullWindow.Label1.Content="Supprimer les sauvegardes datant de plus de"
 CullWindow.Label2.Content="jours."
 CullWindow.CullButton.Content="Supprimer"
 CullWindow.AreYouSureMsg="Êtes-vous sûr de vouloir supprimer toutes les sauvegardes datant de plus de {0} jours? Elles seront perdues pour toujours! (Un bon bout de temps)"
+
+NotifyIcon.ContextMenu.ExitItem.Text="Quitter"
