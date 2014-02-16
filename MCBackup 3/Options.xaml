@@ -21,7 +21,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Options" Height="400" Width="800" Loaded="Window_Loaded" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Background="White" SizeToContent="WidthAndHeight" WindowTransitionsEnabled="False">
 
-    <Grid Height="373" VerticalAlignment="Top" Margin="0,0,0,0">
+    <Grid Width="794" Height="371">
         <ListBox x:Name="ListBox" HorizontalAlignment="Left" Width="102" Margin="10,10,0,45" BorderThickness="1">
             <ListBoxItem Content="General"/>
             <ListBoxItem Content="Appearance"/>
@@ -114,6 +114,7 @@
                 </Grid>
             </GroupBox>
         </Canvas>
-        <Button x:Name="CloseButton" Content="Close" VerticalAlignment="Top" Margin="356,334,356,0"/>
+        <Button x:Name="CloseButton" Content="Close" VerticalAlignment="Top" Margin="312,334,0,0" HorizontalAlignment="Left" Width="82"/>
+        <Button x:Name="ResetButton" Content="Reset" VerticalAlignment="Top" Margin="0,334,312,0" HorizontalAlignment="Right" Width="82"/>
     </Grid>
 </Controls:MetroWindow>

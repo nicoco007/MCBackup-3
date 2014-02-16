@@ -344,6 +344,21 @@ Partial Public Class Options
             BlueColorSlider.Value = CInt(BlueColorLabel.Text)
         End If
     End Sub
+
+    Private Sub ResetButton_Click(sender As Object, e As RoutedEventArgs) Handles ResetButton.Click
+        If MetroMessageBox.Show("Are you sure you want to reset all of your settings?" & vbNewLine & vbNewLine & "Click 'Yes' to reset all your settings and restart MCBackup.", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.Yes Then
+
+            My.Settings.Reset()
+
+            Dim w As New MainWindow
+            My.Application.MainWindow = w
+
+            Main.ClsType = CloseAction.CloseType.ForceClose
+            Main.Close()
+
+            w.Show()
+        End If
+    End Sub
 End Class
 
 Public Class ThemesComboBoxItem

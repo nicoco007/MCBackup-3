@@ -286,7 +286,6 @@ Partial Class MainWindow
 
         Splash.Hide()
         Me.Show()
-        Log.Print(Splash.Progress.Value)
     End Sub
 
     Private Sub MinecraftFolderSearch()
