@@ -387,14 +387,9 @@
             Gets/sets whether this flyout is visible.
             </summary>
         </member>
-        <member name="P:MahApps.Metro.Controls.Flyout.IsPinned">
+        <member name="P:MahApps.Metro.Controls.Flyout.IsPinnable">
             <summary>
-            Gets/sets whether this flyout stays open when the user clicks outside of it.
-            </summary>
-        </member>
-        <member name="P:MahApps.Metro.Controls.Flyout.ExternalCloseButton">
-            <summary>
-            Gets/sets the mouse button that closes the flyout on an external mouse click.
+            Gets/sets whether this flyout is pinnable.
             </summary>
         </member>
         <member name="P:MahApps.Metro.Controls.Flyout.IsModal">
@@ -421,16 +416,6 @@
             <summary>
             A FlyoutsControl is for displaying flyouts in a MetroWindow.
             <see cref="T:MahApps.Metro.Controls.MetroWindow"/>
-            </summary>
-        </member>
-        <member name="P:MahApps.Metro.Controls.FlyoutsControl.OverrideExternalCloseButton">
-            <summary>
-            Gets/sets whether <see cref="P:MahApps.Metro.Controls.Flyout.ExternalCloseButton"/> is ignored and all flyouts behave as if it was set to the value of this property.
-            </summary>
-        </member>
-        <member name="P:MahApps.Metro.Controls.FlyoutsControl.OverrideIsPinned">
-            <summary>
-            Gets/sets whether <see cref="P:MahApps.Metro.Controls.Flyout.IsPinned"/> is ignored and all flyouts behave as if it was set false.
             </summary>
         </member>
         <member name="F:MahApps.Metro.Controls.FlyoutTheme.Adapt">
@@ -863,7 +848,7 @@
             This class eats little children.
             </summary>
         </member>
-        <!-- Commentaire XML incorrect ignoré pour le membre "M:MahApps.Metro.Controls.MetroWindowHelpers.HandleWindowCommandsForFlyouts(MahApps.Metro.Controls.MetroWindow,System.Collections.Generic.IEnumerable{MahApps.Metro.Controls.Flyout},System.Windows.Media.Brush)" -->
+        <!-- Badly formed XML comment ignored for member "M:MahApps.Metro.Controls.MetroWindowHelpers.HandleWindowCommandsForFlyouts(MahApps.Metro.Controls.MetroWindow,System.Collections.Generic.IEnumerable{MahApps.Metro.Controls.Flyout},System.Windows.Media.Brush)" -->
         <member name="T:MahApps.Metro.Controls.NumericUpDown">
             <summary>
                 Represents a Windows spin box (also known as an up-down control) that displays numeric values.
@@ -906,20 +891,7 @@
         </member>
         <member name="P:MahApps.Metro.Controls.NumericUpDown.InterceptArrowKeys">
             <summary>
-                Gets or sets a value indicating whether the user can use the arrow keys to change values.
-            </summary>
-        </member>
-        <member name="P:MahApps.Metro.Controls.NumericUpDown.InterceptMouseWheel">
-            <summary>
-                Gets or sets a value indicating whether the user can use the mouse wheel to change values.
-            </summary>
-        </member>
-        <member name="P:MahApps.Metro.Controls.NumericUpDown.TrackMouseWheelWhenMouseOver">
-            <summary>
-                Gets or sets a value indicating whether the control must have the focus in order to change values using the mouse wheel.
-            <remarks>
-                If the value is false then the value changes when the mouse wheel is over the control. If the value is true then the value changes only if the control has the focus.
-            </remarks>
+                Gets or sets a value indicating whether the user can use the UP ARROW and DOWN ARROW keys to select values.
             </summary>
         </member>
         <member name="P:MahApps.Metro.Controls.NumericUpDown.IsReadOnly">
@@ -1092,7 +1064,7 @@
         </member>
         <member name="F:MahApps.Metro.Controls.TransitionType.Custom">
             <summary>
-            Use a custom VisualState, the name must be set using CustomVisualStatesName property
+            Use a custom VisualState, the name must be CustomTransition
             </summary>
         </member>
         <member name="T:MahApps.Metro.Controls.TransitioningContentControl">
@@ -1103,11 +1075,6 @@
         <member name="M:MahApps.Metro.Controls.TransitioningContentControl.ReloadTransition">
             <summary>
             Reload the current transition if the content is the same.
-            </summary>
-        </member>
-        <member name="P:MahApps.Metro.Controls.TransitioningContentControl.CustomVisualStatesName">
-            <summary>
-            Gets or sets the name of the custom transition visual state.
             </summary>
         </member>
         <member name="P:MahApps.Metro.Controls.TransitioningContentControl.IsTransitioning">
@@ -4335,11 +4302,6 @@
         <member name="T:MahApps.Metro.ThemeManager">
             <summary>
             A class that allows for the detection and alteration of a MetroWindow's theme and accent.
-            </summary>
-        </member>
-        <member name="F:MahApps.Metro.ThemeManager.SystemColors_InvalidateColors">
-            <summary>
-            Cached method info's for use in OnThemeChanged
             </summary>
         </member>
         <member name="M:MahApps.Metro.ThemeManager.ChangeTheme(System.Windows.Application,MahApps.Metro.Accent,MahApps.Metro.Theme)">

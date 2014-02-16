@@ -917,6 +917,9 @@ Partial Class MainWindow
         Catch
         End Try
 
+        NotifyIcon.Visible = False
+        NotifyIcon.Dispose()
+
         My.Settings.SidebarWidth = MainSidebar.Width.Value
 
         My.Settings.AutoBkpPrefix = AutoBackupWindow.PrefixTextBox.Text

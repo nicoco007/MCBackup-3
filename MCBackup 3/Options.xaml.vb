@@ -71,11 +71,7 @@ Partial Public Class Options
 
         LanguagesComboBox.SelectedItem = MCBackup.Language.FindString("fullname", My.Settings.Language & ".lang")
 
-        For Each Item As ThemesComboBoxItem In ThemeComboBox.Items
-            If Item.Tag = ThemeManager.DetectTheme(My.Application).Item2.Name Then
-                ThemeComboBox.SelectedItem = Item
-            End If
-        Next
+        ThemeComboBox.Text = ThemeManager.DetectTheme(My.Application).Item2.Name
 
         ListViewTextColorIntensitySlider.Value = My.Settings.ListViewTextColorIntensity
     End Sub
@@ -294,6 +290,7 @@ Partial Public Class Options
     End Sub
 
     Private Sub ThemeComboBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles ThemeComboBox.SelectionChanged
+        Log.Print(ThemeComboBox.SelectedItem.Tag.ToString)
         ThemeManager.ChangeTheme(My.Application, New Accent(ThemeComboBox.SelectedItem.Tag.ToString, New Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/" & ThemeComboBox.SelectedItem.Tag.ToString & ".xaml")), Theme.Light)
     End Sub
 
