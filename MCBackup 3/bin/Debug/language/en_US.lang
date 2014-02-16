@@ -120,6 +120,10 @@ OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content="Zoom"
 OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content="Browse..."
 OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content="Remove"
 
+## ONLY MODIFY THE ORDER OF 'ThemeTags', OR THE PROGRAM *WILL* CRASH ##
+OptionsWindow.AppearancePanel.Themes="Amber;Blue;Brown;Cobalt;Crimson;Cyan;Emerald;Green;Indigo;Lime;Magenta;Mauve;Olive;Orange;Pink;Purple;Red;Sienna;Steel;Teal;Violet;Yellow"
+OptionsWindow.AppearancePanel.ThemeTags="Amber;Blue;Brown;Cobalt;Crimson;Cyan;Emerald;Green;Indigo;Lime;Magenta;Mauve;Olive;Orange;Pink;Purple;Red;Sienna;Steel;Teal;Violet;Yellow"
+
 OptionsWindow.FoldersPanel.GeneralFoldersGroupBox.Header="General Folders"
 OptionsWindow.FoldersPanel.MinecraftFolderLocationLabel.Content="Minecraft Folder Location"
 OptionsWindow.FoldersPanel.SavesFolderLocationLabel.Content="Saves Folder Location"

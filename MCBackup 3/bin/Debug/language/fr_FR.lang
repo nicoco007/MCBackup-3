@@ -122,6 +122,10 @@ OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content="Remplir"
 OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content="Parcourir..."
 OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content="Retirer"
 
+## ONLY MODIFY THE ORDER OF 'ThemeTags', OR THE PROGRAM *WILL* CRASH ##
+OptionsWindow.AppearancePanel.Themes="Acier;Ambre;Bleu;Brun;Cobalt;Cramoisi;Cyan;Émeraude;Indigo;Jaune;Lime;Magenta;Mauve;Olive;Orange;Pourpre;Rose;Rouge;Sienne;Turquoise;Vert;Violet"
+OptionsWindow.AppearancePanel.ThemeTags="Steel;Amber;Blue;Brown;Cobalt;Crimson;Cyan;Emerald;Indigo;Yellow;Lime;Magenta;Mauve;Olive;Orange;Purple;Pink;Red;Sienna;Teal;Green;Violet"
+
 OptionsWindow.FoldersPanel.GeneralFoldersGroupBox.Header="Dossiers de base"
 OptionsWindow.FoldersPanel.MinecraftFolderLocationLabel.Content="Dossier Minecraft"
 OptionsWindow.FoldersPanel.SavesFolderLocationLabel.Content="Dossier des mondes"

@@ -31,6 +31,11 @@
             Gets/sets the name of the Accent.
             </summary>
         </member>
+        <member name="F:MahApps.Metro.Behaviours.BorderlessWindowBehavior.BackgroundSetPropertyKey">
+            <summary>
+            NO TOUCHY! This is a workaround for issue #897
+            </summary>
+        </member>
         <member name="M:MahApps.Metro.Behaviours.BorderlessWindowBehavior.AdjustWorkingAreaForAutoHide(System.IntPtr,MahApps.Metro.Native.MINMAXINFO)">
             <summary>
             This method handles the window size if the taskbar is set to auto-hide.
@@ -120,7 +125,7 @@
             </summary>
             <returns>A task that represents the operation and it's status.</returns>
         </member>
-        <member name="M:MahApps.Metro.Controls.Dialogs.BaseMetroDialog.RequestClose">
+        <member name="M:MahApps.Metro.Controls.Dialogs.BaseMetroDialog.RequestCloseAsync">
             <summary>
             Requests an externally shown Dialog to close. Will throw an exception if the Dialog is inside of a MetroWindow.
             </summary>
@@ -173,12 +178,7 @@
         </member>
         <member name="P:MahApps.Metro.Controls.Dialogs.MetroDialogSettings.NegativeButtonText">
             <summary>
-            Gets/sets the text used for the Negative bytton. For example: "Cancel" or "No".
-            </summary>
-        </member>
-        <member name="P:MahApps.Metro.Controls.Dialogs.MetroDialogSettings.CanChangeSizeToContent">
-            <summary>
-            Gets/sets whether opening a dialog inside the mainwindow will change the sizeToContent value to "height" (default:true)
+            Gets/sets the text used for the Negative button. For example: "Cancel" or "No".
             </summary>
         </member>
         <member name="P:MahApps.Metro.Controls.Dialogs.MetroDialogSettings.ColorScheme">
@@ -191,6 +191,15 @@
             An enum representing the different choices for a color scheme in a Metro Dialog.
             </summary>
         </member>
+        <member name="M:MahApps.Metro.Controls.Dialogs.DialogManager.ShowInputAsync(MahApps.Metro.Controls.MetroWindow,System.String,System.String,MahApps.Metro.Controls.Dialogs.MetroDialogSettings)">
+            <summary>
+            Creates a InputDialog inside of the current window.
+            </summary>
+            <param name="title">The title of the MessageDialog.</param>
+            <param name="message">The message contained within the MessageDialog.</param>
+            <param name="settings">Optional settings that override the global metro dialog settings.</param>
+            <returns>The text that was entered or null (Nothing in Visual Basic) if the user cancelled the operation.</returns>
+        </member>
         <member name="M:MahApps.Metro.Controls.Dialogs.DialogManager.ShowMessageAsync(MahApps.Metro.Controls.MetroWindow,System.String,System.String,MahApps.Metro.Controls.Dialogs.MessageDialogStyle,MahApps.Metro.Controls.Dialogs.MetroDialogSettings)">
             <summary>
             Creates a MessageDialog inside of the current window.
@@ -198,7 +207,7 @@
             <param name="title">The title of the MessageDialog.</param>
             <param name="message">The message contained within the MessageDialog.</param>
             <param name="style">The type of buttons to use.</param>
-            <param name="settings">Optional Settings that override the global metro dialog settings.</param>
+            <param name="settings">Optional settings that override the global metro dialog settings.</param>
             <returns>A task promising the result of which button was pressed.</returns>
         </member>
         <member name="M:MahApps.Metro.Controls.Dialogs.DialogManager.ShowProgressAsync(MahApps.Metro.Controls.MetroWindow,System.String,System.String,System.Boolean,MahApps.Metro.Controls.Dialogs.MetroDialogSettings)">
@@ -232,6 +241,16 @@
             The <paramref name="dialog"/> is not visible in the window.
             This happens if <see cref="M:MahApps.Metro.Controls.Dialogs.DialogManager.ShowMetroDialogAsync(MahApps.Metro.Controls.MetroWindow,MahApps.Metro.Controls.Dialogs.BaseMetroDialog)"/> hasn't been called before.
             </exception>
+        </member>
+        <member name="T:MahApps.Metro.Controls.Dialogs.InputDialog">
+            <summary>
+            InputDialog
+            </summary>
+        </member>
+        <member name="M:MahApps.Metro.Controls.Dialogs.InputDialog.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
         </member>
         <member name="T:MahApps.Metro.Controls.Dialogs.ProgressDialog">
             <summary>
@@ -347,6 +366,12 @@
             An event that is raised when IsOpen changes.
             </summary>
         </member>
+        <member name="P:MahApps.Metro.Controls.Flyout.ActualTheme">
+            <summary>
+            Gets the actual theme (dark/light) of this flyout.
+            Used to handle the WindowCommands overlay in the MetroWindow.
+            </summary>
+        </member>
         <member name="P:MahApps.Metro.Controls.Flyout.CloseCommand">
             <summary>
             An ICommand that executes when the flyout's close button is clicked.
@@ -362,9 +387,14 @@
             Gets/sets whether this flyout is visible.
             </summary>
         </member>
-        <member name="P:MahApps.Metro.Controls.Flyout.IsPinnable">
+        <member name="P:MahApps.Metro.Controls.Flyout.IsPinned">
             <summary>
-            Gets/sets whether this flyout is pinnable.
+            Gets/sets whether this flyout stays open when the user clicks outside of it.
+            </summary>
+        </member>
+        <member name="P:MahApps.Metro.Controls.Flyout.ExternalCloseButton">
+            <summary>
+            Gets/sets the mouse button that closes the flyout on an external mouse click.
             </summary>
         </member>
         <member name="P:MahApps.Metro.Controls.Flyout.IsModal">
@@ -382,10 +412,45 @@
             Gets/sets the flyout's header.
             </summary>
         </member>
+        <member name="P:MahApps.Metro.Controls.Flyout.Theme">
+            <summary>
+            Gets or sets the theme of this flyout.
+            </summary>
+        </member>
         <member name="T:MahApps.Metro.Controls.FlyoutsControl">
             <summary>
             A FlyoutsControl is for displaying flyouts in a MetroWindow.
             <see cref="T:MahApps.Metro.Controls.MetroWindow"/>
+            </summary>
+        </member>
+        <member name="P:MahApps.Metro.Controls.FlyoutsControl.OverrideExternalCloseButton">
+            <summary>
+            Gets/sets whether <see cref="P:MahApps.Metro.Controls.Flyout.ExternalCloseButton"/> is ignored and all flyouts behave as if it was set to the value of this property.
+            </summary>
+        </member>
+        <member name="P:MahApps.Metro.Controls.FlyoutsControl.OverrideIsPinned">
+            <summary>
+            Gets/sets whether <see cref="P:MahApps.Metro.Controls.Flyout.IsPinned"/> is ignored and all flyouts behave as if it was set false.
+            </summary>
+        </member>
+        <member name="F:MahApps.Metro.Controls.FlyoutTheme.Adapt">
+            <summary>
+            Adapts the Flyout's theme to the theme of its host window.
+            </summary>
+        </member>
+        <member name="F:MahApps.Metro.Controls.FlyoutTheme.Inverse">
+            <summary>
+            Adapts the Flyout's theme to the theme of its host window, but inverted.
+            </summary>
+        </member>
+        <member name="F:MahApps.Metro.Controls.FlyoutTheme.Dark">
+            <summary>
+            The dark theme. This is the default theme.
+            </summary>
+        </member>
+        <member name="F:MahApps.Metro.Controls.FlyoutTheme.Accent">
+            <summary>
+            The flyouts theme will match the host window's accent color.
             </summary>
         </member>
         <member name="T:MahApps.Metro.Controls.GlowWindow">
@@ -397,17 +462,6 @@
             <summary>
             InitializeComponent
             </summary>
-        </member>
-        <member name="T:MahApps.Metro.Controls.IPanoramaTile">
-            <summary>
-            The minimum specification that a tile needs to support  
-            </summary>
-        </member>
-        <member name="M:MahApps.Metro.Controls.PanoramaTile.RaisePropertyChanged(System.String)">
-            <summary>
-            Raises the PropertyChanged event if needed.
-            </summary>
-            <param name="propertyName">The name of the property that changed.</param>
         </member>
         <member name="T:MahApps.Metro.Controls.Dialogs.MessageDialog">
             <summary>
@@ -516,6 +570,11 @@
         <member name="M:MahApps.Metro.Controls.MetroWindow.#ctor">
             <summary>
             Initializes a new instance of the MahApps.Metro.Controls.MetroWindow class.
+            </summary>
+        </member>
+        <member name="P:MahApps.Metro.Controls.MetroWindow.OverrideDefaultWindowCommandsBrush">
+            <summary>
+            CleanWindow sets this so it has the correct default window commands brush
             </summary>
         </member>
         <member name="P:MahApps.Metro.Controls.MetroWindow.ShowWindowCommandsOnTop">
@@ -799,44 +858,15 @@
             Gets the owning MetroTabControl of this MetroTabItem.
             </summary>
         </member>
+        <member name="T:MahApps.Metro.Controls.MetroWindowHelpers">
+            <summary>
+            This class eats little children.
+            </summary>
+        </member>
+        <!-- Commentaire XML incorrect ignoré pour le membre "M:MahApps.Metro.Controls.MetroWindowHelpers.HandleWindowCommandsForFlyouts(MahApps.Metro.Controls.MetroWindow,System.Collections.Generic.IEnumerable{MahApps.Metro.Controls.Flyout},System.Windows.Media.Brush)" -->
         <member name="T:MahApps.Metro.Controls.NumericUpDown">
             <summary>
                 Represents a Windows spin box (also known as an up-down control) that displays numeric values.
-            </summary>
-        </member>
-        <member name="F:MahApps.Metro.Controls.NumericUpDown.MaximumReachedEvent">
-            <summary>
-                Event for "To value has been reached"
-            </summary>
-        </member>
-        <member name="F:MahApps.Metro.Controls.NumericUpDown.MinimumReachedEvent">
-            <summary>
-                Event for "From value has been reached"
-            </summary>
-        </member>
-        <member name="F:MahApps.Metro.Controls.NumericUpDown.DelayProperty">
-            <summary>
-                DependencyProperty for <see cref="P:MahApps.Metro.Controls.NumericUpDown.Delay"/> property.
-            </summary>
-        </member>
-        <member name="F:MahApps.Metro.Controls.NumericUpDown.TextAlignmentProperty">
-            <summary>
-                DependencyProperty for <see cref="P:MahApps.Metro.Controls.NumericUpDown.TextAlignment"/> property.
-            </summary>
-        </member>
-        <member name="F:MahApps.Metro.Controls.NumericUpDown.SpeedupProperty">
-            <summary>
-                DependencyProperty for <see cref="P:MahApps.Metro.Controls.NumericUpDown.Speedup"/> property.
-            </summary>
-        </member>
-        <member name="F:MahApps.Metro.Controls.NumericUpDown.IsReadOnlyProperty">
-            <summary>
-                DependencyProperty for <see cref="P:MahApps.Metro.Controls.NumericUpDown.IsReadOnly"/> property.
-            </summary>
-        </member>
-        <member name="F:MahApps.Metro.Controls.NumericUpDown.StringFormatProperty">
-            <summary>
-                DependencyProperty for <see cref="P:MahApps.Metro.Controls.NumericUpDown.StringFormat"/> property.
             </summary>
         </member>
         <member name="M:MahApps.Metro.Controls.NumericUpDown.OnApplyTemplate">
@@ -845,15 +875,15 @@
                 <see cref="M:System.Windows.FrameworkElement.ApplyTemplate" />.
             </summary>
         </member>
-        <member name="M:MahApps.Metro.Controls.NumericUpDown.OnValueChanged(System.Double,System.Double)">
+        <member name="M:MahApps.Metro.Controls.NumericUpDown.OnValueChanged(System.Nullable{System.Double},System.Nullable{System.Double})">
             <summary>
-                Raises the <see cref="E:System.Windows.Controls.Primitives.RangeBase.ValueChanged" /> routed event.
+                Raises the <see cref="E:MahApps.Metro.Controls.NumericUpDown.ValueChanged"/> routed event.
             </summary>
             <param name="oldValue">
-                Old value of the <see cref="P:System.Windows.Controls.Primitives.RangeBase.Value" /> property
+                Old value of the <see cref="P:MahApps.Metro.Controls.NumericUpDown.Value"/> property
             </param>
             <param name="newValue">
-                New value of the <see cref="P:System.Windows.Controls.Primitives.RangeBase.Value" /> property
+                New value of the <see cref="P:MahApps.Metro.Controls.NumericUpDown.Value"/> property
             </param>
         </member>
         <member name="E:MahApps.Metro.Controls.NumericUpDown.MaximumReached">
@@ -868,33 +898,54 @@
         </member>
         <member name="P:MahApps.Metro.Controls.NumericUpDown.Delay">
             <summary>
-                Gets or sets the amount of time, in milliseconds, the NumericUpDown waits while the up/down button is pressed before it starts increasing/decreasing the
-                <see cref="P:System.Windows.Controls.Primitives.RangeBase.Value"/> for the specified <see cref="P:System.Windows.Controls.Primitives.RangeBase.SmallChange"/> . The value must be non-negative.
+                Gets or sets the amount of time, in milliseconds, the NumericUpDown waits while the up/down button is pressed
+                before it starts increasing/decreasing the
+                <see cref="P:MahApps.Metro.Controls.NumericUpDown.Value"/> for the specified <see cref="P:MahApps.Metro.Controls.NumericUpDown.Interval"/> . The value must be
+                non-negative.
+            </summary>
+        </member>
+        <member name="P:MahApps.Metro.Controls.NumericUpDown.InterceptArrowKeys">
+            <summary>
+                Gets or sets a value indicating whether the user can use the arrow keys to change values.
+            </summary>
+        </member>
+        <member name="P:MahApps.Metro.Controls.NumericUpDown.InterceptMouseWheel">
+            <summary>
+                Gets or sets a value indicating whether the user can use the mouse wheel to change values.
+            </summary>
+        </member>
+        <member name="P:MahApps.Metro.Controls.NumericUpDown.TrackMouseWheelWhenMouseOver">
+            <summary>
+                Gets or sets a value indicating whether the control must have the focus in order to change values using the mouse wheel.
+            <remarks>
+                If the value is false then the value changes when the mouse wheel is over the control. If the value is true then the value changes only if the control has the focus.
+            </remarks>
             </summary>
         </member>
         <member name="P:MahApps.Metro.Controls.NumericUpDown.IsReadOnly">
             <summary>
-                Gets or sets a value indicating whether the NumericUpDown allows to get UserInput or not
-            </summary>
-        </member>
-        <member name="P:MahApps.Metro.Controls.NumericUpDown.TextAlignment">
-            <summary>
-            Gets or sets the horizontal alignment of the contents of the text box. 
+                Gets or sets a value indicating whether the text can be changed by the use of the up or down buttons only.
             </summary>
         </member>
         <member name="P:MahApps.Metro.Controls.NumericUpDown.Speedup">
             <summary>
-                Gets or sets a value indicating whether the value to be added to or subtracted from remains always
-                <see cref="P:System.Windows.Controls.Primitives.RangeBase.SmallChange"/> or it will change to <see cref="P:System.Windows.Controls.Primitives.RangeBase.LargeChange"/> and increase this.
+                Gets or sets a value indicating whether the value to be added to or subtracted from <see cref="P:MahApps.Metro.Controls.NumericUpDown.Value"/> remains
+                always
+                <see cref="P:MahApps.Metro.Controls.NumericUpDown.Interval"/> or if it will increase faster after pressing the up/down button/arrow some time.
             </summary>
         </member>
         <member name="P:MahApps.Metro.Controls.NumericUpDown.StringFormat">
             <summary>
-                Gets or sets the formatting for the displaying <see cref="P:System.Windows.Controls.Primitives.RangeBase.Value"/>
+                Gets or sets the formatting for the displaying <see cref="P:MahApps.Metro.Controls.NumericUpDown.Value"/>
             </summary>
             <remarks>
                 <see href="http://msdn.microsoft.com/en-us/library/dwhawy9k.aspx"></see>
             </remarks>
+        </member>
+        <member name="P:MahApps.Metro.Controls.NumericUpDown.TextAlignment">
+            <summary>
+                Gets or sets the horizontal alignment of the contents of the text box.
+            </summary>
         </member>
         <member name="T:MahApps.Metro.Controls.Position">
             <summary>
@@ -908,11 +959,6 @@
             </summary>
             <param name = "bg">The bg.</param>
             <returns></returns>
-        </member>
-        <member name="T:MahApps.Metro.Controls.PanoramaGroup">
-            <summary>
-            Represents a grouping of tiles
-            </summary>
         </member>
         <member name="T:MahApps.Metro.Controls.Planerator">
             <summary>
@@ -1046,7 +1092,7 @@
         </member>
         <member name="F:MahApps.Metro.Controls.TransitionType.Custom">
             <summary>
-            Use a custom VisualState, the name must be CustomTransition
+            Use a custom VisualState, the name must be set using CustomVisualStatesName property
             </summary>
         </member>
         <member name="T:MahApps.Metro.Controls.TransitioningContentControl">
@@ -1057,6 +1103,11 @@
         <member name="M:MahApps.Metro.Controls.TransitioningContentControl.ReloadTransition">
             <summary>
             Reload the current transition if the content is the same.
+            </summary>
+        </member>
+        <member name="P:MahApps.Metro.Controls.TransitioningContentControl.CustomVisualStatesName">
+            <summary>
+            Gets or sets the name of the custom transition visual state.
             </summary>
         </member>
         <member name="P:MahApps.Metro.Controls.TransitioningContentControl.IsTransitioning">
@@ -4167,21 +4218,6 @@
             Originally from http://xamlcoder.com/blog/2010/11/04/creating-a-metro-ui-style-control/
             </summary>
         </member>
-        <member name="T:MahApps.Metro.Controls.MetroImage">
-            <summary>
-            An obsolete control. Do not use.
-            </summary>
-        </member>
-        <member name="T:MahApps.Metro.Controls.ProgressIndicator">
-            <summary>
-            ProgressIndicator
-            </summary>
-        </member>
-        <member name="M:MahApps.Metro.Controls.ProgressIndicator.InitializeComponent">
-            <summary>
-            InitializeComponent
-            </summary>
-        </member>
         <member name="T:MahApps.Metro.Controls.RevealImage">
             <summary>
             RevealImage
@@ -4276,7 +4312,7 @@
         <member name="M:MahApps.Metro.Native.UnsafeNativeMethods._PostMessage(System.IntPtr,System.UInt32,System.IntPtr,System.IntPtr)">
             <devdoc>http://msdn.microsoft.com/en-us/library/windows/desktop/ms644944(v=vs.85).aspx</devdoc>
         </member>
-        <member name="M:MahApps.Metro.Native.UnsafeNativeMethods.GetCursorPos(MahApps.Metro.Native.UnsafeNativeMethods.Win32Point@)">
+        <member name="M:MahApps.Metro.Native.UnsafeNativeMethods.GetCursorPos(MahApps.Metro.Native.POINT@)">
             <devdoc>http://msdn.microsoft.com/en-us/library/windows/desktop/ms648390(v=vs.85).aspx</devdoc>
         </member>
         <member name="M:MahApps.Metro.Native.UnsafeNativeMethods.GetDoubleClickTime">
@@ -4299,6 +4335,11 @@
         <member name="T:MahApps.Metro.ThemeManager">
             <summary>
             A class that allows for the detection and alteration of a MetroWindow's theme and accent.
+            </summary>
+        </member>
+        <member name="F:MahApps.Metro.ThemeManager.SystemColors_InvalidateColors">
+            <summary>
+            Cached method info's for use in OnThemeChanged
             </summary>
         </member>
         <member name="M:MahApps.Metro.ThemeManager.ChangeTheme(System.Windows.Application,MahApps.Metro.Accent,MahApps.Metro.Theme)">

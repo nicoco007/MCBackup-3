@@ -71,7 +71,11 @@ Partial Public Class Options
 
         LanguagesComboBox.SelectedItem = MCBackup.Language.FindString("fullname", My.Settings.Language & ".lang")
 
-        ThemeComboBox.Text = ThemeManager.DetectTheme(My.Application).Item2.Name.ToString()
+        For Each Item As ThemesComboBoxItem In ThemeComboBox.Items
+            If Item.Tag = ThemeManager.DetectTheme(My.Application).Item2.Name Then
+                ThemeComboBox.SelectedItem = Item
+            End If
+        Next
 
         ListViewTextColorIntensitySlider.Value = My.Settings.ListViewTextColorIntensity
     End Sub
@@ -204,7 +208,7 @@ Partial Public Class Options
         My.Settings.CheckForUpdates = CheckForUpdatesCheckBox.IsChecked
         My.Settings.ShowBalloonTips = ShowBalloonTipsCheckBox.IsChecked
         My.Settings.CreateThumbOnWorld = CreateThumbOnWorldCheckBox.IsChecked
-        My.Settings.Theme = ThemeComboBox.SelectedValue.ToString
+        My.Settings.Theme = ThemeComboBox.SelectedItem.Tag.ToString
 
         If AlwaysCloseCheckBox.IsChecked Then
             My.Settings.SaveCloseState = True
@@ -258,6 +262,17 @@ Partial Public Class Options
         BackgroundImageBrowseButton.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content")
         BackgroundImageRemoveButton.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content")
 
+        ThemeComboBox.Items.Clear()
+
+        Dim Names = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.Themes").Split(";")
+        Dim Tags = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.ThemeTags").Split(";")
+
+        Dim num = 0
+        For Each Str As String In Tags
+            ThemeComboBox.Items.Add(New ThemesComboBoxItem(Names(num), Str))
+            num += 1
+        Next
+
         ' Folders
         GeneralFoldersGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.FoldersPanel.GeneralFoldersGroupBox.Header")
 
@@ -279,7 +294,7 @@ Partial Public Class Options
     End Sub
 
     Private Sub ThemeComboBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles ThemeComboBox.SelectionChanged
-        ThemeManager.ChangeTheme(My.Application, New Accent(ThemeComboBox.SelectedValue.ToString, New Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/" & ThemeComboBox.SelectedValue.ToString & ".xaml")), Theme.Light)
+        ThemeManager.ChangeTheme(My.Application, New Accent(ThemeComboBox.SelectedItem.Tag.ToString, New Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/" & ThemeComboBox.SelectedItem.Tag.ToString & ".xaml")), Theme.Light)
     End Sub
 
     Private Sub ListViewTextColorIntensitySlider_ValueChanged(sender As Object, e As RoutedPropertyChangedEventArgs(Of Double)) Handles ListViewTextColorIntensitySlider.ValueChanged
@@ -297,8 +312,8 @@ Partial Public Class Options
     End Sub
 
     Private Function AreAllValidNumericCharacters(str As String)
-        For Each c As Char In str
-            If Not Char.IsNumber(c) Then Return False
+        For Each Character As Char In str
+            If Not Char.IsNumber(Character) Then Return False
         Next
         Return True
     End Function
@@ -328,5 +343,32 @@ Partial Public Class Options
             GreenColorSlider.Value = CInt(GreenColorLabel.Text)
             BlueColorSlider.Value = CInt(BlueColorLabel.Text)
         End If
+    End Sub
+End Class
+
+Public Class ThemesComboBoxItem
+    Private m_Name As String
+    Public Property Name() As String
+        Get
+            Return m_Name
+        End Get
+        Set(value As String)
+            m_Name = value
+        End Set
+    End Property
+
+    Private m_Tag As String
+    Public Property Tag() As String
+        Get
+            Return m_Tag
+        End Get
+        Set(value As String)
+            m_Tag = value
+        End Set
+    End Property
+
+    Public Sub New(Name As String, Tag As String)
+        Me.Name = Name
+        Me.Tag = Tag
     End Sub
 End Class

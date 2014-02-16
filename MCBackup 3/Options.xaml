@@ -88,31 +88,13 @@
                     </ComboBox>
                     <Label x:Name="SizeModeLabel" Content="Size Mode" HorizontalContentAlignment="Right" Margin="0,76,491,37"/>
                     <ComboBox x:Name="ThemeComboBox" SelectedValuePath="Content" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" IsReadOnly="True" Margin="154,108,0,0">
-                        <ComboBoxItem Content="Amber"/>
-                        <ComboBoxItem Content="Blue"/>
-                        <ComboBoxItem Content="Brown"/>
-                        <ComboBoxItem Content="Cobalt"/>
-                        <ComboBoxItem Content="Crimson"/>
-                        <ComboBoxItem Content="Cyan"/>
-                        <ComboBoxItem Content="Emerald"/>
-                        <ComboBoxItem Content="Green"/>
-                        <ComboBoxItem Content="Indigo"/>
-                        <ComboBoxItem Content="Lime"/>
-                        <ComboBoxItem Content="Magenta"/>
-                        <ComboBoxItem Content="Mauve"/>
-                        <ComboBoxItem Content="Olive"/>
-                        <ComboBoxItem Content="Orange"/>
-                        <ComboBoxItem Content="Pink"/>
-                        <ComboBoxItem Content="Purple"/>
-                        <ComboBoxItem Content="Red"/>
-                        <ComboBoxItem Content="Sienna"/>
-                        <ComboBoxItem Content="Steel"/>
-                        <ComboBoxItem Content="Teal"/>
-                        <ComboBoxItem Content="Violet"/>
-                        <ComboBoxItem Content="Yellow"/>
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" Tag="{Binding Tag}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
                     </ComboBox>
                     <Label x:Name="ThemeLabel" Content="Theme" HorizontalContentAlignment="Right" Margin="0,108,491,5"/>
-
                 </Grid>
             </GroupBox>
         </Canvas>
