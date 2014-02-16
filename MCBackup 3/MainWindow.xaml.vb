@@ -881,6 +881,7 @@ Partial Class MainWindow
     Public ClsType As CloseType
 
     Private Sub Window_Closing(sender As Object, e As CancelEventArgs)
+        Me.Focus()
         If Not ClsType = CloseType.ForceClose Then
             Dim CloseToTrayWindow As New CloseToTray
             CloseToTrayWindow.Owner = Me

@@ -52,6 +52,10 @@ Partial Public Class Options
         ColorSlider_ValueChanged(Nothing, Nothing)
 
         LoadLanguage()
+
+        RedColorLabel.ContextMenu = Nothing
+        GreenColorLabel.ContextMenu = Nothing
+        BlueColorLabel.ContextMenu = Nothing
     End Sub
 
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
@@ -266,9 +270,9 @@ Partial Public Class Options
     End Sub
 
     Private Sub ColorSlider_ValueChanged(sender As Object, e As RoutedPropertyChangedEventArgs(Of Double)) Handles RedColorSlider.ValueChanged, GreenColorSlider.ValueChanged, BlueColorSlider.ValueChanged
-        RedColorLabel.Content = CInt(RedColorSlider.Value)
-        GreenColorLabel.Content = CInt(GreenColorSlider.Value)
-        BlueColorLabel.Content = CInt(BlueColorSlider.Value)
+        RedColorLabel.Text = CInt(RedColorSlider.Value)
+        GreenColorLabel.Text = CInt(GreenColorSlider.Value)
+        BlueColorLabel.Text = CInt(BlueColorSlider.Value)
         My.Settings.StatusLabelColor = Color.FromRgb(RedColorSlider.Value, GreenColorSlider.Value, BlueColorSlider.Value)
         ColorRectangle.Fill = New SolidColorBrush(My.Settings.StatusLabelColor)
         Main.StatusLabel.Foreground = New SolidColorBrush(My.Settings.StatusLabelColor)
@@ -283,5 +287,46 @@ Partial Public Class Options
         SampleTextR1.Foreground = New SolidColorBrush(Color.FromRgb(ListViewTextColorIntensitySlider.Value, 0, 0))
         SampleTextY1.Foreground = New SolidColorBrush(Color.FromRgb(ListViewTextColorIntensitySlider.Value, ListViewTextColorIntensitySlider.Value, 0))
         SampleTextG1.Foreground = New SolidColorBrush(Color.FromRgb(0, ListViewTextColorIntensitySlider.Value, 0))
+    End Sub
+
+    Private Sub RedColorLabel_PreviewTextInput(sender As Object, e As TextCompositionEventArgs) Handles RedColorLabel.PreviewTextInput, GreenColorLabel.PreviewTextInput, BlueColorLabel.PreviewTextInput
+        If Not AreAllValidNumericCharacters(e.Text) Then
+            e.Handled = True
+            System.Media.SystemSounds.Asterisk.Play()
+        End If
+    End Sub
+
+    Private Function AreAllValidNumericCharacters(str As String)
+        For Each c As Char In str
+            If Not Char.IsNumber(c) Then Return False
+        Next
+        Return True
+    End Function
+
+    Private Sub ColorLabel_PreviewExecuted(sender As Object, e As ExecutedRoutedEventArgs)
+        If e.Command Is ApplicationCommands.Paste Then
+            e.Handled = True
+            System.Media.SystemSounds.Asterisk.Play()
+        End If
+    End Sub
+
+    Private Sub RedColorLabel_TextChanged(sender As Object, e As TextChangedEventArgs) Handles RedColorLabel.TextChanged, GreenColorLabel.TextChanged, BlueColorLabel.TextChanged
+        If Me.IsLoaded Then
+            If RedColorLabel.Text = "" Then
+                RedColorLabel.Text = "0"
+            End If
+
+            If GreenColorLabel.Text = "" Then
+                GreenColorLabel.Text = "0"
+            End If
+
+            If BlueColorLabel.Text = "" Then
+                BlueColorLabel.Text = "0"
+            End If
+
+            RedColorSlider.Value = CInt(RedColorLabel.Text)
+            GreenColorSlider.Value = CInt(GreenColorLabel.Text)
+            BlueColorSlider.Value = CInt(BlueColorLabel.Text)
+        End If
     End Sub
 End Class

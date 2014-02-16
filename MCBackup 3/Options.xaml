@@ -22,6 +22,11 @@
     Title="Options" Height="400" Width="800" Loaded="Window_Loaded" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Background="White" SizeToContent="WidthAndHeight" WindowTransitionsEnabled="False">
 
     <Grid Height="373" VerticalAlignment="Top" Margin="0,0,0,0">
+        <ListBox x:Name="ListBox" HorizontalAlignment="Left" Width="102" Margin="10,10,0,45" BorderThickness="1">
+            <ListBoxItem Content="General"/>
+            <ListBoxItem Content="Appearance"/>
+            <ListBoxItem Content="Folders"/>
+        </ListBox>
         <Canvas x:Name="GeneralPanel" HorizontalAlignment="Left" Height="313" VerticalAlignment="Top" Width="667" Margin="117,10,0,0">
             <GroupBox x:Name="LanguageGroupBox" Header="Language" Margin="0" Canvas.Left="10" Canvas.Top="146" Height="86" Width="320">
                 <Grid>
@@ -47,38 +52,16 @@
                 </Grid>
             </GroupBox>
         </Canvas>
-        <ListBox x:Name="ListBox" HorizontalAlignment="Left" Width="102" Margin="10,10,0,45" BorderThickness="1">
-            <ListBoxItem Content="General"/>
-            <ListBoxItem Content="Appearance"/>
-            <ListBoxItem Content="Folders"/>
-        </ListBox>
-        <Canvas x:Name="FoldersPanel" HorizontalAlignment="Left" Height="313" VerticalAlignment="Top" Width="667" Margin="117,10,0,0">
-            <GroupBox x:Name="GeneralFoldersGroupBox" Header="General Folders" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Canvas.Left="10" Canvas.Top="10" Height="145" Width="647">
-                <Grid>
-                    <Label x:Name="MinecraftFolderLocationLabel" Content="Minecraft Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Width="159" Margin="4,6,0,0"/>
-                    <Label x:Name="BackupsFolderLocationLabel" Content="Backups Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Width="159" Margin="4,74,0,0"/>
-                    <TextBox x:Name="MinecraftFolderTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="377" IsReadOnly="True" Margin="168,6,0,0"/>
-                    <TextBox x:Name="BackupsFolderTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="377" IsReadOnly="True" Margin="168,74,0,0"/>
-                    <Button x:Name="BrowseBackupsFolderButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="550,72,0,0"/>
-                    <Button x:Name="BrowseMinecraftFolderButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Padding="10,5" Margin="550,4,0,0"/>
-                    <Label x:Name="SavesFolderLocationLabel" Content="Saves Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Width="159" Margin="4,40,0,0"/>
-                    <TextBox x:Name="SavesFolderTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="377" IsReadOnly="True" Margin="168,40,0,0"/>
-                    <Button x:Name="BrowseSavesFolderButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="550,38,0,0"/>
-
-                </Grid>
-            </GroupBox>
-        </Canvas>
-        <Button x:Name="CloseButton" Content="Close" VerticalAlignment="Top" Margin="356,334,356,0"/>
         <Canvas x:Name="AppearancePanel" HorizontalAlignment="Left" Height="318" VerticalAlignment="Top" Width="667" Margin="117,10,0,0">
             <GroupBox x:Name="StatusTextColorGroupBox" Header="Status Text Color" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Canvas.Left="10" Canvas.Top="193" Height="115" Width="320">
                 <Grid>
-                    <Slider x:Name="GreenColorSlider" Width="212" Maximum="255" HorizontalAlignment="Left" Margin="1,29,0,0" Height="18" VerticalAlignment="Top"/>
-                    <Slider x:Name="BlueColorSlider" Width="212" Maximum="255" HorizontalAlignment="Left" Margin="1,52,0,0" Height="18" VerticalAlignment="Top"/>
-                    <Label x:Name="RedColorLabel" Content="255" Margin="213,1,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="29"/>
-                    <Label x:Name="GreenColorLabel" Content="255" Margin="213,24,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="29"/>
-                    <Label x:Name="BlueColorLabel" Content="255" Margin="213,48,0,0" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="29"/>
+                    <Slider x:Name="GreenColorSlider" Width="202" Maximum="255" HorizontalAlignment="Left" Margin="1,29,0,0" Height="18" VerticalAlignment="Top" SmallChange="1"/>
+                    <Slider x:Name="BlueColorSlider" Width="202" Maximum="255" HorizontalAlignment="Left" Margin="1,56,0,0" Height="18" VerticalAlignment="Top" SmallChange="1"/>
+                    <TextBox CommandManager.PreviewExecuted="ColorLabel_PreviewExecuted" x:Name="RedColorLabel" Text="255" Margin="208,-2,0,0" HorizontalAlignment="Left" Width="29" Height="26" VerticalAlignment="Top"/>
+                    <TextBox CommandManager.PreviewExecuted="ColorLabel_PreviewExecuted" x:Name="GreenColorLabel" Text="255" Margin="208,0,0,25" Height="26" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="29"/>
+                    <TextBox CommandManager.PreviewExecuted="ColorLabel_PreviewExecuted" x:Name="BlueColorLabel" Text="255" Margin="208,52,0,-2" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="29"/>
                     <Rectangle x:Name="ColorRectangle" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="64" Stroke="Black" VerticalAlignment="Top" Width="64" Margin="242,7,0,0"/>
-                    <Slider x:Name="RedColorSlider" Width="212" Maximum="255" HorizontalAlignment="Left" Margin="1,6,0,0" Height="18" VerticalAlignment="Top"/>
+                    <Slider x:Name="RedColorSlider" Width="202" Maximum="255" HorizontalAlignment="Left" Margin="1,2,0,0" Height="18" VerticalAlignment="Top" SmallChange="1"/>
                 </Grid>
             </GroupBox>
             <GroupBox x:Name="ListViewTextColorIntensityGroupBox" Header="ListView Text Color Intensity" Margin="0" Height="115" Width="322" Canvas.Left="335" Canvas.Top="193">
@@ -133,5 +116,22 @@
                 </Grid>
             </GroupBox>
         </Canvas>
+        <Canvas x:Name="FoldersPanel" HorizontalAlignment="Left" Height="313" VerticalAlignment="Top" Width="667" Margin="117,10,0,0">
+            <GroupBox x:Name="GeneralFoldersGroupBox" Header="General Folders" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Canvas.Left="10" Canvas.Top="10" Height="145" Width="647">
+                <Grid>
+                    <Label x:Name="MinecraftFolderLocationLabel" Content="Minecraft Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Width="159" Margin="4,6,0,0"/>
+                    <Label x:Name="BackupsFolderLocationLabel" Content="Backups Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Width="159" Margin="4,74,0,0"/>
+                    <TextBox x:Name="MinecraftFolderTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="377" IsReadOnly="True" Margin="168,6,0,0"/>
+                    <TextBox x:Name="BackupsFolderTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="377" IsReadOnly="True" Margin="168,74,0,0"/>
+                    <Button x:Name="BrowseBackupsFolderButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="550,72,0,0"/>
+                    <Button x:Name="BrowseMinecraftFolderButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Padding="10,5" Margin="550,4,0,0"/>
+                    <Label x:Name="SavesFolderLocationLabel" Content="Saves Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Width="159" Margin="4,40,0,0"/>
+                    <TextBox x:Name="SavesFolderTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="377" IsReadOnly="True" Margin="168,40,0,0"/>
+                    <Button x:Name="BrowseSavesFolderButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="550,38,0,0"/>
+
+                </Grid>
+            </GroupBox>
+        </Canvas>
+        <Button x:Name="CloseButton" Content="Close" VerticalAlignment="Top" Margin="356,334,356,0"/>
     </Grid>
 </Controls:MetroWindow>
