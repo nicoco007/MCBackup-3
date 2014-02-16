@@ -51,8 +51,6 @@ Partial Public Class Options
 
         ColorSlider_ValueChanged(Nothing, Nothing)
 
-        LoadLanguage()
-
         RedColorLabel.ContextMenu = Nothing
         GreenColorLabel.ContextMenu = Nothing
         BlueColorLabel.ContextMenu = Nothing
@@ -67,11 +65,11 @@ Partial Public Class Options
             LanguagesComboBox.Items.Add(MCBackup.Language.FindString("fullname", LanguageFile.ToString))
         Next
 
-        AlwaysCloseCheckBox_Checked(New Object, New RoutedEventArgs)
-
         LanguagesComboBox.SelectedItem = MCBackup.Language.FindString("fullname", My.Settings.Language & ".lang")
 
-        ThemeComboBox.Text = ThemeManager.DetectTheme(My.Application).Item2.Name
+        AlwaysCloseCheckBox_Checked(sender, Nothing)
+
+        LoadLanguage()
 
         ListViewTextColorIntensitySlider.Value = My.Settings.ListViewTextColorIntensity
     End Sub
@@ -204,7 +202,6 @@ Partial Public Class Options
         My.Settings.CheckForUpdates = CheckForUpdatesCheckBox.IsChecked
         My.Settings.ShowBalloonTips = ShowBalloonTipsCheckBox.IsChecked
         My.Settings.CreateThumbOnWorld = CreateThumbOnWorldCheckBox.IsChecked
-        My.Settings.Theme = ThemeComboBox.SelectedItem.Tag.ToString
 
         If AlwaysCloseCheckBox.IsChecked Then
             My.Settings.SaveCloseState = True
@@ -218,9 +215,11 @@ Partial Public Class Options
     End Sub
 
     Private Sub LanguagesListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles LanguagesComboBox.SelectionChanged
-        MCBackup.Language.Load(MCBackup.Language.GetIDFromName(LanguagesComboBox.SelectedItem) & ".lang")
-        My.Settings.Language = MCBackup.Language.GetIDFromName(LanguagesComboBox.SelectedItem)
-        LoadLanguage()
+        If Me.IsLoaded Then
+            MCBackup.Language.Load(MCBackup.Language.GetIDFromName(LanguagesComboBox.SelectedItem) & ".lang")
+            My.Settings.Language = MCBackup.Language.GetIDFromName(LanguagesComboBox.SelectedItem)
+            LoadLanguage()
+        End If
     End Sub
 
     Private Sub LoadLanguage()
@@ -263,10 +262,11 @@ Partial Public Class Options
         Dim Names = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.Themes").Split(";")
         Dim Tags = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.ThemeTags").Split(";")
 
-        Dim num = 0
-        For Each Str As String In Tags
-            ThemeComboBox.Items.Add(New ThemesComboBoxItem(Names(num), Str))
-            num += 1
+        For i As Integer = 0 To Names.Count - 1
+            ThemeComboBox.Items.Add(New ThemesComboBoxItem(Names(i), Tags(i)))
+            If Tags(i) = My.Settings.Theme Then
+                ThemeComboBox.SelectedIndex = i
+            End If
         Next
 
         ' Folders
@@ -290,8 +290,11 @@ Partial Public Class Options
     End Sub
 
     Private Sub ThemeComboBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles ThemeComboBox.SelectionChanged
-        Log.Print(ThemeComboBox.SelectedItem.Tag.ToString)
-        ThemeManager.ChangeTheme(My.Application, New Accent(ThemeComboBox.SelectedItem.Tag.ToString, New Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/" & ThemeComboBox.SelectedItem.Tag.ToString & ".xaml")), Theme.Light)
+        If Not ThemeComboBox.SelectedItem Is Nothing Then
+            Dim SelectedTag = DirectCast(ThemeComboBox.SelectedItem, ThemesComboBoxItem).Tag
+            ThemeManager.ChangeTheme(My.Application, New Accent(SelectedTag, New Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/" & SelectedTag & ".xaml")), Theme.Light)
+            My.Settings.Theme = ThemeComboBox.SelectedItem.Tag.ToString
+        End If
     End Sub
 
     Private Sub ListViewTextColorIntensitySlider_ValueChanged(sender As Object, e As RoutedPropertyChangedEventArgs(Of Double)) Handles ListViewTextColorIntensitySlider.ValueChanged
@@ -344,7 +347,6 @@ Partial Public Class Options
 
     Private Sub ResetButton_Click(sender As Object, e As RoutedEventArgs) Handles ResetButton.Click
         If MetroMessageBox.Show("Are you sure you want to reset all of your settings?" & vbNewLine & vbNewLine & "Click 'Yes' to reset all your settings and restart MCBackup.", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.Yes Then
-
             My.Settings.Reset()
 
             Dim w As New MainWindow
