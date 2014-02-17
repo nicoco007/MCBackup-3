@@ -228,7 +228,7 @@ Partial Class MainWindow
             UpdateDialog.Show()
         ElseIf ApplicationVersionInt > LatestVersionInt Then
             Log.Print("MCBackup is running in beta mode (version " & ApplicationVersion & ")!")
-            Me.Title += " Beta"
+            'Me.Title += " Beta"
         ElseIf ApplicationVersionInt = LatestVersionInt Then
             Log.Print("MCBackup is up-to-date (version " & ApplicationVersion & ").")
         End If

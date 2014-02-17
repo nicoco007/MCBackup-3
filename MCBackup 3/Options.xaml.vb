@@ -287,6 +287,27 @@ Partial Public Class Options
         My.Settings.StatusLabelColor = Color.FromRgb(RedColorSlider.Value, GreenColorSlider.Value, BlueColorSlider.Value)
         ColorRectangle.Fill = New SolidColorBrush(My.Settings.StatusLabelColor)
         Main.StatusLabel.Foreground = New SolidColorBrush(My.Settings.StatusLabelColor)
+
+        Dim RedGradient = New LinearGradientBrush()
+        RedGradient.StartPoint = New Point(0, 0)
+        RedGradient.EndPoint = New Point(1, 1)
+        RedGradient.GradientStops.Add(New GradientStop(Color.FromRgb(0, GreenColorSlider.Value, BlueColorSlider.Value), 0.0))
+        RedGradient.GradientStops.Add(New GradientStop(Color.FromRgb(255, GreenColorSlider.Value, BlueColorSlider.Value), 1.0))
+        RedRect.Fill = RedGradient
+
+        Dim GreenGradient = New LinearGradientBrush()
+        GreenGradient.StartPoint = New Point(0, 0)
+        GreenGradient.EndPoint = New Point(1, 1)
+        GreenGradient.GradientStops.Add(New GradientStop(Color.FromRgb(RedColorSlider.Value, 0, BlueColorSlider.Value), 0.0))
+        GreenGradient.GradientStops.Add(New GradientStop(Color.FromRgb(RedColorSlider.Value, 255, BlueColorSlider.Value), 1.0))
+        GreenRect.Fill = GreenGradient
+
+        Dim BlueGradient = New LinearGradientBrush()
+        BlueGradient.StartPoint = New Point(0, 0)
+        BlueGradient.EndPoint = New Point(1, 1)
+        BlueGradient.GradientStops.Add(New GradientStop(Color.FromRgb(RedColorSlider.Value, GreenColorSlider.Value, 0), 0.0))
+        BlueGradient.GradientStops.Add(New GradientStop(Color.FromRgb(RedColorSlider.Value, GreenColorSlider.Value, 255), 1.0))
+        BlueRect.Fill = BlueGradient
     End Sub
 
     Private Sub ThemeComboBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles ThemeComboBox.SelectionChanged

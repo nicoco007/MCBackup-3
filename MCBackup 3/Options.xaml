@@ -19,7 +19,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Options" Height="400" Width="800" Loaded="Window_Loaded" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Background="White" SizeToContent="WidthAndHeight" WindowTransitionsEnabled="False">
+    Title="Options" Height="400" Width="800" Background="#FFF0F0F0" Loaded="Window_Loaded" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" SizeToContent="WidthAndHeight" WindowTransitionsEnabled="False">
 
     <Grid Width="794" Height="371">
         <ListBox x:Name="ListBox" HorizontalAlignment="Left" Width="102" Margin="10,10,0,45" BorderThickness="1">
@@ -55,13 +55,16 @@
         <Canvas x:Name="AppearancePanel" HorizontalAlignment="Left" Height="318" VerticalAlignment="Top" Width="667" Margin="117,10,0,0">
             <GroupBox x:Name="StatusTextColorGroupBox" Header="Status Text Color" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Canvas.Left="10" Canvas.Top="193" Height="115" Width="320">
                 <Grid>
-                    <Slider x:Name="GreenColorSlider" Width="202" Maximum="255" HorizontalAlignment="Left" Margin="1,29,0,0" Height="18" VerticalAlignment="Top" SmallChange="1"/>
-                    <Slider x:Name="BlueColorSlider" Width="202" Maximum="255" HorizontalAlignment="Left" Margin="1,56,0,0" Height="18" VerticalAlignment="Top" SmallChange="1"/>
+                    <Rectangle x:Name="RedRect" Fill="#FFF4F4F5" Width="192" HorizontalAlignment="Left" Margin="6,4,0,0" Height="14" VerticalAlignment="Top"/>
+                    <Slider x:Name="RedColorSlider" Style="{StaticResource ColorSelectionSlider}" Width="202" Maximum="255" HorizontalAlignment="Left" Margin="1,2,0,0" Height="18" VerticalAlignment="Top" IsMoveToPointEnabled="True"/>
+                    <Rectangle x:Name="GreenRect" Fill="#FFF4F4F5" Width="192" HorizontalAlignment="Left" Margin="6,31,0,0" Height="14" VerticalAlignment="Top"/>
+                    <Slider x:Name="GreenColorSlider" Style="{StaticResource ColorSelectionSlider}" Width="202" Maximum="255" HorizontalAlignment="Left" Margin="1,29,0,0" Height="18" VerticalAlignment="Top" IsMoveToPointEnabled="True"/>
+                    <Rectangle x:Name="BlueRect" Fill="#FFF4F4F5" Width="192" HorizontalAlignment="Left" Margin="6,58,0,0" Height="14" VerticalAlignment="Top"/>
+                    <Slider x:Name="BlueColorSlider" Style="{StaticResource ColorSelectionSlider}" Width="202" Maximum="255" HorizontalAlignment="Left" Margin="1,56,0,0" Height="18" VerticalAlignment="Top" IsMoveToPointEnabled="True"/>
                     <TextBox CommandManager.PreviewExecuted="ColorLabel_PreviewExecuted" x:Name="RedColorLabel" Text="255" Margin="208,-2,0,0" HorizontalAlignment="Left" Width="29" Height="26" VerticalAlignment="Top"/>
                     <TextBox CommandManager.PreviewExecuted="ColorLabel_PreviewExecuted" x:Name="GreenColorLabel" Text="255" Margin="208,0,0,25" Height="26" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="29"/>
                     <TextBox CommandManager.PreviewExecuted="ColorLabel_PreviewExecuted" x:Name="BlueColorLabel" Text="255" Margin="208,52,0,-2" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="29"/>
                     <Rectangle x:Name="ColorRectangle" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="64" Stroke="Black" VerticalAlignment="Top" Width="64" Margin="242,7,0,0"/>
-                    <Slider x:Name="RedColorSlider" Width="202" Maximum="255" HorizontalAlignment="Left" Margin="1,2,0,0" Height="18" VerticalAlignment="Top" SmallChange="1"/>
                 </Grid>
             </GroupBox>
             <GroupBox x:Name="ListViewTextColorIntensityGroupBox" Header="ListView Text Color Intensity" Margin="0" Height="115" Width="322" Canvas.Left="335" Canvas.Top="193">
