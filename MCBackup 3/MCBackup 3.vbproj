@@ -227,7 +227,6 @@
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
-      <LastGenOutput>Resources1.Designer.vb</LastGenOutput>
     </EmbeddedResource>
     <None Include="My Project\app.manifest" />
     <None Include="My Project\Settings.settings">
@@ -259,8 +258,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\logo.png" />
-    <Resource Include="Resources\MCBackup.ico" />
-    <Resource Include="Resources\MCBackup.png" />
     <Resource Include="Resources\nothumb.png" />
     <Resource Include="Resources\Splash.png" />
   </ItemGroup>
@@ -268,6 +265,12 @@
     <Resource Include="Resources\msgbox.error.png" />
     <Resource Include="Resources\msgbox.info.png" />
     <Resource Include="Resources\msgbox.question.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

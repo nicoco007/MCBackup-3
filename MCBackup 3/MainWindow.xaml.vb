@@ -134,7 +134,7 @@ Partial Class MainWindow
         Splash.Progress.Refresh()
 
         NotifyIcon.Text = "MCBackup " & ApplicationVersion
-        NotifyIcon.Icon = New System.Drawing.Icon(Application.GetResourceStream(New Uri("pack://application:,,,/Resources/MCBackup.ico")).Stream)
+        NotifyIcon.Icon = New System.Drawing.Icon(Application.GetResourceStream(New Uri("pack://application:,,,/Resources/icon.ico")).Stream)
         Dim ContextMenu As New System.Windows.Forms.ContextMenu
         Dim ExitToolbarMenuItem As New System.Windows.Forms.MenuItem
         ExitToolbarMenuItem.Text = MCBackup.Language.FindString("NotifyIcon.ContextMenu.ExitItem.Text", My.Settings.Language & ".lang")

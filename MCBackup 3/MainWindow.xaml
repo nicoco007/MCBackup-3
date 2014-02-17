@@ -20,7 +20,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="MCBackup" Height="470" Width="860" Loaded="MainWindow_Loaded" Icon="MCBackup.ico" ResizeMode="CanResize" WindowStartupLocation="CenterScreen" Closing="Window_Closing" Background="#FFF0F0F0" Activated="Window_Activated" LocationChanged="Window_LocationChanged" MinHeight="490" MinWidth="860" WindowTransitionsEnabled="False">
+    Title="MCBackup" Height="470" Width="860" Loaded="MainWindow_Loaded" Icon="Resources/icon.ico" ResizeMode="CanResize" WindowStartupLocation="CenterScreen" Closing="Window_Closing" Background="#FFF0F0F0" Activated="Window_Activated" LocationChanged="Window_LocationChanged" MinHeight="490" MinWidth="860" WindowTransitionsEnabled="False">
     <Controls:MetroWindow.WindowCommands>
         <Controls:WindowCommands>
             <Button x:Name="EditToolbarButton" Content="Edit" ContextMenuService.Placement="Bottom">
