@@ -228,6 +228,9 @@ Partial Public Class Options
         ListBox.Items(1).Content = MCBackup.Language.Dictionary("OptionsWindow.ListBox.Items(1).Content")
         ListBox.Items(2).Content = MCBackup.Language.Dictionary("OptionsWindow.ListBox.Items(2).Content")
 
+        CloseButton.Content = MCBackup.Language.Dictionary("OptionsWindow.CloseButton.Content")
+        ResetButton.Content = MCBackup.Language.Dictionary("OptionsWindow.ResetButton.Content")
+
         ' General Tab
         GeneralOptionsGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.GeneralOptionsGroupBox.Header")
         CloseToTrayOptionsGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.CloseToTrayOptionsGroupBox.Header")
@@ -256,6 +259,7 @@ Partial Public Class Options
         SizeModeComboBox.Items(3).Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content")
         BackgroundImageBrowseButton.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content")
         BackgroundImageRemoveButton.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content")
+        ThemeLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.ThemeLabel.Content")
 
         ThemeComboBox.Items.Clear()
 

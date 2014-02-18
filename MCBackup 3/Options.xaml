@@ -117,7 +117,7 @@
                 </Grid>
             </GroupBox>
         </Canvas>
-        <Button x:Name="CloseButton" Content="Close" VerticalAlignment="Top" Margin="312,334,0,0" HorizontalAlignment="Left" Width="82"/>
-        <Button x:Name="ResetButton" Content="Reset" VerticalAlignment="Top" Margin="0,334,312,0" HorizontalAlignment="Right" Width="82"/>
+        <Button x:Name="CloseButton" Content="Close" VerticalAlignment="Top" Margin="0,334,400,0" HorizontalAlignment="Right" Width="100"/>
+        <Button x:Name="ResetButton" Content="Reset" VerticalAlignment="Top" Margin="400,334,0,0" HorizontalAlignment="Left" Width="100"/>
     </Grid>
 </Controls:MetroWindow>

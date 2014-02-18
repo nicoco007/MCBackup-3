@@ -119,6 +119,9 @@ Public Class Language
         Dictionary.Add("OptionsWindow.ListBox.Items(1).Content", FindString("OptionsWindow.GeneralPanel.ListBox.Items(1).Content", FileName))
         Dictionary.Add("OptionsWindow.ListBox.Items(2).Content", FindString("OptionsWindow.GeneralPanel.ListBox.Items(2).Content", FileName))
 
+        Dictionary.Add("OptionsWindow.CloseButton.Content", FindString("OptionsWindow.CloseButton.Content", FileName))
+        Dictionary.Add("OptionsWindow.ResetButton.Content", FindString("OptionsWindow.ResetButton.Content", FileName))
+
         Dictionary.Add("OptionsWindow.AllSupportedImages", FindString("OptionsWindow.AllSupportedImages", FileName))
 
         Dictionary.Add("OptionsWindow.GeneralPanel.GeneralOptionsGroupBox.Header", FindString("OptionsWindow.GeneralPanel.GeneralOptionsGroupBox.Header", FileName))
@@ -147,6 +150,7 @@ Public Class Language
         Dictionary.Add("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content", FindString("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content", FileName))
         Dictionary.Add("OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content", FindString("OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content", FileName))
         Dictionary.Add("OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content", FindString("OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content", FileName))
+        Dictionary.Add("OptionsWindow.AppearancePanel.ThemeLabel.Content", FindString("OptionsWindow.AppearancePanel.ThemeLabel.Content", FileName))
 
         Dictionary.Add("OptionsWindow.AppearancePanel.Themes", FindString("OptionsWindow.AppearancePanel.Themes", FileName))
         Dictionary.Add("OptionsWindow.AppearancePanel.ThemeTags", FindString("OptionsWindow.AppearancePanel.ThemeTags", FileName))

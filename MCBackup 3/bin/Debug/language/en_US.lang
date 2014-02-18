@@ -162,3 +162,6 @@ CullWindow.CullButton.Content="Cull"
 CullWindow.AreYouSureMsg="Are you sure you want remove all backups older than {0} days? They will be deleted forever! (A long time)"
 
 NotifyIcon.ContextMenu.ExitItem.Text="Exit"
+OptionsWindow.CloseButton.Content="Close"
+OptionsWindow.ResetButton.Content="Reset"
+OptionsWindow.AppearancePanel.ThemeLabel.Content="Theme"
