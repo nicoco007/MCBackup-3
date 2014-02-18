@@ -69,6 +69,7 @@ Public Class Language
         Dictionary.Add("Message.EnterValidName", FindString("Message.EnterValidName", FileName))
         Dictionary.Add("Message.ChooseSave", FindString("Message.ChooseSave", FileName))
         Dictionary.Add("Message.ChooseVersion", FindString("Message.ChooseVersion", FileName))
+        Dictionary.Add("Message.ResetSettings", FindString("Message.ResetSettings", FileName))
 
         ' = Balloon Tips =
         Dictionary.Add("BalloonTip.Title.BackupError", FindString("BalloonTip.Title.BackupError", FileName))

@@ -52,6 +52,7 @@ Message.DeleteError="An error occured during the removal."
 Message.EnterValidName="Please enter a valid name."
 Message.ChooseSave="Please choose a save to back up."
 Message.ChooseVersion="Please choose a version to back up."
+Message.ResetSettings="Are you sure you want to reset all of your settings?\n\nClick 'Yes' to reset all your settings and restart MCBackup."
 
 BalloonTip.Title.BackupError="Backup Error!"
 BalloonTip.BackupError="An error occured during the backup."

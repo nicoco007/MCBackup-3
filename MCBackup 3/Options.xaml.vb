@@ -371,16 +371,15 @@ Partial Public Class Options
     End Sub
 
     Private Sub ResetButton_Click(sender As Object, e As RoutedEventArgs) Handles ResetButton.Click
-        If MetroMessageBox.Show("Are you sure you want to reset all of your settings?" & vbNewLine & vbNewLine & "Click 'Yes' to reset all your settings and restart MCBackup.", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.Yes Then
-            My.Settings.Reset()
+        'If MetroMessageBox.Show("Are you sure you want to reset all of your settings?" & vbNewLine & vbNewLine & "Click 'Yes' to reset all your settings and restart MCBackup.", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.Yes Then
+        If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.ResetSettings").Replace("\n", vbNewLine), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.Yes Then
 
-            Dim w As New MainWindow
-            My.Application.MainWindow = w
+            My.Settings.Reset()
 
             Main.ClsType = CloseAction.CloseType.ForceClose
             Main.Close()
 
-            w.Show()
+            Process.Start(Main.StartupPath & "\mcbackup.exe")
         End If
     End Sub
 End Class

@@ -54,6 +54,7 @@ Message.DeleteError="An error occured during the removal."
 Message.EnterValidName="Veuillez entrer un nom valide."
 Message.ChooseSave="Veuillez choisir un monde à sauvegarder."
 Message.ChooseVersion="Veuillez choisir une version à sauvegarder."
+Message.ResetSettings="Êtes-vous sûr de vouloir réinitialiser vos préférences?\n\nCliquez 'Oui' pour tout réinitialiser et redémarrer MCBackup."
 
 BalloonTip.Title.BackupError="Erreur de sauvegarde!"
 BalloonTip.BackupError="Une erreur est survenue lors de la sauvegarde."
