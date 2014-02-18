@@ -7,7 +7,7 @@
         <Image Source="Resources/Splash.png" Height="320" Width="530" VerticalAlignment="Top"/>
         <ProgressBar x:Name="Progress" HorizontalAlignment="Left" VerticalAlignment="Top" Width="530" Margin="0,320,0,0" Height="20" Maximum="16"/>
         <Label x:Name="VersionLabel" Content="MCBackup vX.X.X.X" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,255,0,0" Foreground="White" FontFamily="Arial" FontSize="16"/>
-        <Label Content="Copyright © 2013 nicoco007" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="14,275,0,0" Foreground="White" FontFamily="Arial" FontSize="13"/>
+        <Label Content="Copyright © 2014 nicoco007" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="14,275,0,0" Foreground="White" FontFamily="Arial" FontSize="13"/>
         <Label x:Name="Status" Content="Starting..." HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,294,0,0" Width="530" HorizontalContentAlignment="Center" Foreground="White"/>
     </Grid>
 </Window>
