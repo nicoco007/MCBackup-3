@@ -48,6 +48,7 @@ Public Class AutoBackup
             Main.AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " >>"
         Catch
         End Try
+        Main.Focus()
     End Sub
 
     Private Sub AutoBackupWindow_LocationChanged(sender As Object, e As EventArgs) Handles AutoBackupWindow.LocationChanged
@@ -169,5 +170,9 @@ Public Class AutoBackup
 
     Private Sub SaveListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles SaveListBox.SelectionChanged
         WorldName = SaveListBox.SelectedItem
+    End Sub
+
+    Private Sub AutoBackupWindow_Activated(sender As Object, e As EventArgs) Handles AutoBackupWindow.Activated
+        Main.Focus()
     End Sub
 End Class
