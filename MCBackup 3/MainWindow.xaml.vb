@@ -51,12 +51,6 @@ Partial Class MainWindow
     Private Splash As New Splash
 
     Public Shared ListViewItems As New ArrayList
-
-    Public Enum ListSort As Integer
-        ByName
-        ByDateCreated
-        ByType
-    End Enum
 #End Region
 
 #Region "Load"
@@ -631,7 +625,7 @@ Partial Class MainWindow
 #End Region
 
 #Region "Restore"
-    Private Sub RestoreButton_Click(sender As Object, e As EventArgs) Handles RestoreButton.Click
+    Private Sub RestoreButton_Click(sender As Object, e As EventArgs) Handles RestoreButton.Click, ListViewRestoreItem.Click
         If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.RestoreAreYouSure"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = Forms.DialogResult.Yes Then
             Log.Print("Starting Restore")
             RestoreInfo(0) = ListView.SelectedItems(0).Name ' Set place 0 of RestoreInfo array to the backup name
@@ -822,7 +816,7 @@ Partial Class MainWindow
 #End Region
 
 #Region "Delete"
-    Private Sub DeleteButton_Click(sender As Object, e As EventArgs) Handles DeleteButton.Click
+    Private Sub DeleteButton_Click(sender As Object, e As EventArgs) Handles DeleteButton.Click, ListViewDeleteItem.Click
         If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.DeleteAreYouSure"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = Windows.Forms.DialogResult.Yes Then
             ListViewItems.Clear()
             For Each Item In ListView.SelectedItems
@@ -859,7 +853,7 @@ Partial Class MainWindow
 #End Region
 
 #Region "Buttons"
-    Private Sub RenameButton_Click(sender As Object, e As EventArgs) Handles RenameButton.Click
+    Private Sub RenameButton_Click(sender As Object, e As EventArgs) Handles RenameButton.Click, ListViewRenameItem.Click
         Dim RenameWindow As New Rename
         RenameWindow.Owner = Me
         RenameWindow.ShowDialog()
@@ -1089,6 +1083,23 @@ Partial Class MainWindow
         Dim CullWindow As New CullWindow
         CullWindow.Owner = Me
         CullWindow.Show()
+    End Sub
+
+    Private Sub ListView_ContextMenuOpening(sender As Object, e As ContextMenuEventArgs) Handles ListView.ContextMenuOpening
+        Select Case ListView.SelectedItems.Count
+            Case Is > 1
+                ListViewRestoreItem.IsEnabled = False
+                ListViewDeleteItem.IsEnabled = True
+                ListViewRenameItem.IsEnabled = False
+            Case Is = 1
+                ListViewRestoreItem.IsEnabled = True
+                ListViewDeleteItem.IsEnabled = True
+                ListViewRenameItem.IsEnabled = True
+            Case Is = 0
+                ListViewRestoreItem.IsEnabled = False
+                ListViewDeleteItem.IsEnabled = False
+                ListViewRenameItem.IsEnabled = False
+        End Select
     End Sub
 End Class
 

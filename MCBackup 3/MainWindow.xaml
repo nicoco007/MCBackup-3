@@ -72,7 +72,11 @@
                 <ListView.ContextMenu>
                     <ContextMenu>
                         <ContextMenu.Items>
-                            <MenuItem Header="Sort by">
+                            <MenuItem Name="ListViewRestoreItem" Header="Restore"/>
+                            <MenuItem Name="ListViewDeleteItem" Header="Delete"/>
+                            <MenuItem Name="ListViewRenameItem" Header="Rename"/>
+                            <Separator/>
+                            <MenuItem Name="ListViewSortByItem" Header="Sort by">
                                 <MenuItem Name="ListViewSortByNameItem" Header="Name" IsCheckable="True"/>
                                 <MenuItem Name="ListViewSortByDateCreatedItem" Header="Date Created" IsCheckable="True"/>
                                 <MenuItem Name="ListViewSortByTypeItem" Header="Type" IsCheckable="True"/>
@@ -80,7 +84,7 @@
                                 <MenuItem Name="ListViewSortAscendingItem" Header="Ascending" IsCheckable="True"/>
                                 <MenuItem Name="ListViewSortDescendingItem" Header="Descending" IsCheckable="True"/>
                             </MenuItem>
-                            <MenuItem Header="Group by">
+                            <MenuItem Name="ListViewGroupByItem" Header="Group by">
                                 <MenuItem Name="ListViewGroupByNameItem" Header="Original Name" IsCheckable="True"/>
                                 <MenuItem Name="ListViewGroupByTypeItem" Header="Type" IsCheckable="True"/>
                                 <MenuItem Name="ListViewGroupByNothingItem" Header="Nothing" IsCheckable="True"/>
