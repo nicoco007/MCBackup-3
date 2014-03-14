@@ -50,11 +50,18 @@ Partial Class MainWindow
     Public AutoBackupWindow As New AutoBackup
     Private Splash As New Splash
 
-    Private ListViewItems As New ArrayList
+    Public Shared ListViewItems As New ArrayList
+
+    Public Enum ListSort As Integer
+        ByName
+        ByDateCreated
+        ByType
+    End Enum
 #End Region
 
 #Region "Load"
     Public Sub New()
+        My.Settings.Reset()
         Splash.Show()
 
         Try
@@ -269,6 +276,7 @@ Partial Class MainWindow
 
         Log.Print("Minecraft folder set to """ & My.Settings.MinecraftFolderLocation & """")
         Log.Print("Saves folder set to """ & My.Settings.SavesFolderLocation & """")
+
         RefreshBackupsList()
 
         Try
@@ -310,10 +318,12 @@ Partial Class MainWindow
     End Sub
 
     Public Sub RefreshBackupsList()
-        ListView.Items.Clear() ' Clear ListView items
+        If ListView Is Nothing Then Exit Sub
         Dim Directory As New IO.DirectoryInfo(My.Settings.BackupsFolderLocation) ' Create a DirectoryInfo variable for the backups folder
         Dim Folders As IO.DirectoryInfo() = Directory.GetDirectories() ' Get all the directories in the backups folder
         Dim Folder As IO.DirectoryInfo ' Used to designate a single folder in the backups folder
+
+        Dim Items As New List(Of ListViewBackupItem)()
 
         For Each Folder In Folders ' For each folder in the backups folder
             Dim Type As String = "[ERROR]"                  ' <╗
@@ -340,13 +350,46 @@ Partial Class MainWindow
             End Try
 
             If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
-                ListView.Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0))))
+                Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), OriginalFolderName, Type))
             ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
-                ListView.Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0))))
+                Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
             Else
-                ListView.Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0))))
+                Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
             End If
         Next
+
+        ListView.ItemsSource = Items
+
+        Select Case My.Settings.ListViewGroupBy
+            Case "OriginalName"
+                ListViewGroupByNameItem_Click(Nothing, Nothing)
+            Case "Type"
+                ListViewGroupByTypeItem_Click(Nothing, Nothing)
+            Case "Nothing"
+                ListViewGroupByNothingItem_Click(Nothing, Nothing)
+            Case Else
+                ListViewGroupByNothingItem_Click(Nothing, Nothing)
+        End Select
+
+        Select Case My.Settings.ListViewSortBy
+            Case "Name"
+                ListViewSortByNameItem_Click(Nothing, Nothing)
+            Case "DateCreated"
+                ListViewSortByDateCreatedItem_Click(Nothing, Nothing)
+            Case "Type"
+                ListViewSortByTypeItem_Click(Nothing, Nothing)
+            Case Else
+                ListViewSortByDateCreatedItem_Click(Nothing, Nothing)
+        End Select
+
+        Select Case My.Settings.ListViewSortByDirection
+            Case ListSortDirection.Ascending
+                ListViewSortAscendingItem_Click(Nothing, Nothing)
+            Case ListSortDirection.Descending
+                ListViewSortDescendingItem_Click(Nothing, Nothing)
+            Case Else
+                ListViewSortAscendingItem_Click(Nothing, Nothing)
+        End Select
 
         ListView_SelectionChanged(New Object, New EventArgs)
     End Sub
@@ -858,6 +901,96 @@ Partial Class MainWindow
     End Sub
 #End Region
 
+#Region "ListView Context Menu"
+    '-- Group By --
+    Private Sub ListViewGroupByNameItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewGroupByNameItem.Click
+        ListViewGroupByNameItem.IsChecked = True
+        ListViewGroupByTypeItem.IsChecked = False
+        ListViewGroupByNothingItem.IsChecked = False
+        Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
+        View.GroupDescriptions.Clear()
+        View.GroupDescriptions.Add(New PropertyGroupDescription("OriginalName"))
+        My.Settings.ListViewGroupBy = "OriginalName"
+    End Sub
+
+    Private Sub ListViewGroupByTypeItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewGroupByTypeItem.Click
+        ListViewGroupByNameItem.IsChecked = False
+        ListViewGroupByTypeItem.IsChecked = True
+        ListViewGroupByNothingItem.IsChecked = False
+        Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
+        View.GroupDescriptions.Clear()
+        View.GroupDescriptions.Add(New PropertyGroupDescription("Type"))
+        My.Settings.ListViewGroupBy = "Type"
+    End Sub
+
+    Private Sub ListViewGroupByNothingItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewGroupByNothingItem.Click
+        ListViewGroupByNameItem.IsChecked = False
+        ListViewGroupByTypeItem.IsChecked = False
+        ListViewGroupByNothingItem.IsChecked = True
+        Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
+        View.GroupDescriptions.Clear()
+        My.Settings.ListViewGroupBy = "Nothing"
+    End Sub
+
+    '-- Sort By --
+    Private Sub ListViewSortByNameItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewSortByNameItem.Click
+        ListViewSortByNameItem.IsChecked = True
+        ListViewSortByDateCreatedItem.IsChecked = False
+        ListViewSortByTypeItem.IsChecked = False
+        Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
+        Dim Direction As ListSortDirection
+        If View.SortDescriptions.Count = 0 Then Direction = ListSortDirection.Ascending Else Direction = View.SortDescriptions(0).Direction
+        View.SortDescriptions.Clear()
+        View.SortDescriptions.Add(New SortDescription("Name", Direction))
+        My.Settings.ListViewSortBy = "Name"
+    End Sub
+
+    Private Sub ListViewSortByDateCreatedItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewSortByDateCreatedItem.Click
+        ListViewSortByNameItem.IsChecked = False
+        ListViewSortByDateCreatedItem.IsChecked = True
+        ListViewSortByTypeItem.IsChecked = False
+        Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
+        Dim Direction As ListSortDirection
+        If View.SortDescriptions.Count = 0 Then Direction = ListSortDirection.Ascending Else Direction = View.SortDescriptions(0).Direction
+        View.SortDescriptions.Clear()
+        View.SortDescriptions.Add(New SortDescription("DateCreated", Direction))
+        My.Settings.ListViewSortBy = "DateCreated"
+    End Sub
+
+    Private Sub ListViewSortByTypeItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewSortByTypeItem.Click
+        ListViewSortByNameItem.IsChecked = False
+        ListViewSortByDateCreatedItem.IsChecked = False
+        ListViewSortByTypeItem.IsChecked = True
+        Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
+        Dim Direction As ListSortDirection
+        If View.SortDescriptions.Count = 0 Then Direction = ListSortDirection.Ascending Else Direction = View.SortDescriptions(0).Direction
+        View.SortDescriptions.Clear()
+        View.SortDescriptions.Add(New SortDescription("Type", Direction))
+        My.Settings.ListViewSortBy = "Type"
+    End Sub
+
+    'asc/desc
+    Private Sub ListViewSortAscendingItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewSortAscendingItem.Click
+        ListViewSortAscendingItem.IsChecked = True
+        ListViewSortDescendingItem.IsChecked = False
+        Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
+        Dim PropertyName As String = View.SortDescriptions(0).PropertyName
+        View.SortDescriptions.Clear()
+        View.SortDescriptions.Add(New SortDescription(PropertyName, ListSortDirection.Ascending))
+        My.Settings.ListViewSortByDirection = ListSortDirection.Ascending
+    End Sub
+
+    Private Sub ListViewSortDescendingItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewSortDescendingItem.Click
+        ListViewSortAscendingItem.IsChecked = False
+        ListViewSortDescendingItem.IsChecked = True
+        Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
+        Dim PropertyName As String = View.SortDescriptions(0).PropertyName
+        View.SortDescriptions.Clear()
+        View.SortDescriptions.Add(New SortDescription(PropertyName, ListSortDirection.Descending))
+        My.Settings.ListViewSortByDirection = ListSortDirection.Descending
+    End Sub
+#End Region
+
 #Region "Tray Icon"
     Private Sub ExitToolbarMenuItem_Click(sender As Object, e As EventArgs)
         Me.ClsType = CloseType.ForceClose
@@ -922,6 +1055,10 @@ Partial Class MainWindow
 
         My.Settings.AutoBkpPrefix = AutoBackupWindow.PrefixTextBox.Text
         My.Settings.AutoBkpSuffix = AutoBackupWindow.SuffixTextBox.Text
+
+        Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
+        My.Settings.ListViewSortBy = View.SortDescriptions(0).PropertyName
+        My.Settings.ListViewSortByDirection = View.SortDescriptions(0).Direction
 
         Log.Print("Someone is closing me!")
         My.Settings.Save()
@@ -1005,10 +1142,32 @@ Public Class ListViewBackupItem
         End Set
     End Property
 
-    Public Sub New(Name As String, DateCreated As String, Description As String, Color As SolidColorBrush)
+    Private m_OriginalName As String
+    Public Property OriginalName() As String
+        Get
+            Return m_OriginalName
+        End Get
+        Set(value As String)
+            m_OriginalName = value
+        End Set
+    End Property
+
+    Private m_Type As String
+    Public Property Type() As String
+        Get
+            Return m_Type
+        End Get
+        Set(value As String)
+            m_Type = value
+        End Set
+    End Property
+
+    Public Sub New(Name As String, DateCreated As String, Description As String, Color As SolidColorBrush, OriginalName As String, Type As String)
         Me.Name = Name
         Me.DateCreated = DateCreated
         Me.Description = Description
         Me.Color = Color
+        Me.OriginalName = OriginalName
+        Me.Type = Type
     End Sub
 End Class

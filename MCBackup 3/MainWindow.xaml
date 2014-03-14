@@ -20,6 +20,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:util="clr-namespace:Wpf.Util"
     Title="MCBackup" Height="470" Width="860" Background="#FFF0F0F0" Loaded="MainWindow_Loaded" Icon="Resources/icon.ico" ResizeMode="CanResize" WindowStartupLocation="CenterScreen" Closing="Window_Closing" Activated="Window_Activated" LocationChanged="Window_LocationChanged" MinHeight="490" MinWidth="860" WindowTransitionsEnabled="False">
     <Controls:MetroWindow.WindowCommands>
         <Controls:WindowCommands>
@@ -68,31 +69,76 @@
                 <ColumnDefinition x:Name="MainSidebar" Width="240" MinWidth="240"/>
             </Grid.ColumnDefinitions>
             <ListView x:Name="ListView" BorderThickness="1" BorderBrush="#FF646464">
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <ContextMenu.Items>
+                            <MenuItem Header="Sort by">
+                                <MenuItem Name="ListViewSortByNameItem" Header="Name" IsCheckable="True"/>
+                                <MenuItem Name="ListViewSortByDateCreatedItem" Header="Date Created" IsCheckable="True"/>
+                                <MenuItem Name="ListViewSortByTypeItem" Header="Type" IsCheckable="True"/>
+                                <Separator/>
+                                <MenuItem Name="ListViewSortAscendingItem" Header="Ascending" IsCheckable="True"/>
+                                <MenuItem Name="ListViewSortDescendingItem" Header="Descending" IsCheckable="True"/>
+                            </MenuItem>
+                            <MenuItem Header="Group by">
+                                <MenuItem Name="ListViewGroupByNameItem" Header="Original Name" IsCheckable="True"/>
+                                <MenuItem Name="ListViewGroupByTypeItem" Header="Type" IsCheckable="True"/>
+                                <MenuItem Name="ListViewGroupByNothingItem" Header="Nothing" IsCheckable="True"/>
+                            </MenuItem>
+                        </ContextMenu.Items>
+                    </ContextMenu>
+                </ListView.ContextMenu>
                 <ListView.View>
                     <GridView x:Name="ListViewGridView">
-                        <GridViewColumn Header="Name" Width="170">
+                        <GridViewColumn Header="Name" Width="320">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Name}" Foreground="{Binding Color}"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Date Created" Width="150">
+                        <GridViewColumn Header="Date Created" Width="160">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding DateCreated}" Foreground="{Binding Color}"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Description" Width="260">
+                        <GridViewColumn Header="Type" Width="100">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Description}" Foreground="{Binding Color}"/>
+                                    <TextBlock Text="{Binding Type}" Foreground="{Binding Color}"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
                     </GridView>
                 </ListView.View>
+
+                <ListView.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="{x:Type GroupItem}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <Expander IsExpanded="True" Style="{x:Null}">
+                                                <Expander.Header>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding Name}" Foreground="#1E3287" FontSize="16" VerticalAlignment="Bottom" />
+                                                        <TextBlock Text=" (" Foreground="#1E3287" FontSize="16" VerticalAlignment="Bottom" />
+                                                        <TextBlock Text="{Binding ItemCount}" Foreground="#1E3287" FontSize="16" VerticalAlignment="Bottom" />
+                                                        <TextBlock Text=")" Foreground="#1E3287" FontSize="16" VerticalAlignment="Bottom" />
+                                                    </StackPanel>
+                                                </Expander.Header>
+                                                <ItemsPresenter/>
+                                            </Expander>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
+                    </GroupStyle>
+                </ListView.GroupStyle>
             </ListView>
             <GridSplitter x:Name="GridSplitter" HorizontalAlignment="Left" Width="3" Margin="3,0,0,0" Grid.Column="1"/>
             <Grid x:Name="Sidebar" Grid.Column="1" Margin="10,0,0,0" Background="White">

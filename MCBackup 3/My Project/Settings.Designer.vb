@@ -267,6 +267,42 @@ Partial Friend NotInheritable Class MySettings
             Me("ListViewTextColorIntensity") = value
         End Set
     End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("Type")>  _
+    Public Property ListViewGroupBy() As String
+        Get
+            Return CType(Me("ListViewGroupBy"),String)
+        End Get
+        Set
+            Me("ListViewGroupBy") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("DateCreated")>  _
+    Public Property ListViewSortBy() As String
+        Get
+            Return CType(Me("ListViewSortBy"),String)
+        End Get
+        Set
+            Me("ListViewSortBy") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("Ascending")>  _
+    Public Property ListViewSortByDirection() As Global.System.ComponentModel.ListSortDirection
+        Get
+            Return CType(Me("ListViewSortByDirection"),Global.System.ComponentModel.ListSortDirection)
+        End Get
+        Set
+            Me("ListViewSortByDirection") = value
+        End Set
+    End Property
 End Class
 
 Namespace My
