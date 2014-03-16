@@ -55,7 +55,7 @@ Partial Class MainWindow
 
 #Region "Load"
     Public Sub New()
-        My.Settings.Reset()
+
         Splash.Show()
 
         Try
@@ -188,7 +188,7 @@ Partial Class MainWindow
         Splash.Progress.Refresh()
     End Sub
 
-    Private Sub MainWindow_Loaded(sender As Object, e As RoutedEventArgs)
+    Private Sub Main_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
         Me.Hide()
         MainSidebar.Width = New System.Windows.GridLength(My.Settings.SidebarWidth)
 
@@ -272,6 +272,7 @@ Partial Class MainWindow
         Log.Print("Saves folder set to """ & My.Settings.SavesFolderLocation & """")
 
         RefreshBackupsList()
+        ReloadBackupGroups()
 
         Try
             Splash.Status.Content = MCBackup.Language.FindString("Splash.Status.Done", My.Settings.Language & ".lang")
@@ -312,7 +313,10 @@ Partial Class MainWindow
     End Sub
 
     Public Sub RefreshBackupsList()
-        If ListView Is Nothing Then Exit Sub
+        RefreshBackupsList("All")
+    End Sub
+
+    Public Sub RefreshBackupsList(Group As String)
         Dim Directory As New IO.DirectoryInfo(My.Settings.BackupsFolderLocation) ' Create a DirectoryInfo variable for the backups folder
         Dim Folders As IO.DirectoryInfo() = Directory.GetDirectories() ' Get all the directories in the backups folder
         Dim Folder As IO.DirectoryInfo ' Used to designate a single folder in the backups folder
@@ -335,21 +339,31 @@ Partial Class MainWindow
                                 Type = Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Line.Substring(5)) ' Set type to capitalized "type=" line
                             ElseIf Line.StartsWith("baseFolderName=") Then
                                 OriginalFolderName = Line.Substring(15) ' Set original folder name to "baseFolderName=" line
+                            ElseIf Line = "groupName=" & Group And Not (Group = "All" Or Nothing) Then
+                                If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
+                                    Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), OriginalFolderName, Type))
+                                ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
+                                    Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
+                                Else
+                                    Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
+                                End If
                             End If
                         End If
                     Loop
                 End Using
+
+                If Group = "All" Or Nothing Then
+                    If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
+                        Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), OriginalFolderName, Type))
+                    ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
+                        Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
+                    Else
+                        Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
+                    End If
+                End If
             Catch ex As Exception
                 Log.Print(ex.Message, Log.Type.Severe)
             End Try
-
-            If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
-                Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), OriginalFolderName, Type))
-            ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
-                Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
-            Else
-                Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
-            End If
         Next
 
         ListView.ItemsSource = Items
@@ -384,7 +398,6 @@ Partial Class MainWindow
             Case Else
                 ListViewSortAscendingItem_Click(Nothing, Nothing)
         End Select
-
         ListView_SelectionChanged(New Object, New EventArgs)
     End Sub
 
@@ -858,6 +871,12 @@ Partial Class MainWindow
         RenameWindow.Owner = Me
         RenameWindow.ShowDialog()
     End Sub
+
+    Private Sub CullButton_Click(sender As Object, e As RoutedEventArgs) Handles CullButton.Click
+        Dim CullWindow As New CullWindow
+        CullWindow.Owner = Me
+        CullWindow.Show()
+    End Sub
 #End Region
 
 #Region "Automatic Backup"
@@ -876,16 +895,16 @@ Partial Class MainWindow
         End If
     End Sub
 
-    Private Sub Window_Activated(sender As Object, e As EventArgs)
+    Private Sub Main_Activated(sender As Object, e As EventArgs) Handles MyBase.Activated
         AutoBackupWindow.Focus()
         Me.Focus()
     End Sub
 
     Private Sub Main_SizeChanged(sender As Object, e As SizeChangedEventArgs) Handles Main.SizeChanged
-        Window_LocationChanged(sender, e)
+        Main_LocationChanged(sender, Nothing)
     End Sub
 
-    Private Sub Window_LocationChanged(sender As Object, e As EventArgs)
+    Private Sub Main_LocationChanged(sender As Object, e As EventArgs) Handles MyBase.LocationChanged
         If Not AutoBackupWindow.IsMoving Then
             IsMoving = True
             AutoBackupWindow.Left = Me.Left + (Me.Width + 5)
@@ -1004,7 +1023,7 @@ Partial Class MainWindow
 #Region "Close to Tray"
     Public ClsType As CloseType
 
-    Private Sub Window_Closing(sender As Object, e As CancelEventArgs)
+    Private Sub Main_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
         Me.Focus()
         If Not ClsType = CloseType.ForceClose Then
             Dim CloseToTrayWindow As New CloseToTray
@@ -1079,12 +1098,6 @@ Partial Class MainWindow
     End Sub
 #End Region
 
-    Private Sub CullButton_Click(sender As Object, e As RoutedEventArgs) Handles CullButton.Click
-        Dim CullWindow As New CullWindow
-        CullWindow.Owner = Me
-        CullWindow.Show()
-    End Sub
-
     Private Sub ListView_ContextMenuOpening(sender As Object, e As ContextMenuEventArgs) Handles ListView.ContextMenuOpening
         Select Case ListView.SelectedItems.Count
             Case Is > 1
@@ -1100,6 +1113,19 @@ Partial Class MainWindow
                 ListViewDeleteItem.IsEnabled = False
                 ListViewRenameItem.IsEnabled = False
         End Select
+    End Sub
+
+    Private Sub TabControl_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles TabControl.SelectionChanged
+        RefreshBackupsList(TabControl.SelectedItem)
+    End Sub
+
+    Private Sub ReloadBackupGroups()
+        TabControl.Items.Clear()
+        TabControl.Items.Add("All")
+        For Each Group As String In My.Settings.BackupGroups
+            TabControl.Items.Add(Group)
+        Next
+        TabControl.SelectedIndex = 0
     End Sub
 End Class
 
