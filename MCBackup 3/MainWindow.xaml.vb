@@ -190,7 +190,7 @@ Partial Class MainWindow
 
     Private Sub Main_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
         Me.Hide()
-        MainSidebar.Width = New System.Windows.GridLength(My.Settings.SidebarWidth)
+        GridSidebarColumn.Width = New System.Windows.GridLength(My.Settings.SidebarWidth, GridUnitType.Star)
 
         Splash.Progress.Value += 1
         Splash.Progress.Refresh()
@@ -219,19 +219,24 @@ Partial Class MainWindow
     End Sub
 
     Private Sub WebClient_DownloadedStringAsync(sender As Object, e As DownloadStringCompletedEventArgs)
-        LatestVersion = e.Result
-        Dim ApplicationVersionInt = ApplicationVersion.Replace(".", "")
-        Dim LatestVersionInt = LatestVersion.Replace(".", "")
-        If ApplicationVersionInt < LatestVersionInt Then
-            Log.Print("A new version is available (version " & LatestVersion & ")!")
-            Dim UpdateDialog As New UpdateDialog
-            UpdateDialog.Owner = Me
-            UpdateDialog.Show()
-        ElseIf ApplicationVersionInt > LatestVersionInt Then
-            Log.Print("MCBackup is running in beta mode (version " & ApplicationVersion & ")!")
-            Me.Title += " Beta"
-        ElseIf ApplicationVersionInt = LatestVersionInt Then
-            Log.Print("MCBackup is up-to-date (version " & ApplicationVersion & ").")
+        If e.Error Is Nothing Then
+            LatestVersion = e.Result
+            Dim ApplicationVersionInt = ApplicationVersion.Replace(".", "")
+            Dim LatestVersionInt = LatestVersion.Replace(".", "")
+            If ApplicationVersionInt < LatestVersionInt Then
+                Log.Print("A new version is available (version " & LatestVersion & ")!")
+                Dim UpdateDialog As New UpdateDialog
+                UpdateDialog.Owner = Me
+                UpdateDialog.Show()
+            ElseIf ApplicationVersionInt > LatestVersionInt Then
+                Log.Print("MCBackup is running in beta mode (version " & ApplicationVersion & ")!")
+                Me.Title += " Beta"
+            ElseIf ApplicationVersionInt = LatestVersionInt Then
+                Log.Print("MCBackup is up-to-date (version " & ApplicationVersion & ").")
+            End If
+        Else
+            Log.Print("An error occured while trying to retrieve the latest version: " & e.Error.Message)
+            LatestVersion = "Unknown"
         End If
         Load2()
     End Sub
@@ -367,6 +372,8 @@ Partial Class MainWindow
         Next
 
         ListView.ItemsSource = Items
+        ListView.SelectedIndex = -1
+        SidebarTitle.Text = Items.Count & " element(s)"
 
         Select Case My.Settings.ListViewGroupBy
             Case "OriginalName"
@@ -406,14 +413,17 @@ Partial Class MainWindow
             RestoreButton.IsEnabled = False
             RenameButton.IsEnabled = False ' Don't allow anything when no items are selected
             DeleteButton.IsEnabled = False
+            SidebarTitle.Text = ListView.Items.Count & " element(s)"
         ElseIf ListView.SelectedItems.Count = 1 Then
             RestoreButton.IsEnabled = True
             RenameButton.IsEnabled = True ' Allow anything if only 1 item is selected
             DeleteButton.IsEnabled = True
+            SidebarTitle.Text = ListView.SelectedItem.Name
         Else
             RestoreButton.IsEnabled = False
             RenameButton.IsEnabled = False ' Only allow deletion if more than 1 item is selected
             DeleteButton.IsEnabled = True
+            SidebarTitle.Text = ListView.SelectedItems.Count & " elements selected"
         End If
 
         If ListView.SelectedItems.Count = 1 Then
@@ -443,16 +453,16 @@ Partial Class MainWindow
                 Log.Print(ex.Message, Log.Type.Severe)
             End Try
 
-            OriginalBackupName.Text = OriginalFolderName
-            OriginalBackupName.ToolTip = OriginalFolderName
-            BackupType.Text = Type
-            BackupType.ToolTip = Type
+            SidebarOriginalNameContent.Text = OriginalFolderName
+            SidebarOriginalNameContent.ToolTip = OriginalFolderName
+            SidebarTypeContent.Text = Type
+            SidebarTypeContent.ToolTip = Type
         ElseIf ListView.SelectedItems.Count = 0 Then
             ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/nothumb.png"))
-            OriginalBackupName.Text = "N/A"
-            OriginalBackupName.ToolTip = "No backup selected."
-            BackupType.Text = "N/A"
-            BackupType.ToolTip = "No backup selected."
+            SidebarOriginalNameContent.Text = "N/A"
+            SidebarOriginalNameContent.ToolTip = "No backup selected."
+            SidebarTypeContent.Text = "N/A"
+            SidebarTypeContent.ToolTip = "No backup selected."
         End If
     End Sub
 
@@ -469,8 +479,8 @@ Partial Class MainWindow
             ListViewGridView.Columns(0).Header = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(0).Header")
             ListViewGridView.Columns(1).Header = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(1).Header")
             ListViewGridView.Columns(2).Header = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(2).Header")
-            OriginalNameLabel.Text = MCBackup.Language.Dictionary("MainWindow.OriginalNameLabel.Text") & ":"
-            TypeLabel.Text = MCBackup.Language.Dictionary("MainWindow.TypeLabel.Text") & ":"
+            SidebarOriginalNameLabel.Text = MCBackup.Language.Dictionary("MainWindow.OriginalNameLabel.Text") & ":"
+            SidebarTypeLabel.Text = MCBackup.Language.Dictionary("MainWindow.TypeLabel.Text") & ":"
 
             EditToolbarButton.Content = MCBackup.Language.Dictionary("MainWindow.MenuBar.Items(1).Header")
             EditContextMenu.Items(0).Header = MCBackup.Language.Dictionary("MainWindow.MenuBar.Items(1).Items(0).Header")
@@ -1064,7 +1074,7 @@ Partial Class MainWindow
         NotifyIcon.Visible = False
         NotifyIcon.Dispose()
 
-        My.Settings.SidebarWidth = MainSidebar.Width.Value
+        My.Settings.SidebarWidth = GridSidebarColumn.Width.Value
 
         My.Settings.AutoBkpPrefix = AutoBackupWindow.PrefixTextBox.Text
         My.Settings.AutoBkpSuffix = AutoBackupWindow.SuffixTextBox.Text
@@ -1115,17 +1125,21 @@ Partial Class MainWindow
         End Select
     End Sub
 
-    Private Sub TabControl_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles TabControl.SelectionChanged
-        RefreshBackupsList(TabControl.SelectedItem)
+    Private Sub TabControl_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles GroupsTabControl.SelectionChanged
+        RefreshBackupsList(GroupsTabControl.SelectedItem)
     End Sub
 
     Private Sub ReloadBackupGroups()
-        TabControl.Items.Clear()
-        TabControl.Items.Add("All")
+        GroupsTabControl.Items.Clear()
+        GroupsTabControl.Items.Add("All")
         For Each Group As String In My.Settings.BackupGroups
-            TabControl.Items.Add(Group)
+            GroupsTabControl.Items.Add(Group)
         Next
-        TabControl.SelectedIndex = 0
+        GroupsTabControl.SelectedIndex = 0
+    End Sub
+
+    Private Sub ListView_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles ListView.MouseDown
+        ListView.SelectedIndex = -1
     End Sub
 End Class
 
