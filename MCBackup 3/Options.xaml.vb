@@ -29,7 +29,6 @@ Partial Public Class Options
         InitializeComponent()
         OpenFileDialog.Filter = MCBackup.Language.Dictionary("OptionsWindow.AllSupportedImages") & " (*bmp, *.jpg, *.jpeg, *.png)|*bmp;*.gif;*.png;*.jpg;*.jpeg|BMP (*.bmp)|*.bmp|JPEG (*.jpg, *.jpeg)|*.jpg;*.jpeg|PNG (*.png)|*.png"
 
-        ListBox.SelectedIndex = 0
         MinecraftFolderTextBox.Text = My.Settings.MinecraftFolderLocation
         BackupsFolderTextBox.Text = My.Settings.BackupsFolderLocation
         SavesFolderTextBox.Text = My.Settings.SavesFolderLocation
@@ -72,23 +71,6 @@ Partial Public Class Options
         LoadLanguage()
 
         ListViewTextColorIntensitySlider.Value = My.Settings.ListViewTextColorIntensity
-    End Sub
-
-    Private Sub ListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles ListBox.SelectionChanged
-        Select Case ListBox.SelectedIndex
-            Case 0
-                GeneralPanel.Visibility = Windows.Visibility.Visible
-                AppearancePanel.Visibility = Windows.Visibility.Hidden
-                FoldersPanel.Visibility = Windows.Visibility.Hidden
-            Case 1
-                GeneralPanel.Visibility = Windows.Visibility.Hidden
-                AppearancePanel.Visibility = Windows.Visibility.Visible
-                FoldersPanel.Visibility = Windows.Visibility.Hidden
-            Case 2
-                GeneralPanel.Visibility = Windows.Visibility.Hidden
-                AppearancePanel.Visibility = Windows.Visibility.Hidden
-                FoldersPanel.Visibility = Windows.Visibility.Visible
-        End Select
     End Sub
 
     Private Sub AlwaysCloseCheckBox_Checked(sender As Object, e As RoutedEventArgs) Handles AlwaysCloseCheckBox.Click
@@ -224,9 +206,6 @@ Partial Public Class Options
 
     Private Sub LoadLanguage()
         Me.Title = MCBackup.Language.Dictionary("OptionsWindow.Title")
-        ListBox.Items(0).Content = MCBackup.Language.Dictionary("OptionsWindow.ListBox.Items(0).Content")
-        ListBox.Items(1).Content = MCBackup.Language.Dictionary("OptionsWindow.ListBox.Items(1).Content")
-        ListBox.Items(2).Content = MCBackup.Language.Dictionary("OptionsWindow.ListBox.Items(2).Content")
 
         CloseButton.Content = MCBackup.Language.Dictionary("OptionsWindow.CloseButton.Content")
         ResetButton.Content = MCBackup.Language.Dictionary("OptionsWindow.ResetButton.Content")
