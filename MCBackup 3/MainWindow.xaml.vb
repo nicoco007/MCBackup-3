@@ -412,16 +412,19 @@ Partial Class MainWindow
             RenameButton.IsEnabled = False ' Don't allow anything when no items are selected
             DeleteButton.IsEnabled = False
             SidebarTitle.Text = ListView.Items.Count & " element(s)"
+            SidebarTitle.ToolTip = ListView.Items.Count & " element(s)"
         ElseIf ListView.SelectedItems.Count = 1 Then
             RestoreButton.IsEnabled = True
             RenameButton.IsEnabled = True ' Allow anything if only 1 item is selected
             DeleteButton.IsEnabled = True
             SidebarTitle.Text = ListView.SelectedItem.Name
+            SidebarTitle.ToolTip = ListView.SelectedItem.Name
         Else
             RestoreButton.IsEnabled = False
             RenameButton.IsEnabled = False ' Only allow deletion if more than 1 item is selected
             DeleteButton.IsEnabled = True
             SidebarTitle.Text = ListView.SelectedItems.Count & " elements selected"
+            SidebarTitle.ToolTip = ListView.SelectedItems.Count & " elements selected"
         End If
 
         If ListView.SelectedItems.Count = 1 Then

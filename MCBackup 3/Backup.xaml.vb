@@ -80,7 +80,13 @@ Public Class Backup
 
     Private Sub StartButton_Click(sender As Object, e As EventArgs) Handles StartButton.Click
         If DateAndTimeRadioButton.IsChecked Then
-            Main.BackupInfo(0) = SavesListView.SelectedItem & " " & GetTimeAndDate()
+            If SaveRadioButton.IsChecked Then
+                Main.BackupInfo(0) = SavesListView.SelectedItem & " " & GetTimeAndDate()
+            ElseIf VersionRadioButton.IsChecked Then
+                Main.BackupInfo(0) = "Version " & VersionsListView.SelectedItem & " " & GetTimeAndDate()
+            Else
+                Main.BackupInfo(0) = "Minecraft " & GetTimeAndDate()
+            End If
         ElseIf Not CustomNameTextBox.Text = "" Then
             Main.BackupInfo(0) = CustomNameTextBox.Text
         Else

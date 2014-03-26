@@ -235,7 +235,6 @@
     </None>
     <AppDesigner Include="My Project\" />
     <None Include="packages.config" />
-    <None Include="Resources\Splash.pdn" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
