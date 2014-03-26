@@ -170,9 +170,14 @@ Public Class AutoBackup
 
     Private Sub SaveListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles SaveListBox.SelectionChanged
         WorldName = SaveListBox.SelectedItem
+        If SaveListBox.SelectedItems.Count = 1 Then StartButton.IsEnabled = True Else StartButton.IsEnabled = False
     End Sub
 
     Private Sub AutoBackupWindow_Activated(sender As Object, e As EventArgs) Handles AutoBackupWindow.Activated
         Main.Focus()
+    End Sub
+
+    Private Sub SaveListBox_PreviewMouseDown(sender As Object, e As MouseButtonEventArgs) Handles SaveListBox.PreviewMouseDown
+        SaveListBox.SelectedIndex = -1
     End Sub
 End Class

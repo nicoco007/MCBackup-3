@@ -165,9 +165,7 @@ Partial Class MainWindow
         Splash.Progress.Value += 1
         Splash.Progress.Refresh()
 
-        If My.Settings.BackgroundImageLocation = "" Then
-            Me.Background = New SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 240, 240, 240))
-        Else
+        If Not My.Settings.BackgroundImageLocation = "" And My.Computer.FileSystem.FileExists(My.Settings.BackgroundImageLocation) Then
             Dim Brush As New ImageBrush(New BitmapImage(New Uri(My.Settings.BackgroundImageLocation)))
             Brush.Stretch = My.Settings.BackgroundImageStretch
             Me.Background = Brush
@@ -508,6 +506,10 @@ Partial Class MainWindow
     End Sub
 
     Public Sub StartBackup()
+        If BackupBackgroundWorker.IsBusy Then
+            MetroMessageBox.Show("A backup is currently in progress! Please wait until it ends before starting another one.", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            Exit Sub
+        End If
         Log.Print("Starting new backup <name=""" & BackupInfo(0) & """; description=""" & BackupInfo(1) & """; path=""" & BackupInfo(2) & """; type=""" & BackupInfo(3) & """;>")
         ListView.IsEnabled = False
         BackupButton.IsEnabled = False
