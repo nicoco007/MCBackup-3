@@ -1,5 +1,5 @@
 ﻿'   ╔═══════════════════════════════════════════════════════════════════════════╗
-'   ║                         Copyright 2013 nicoco007                          ║
+'   ║                        Copyright © 2014 nicoco007                         ║
 '   ║                                                                           ║
 '   ║      Licensed under the Apache License, Version 2.0 (the "License");      ║
 '   ║      you may not use this file except in compliance with the License.     ║
@@ -433,64 +433,83 @@ Partial Class MainWindow
     End Sub
 
     Private Sub ListView_SelectionChanged(sender As Object, e As EventArgs) Handles ListView.SelectionChanged
-        If ListView.SelectedItems.Count = 0 Then
-            RestoreButton.IsEnabled = False
-            RenameButton.IsEnabled = False ' Don't allow anything when no items are selected
-            DeleteButton.IsEnabled = False
-            SidebarTitle.Text = ListView.Items.Count & " element(s)"
-            SidebarTitle.ToolTip = ListView.Items.Count & " element(s)"
-        ElseIf ListView.SelectedItems.Count = 1 Then
-            RestoreButton.IsEnabled = True
-            RenameButton.IsEnabled = True ' Allow anything if only 1 item is selected
-            DeleteButton.IsEnabled = True
-            SidebarTitle.Text = ListView.SelectedItem.Name
-            SidebarTitle.ToolTip = ListView.SelectedItem.Name
-        Else
-            RestoreButton.IsEnabled = False
-            RenameButton.IsEnabled = False ' Only allow deletion if more than 1 item is selected
-            DeleteButton.IsEnabled = True
-            SidebarTitle.Text = ListView.SelectedItems.Count & " elements selected"
-            SidebarTitle.ToolTip = ListView.SelectedItems.Count & " elements selected"
-        End If
+        Select Case ListView.SelectedItems.Count
 
-        If ListView.SelectedItems.Count = 1 Then
-            If My.Computer.FileSystem.FileExists(My.Settings.BackupsFolderLocation & "\" & ListView.SelectedItem.Name & "\thumb.png") Then
-                ThumbnailImage.Source = BitmapFromUri(New Uri(My.Settings.BackupsFolderLocation & "\" & ListView.SelectedItem.Name & "\thumb.png"))
-            Else
+            Case 0
+                RestoreButton.IsEnabled = False
+                RenameButton.IsEnabled = False ' Don't allow anything when no items are selected
+                DeleteButton.IsEnabled = False
+
+                SidebarTitle.Text = ListView.Items.Count & " element(s)"        'Show total number of elements
+                SidebarTitle.ToolTip = ListView.Items.Count & " element(s)"
+
+                ListViewRestoreItem.IsEnabled = False
+                ListViewDeleteItem.IsEnabled = False         'Disable ContextMenu items
+                ListViewRenameItem.IsEnabled = False
+
                 ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/nothumb.png"))
-            End If
+                SidebarOriginalNameContent.Text = "N/A"
+                SidebarOriginalNameContent.ToolTip = "No backup selected."
+                SidebarTypeContent.Text = "N/A"
+                SidebarTypeContent.ToolTip = "No backup selected."
+            Case 1
+                RestoreButton.IsEnabled = True
+                RenameButton.IsEnabled = True ' Allow anything if only 1 item is selected
+                DeleteButton.IsEnabled = True
 
-            Dim Type As String = "N/A"
-            Dim OriginalFolderName As String = "N/A"
+                SidebarTitle.Text = ListView.SelectedItem.Name      'Set sidebar title to backup name
+                SidebarTitle.ToolTip = ListView.SelectedItem.Name
 
-            Try
-                Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & ListView.SelectedItem.Name.ToString & "\info.mcb")
-                    Do While SR.Peek <> -1
-                        Dim Line As String = SR.ReadLine
-                        If Not Line.StartsWith("#") Then
-                            If Line.StartsWith("type=") Then
-                                Type = Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Line.Substring(5)) ' Set type to capitalized "type=" line
-                            ElseIf Line.StartsWith("baseFolderName=") Then
-                                OriginalFolderName = Line.Substring(15) ' Set original folder name to "baseFolderName=" line
+                ListViewRestoreItem.IsEnabled = True
+                ListViewDeleteItem.IsEnabled = True     'Enable ContextMenu items
+                ListViewRenameItem.IsEnabled = True
+
+                If My.Computer.FileSystem.FileExists(My.Settings.BackupsFolderLocation & "\" & ListView.SelectedItem.Name & "\thumb.png") Then
+                    Try
+                        ThumbnailImage.Source = BitmapFromUri(New Uri(My.Settings.BackupsFolderLocation & "\" & ListView.SelectedItem.Name & "\thumb.png"))
+                    Catch ex As Exception
+                        ErrorWindow.Show("An error occured while trying to load the backup's thumbnail", ex)
+                    End Try
+                Else
+                    ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/nothumb.png"))
+                End If
+
+                Dim Type As String = "N/A"
+                Dim OriginalFolderName As String = "N/A"
+
+                Try
+                    Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & ListView.SelectedItem.Name.ToString & "\info.mcb")
+                        Do While SR.Peek <> -1
+                            Dim Line As String = SR.ReadLine
+                            If Not Line.StartsWith("#") Then
+                                If Line.StartsWith("type=") Then
+                                    Type = Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Line.Substring(5)) ' Set type to capitalized "type=" line
+                                ElseIf Line.StartsWith("baseFolderName=") Then
+                                    OriginalFolderName = Line.Substring(15) ' Set original folder name to "baseFolderName=" line
+                                End If
                             End If
-                        End If
-                    Loop
-                End Using
-            Catch ex As Exception
-                Log.Print(ex.Message, Log.Type.Severe)
-            End Try
+                        Loop
+                    End Using
+                Catch ex As Exception
+                    Log.Print(ex.Message, Log.Type.Severe)
+                End Try
 
-            SidebarOriginalNameContent.Text = OriginalFolderName
-            SidebarOriginalNameContent.ToolTip = OriginalFolderName
-            SidebarTypeContent.Text = Type
-            SidebarTypeContent.ToolTip = Type
-        ElseIf ListView.SelectedItems.Count = 0 Then
-            ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/nothumb.png"))
-            SidebarOriginalNameContent.Text = "N/A"
-            SidebarOriginalNameContent.ToolTip = "No backup selected."
-            SidebarTypeContent.Text = "N/A"
-            SidebarTypeContent.ToolTip = "No backup selected."
-        End If
+                SidebarOriginalNameContent.Text = OriginalFolderName
+                SidebarOriginalNameContent.ToolTip = OriginalFolderName
+                SidebarTypeContent.Text = Type
+                SidebarTypeContent.ToolTip = Type
+            Case Else
+                RestoreButton.IsEnabled = False
+                RenameButton.IsEnabled = False ' Only allow deletion if more than 1 item is selected
+                DeleteButton.IsEnabled = True
+
+                SidebarTitle.Text = ListView.SelectedItems.Count & " elements selected"         'Set sidebar title to number of selected items
+                SidebarTitle.ToolTip = ListView.SelectedItems.Count & " elements selected"
+
+                ListViewRestoreItem.IsEnabled = False
+                ListViewDeleteItem.IsEnabled = True
+                ListViewRenameItem.IsEnabled = False
+        End Select
     End Sub
 
     Public Sub LoadLanguage()
@@ -522,6 +541,15 @@ Partial Class MainWindow
             StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
         Catch
         End Try
+    End Sub
+
+    Public Sub ReloadBackupGroups()
+        GroupsTabControl.Items.Clear()
+        GroupsTabControl.Items.Add("All")
+        For Each Group As String In My.Settings.BackupGroups
+            GroupsTabControl.Items.Add(Group)
+        Next
+        GroupsTabControl.SelectedIndex = 0
     End Sub
 #End Region
 
@@ -1146,11 +1174,11 @@ Partial Class MainWindow
                 ListViewRestoreItem.IsEnabled = False
                 ListViewDeleteItem.IsEnabled = True
                 ListViewRenameItem.IsEnabled = False
-            Case Is = 1
+            Case 1
                 ListViewRestoreItem.IsEnabled = True
                 ListViewDeleteItem.IsEnabled = True
                 ListViewRenameItem.IsEnabled = True
-            Case Is = 0
+            Case 0
                 ListViewRestoreItem.IsEnabled = False
                 ListViewDeleteItem.IsEnabled = False
                 ListViewRenameItem.IsEnabled = False
@@ -1159,15 +1187,6 @@ Partial Class MainWindow
 
     Private Sub TabControl_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles GroupsTabControl.SelectionChanged
         RefreshBackupsList(GroupsTabControl.SelectedItem)
-    End Sub
-
-    Public Sub ReloadBackupGroups()
-        GroupsTabControl.Items.Clear()
-        GroupsTabControl.Items.Add("All")
-        For Each Group As String In My.Settings.BackupGroups
-            GroupsTabControl.Items.Add(Group)
-        Next
-        GroupsTabControl.SelectedIndex = 0
     End Sub
 
     Private Sub ListView_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles ListView.MouseDown
