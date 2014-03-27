@@ -153,5 +153,6 @@
         <ProgressBar x:Name="ProgressBar" VerticalAlignment="Bottom" Height="23" Margin="10,0,10,10"/>
         <Label x:Name="StatusLabel" Content="Status" VerticalAlignment="Bottom" Margin="10,0,10,38"/>
         <Button x:Name="AutomaticBackupButton" Content="Automatic Backup &gt;&gt;" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="200" Margin="0,0,10,107" Height="20" Padding="0"/>
+        <TextBox Name="SearchTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120" Margin="556,474,0,0"/>
     </Grid>
 </Controls:MetroWindow>

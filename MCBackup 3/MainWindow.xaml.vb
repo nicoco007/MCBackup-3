@@ -317,20 +317,27 @@ Partial Class MainWindow
     End Sub
 
     Public Sub RefreshBackupsList()
-        RefreshBackupsList("All")
+        RefreshBackupsList("All", Nothing)
     End Sub
 
     Public Sub RefreshBackupsList(Group As String)
+        RefreshBackupsList(Group, Nothing)
+    End Sub
+
+    Public Sub RefreshBackupsList(Group As String, Search As String)
         ListView.IsEnabled = False
         GroupsTabControl.IsEnabled = False
         ProgressBar.IsIndeterminate = True
         StatusLabel.Content = "Reloading backups list, please wait..."
-        Dim Trd As New Thread(New ParameterizedThreadStart(AddressOf RefreshBackupsList_Thread)) With {.IsBackground = True}
+        Dim Trd = New Thread(AddressOf RefreshBackupsList_Thread)
         Trd.Start()
     End Sub
 
-    Private Sub RefreshBackupsList_Thread(Group As String)
+    Private Sub RefreshBackupsList_Thread()
         If ListView.Dispatcher.CheckAccess() Then
+            Dim Group As String = GroupsTabControl.SelectedItem
+            Dim Search As String = SearchTextBox.Text
+
             Dim Directory As New IO.DirectoryInfo(My.Settings.BackupsFolderLocation) ' Create a DirectoryInfo variable for the backups folder
             Dim Folders As IO.DirectoryInfo() = Directory.GetDirectories() ' Get all the directories in the backups folder
             Dim Folder As IO.DirectoryInfo ' Used to designate a single folder in the backups folder
@@ -353,7 +360,7 @@ Partial Class MainWindow
                                     Type = Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Line.Substring(5)) ' Set type to capitalized "type=" line
                                 ElseIf Line.StartsWith("baseFolderName=") Then
                                     OriginalFolderName = Line.Substring(15) ' Set original folder name to "baseFolderName=" line
-                                ElseIf Line = "groupName=" & Group And Not (Group = "All" Or Nothing) Then
+                                ElseIf Line = "groupName=" & Group And Not (Group = "All") And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
                                     If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
                                         Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), OriginalFolderName, Type))
                                     ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
@@ -366,7 +373,7 @@ Partial Class MainWindow
                         Loop
                     End Using
 
-                    If Group = "All" Or Nothing Then
+                    If Group = "All" And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
                         If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
                             Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), OriginalFolderName, Type))
                         ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
@@ -421,7 +428,7 @@ Partial Class MainWindow
             ListView.IsEnabled = True
             GroupsTabControl.IsEnabled = True
         Else
-            ListView.Dispatcher.Invoke(Sub() RefreshBackupsList_Thread(Group))
+            ListView.Dispatcher.Invoke(Sub() RefreshBackupsList_Thread())
         End If
     End Sub
 
@@ -1165,6 +1172,10 @@ Partial Class MainWindow
 
     Private Sub ListView_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles ListView.MouseDown
         ListView.SelectedIndex = -1
+    End Sub
+
+    Private Sub SearchTextBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles SearchTextBox.TextChanged
+        RefreshBackupsList()
     End Sub
 End Class
 
