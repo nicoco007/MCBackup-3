@@ -68,7 +68,6 @@ Public Class Backup
         For Each Group As String In My.Settings.BackupGroups
             GroupsComboBox.Items.Add(Group)
         Next
-        GroupsComboBox.Items.Add("Create new group...")
 
         GroupsComboBox.SelectedIndex = 0
     End Sub

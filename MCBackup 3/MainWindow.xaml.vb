@@ -26,6 +26,7 @@ Imports Microsoft.WindowsAPICodePack.Taskbar
 Imports MCBackup.CloseAction
 Imports System.Globalization
 Imports MahApps.Metro
+Imports System.Threading
 
 Partial Class MainWindow
 #Region "Variables"
@@ -320,90 +321,108 @@ Partial Class MainWindow
     End Sub
 
     Public Sub RefreshBackupsList(Group As String)
-        Dim Directory As New IO.DirectoryInfo(My.Settings.BackupsFolderLocation) ' Create a DirectoryInfo variable for the backups folder
-        Dim Folders As IO.DirectoryInfo() = Directory.GetDirectories() ' Get all the directories in the backups folder
-        Dim Folder As IO.DirectoryInfo ' Used to designate a single folder in the backups folder
+        ListView.IsEnabled = False
+        GroupsTabControl.IsEnabled = False
+        ProgressBar.IsIndeterminate = True
+        StatusLabel.Content = "Reloading backups list, please wait..."
+        Dim Trd As New Thread(New ParameterizedThreadStart(AddressOf RefreshBackupsList_Thread)) With {.IsBackground = True}
+        Trd.Start()
+    End Sub
 
-        Dim Items As New List(Of ListViewBackupItem)()
+    Private Sub RefreshBackupsList_Thread(Group As String)
+        If ListView.Dispatcher.CheckAccess() Then
+            Dim Directory As New IO.DirectoryInfo(My.Settings.BackupsFolderLocation) ' Create a DirectoryInfo variable for the backups folder
+            Dim Folders As IO.DirectoryInfo() = Directory.GetDirectories() ' Get all the directories in the backups folder
+            Dim Folder As IO.DirectoryInfo ' Used to designate a single folder in the backups folder
 
-        For Each Folder In Folders ' For each folder in the backups folder
-            Dim Type As String = "[ERROR]"                  ' <╗
-            Dim Description As String = "[ERROR]"           ' <╬ Create variables with default value [ERROR], in case one of the values doesn't exist
-            Dim OriginalFolderName As String = "[ERROR]"    ' <╝
+            Dim Items As New List(Of ListViewBackupItem)()
 
-            Try
-                Using SR As New StreamReader(Directory.ToString & "\" & Folder.ToString & "\info.mcb")
-                    Do While SR.Peek <> -1
-                        Dim Line As String = SR.ReadLine
-                        If Not Line.StartsWith("#") Then
-                            If Line.StartsWith("desc=") Then ' If the line starts with description... 
-                                Description = Line.Substring(5) ' ...set description subitem to that
-                            ElseIf Line.StartsWith("type=") Then
-                                Type = Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Line.Substring(5)) ' Set type to capitalized "type=" line
-                            ElseIf Line.StartsWith("baseFolderName=") Then
-                                OriginalFolderName = Line.Substring(15) ' Set original folder name to "baseFolderName=" line
-                            ElseIf Line = "groupName=" & Group And Not (Group = "All" Or Nothing) Then
-                                If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
-                                    Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), OriginalFolderName, Type))
-                                ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
-                                    Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
-                                Else
-                                    Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
+            For Each Folder In Folders ' For each folder in the backups folder
+                Dim Type As String = "[ERROR]"                  ' <╗
+                Dim Description As String = "[ERROR]"           ' <╬ Create variables with default value [ERROR], in case one of the values doesn't exist
+                Dim OriginalFolderName As String = "[ERROR]"    ' <╝
+
+                Try
+                    Using SR As New StreamReader(Directory.ToString & "\" & Folder.ToString & "\info.mcb")
+                        Do While SR.Peek <> -1
+                            Dim Line As String = SR.ReadLine
+                            If Not Line.StartsWith("#") Then
+                                If Line.StartsWith("desc=") Then ' If the line starts with description... 
+                                    Description = Line.Substring(5) ' ...set description subitem to that
+                                ElseIf Line.StartsWith("type=") Then
+                                    Type = Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Line.Substring(5)) ' Set type to capitalized "type=" line
+                                ElseIf Line.StartsWith("baseFolderName=") Then
+                                    OriginalFolderName = Line.Substring(15) ' Set original folder name to "baseFolderName=" line
+                                ElseIf Line = "groupName=" & Group And Not (Group = "All" Or Nothing) Then
+                                    If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
+                                        Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), OriginalFolderName, Type))
+                                    ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
+                                        Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
+                                    Else
+                                        Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
+                                    End If
                                 End If
                             End If
+                        Loop
+                    End Using
+
+                    If Group = "All" Or Nothing Then
+                        If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
+                            Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), OriginalFolderName, Type))
+                        ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
+                            Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
+                        Else
+                            Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
                         End If
-                    Loop
-                End Using
-
-                If Group = "All" Or Nothing Then
-                    If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
-                        Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), OriginalFolderName, Type))
-                    ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
-                        Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
-                    Else
-                        Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
                     End If
-                End If
-            Catch ex As Exception
-                Log.Print(ex.Message, Log.Type.Severe)
-            End Try
-        Next
+                Catch ex As Exception
+                    Log.Print(ex.Message, Log.Type.Severe)
+                End Try
+            Next
 
-        ListView.ItemsSource = Items
-        ListView.SelectedIndex = -1
-        SidebarTitle.Text = Items.Count & " element(s)"
+            ListView.ItemsSource = Items
+            ListView.SelectedIndex = -1
+            SidebarTitle.Text = Items.Count & " element(s)"
 
-        Select Case My.Settings.ListViewGroupBy
-            Case "OriginalName"
-                ListViewGroupByNameItem_Click(Nothing, Nothing)
-            Case "Type"
-                ListViewGroupByTypeItem_Click(Nothing, Nothing)
-            Case "Nothing"
-                ListViewGroupByNothingItem_Click(Nothing, Nothing)
-            Case Else
-                ListViewGroupByNothingItem_Click(Nothing, Nothing)
-        End Select
+            Select Case My.Settings.ListViewGroupBy
+                Case "OriginalName"
+                    ListViewGroupByNameItem_Click(Nothing, Nothing)
+                Case "Type"
+                    ListViewGroupByTypeItem_Click(Nothing, Nothing)
+                Case "Nothing"
+                    ListViewGroupByNothingItem_Click(Nothing, Nothing)
+                Case Else
+                    ListViewGroupByNothingItem_Click(Nothing, Nothing)
+            End Select
 
-        Select Case My.Settings.ListViewSortBy
-            Case "Name"
-                ListViewSortByNameItem_Click(Nothing, Nothing)
-            Case "DateCreated"
-                ListViewSortByDateCreatedItem_Click(Nothing, Nothing)
-            Case "Type"
-                ListViewSortByTypeItem_Click(Nothing, Nothing)
-            Case Else
-                ListViewSortByDateCreatedItem_Click(Nothing, Nothing)
-        End Select
+            Select Case My.Settings.ListViewSortBy
+                Case "Name"
+                    ListViewSortByNameItem_Click(Nothing, Nothing)
+                Case "DateCreated"
+                    ListViewSortByDateCreatedItem_Click(Nothing, Nothing)
+                Case "Type"
+                    ListViewSortByTypeItem_Click(Nothing, Nothing)
+                Case Else
+                    ListViewSortByDateCreatedItem_Click(Nothing, Nothing)
+            End Select
 
-        Select Case My.Settings.ListViewSortByDirection
-            Case ListSortDirection.Ascending
-                ListViewSortAscendingItem_Click(Nothing, Nothing)
-            Case ListSortDirection.Descending
-                ListViewSortDescendingItem_Click(Nothing, Nothing)
-            Case Else
-                ListViewSortAscendingItem_Click(Nothing, Nothing)
-        End Select
-        ListView_SelectionChanged(New Object, New EventArgs)
+            Select Case My.Settings.ListViewSortByDirection
+                Case ListSortDirection.Ascending
+                    ListViewSortAscendingItem_Click(Nothing, Nothing)
+                Case ListSortDirection.Descending
+                    ListViewSortDescendingItem_Click(Nothing, Nothing)
+                Case Else
+                    ListViewSortAscendingItem_Click(Nothing, Nothing)
+            End Select
+            ListView_SelectionChanged(New Object, New EventArgs)
+
+            ProgressBar.IsIndeterminate = False
+            StatusLabel.Content = "Ready."
+            ListView.IsEnabled = True
+            GroupsTabControl.IsEnabled = True
+        Else
+            ListView.Dispatcher.Invoke(Sub() RefreshBackupsList_Thread(Group))
+        End If
     End Sub
 
     Private Sub ListView_SelectionChanged(sender As Object, e As EventArgs) Handles ListView.SelectionChanged
