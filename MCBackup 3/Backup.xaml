@@ -49,5 +49,6 @@
         </ListView>
         <Button x:Name="StartButton" Content="Start" VerticalAlignment="Top" Margin="247,299,247,0" Width="150" Height="40" FontSize="24" IsDefault="True"/>
         <Button x:Name="CancelButton" Content="Cancel" VerticalAlignment="Top" Margin="284,352,0,0" HorizontalAlignment="Left" Width="75"/>
+        <ComboBox x:Name="GroupsComboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Margin="247,252,0,0"/>
     </Grid>
 </Controls:MetroWindow>

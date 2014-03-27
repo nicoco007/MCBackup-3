@@ -14,7 +14,6 @@
 '   ║                      limitations under the License.                       ║
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
 
-Imports System.Windows.Forms
 Imports System.Linq
 Imports System.Security.Permissions
 Imports System.Security
@@ -22,8 +21,8 @@ Imports MahApps.Metro
 
 Partial Public Class Options
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
-    Private FolderBrowserDialog As New FolderBrowserDialog
-    Private OpenFileDialog As New OpenFileDialog
+    Private FolderBrowserDialog As New System.Windows.Forms.FolderBrowserDialog
+    Private OpenFileDialog As New System.Windows.Forms.OpenFileDialog
 
     Sub New()
         InitializeComponent()
@@ -71,6 +70,8 @@ Partial Public Class Options
         LoadLanguage()
 
         ListViewTextColorIntensitySlider.Value = My.Settings.ListViewTextColorIntensity
+
+        ReloadBackupGroups()
     End Sub
 
     Private Sub AlwaysCloseCheckBox_Checked(sender As Object, e As RoutedEventArgs) Handles AlwaysCloseCheckBox.Click
@@ -85,7 +86,7 @@ Partial Public Class Options
                 SavesFolderTextBox.Text = FolderBrowserDialog.SelectedPath & "\saves"
                 Exit Sub
             Else
-                If MessageBox.Show("Minecraft is not installed in that folder! Try again?", "Error!", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1) = Windows.Forms.DialogResult.Yes Then ' Ask if user wants to try finding folder again
+                If MetroMessageBox.Show("Minecraft is not installed in that folder! Try again?", "Error!", MessageBoxButton.YesNo, MessageBoxImage.Error) = Windows.Forms.DialogResult.Yes Then ' Ask if user wants to try finding folder again
                     BrowseMinecraftFolderButton_Click(sender, e) ' Restart from beginning if "Yes"
                 Else
                     Me.Close() ' Close program if "No"
@@ -102,7 +103,7 @@ Partial Public Class Options
                 BackupsFolderTextBox.Text = FolderBrowserDialog.SelectedPath
             Catch ex As Exception
                 Log.Print(ex.Message, Log.Type.Severe)
-                MessageBox.Show("Error: Unable to set backups folder to """ & FolderBrowserDialog.SelectedPath & """", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1)
+                MetroMessageBox.Show("Error: Unable to set backups folder to """ & FolderBrowserDialog.SelectedPath & """", "Error!", MessageBoxButton.OK, MessageBoxImage.Error)
             End Try
         End If
     End Sub
@@ -112,7 +113,7 @@ Partial Public Class Options
             Dim folderPath() As String = FolderBrowserDialog.SelectedPath.Split("\")
             Dim folder As String = folderPath.Last
             If Not folder = "saves" Then
-                If MessageBox.Show("Are you sure this is a saves folder? It's name isn't even ""saves""!", "Are you sure?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = Forms.DialogResult.Yes Then
+                If MetroMessageBox.Show("Are you sure this is a saves folder? It's name isn't even ""saves""!", "Are you sure?", MessageBoxButton.YesNoCancel, MessageBoxImage.Question) = Forms.DialogResult.Yes Then
                     SavesFolderTextBox.Text = FolderBrowserDialog.SelectedPath
                 Else
                     Exit Sub
@@ -361,6 +362,52 @@ Partial Public Class Options
             Process.Start(Main.StartupPath & "\mcbackup.exe")
         End If
     End Sub
+
+#Region "Backup Groups Tab"
+    Private Sub ReloadBackupGroups()
+        Main.GroupsTabControl.Items.Clear()
+        BackupGroupsListBox.Items.Clear()
+
+        Main.GroupsTabControl.Items.Clear()
+        Main.GroupsTabControl.Items.Add("All")
+
+        For Each Group As String In My.Settings.BackupGroups
+            BackupGroupsListBox.Items.Add(Group)
+            Main.GroupsTabControl.Items.Add(Group)
+        Next
+
+        BackupGroupsListBox.SelectedIndex = 0
+        Main.GroupsTabControl.SelectedIndex = 0
+    End Sub
+
+    Private Sub CreateNewGroupTextBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles CreateNewGroupTextBox.TextChanged
+        If CreateNewGroupButton IsNot Nothing Then
+            If CreateNewGroupTextBox.Text = "" Then
+                CreateNewGroupButton.IsEnabled = False
+            Else
+                CreateNewGroupButton.IsEnabled = True
+            End If
+        End If
+    End Sub
+
+    Private Sub BackupGroupsListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles BackupGroupsListBox.SelectionChanged
+        If BackupGroupsListBox.SelectedItems.Count = 1 Then
+            DeleteGroupButton.IsEnabled = True
+        Else
+            DeleteGroupButton.IsEnabled = False
+        End If
+    End Sub
+
+    Private Sub CreateNewGroupButton_Click(sender As Object, e As RoutedEventArgs) Handles CreateNewGroupButton.Click
+        My.Settings.BackupGroups.Add(CreateNewGroupTextBox.Text)
+        ReloadBackupGroups()
+    End Sub
+
+    Private Sub DeleteGroupButton_Click(sender As Object, e As RoutedEventArgs) Handles DeleteGroupButton.Click
+        My.Settings.BackupGroups.RemoveAt(BackupGroupsListBox.SelectedIndex)
+        ReloadBackupGroups()
+    End Sub
+#End Region
 End Class
 
 Public Class ThemesComboBoxItem

@@ -22,7 +22,7 @@
     Title="Options" Height="450" Width="680" Loaded="Window_Loaded" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" WindowTransitionsEnabled="False" BorderBrush="{DynamicResource AccentColorBrush}" BorderThickness="1">
 
     <Grid>
-        <TabControl Margin="0">
+        <TabControl Margin="0,0,0,42">
             <TabItem Header="General">
                 <Grid>
                     <GroupBox x:Name="LanguageGroupBox" Header="Language" Margin="10,146,0,0" Canvas.Left="10" Canvas.Top="146" Height="86" HorizontalAlignment="Left" Width="320" VerticalAlignment="Top">
@@ -137,6 +137,14 @@
                             <Button x:Name="BrowseSavesFolderButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="550,38,0,0"/>
                         </Grid>
                     </GroupBox>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Groups">
+                <Grid>
+                    <ListBox x:Name="BackupGroupsListBox" HorizontalAlignment="Left" Height="310" VerticalAlignment="Top" Width="150" Margin="10,10,0,0" BorderThickness="1"/>
+                    <TextBox x:Name="CreateNewGroupTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Width="200" Margin="165,10,0,0" MaxLength="16"/>
+                    <Button x:Name="CreateNewGroupButton" Content="+" HorizontalAlignment="Left" VerticalAlignment="Top" Width="26" Margin="370,10,0,0" Height="26" Padding="0" IsEnabled="False"/>
+                    <Button x:Name="DeleteGroupButton" Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="165,41,0,0" IsEnabled="False"/>
                 </Grid>
             </TabItem>
         </TabControl>

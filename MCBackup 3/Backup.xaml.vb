@@ -63,6 +63,14 @@ Public Class Backup
         BackupType_CheckChanged(sender, e)
 
         CustomNameTextBox.Width = 449 - CustomNameRadioButton.ActualWidth
+
+        GroupsComboBox.Items.Add("None")
+        For Each Group As String In My.Settings.BackupGroups
+            GroupsComboBox.Items.Add(Group)
+        Next
+        GroupsComboBox.Items.Add("Create new group...")
+
+        GroupsComboBox.SelectedIndex = 0
     End Sub
 
     Private Sub Name_CheckChanged(sender As Object, e As RoutedEventArgs) Handles DateAndTimeRadioButton.Checked, CustomNameRadioButton.Checked
@@ -117,6 +125,8 @@ Public Class Backup
             Main.BackupInfo(3) = "everything"
         End If
 
+        Main.BackupInfo(4) = GroupsComboBox.SelectedItem
+
         Me.Close()
         Main.StartBackup()
     End Sub
@@ -150,4 +160,6 @@ Public Class Backup
     Private Sub CancelButton_Click(sender As Object, e As RoutedEventArgs) Handles CancelButton.Click
         Me.Close()
     End Sub
+
+
 End Class

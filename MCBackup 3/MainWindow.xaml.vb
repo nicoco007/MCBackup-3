@@ -30,7 +30,7 @@ Imports MahApps.Metro
 Partial Class MainWindow
 #Region "Variables"
     Private AppData As String = Environ("APPDATA")
-    Public BackupInfo(3) As String
+    Public BackupInfo(4) As String
     Public RestoreInfo(2) As String
 
     Private FolderBrowserDialog As New System.Windows.Forms.FolderBrowserDialog
@@ -529,7 +529,8 @@ Partial Class MainWindow
             Using SW As New StreamWriter(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0) & "\info.mcb") ' Create information fie (stores description and type)
                 SW.WriteLine("baseFolderName=" & BackupInfo(2).Split("\").Last) ' Write save/version folder name
                 SW.WriteLine("type=" & BackupInfo(3)) ' Write type in file
-                SW.Write("desc=" & BackupInfo(1)) ' Write description if file
+                SW.WriteLine("desc=" & BackupInfo(1)) ' Write description if file
+                SW.Write("groupName=" & BackupInfo(4))
             End Using
         Catch ex As Exception
             ErrorWindow.Show(MCBackup.Language.Dictionary("Message.BackupError"), ex)
@@ -1134,7 +1135,7 @@ Partial Class MainWindow
         RefreshBackupsList(GroupsTabControl.SelectedItem)
     End Sub
 
-    Private Sub ReloadBackupGroups()
+    Public Sub ReloadBackupGroups()
         GroupsTabControl.Items.Clear()
         GroupsTabControl.Items.Add("All")
         For Each Group As String In My.Settings.BackupGroups
