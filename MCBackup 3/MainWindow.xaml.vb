@@ -336,7 +336,10 @@ Partial Class MainWindow
     Private Sub RefreshBackupsList_Thread()
         If ListView.Dispatcher.CheckAccess() Then
             Dim Group As String = GroupsTabControl.SelectedItem
-            Dim Search As String = SearchTextBox.Text
+            Dim Search As String = ""
+            If SearchTextBox.Text <> "Search..." Then
+                Search = SearchTextBox.Text
+            End If
 
             Dim Directory As New IO.DirectoryInfo(My.Settings.BackupsFolderLocation) ' Create a DirectoryInfo variable for the backups folder
             Dim Folders As IO.DirectoryInfo() = Directory.GetDirectories() ' Get all the directories in the backups folder
@@ -1170,9 +1173,7 @@ Partial Class MainWindow
 
 #Region "Search Text Box"
     Private Sub SearchTextBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles SearchTextBox.TextChanged
-        If Not SearchTextBox.Text = "Search..." Then
-            RefreshBackupsList()
-        End If
+        RefreshBackupsList()
     End Sub
 
     Private Sub SearchTextBox_LostFocus(sender As Object, e As RoutedEventArgs) Handles SearchTextBox.LostFocus
