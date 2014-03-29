@@ -730,7 +730,7 @@ Partial Class MainWindow
 
             Select Case RestoreInfo(2)
                 Case "save"
-                    RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\saves\" & BaseFolderName
+                    RestoreInfo(1) = My.Settings.SavesFolderLocation & "\" & BaseFolderName
                 Case "version"
                     RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\versions\" & BaseFolderName
                 Case "everything"
@@ -1168,6 +1168,28 @@ Partial Class MainWindow
     End Sub
 #End Region
 
+#Region "Search Text Box"
+    Private Sub SearchTextBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles SearchTextBox.TextChanged
+        If Not SearchTextBox.Text = "Search..." Then
+            RefreshBackupsList()
+        End If
+    End Sub
+
+    Private Sub SearchTextBox_LostFocus(sender As Object, e As RoutedEventArgs) Handles SearchTextBox.LostFocus
+        If String.IsNullOrEmpty(SearchTextBox.Text) Then
+            SearchTextBox.Text = "Search..."
+            SearchTextBox.Foreground = New SolidColorBrush(Colors.Gray)
+        End If
+    End Sub
+
+    Private Sub SearchTextBox_GotFocus(sender As Object, e As RoutedEventArgs) Handles SearchTextBox.GotFocus
+        If SearchTextBox.Text = "Search..." Then
+            SearchTextBox.Text = ""
+            SearchTextBox.Foreground = New SolidColorBrush(Colors.Black)
+        End If
+    End Sub
+#End Region
+
     Private Sub ListView_ContextMenuOpening(sender As Object, e As ContextMenuEventArgs) Handles ListView.ContextMenuOpening
         Select Case ListView.SelectedItems.Count
             Case Is > 1
@@ -1191,10 +1213,6 @@ Partial Class MainWindow
 
     Private Sub ListView_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles ListView.MouseDown
         ListView.SelectedIndex = -1
-    End Sub
-
-    Private Sub SearchTextBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles SearchTextBox.TextChanged
-        RefreshBackupsList()
     End Sub
 End Class
 
