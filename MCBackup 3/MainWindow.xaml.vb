@@ -317,14 +317,6 @@ Partial Class MainWindow
     End Sub
 
     Public Sub RefreshBackupsList()
-        RefreshBackupsList("All", Nothing)
-    End Sub
-
-    Public Sub RefreshBackupsList(Group As String)
-        RefreshBackupsList(Group, Nothing)
-    End Sub
-
-    Public Sub RefreshBackupsList(Group As String, Search As String)
         If Me.IsLoaded Then
             ListView.IsEnabled = False
             GroupsTabControl.IsEnabled = False
@@ -1213,7 +1205,7 @@ Partial Class MainWindow
     End Sub
 
     Private Sub TabControl_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles GroupsTabControl.SelectionChanged
-        RefreshBackupsList(GroupsTabControl.SelectedItem)
+        RefreshBackupsList()
     End Sub
 
     Private Sub ListView_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles ListView.MouseDown
