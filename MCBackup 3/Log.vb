@@ -17,11 +17,11 @@
 Imports System.IO
 
 Public Class Log
-    Public Enum Type
-        Info
-        Warning
-        Severe
-    End Enum
+    Public Structure Type
+        Const Info = "[INFO]"
+        Const Warning = "[WARNING]"
+        Const Severe = "[SEVERE]"
+    End Structure
 
     Public Shared Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
 
@@ -63,13 +63,13 @@ Public Class Log
     ''' Prints a message in the log, with a timestamp and specified tag.
     ''' </summary>
     ''' <param name="Message">Message to print in log</param>
-    ''' <param name="LogType">Type of tag to show</param>
+    ''' <param name="LogType">Tag to show ([INFO], [WARNING], [SEVERE])</param>
     ''' <remarks></remarks>
-    Public Shared Sub Print(Message As String, LogType As Type)
+    Public Shared Sub Print(Message As String, LogType As String)
         Try
             Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
-                Debug.Print(DebugTimeStamp() & " " & LogTypeToString(LogType) & " " & Message)
-                SW.WriteLine(DebugTimeStamp() & " " & LogTypeToString(LogType) & " " & Message)
+                Debug.Print(DebugTimeStamp() & " " & LogType & " " & Message)
+                SW.WriteLine(DebugTimeStamp() & " " & LogType & " " & Message)
             End Using
         Catch ex As Exception
 
@@ -90,18 +90,6 @@ Public Class Log
         Dim Seconds As String = Format(Now(), "ss")
 
         Return Year & "-" & Month & "-" & Day & " " & Hours & ":" & Minutes & ":" & Seconds
-    End Function
-
-    Public Shared Function LogTypeToString(LogType As Type)
-        Select Case LogType
-            Case 0
-                Return "[INFO]"
-            Case 1
-                Return "[WARNING]"
-            Case 2
-                Return "[SEVERE]"
-        End Select
-        Return ""
     End Function
 
     ''' <summary>

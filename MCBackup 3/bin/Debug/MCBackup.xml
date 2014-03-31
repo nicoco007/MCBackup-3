@@ -156,12 +156,12 @@ UpdateDialog
  </summary>
 	<param name="Message">Message to print in log</param>
 	<remarks></remarks>
-</member><member name="M:MCBackup.Log.Print(System.String,MCBackup.Log.Type)">
+</member><member name="M:MCBackup.Log.Print(System.String,System.String)">
 	<summary>
  Prints a message in the log, with a timestamp and specified tag.
  </summary>
 	<param name="Message">Message to print in log</param>
-	<param name="LogType">Type of tag to show</param>
+	<param name="LogType">Tag to show ([INFO], [WARNING], [SEVERE])</param>
 	<remarks></remarks>
 </member><member name="M:MCBackup.Log.DebugTimeStamp">
 	<summary>
