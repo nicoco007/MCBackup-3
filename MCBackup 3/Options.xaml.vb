@@ -60,10 +60,10 @@ Partial Public Class Options
         Dim LanguageFile As IO.FileInfo
 
         For Each LanguageFile In LanguageFiles
-            LanguagesComboBox.Items.Add(MCBackup.Language.FindString("fullname", LanguageFile.ToString))
+            LanguagesComboBox.Items.Add(New TaggedComboBoxItem(MCBackup.Language.FindString("fullname", LanguageFile.Name) & " (" & IO.Path.GetFileNameWithoutExtension(LanguageFile.Name) & ")", LanguageFile.Name))
         Next
 
-        LanguagesComboBox.SelectedItem = MCBackup.Language.FindString("fullname", My.Settings.Language & ".lang")
+        LanguagesComboBox.SelectedItem = LanguagesComboBox.Items.OfType(Of TaggedComboBoxItem)().FirstOrDefault(Function(t) t.Tag = My.Settings.Language & ".lang")
 
         AlwaysCloseCheckBox_Checked(sender, Nothing)
 
@@ -73,7 +73,7 @@ Partial Public Class Options
 
         ReloadBackupGroups()
     End Sub
-
+#Region "mini"
     Private Sub AlwaysCloseCheckBox_Checked(sender As Object, e As RoutedEventArgs) Handles AlwaysCloseCheckBox.Click
         CloseToTrayRadioButton.IsEnabled = AlwaysCloseCheckBox.IsChecked
         CloseCompletelyRadioButton.IsEnabled = AlwaysCloseCheckBox.IsChecked
@@ -199,8 +199,8 @@ Partial Public Class Options
 
     Private Sub LanguagesListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles LanguagesComboBox.SelectionChanged
         If Me.IsLoaded Then
-            MCBackup.Language.Load(MCBackup.Language.GetIDFromName(LanguagesComboBox.SelectedItem) & ".lang")
-            My.Settings.Language = MCBackup.Language.GetIDFromName(LanguagesComboBox.SelectedItem)
+            MCBackup.Language.Load(LanguagesComboBox.SelectedItem.Tag)
+            My.Settings.Language = IO.Path.GetFileNameWithoutExtension(LanguagesComboBox.SelectedItem.Tag)
             LoadLanguage()
         End If
     End Sub
@@ -247,7 +247,7 @@ Partial Public Class Options
         Dim Tags = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.ThemeTags").Split(";")
 
         For i As Integer = 0 To Names.Count - 1
-            ThemeComboBox.Items.Add(New ThemesComboBoxItem(Names(i), Tags(i)))
+            ThemeComboBox.Items.Add(New TaggedComboBoxItem(Names(i), Tags(i)))
             If Tags(i) = My.Settings.Theme Then
                 ThemeComboBox.SelectedIndex = i
             End If
@@ -296,7 +296,7 @@ Partial Public Class Options
 
     Private Sub ThemeComboBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles ThemeComboBox.SelectionChanged
         If Not ThemeComboBox.SelectedItem Is Nothing Then
-            Dim SelectedTag = DirectCast(ThemeComboBox.SelectedItem, ThemesComboBoxItem).Tag
+            Dim SelectedTag = DirectCast(ThemeComboBox.SelectedItem, TaggedComboBoxItem).Tag
             ThemeManager.ChangeTheme(My.Application, New Accent(SelectedTag, New Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/" & SelectedTag & ".xaml")), Theme.Light)
             My.Settings.Theme = ThemeComboBox.SelectedItem.Tag.ToString
         End If
@@ -362,6 +362,7 @@ Partial Public Class Options
             Process.Start(Main.StartupPath & "\mcbackup.exe")
         End If
     End Sub
+#End Region
 
 #Region "Backup Groups Tab"
     Private Sub ReloadBackupGroups()
@@ -410,7 +411,7 @@ Partial Public Class Options
 #End Region
 End Class
 
-Public Class ThemesComboBoxItem
+Public Class TaggedComboBoxItem
     Private m_Name As String
     Public Property Name() As String
         Get

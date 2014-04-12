@@ -86,21 +86,30 @@
                 </ListView.ContextMenu>
                 <ListView.View>
                     <GridView x:Name="ListViewGridView">
-                        <GridViewColumn Header="Name" Width="320">
+                        <GridViewColumn Width="320">
+                            <GridViewColumn.Header>
+                                <GridViewColumnHeader Tag="Name" x:Name="NameColumnHeader">Name</GridViewColumnHeader>
+                            </GridViewColumn.Header>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Name}" Foreground="{Binding Color}"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Date Created" Width="160">
+                        <GridViewColumn Width="160">
+                            <GridViewColumn.Header>
+                                <GridViewColumnHeader Tag="DateCreated" x:Name="DateCreatedColumnHeader">Date Created</GridViewColumnHeader>
+                            </GridViewColumn.Header>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding DateCreated}" Foreground="{Binding Color}"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="Type" Width="100">
+                        <GridViewColumn Width="100">
+                            <GridViewColumn.Header>
+                                <GridViewColumnHeader Tag="Type" x:Name="TypeColumnHeader">Type</GridViewColumnHeader>
+                            </GridViewColumn.Header>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Type}" Foreground="{Binding Color}"/>

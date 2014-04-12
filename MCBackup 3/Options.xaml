@@ -27,7 +27,13 @@
                 <Grid>
                     <GroupBox x:Name="LanguageGroupBox" Header="Language" Margin="10,146,0,0" Canvas.Left="10" Canvas.Top="146" Height="86" HorizontalAlignment="Left" Width="320" VerticalAlignment="Top">
                         <Grid>
-                            <ComboBox x:Name="LanguagesComboBox" Margin="10,10,10,0" Height="26" VerticalAlignment="Top"/>
+                            <ComboBox x:Name="LanguagesComboBox" Margin="10,10,10,0" Height="26" VerticalAlignment="Top">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Name}" Tag="{Binding Tag}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
                         </Grid>
                     </GroupBox>
                     <GroupBox x:Name="CloseToTrayOptionsGroupBox" Header="Close to tray options" Margin="335,10,0,0" Canvas.Left="337" Canvas.Top="10" Height="147" HorizontalAlignment="Left" Width="323" VerticalAlignment="Top">

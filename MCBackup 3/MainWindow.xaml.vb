@@ -28,6 +28,7 @@ Imports System.Globalization
 Imports MahApps.Metro
 Imports System.Threading
 
+
 Partial Class MainWindow
 #Region "Variables"
     Private AppData As String = Environ("APPDATA")
@@ -96,7 +97,7 @@ Partial Class MainWindow
         Splash.Status.Refresh()
 
         Dim DefaultLanguage As String = "en_US"
-
+        Log.Print(My.Settings.Language)
         Select Case CultureInfo.CurrentCulture.ThreeLetterISOLanguageName
             Case "eng"
                 DefaultLanguage = "en_US"
@@ -118,6 +119,7 @@ Partial Class MainWindow
             Log.Print("Could not load language file '" & My.Settings.Language & "': " & ex.Message, Log.Type.Severe)
             ErrorWindow.Show("Error: Could not load language file (" & My.Settings.Language & ")! MCBackup will now exit.", ex)
             My.Settings.Language = DefaultLanguage
+            My.Settings.Save()
             Me.ClsType = CloseType.ForceClose
             Me.Close()
             Exit Sub
@@ -495,9 +497,10 @@ Partial Class MainWindow
 
             AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " >>"
 
-            ListViewGridView.Columns(0).Header = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(0).Header")
-            ListViewGridView.Columns(1).Header = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(1).Header")
-            ListViewGridView.Columns(2).Header = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(2).Header")
+            NameColumnHeader.Content = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(0).Header")
+            DateCreatedColumnHeader.Content = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(1).Header")
+            TypeColumnHeader.Content = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(2).Header")
+
             SidebarOriginalNameLabel.Text = MCBackup.Language.Dictionary("MainWindow.OriginalNameLabel.Text") & ":"
             SidebarTypeLabel.Text = MCBackup.Language.Dictionary("MainWindow.TypeLabel.Text") & ":"
 
@@ -964,7 +967,52 @@ Partial Class MainWindow
 #End Region
 
 #Region "ListView Context Menu"
-    '-- Group By --
+    Private CurrentColumn As GridViewColumnHeader = Nothing
+    Private SortAdorner As SortAdorner = Nothing
+
+    Private Sub ListViewColumns_Click(sender As Object, e As RoutedEventArgs) Handles NameColumnHeader.Click, DateCreatedColumnHeader.Click, TypeColumnHeader.Click
+        Dim ClickedColumn As GridViewColumnHeader = TryCast(sender, GridViewColumnHeader)
+        Dim field As String = TryCast(ClickedColumn.Tag, String)
+
+        If CurrentColumn IsNot Nothing Then
+            AdornerLayer.GetAdornerLayer(CurrentColumn).Remove(SortAdorner)
+            ListView.Items.SortDescriptions.Clear()
+        End If
+
+        Dim Direction As ListSortDirection = ListSortDirection.Ascending
+        If CurrentColumn Is ClickedColumn AndAlso SortAdorner.Direction = Direction Then
+            Direction = ListSortDirection.Descending
+        End If
+
+        CurrentColumn = ClickedColumn
+        SortAdorner = New SortAdorner(CurrentColumn, Direction)
+        AdornerLayer.GetAdornerLayer(CurrentColumn).Add(SortAdorner)
+        ListView.Items.SortDescriptions.Add(New SortDescription(field, Direction))
+
+        If Direction = ListSortDirection.Ascending Then
+            ListViewSortAscendingItem.IsChecked = True
+            ListViewSortDescendingItem.IsChecked = False
+        Else
+            ListViewSortAscendingItem.IsChecked = False
+            ListViewSortDescendingItem.IsChecked = True
+        End If
+
+        If ClickedColumn Is NameColumnHeader Then
+            ListViewSortByNameItem.IsChecked = True
+            ListViewSortByDateCreatedItem.IsChecked = False
+            ListViewSortByTypeItem.IsChecked = False
+        ElseIf ClickedColumn Is DateCreatedColumnHeader Then
+            ListViewSortByNameItem.IsChecked = False
+            ListViewSortByDateCreatedItem.IsChecked = True
+            ListViewSortByTypeItem.IsChecked = False
+        ElseIf ClickedColumn Is TypeColumnHeader Then
+            ListViewSortByNameItem.IsChecked = False
+            ListViewSortByDateCreatedItem.IsChecked = False
+            ListViewSortByTypeItem.IsChecked = True
+        End If
+    End Sub
+
+#Region "-- Group By --"
     Private Sub ListViewGroupByNameItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewGroupByNameItem.Click
         ListViewGroupByNameItem.IsChecked = True
         ListViewGroupByTypeItem.IsChecked = False
@@ -993,63 +1041,85 @@ Partial Class MainWindow
         View.GroupDescriptions.Clear()
         My.Settings.ListViewGroupBy = "Nothing"
     End Sub
+#End Region
 
-    '-- Sort By --
     Private Sub ListViewSortByNameItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewSortByNameItem.Click
+        If CurrentColumn IsNot Nothing Then
+            AdornerLayer.GetAdornerLayer(CurrentColumn).Remove(SortAdorner)
+            ListView.Items.SortDescriptions.Clear()
+        End If
+
+        CurrentColumn = NameColumnHeader
+        SortAdorner = New SortAdorner(CurrentColumn, ListSortDirection.Ascending)
+        AdornerLayer.GetAdornerLayer(CurrentColumn).Add(SortAdorner)
+        ListView.Items.SortDescriptions.Add(New SortDescription("Name", ListSortDirection.Ascending))
+
         ListViewSortByNameItem.IsChecked = True
         ListViewSortByDateCreatedItem.IsChecked = False
         ListViewSortByTypeItem.IsChecked = False
-        Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
-        Dim Direction As ListSortDirection
-        If View.SortDescriptions.Count = 0 Then Direction = ListSortDirection.Ascending Else Direction = View.SortDescriptions(0).Direction
-        View.SortDescriptions.Clear()
-        View.SortDescriptions.Add(New SortDescription("Name", Direction))
-        My.Settings.ListViewSortBy = "Name"
     End Sub
 
     Private Sub ListViewSortByDateCreatedItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewSortByDateCreatedItem.Click
+        If CurrentColumn IsNot Nothing Then
+            AdornerLayer.GetAdornerLayer(CurrentColumn).Remove(SortAdorner)
+            ListView.Items.SortDescriptions.Clear()
+        End If
+
+        CurrentColumn = DateCreatedColumnHeader
+        SortAdorner = New SortAdorner(CurrentColumn, ListSortDirection.Ascending)
+        AdornerLayer.GetAdornerLayer(CurrentColumn).Add(SortAdorner)
+        ListView.Items.SortDescriptions.Add(New SortDescription("DateCreated", ListSortDirection.Ascending))
+
         ListViewSortByNameItem.IsChecked = False
         ListViewSortByDateCreatedItem.IsChecked = True
         ListViewSortByTypeItem.IsChecked = False
-        Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
-        Dim Direction As ListSortDirection
-        If View.SortDescriptions.Count = 0 Then Direction = ListSortDirection.Ascending Else Direction = View.SortDescriptions(0).Direction
-        View.SortDescriptions.Clear()
-        View.SortDescriptions.Add(New SortDescription("DateCreated", Direction))
-        My.Settings.ListViewSortBy = "DateCreated"
     End Sub
 
     Private Sub ListViewSortByTypeItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewSortByTypeItem.Click
+        If CurrentColumn IsNot Nothing Then
+            AdornerLayer.GetAdornerLayer(CurrentColumn).Remove(SortAdorner)
+            ListView.Items.SortDescriptions.Clear()
+        End If
+
+        CurrentColumn = TypeColumnHeader
+        SortAdorner = New SortAdorner(CurrentColumn, ListSortDirection.Ascending)
+        AdornerLayer.GetAdornerLayer(CurrentColumn).Add(SortAdorner)
+        ListView.Items.SortDescriptions.Add(New SortDescription("Type", ListSortDirection.Ascending))
+
         ListViewSortByNameItem.IsChecked = False
         ListViewSortByDateCreatedItem.IsChecked = False
         ListViewSortByTypeItem.IsChecked = True
-        Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
-        Dim Direction As ListSortDirection
-        If View.SortDescriptions.Count = 0 Then Direction = ListSortDirection.Ascending Else Direction = View.SortDescriptions(0).Direction
-        View.SortDescriptions.Clear()
-        View.SortDescriptions.Add(New SortDescription("Type", Direction))
-        My.Settings.ListViewSortBy = "Type"
     End Sub
 
     'asc/desc
     Private Sub ListViewSortAscendingItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewSortAscendingItem.Click
+        Dim field As String = TryCast(CurrentColumn.Tag, String)
+        If CurrentColumn IsNot Nothing Then
+            AdornerLayer.GetAdornerLayer(CurrentColumn).Remove(SortAdorner)
+            ListView.Items.SortDescriptions.Clear()
+        End If
+
+        SortAdorner = New SortAdorner(CurrentColumn, ListSortDirection.Ascending)
+        AdornerLayer.GetAdornerLayer(CurrentColumn).Add(SortAdorner)
+        ListView.Items.SortDescriptions.Add(New SortDescription(field, ListSortDirection.Ascending))
+
         ListViewSortAscendingItem.IsChecked = True
         ListViewSortDescendingItem.IsChecked = False
-        Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
-        Dim PropertyName As String = View.SortDescriptions(0).PropertyName
-        View.SortDescriptions.Clear()
-        View.SortDescriptions.Add(New SortDescription(PropertyName, ListSortDirection.Ascending))
-        My.Settings.ListViewSortByDirection = ListSortDirection.Ascending
     End Sub
 
     Private Sub ListViewSortDescendingItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewSortDescendingItem.Click
+        Dim field As String = TryCast(CurrentColumn.Tag, String)
+        If CurrentColumn IsNot Nothing Then
+            AdornerLayer.GetAdornerLayer(CurrentColumn).Remove(SortAdorner)
+            ListView.Items.SortDescriptions.Clear()
+        End If
+
+        SortAdorner = New SortAdorner(CurrentColumn, ListSortDirection.Descending)
+        AdornerLayer.GetAdornerLayer(CurrentColumn).Add(SortAdorner)
+        ListView.Items.SortDescriptions.Add(New SortDescription(field, ListSortDirection.Descending))
+
         ListViewSortAscendingItem.IsChecked = False
         ListViewSortDescendingItem.IsChecked = True
-        Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
-        Dim PropertyName As String = View.SortDescriptions(0).PropertyName
-        View.SortDescriptions.Clear()
-        View.SortDescriptions.Add(New SortDescription(PropertyName, ListSortDirection.Descending))
-        My.Settings.ListViewSortByDirection = ListSortDirection.Descending
     End Sub
 #End Region
 
@@ -1100,30 +1170,30 @@ Partial Class MainWindow
                     e.Cancel = True
                     Exit Sub
             End Select
+
+            Try
+                If Process.GetProcessesByName("mcmap").Count > 0 Then
+                    Log.Print("Killing Cartograph Process")
+                    MCMap.Kill()
+                End If
+            Catch
+            End Try
+
+            NotifyIcon.Visible = False
+            NotifyIcon.Dispose()
+
+            My.Settings.SidebarWidth = GridSidebarColumn.Width.Value
+
+            My.Settings.AutoBkpPrefix = AutoBackupWindow.PrefixTextBox.Text
+            My.Settings.AutoBkpSuffix = AutoBackupWindow.SuffixTextBox.Text
+
+            Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
+            My.Settings.ListViewSortBy = View.SortDescriptions(0).PropertyName
+            My.Settings.ListViewSortByDirection = View.SortDescriptions(0).Direction
+
+            Log.Print("Someone is closing me!")
+            My.Settings.Save()
         End If
-
-        Try
-            If Process.GetProcessesByName("mcmap").Count > 0 Then
-                Log.Print("Killing Cartograph Process")
-                MCMap.Kill()
-            End If
-        Catch
-        End Try
-
-        NotifyIcon.Visible = False
-        NotifyIcon.Dispose()
-
-        My.Settings.SidebarWidth = GridSidebarColumn.Width.Value
-
-        My.Settings.AutoBkpPrefix = AutoBackupWindow.PrefixTextBox.Text
-        My.Settings.AutoBkpSuffix = AutoBackupWindow.SuffixTextBox.Text
-
-        Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
-        My.Settings.ListViewSortBy = View.SortDescriptions(0).PropertyName
-        My.Settings.ListViewSortByDirection = View.SortDescriptions(0).Direction
-
-        Log.Print("Someone is closing me!")
-        My.Settings.Save()
     End Sub
 #End Region
 
