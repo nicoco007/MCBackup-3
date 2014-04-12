@@ -59,6 +59,10 @@ Public Class Language
         Dictionary.Add("MainWindow.MenuBar.Items(3).Items(3).Header", FindString("MainWindow.MenuBar.Items(3).Items(3).Header", FileName))
         Dictionary.Add("MainWindow.AutomaticBackupButton.Content", FindString("MainWindow.AutomaticBackupButton.Content", FileName))
 
+        Dictionary.Add("MainWindow.Sidebar.NoBackupSelected", FindString("MainWindow.Sidebar.NoBackupSelected", FileName))
+
+        Dictionary.Add("MainWindow.Search", FindString("MainWindow.Search", FileName))
+
         ' = Statuses =
         Dictionary.Add("Status.Ready", FindString("Status.Ready", FileName))
         Dictionary.Add("Status.BackingUp", FindString("Status.BackingUp", FileName))
@@ -86,6 +90,7 @@ Public Class Language
         Dictionary.Add("Message.ChooseSave", FindString("Message.ChooseSave", FileName))
         Dictionary.Add("Message.ChooseVersion", FindString("Message.ChooseVersion", FileName))
         Dictionary.Add("Message.ResetSettings", FindString("Message.ResetSettings", FileName))
+        Dictionary.Add("Message.BackupInProgress", FindString("Message.BackupInProgress", FileName))
 
         ' = Balloon Tips =
         Dictionary.Add("BalloonTip.Title.BackupError", FindString("BalloonTip.Title.BackupError", FileName))
@@ -209,7 +214,7 @@ Public Class Language
         Dictionary.Add("CullWindow.AreYouSureMsg", FindString("CullWindow.AreYouSureMsg", FileName))
 
         If ErrorOccured Then
-            Log.Print("Language loaded with errors. Try resolving error(s) above.")
+            Log.Print("Language loaded with errors. Please try solving the error(s) above.")
         Else
             Log.Print("Language loaded. No errors occured.")
         End If

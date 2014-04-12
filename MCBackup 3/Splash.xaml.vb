@@ -25,4 +25,12 @@ Public Class Splash
 
         VersionLabel.Content = "MCBackup v" & Main.ApplicationVersion
     End Sub
+
+    Public Sub ShowStatus(DictionaryEntry As String, DefaultString As String)
+        Try
+            Status.Content = MCBackup.Language.FindString(DictionaryEntry, My.Settings.Language & ".lang")
+        Catch ex As Exception
+            Status.Content = DefaultString
+        End Try
+    End Sub
 End Class

@@ -56,14 +56,9 @@ Partial Class MainWindow
 
 #Region "Load"
     Public Sub New()
-
         Splash.Show()
 
-        Try
-            Splash.Status.Content = MCBackup.Language.FindString("Splash.Status.Starting", My.Settings.Language & ".lang")
-        Catch ex As Exception
-            Splash.Status.Content = "Starting..."
-        End Try
+        Splash.ShowStatus("Splash.Status.Starting", "Starting...")
 
         Splash.Status.Refresh()
 
@@ -93,11 +88,7 @@ Partial Class MainWindow
 
         Me.Title = "MCBackup " & ApplicationVersion
 
-        Try
-            Splash.Status.Content = MCBackup.Language.FindString("Splash.Status.LoadingLang", My.Settings.Language & ".lang")
-        Catch ex As Exception
-            Splash.Status.Content = "Loading Language..."
-        End Try
+        Splash.ShowStatus("Splash.Status.LoadingLang", "Loading Language...")
 
         Splash.Progress.Value += 1
         Splash.Progress.Refresh()
@@ -147,11 +138,8 @@ Partial Class MainWindow
 
         Splash.Progress.Value += 1
         Splash.Progress.Refresh()
-        Try
-            Splash.Status.Content = MCBackup.Language.FindString("Splash.Status.LoadingProps", My.Settings.Language & ".lang")
-        Catch ex As Exception
-            Splash.Status.Content = "Loading Properties..."
-        End Try
+
+        Splash.ShowStatus("Splash.Status.LoadingProps", "Loading Properties...")
 
         Splash.Status.Refresh()
 
@@ -196,11 +184,7 @@ Partial Class MainWindow
 
         If My.Settings.CheckForUpdates Then
             Log.Print("Searching for updates...")
-            Try
-                Splash.Status.Content = MCBackup.Language.FindString("Splash.Status.CheckingUpdates", My.Settings.Language & ".lang")
-            Catch ex As Exception
-                Splash.Status.Content = "Checking for Updates..."
-            End Try
+            Splash.ShowStatus("Splash.Status.CheckingUpdates", "Checking for Updates...")
 
             Splash.Status.Refresh()
 
@@ -244,11 +228,7 @@ Partial Class MainWindow
         Splash.Progress.Value += 1
         Splash.Progress.Refresh()
 
-        Try
-            Splash.Status.Content = MCBackup.Language.FindString("Splash.Status.FindingMinecraft", My.Settings.Language & ".lang")
-        Catch ex As Exception
-            Splash.Status.Content = "Finding Minecraft..."
-        End Try
+        Splash.ShowStatus("Splash.Status.FindingMinecraft", "Finding Minecraft...")
 
         Splash.Status.Refresh()
 
@@ -278,11 +258,7 @@ Partial Class MainWindow
         RefreshBackupsList()
         ReloadBackupGroups()
 
-        Try
-            Splash.Status.Content = MCBackup.Language.FindString("Splash.Status.Done", My.Settings.Language & ".lang")
-        Catch ex As Exception
-            Splash.Status.Content = "Done."
-        End Try
+        Splash.ShowStatus("Splash.Status.Done", "Done.")
 
         Splash.Progress.Value += 1
         Splash.Progress.Refresh()
@@ -331,7 +307,7 @@ Partial Class MainWindow
         If ListView.Dispatcher.CheckAccess() Then
             Dim Group As String = GroupsTabControl.SelectedItem
             Dim Search As String = ""
-            If SearchTextBox.Text <> "Search..." Then
+            If SearchTextBox.Text <> MCBackup.Language.Dictionary("MainWindow.Search") Then
                 Search = SearchTextBox.Text
             End If
 
@@ -386,7 +362,7 @@ Partial Class MainWindow
 
             ListView.ItemsSource = Items
             ListView.SelectedIndex = -1
-            SidebarTitle.Text = Items.Count & " element(s)"
+            SidebarTitle.Text = String.Format("{0} element(s)", Items.Count)
 
             Select Case My.Settings.ListViewGroupBy
                 Case "OriginalName"
@@ -421,7 +397,7 @@ Partial Class MainWindow
             ListView_SelectionChanged(New Object, New EventArgs)
 
             ProgressBar.IsIndeterminate = False
-            StatusLabel.Content = "Ready."
+            StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
             ListView.IsEnabled = True
             GroupsTabControl.IsEnabled = True
         Else
@@ -437,18 +413,18 @@ Partial Class MainWindow
                 RenameButton.IsEnabled = False ' Don't allow anything when no items are selected
                 DeleteButton.IsEnabled = False
 
-                SidebarTitle.Text = ListView.Items.Count & " element(s)"        'Show total number of elements
-                SidebarTitle.ToolTip = ListView.Items.Count & " element(s)"
+                SidebarTitle.Text = String.Format("{0} element(s)", ListView.Items.Count)        'Show total number of elements
+                SidebarTitle.ToolTip = String.Format("{0} element(s)", ListView.Items.Count)
 
                 ListViewRestoreItem.IsEnabled = False
                 ListViewDeleteItem.IsEnabled = False         'Disable ContextMenu items
                 ListViewRenameItem.IsEnabled = False
 
                 ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/nothumb.png"))
-                SidebarOriginalNameContent.Text = "N/A"
-                SidebarOriginalNameContent.ToolTip = "No backup selected."
-                SidebarTypeContent.Text = "N/A"
-                SidebarTypeContent.ToolTip = "No backup selected."
+                SidebarOriginalNameContent.Text = "-"
+                SidebarOriginalNameContent.ToolTip = MCBackup.Language.Dictionary("MainWindow.Sidebar.NoBackupSelected")
+                SidebarTypeContent.Text = "-"
+                SidebarTypeContent.ToolTip = MCBackup.Language.Dictionary("MainWindow.Sidebar.NoBackupSelected")
             Case 1
                 RestoreButton.IsEnabled = True
                 RenameButton.IsEnabled = True ' Allow anything if only 1 item is selected
@@ -471,8 +447,8 @@ Partial Class MainWindow
                     ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/nothumb.png"))
                 End If
 
-                Dim Type As String = "N/A"
-                Dim OriginalFolderName As String = "N/A"
+                Dim Type As String = "-"
+                Dim OriginalFolderName As String = "-"
 
                 Try
                     Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & ListView.SelectedItem.Name.ToString & "\info.mcb")
@@ -500,8 +476,8 @@ Partial Class MainWindow
                 RenameButton.IsEnabled = False ' Only allow deletion if more than 1 item is selected
                 DeleteButton.IsEnabled = True
 
-                SidebarTitle.Text = ListView.SelectedItems.Count & " elements selected"         'Set sidebar title to number of selected items
-                SidebarTitle.ToolTip = ListView.SelectedItems.Count & " elements selected"
+                SidebarTitle.Text = String.Format("{0} elements selected", ListView.SelectedItems.Count)   'Set sidebar title to number of selected items
+                SidebarTitle.ToolTip = String.Format("{0} elements selected", ListView.SelectedItems.Count)
 
                 ListViewRestoreItem.IsEnabled = False
                 ListViewDeleteItem.IsEnabled = True
@@ -536,6 +512,9 @@ Partial Class MainWindow
             HelpContextMenu.Items(3).Header = MCBackup.Language.Dictionary("MainWindow.MenuBar.Items(3).Items(3).Header")
 
             StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
+
+            SearchTextBox.Text = MCBackup.Language.Dictionary("MainWindow.Search")
+            SearchTextBox.Foreground = New SolidColorBrush(Colors.Gray)
         Catch
         End Try
     End Sub
@@ -561,7 +540,7 @@ Partial Class MainWindow
 
     Public Sub StartBackup()
         If BackupBackgroundWorker.IsBusy Then
-            MetroMessageBox.Show("A backup is currently in progress! Please wait until it ends before starting another one.", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.BackupInProgress"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             Exit Sub
         End If
         Log.Print("Starting new backup <name=""" & BackupInfo(0) & """; description=""" & BackupInfo(1) & """; path=""" & BackupInfo(2) & """; type=""" & BackupInfo(3) & """;>")
@@ -578,8 +557,8 @@ Partial Class MainWindow
         Try
             My.Computer.FileSystem.CopyDirectory(BackupInfo(2), My.Settings.BackupsFolderLocation & "\" & BackupInfo(0), True) ' Copy selected save/version/everything to backups folder
             Using SW As New StreamWriter(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0) & "\info.mcb") ' Create information fie (stores description and type)
-                SW.WriteLine("##### WARNING! DO NOT EDIT THIS FILE! #####")
-                SW.WriteLine("## YOU COULD DAMAGE YOUR MINECRAFT FILES ##")
+                SW.WriteLine("######## WARNING!  DO NOT EDIT THIS FILE! ########")
+                SW.WriteLine("## YOU COULD DAMAGE YOUR MINECRAFT INSTALLATION ##")
                 SW.WriteLine("baseFolderName=" & BackupInfo(2).Split("\").Last) ' Write save/version folder name
                 SW.WriteLine("type=" & BackupInfo(3)) ' Write type in file
                 SW.WriteLine("desc=" & BackupInfo(1)) ' Write description if file
@@ -630,7 +609,7 @@ Partial Class MainWindow
     Private WorldPath As String = ""
 
     Private Sub CreateThumb(Path As String)
-        StatusLabel.Content = "Creating thumbnail, please wait..."
+        StatusLabel.Content = MCBackup.Language.Dictionary(String.Format("Status.CreatingThumb", 0))
         ThumbnailBackgroundWorker.RunWorkerAsync()
         WorldPath = Path
     End Sub
@@ -690,6 +669,7 @@ Partial Class MainWindow
 
         If e.Data.Contains("[") And e.Data.Contains("]") Then
             Dim PercentComplete As Double = (Val(e.Data.Substring(2).Remove(1)) / 4) + (StepNumber * 25)
+            Debug.Print(PercentComplete)
             UpdateProgress(PercentComplete)
             StatusLabel_Content(String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), Int(PercentComplete)))
         End If
@@ -1174,13 +1154,13 @@ Partial Class MainWindow
 
     Private Sub SearchTextBox_LostFocus(sender As Object, e As RoutedEventArgs) Handles SearchTextBox.LostFocus
         If String.IsNullOrEmpty(SearchTextBox.Text) Then
-            SearchTextBox.Text = "Search..."
+            SearchTextBox.Text = MCBackup.Language.Dictionary("MainWindow.Search")
             SearchTextBox.Foreground = New SolidColorBrush(Colors.Gray)
         End If
     End Sub
 
     Private Sub SearchTextBox_GotFocus(sender As Object, e As RoutedEventArgs) Handles SearchTextBox.GotFocus
-        If SearchTextBox.Text = "Search..." Then
+        If SearchTextBox.Text = MCBackup.Language.Dictionary("MainWindow.Search") Then
             SearchTextBox.Text = ""
             SearchTextBox.Foreground = New SolidColorBrush(Colors.Black)
         End If

@@ -10,7 +10,7 @@ MainWindow.CullButton.Content="Supression Sélective"
 
 MainWindow.ListView.Columns(0).Header="Nom"
 MainWindow.ListView.Columns(1).Header="Date de création"
-MainWindow.ListView.Columns(2).Header="Description"
+MainWindow.ListView.Columns(2).Header="Type"
 MainWindow.OriginalNameLabel.Text="Nom original"
 MainWindow.TypeLabel.Text="Type"
 
@@ -25,6 +25,10 @@ MainWindow.MenuBar.Items(3).Header="Aide"
 MainWindow.MenuBar.Items(3).Items(0).Header="Signaler un bogue"
 MainWindow.MenuBar.Items(3).Items(2).Header="Site Internet"
 MainWindow.MenuBar.Items(3).Items(3).Header="À propos"
+
+MainWindow.Sidebar.NoBackupSelected="Aucune sauvegarde sélectionnée."
+
+MainWindow.Search="Rechercher..."
 
 # Statuses
 Status.Ready="Prêt."
@@ -55,6 +59,7 @@ Message.EnterValidName="Veuillez entrer un nom valide."
 Message.ChooseSave="Veuillez choisir un monde à sauvegarder."
 Message.ChooseVersion="Veuillez choisir une version à sauvegarder."
 Message.ResetSettings="Êtes-vous sûr de vouloir réinitialiser vos préférences?\n\nCliquez 'Oui' pour tout réinitialiser et redémarrer MCBackup."
+Message.BackupInProgress="Une sauvegarde est déjà en cours! Veuillez attendre qu'elle finisse avant d'en démarrer une autre."
 
 BalloonTip.Title.BackupError="Erreur de sauvegarde!"
 BalloonTip.BackupError="Une erreur est survenue lors de la sauvegarde."
@@ -168,3 +173,5 @@ NotifyIcon.ContextMenu.ExitItem.Text="Quitter"
 OptionsWindow.CloseButton.Content="Fermer"
 OptionsWindow.ResetButton.Content="Réinitialiser"
 OptionsWindow.AppearancePanel.ThemeLabel.Content="Thème"
+MainWindow.Sidebar.NoBackupSelected=""
+MainWindow.Search=""

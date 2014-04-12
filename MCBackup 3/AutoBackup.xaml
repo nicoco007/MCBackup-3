@@ -33,8 +33,8 @@
         <ListBox x:Name="SaveListBox" Margin="10,191,11,178" BorderBrush="#FF727171" BorderThickness="1"/>
         <TextBlock x:Name="WorldToBackUpLabel" Text="World to back up:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,171,0,0" Height="20"/>
         <Button x:Name="RefreshButton" Content="Refresh" Margin="0,0,17,146" Height="27" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="85"/>
-        <Controls:NumericUpDown x:Name="MinutesNumUpDown" Margin="136,114,107,0" Height="27" VerticalAlignment="Top" Minimum="5" Maximum="60" Value="15" HorizontalAlignment="Center"/>
-        <Label x:Name="BackupEveryLabel" Content="Backup every" VerticalAlignment="Top" Margin="10,114,194,0" HorizontalContentAlignment="Right" HorizontalAlignment="Center" Width="138"/>
-        <Label x:Name="MinutesLabel" Content="minutes" VerticalAlignment="Top" Margin="224,114,10,0" HorizontalContentAlignment="Left" HorizontalAlignment="Center" Width="108"/>
+        <Controls:NumericUpDown x:Name="MinutesNumUpDown" Margin="138,118,138,0" Height="27" VerticalAlignment="Top" Minimum="5" Maximum="60" Value="15" HorizontalAlignment="Center"/>
+        <Label x:Name="BackupEveryLabel" Content="Backup every" VerticalAlignment="Top" Margin="10,88,10,0" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Width="322"/>
+        <Label x:Name="MinutesLabel" Content="minutes" VerticalAlignment="Top" Margin="10,146,10,0" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Width="322"/>
     </Grid>
 </Controls:MetroWindow>
