@@ -60,8 +60,22 @@ Public Class Language
         Dictionary.Add("MainWindow.AutomaticBackupButton.Content", FindString("MainWindow.AutomaticBackupButton.Content", FileName))
 
         Dictionary.Add("MainWindow.Sidebar.NoBackupSelected", FindString("MainWindow.Sidebar.NoBackupSelected", FileName))
+        Dictionary.Add("MainWindow.Sidebar.NumberElementsSelected", FindString("MainWindow.Sidebar.NumberElementsSelected", FileName))
+        Dictionary.Add("MainWindow.Sidebar.NumberElements", FindString("MainWindow.Sidebar.NumberElements", FileName))
 
         Dictionary.Add("MainWindow.Search", FindString("MainWindow.Search", FileName))
+
+        Dictionary.Add("MainWindow.ListView.ContextMenu.SortBy", FindString("MainWindow.ListView.ContextMenu.SortBy", FileName))
+        Dictionary.Add("MainWindow.ListView.ContextMenu.SortBy.Name", FindString("MainWindow.ListView.ContextMenu.SortBy.Name", FileName))
+        Dictionary.Add("MainWindow.ListView.ContextMenu.SortBy.DateCreated", FindString("MainWindow.ListView.ContextMenu.SortBy.DateCreated", FileName))
+        Dictionary.Add("MainWindow.ListView.ContextMenu.SortBy.Type", FindString("MainWindow.ListView.ContextMenu.SortBy.Type", FileName))
+        Dictionary.Add("MainWindow.ListView.ContextMenu.SortBy.Ascending", FindString("MainWindow.ListView.ContextMenu.SortBy.Ascending", FileName))
+        Dictionary.Add("MainWindow.ListView.ContextMenu.SortBy.Descending", FindString("MainWindow.ListView.ContextMenu.SortBy.Descending", FileName))
+
+        Dictionary.Add("MainWindow.ListView.ContextMenu.GroupBy", FindString("MainWindow.ListView.ContextMenu.GroupBy", FileName))
+        Dictionary.Add("MainWindow.ListView.ContextMenu.GroupBy.OriginalName", FindString("MainWindow.ListView.ContextMenu.GroupBy.OriginalName", FileName))
+        Dictionary.Add("MainWindow.ListView.ContextMenu.GroupBy.Type", FindString("MainWindow.ListView.ContextMenu.GroupBy.Type", FileName))
+        Dictionary.Add("MainWindow.ListView.ContextMenu.GroupBy.Nothing", FindString("MainWindow.ListView.ContextMenu.GroupBy.Nothing", FileName))
 
         ' = Statuses =
         Dictionary.Add("Status.Ready", FindString("Status.Ready", FileName))
@@ -91,6 +105,8 @@ Public Class Language
         Dictionary.Add("Message.ChooseVersion", FindString("Message.ChooseVersion", FileName))
         Dictionary.Add("Message.ResetSettings", FindString("Message.ResetSettings", FileName))
         Dictionary.Add("Message.BackupInProgress", FindString("Message.BackupInProgress", FileName))
+        Dictionary.Add("Message.SetBackupsFolderError", FindString("Message.SetBackupsFolderError", FileName))
+        Dictionary.Add("Message.SetSavesFolderWarning", FindString("Message.SetSavesFolderWarning", FileName))
 
         ' = Balloon Tips =
         Dictionary.Add("BalloonTip.Title.BackupError", FindString("BalloonTip.Title.BackupError", FileName))
@@ -213,27 +229,17 @@ Public Class Language
         Dictionary.Add("CullWindow.CullButton.Content", FindString("CullWindow.CullButton.Content", FileName))
         Dictionary.Add("CullWindow.AreYouSureMsg", FindString("CullWindow.AreYouSureMsg", FileName))
 
+        ' = Backup Types =
+        Dictionary.Add("BackupTypes.Save", FindString("BackupTypes.Save", FileName))
+        Dictionary.Add("BackupTypes.Version", FindString("BackupTypes.Version", FileName))
+        Dictionary.Add("BackupTypes.Everything", FindString("BackupTypes.Everything", FileName))
+
         If ErrorOccured Then
             Log.Print("Language loaded with errors. Please try solving the error(s) above.")
         Else
             Log.Print("Language loaded. No errors occured.")
         End If
     End Sub
-
-    Public Shared Function GetIDFromName(Name As String)
-        Dim LanguageDirectory As New IO.DirectoryInfo(Main.StartupPath & "\language")
-        Dim LanguageFiles As IO.FileInfo() = LanguageDirectory.GetFiles()
-        Dim LanguageFile As IO.FileInfo
-
-        For Each LanguageFile In LanguageFiles
-            Using SR As New StreamReader(Main.StartupPath & "\language\" & LanguageFile.Name)
-                If FindString("fullname", LanguageFile.Name) = Name Then
-                    Return LanguageFile.Name.Replace(".lang", "")
-                End If
-            End Using
-        Next
-        Return Nothing
-    End Function
 
     Public Shared Function FindString(Identifier As String, FileName As String)
         Using SR As New StreamReader(Directory.GetCurrentDirectory & "\language\" & FileName)
@@ -242,7 +248,7 @@ Public Class Language
                 LineNumber += 1
                 Dim Line As String = SR.ReadLine
 
-                If Line.StartsWith(Identifier) And Not Line.StartsWith("#") Then
+                If Line.StartsWith(Identifier & "=""") And Not Line.StartsWith("#") Then
                     Dim ReturnString = Line.Substring(Identifier.Length + 2)
 
                     If Not ReturnString.Length - 1 = ReturnString.LastIndexOf("""") Then
@@ -259,7 +265,7 @@ Public Class Language
                     End If
 
                     ReturnString = ReturnString.Remove(ReturnString.LastIndexOf(""""))
-                    Return ReturnString
+                    Return ReturnString.Replace("\n", vbNewLine)
                 End If
             End While
         End Using

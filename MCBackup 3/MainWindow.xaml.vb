@@ -97,7 +97,7 @@ Partial Class MainWindow
         Splash.Status.Refresh()
 
         Dim DefaultLanguage As String = "en_US"
-        Log.Print(My.Settings.Language)
+
         Select Case CultureInfo.CurrentCulture.ThreeLetterISOLanguageName
             Case "eng"
                 DefaultLanguage = "en_US"
@@ -332,7 +332,14 @@ Partial Class MainWindow
                                 If Line.StartsWith("desc=") Then ' If the line starts with description... 
                                     Description = Line.Substring(5) ' ...set description subitem to that
                                 ElseIf Line.StartsWith("type=") Then
-                                    Type = Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Line.Substring(5)) ' Set type to capitalized "type=" line
+                                    Select Case Line.Substring(5)
+                                        Case "save"
+                                            Type = MCBackup.Language.Dictionary("BackupTypes.Save")
+                                        Case "version"
+                                            Type = MCBackup.Language.Dictionary("BackupTypes.Version")
+                                        Case "everything"
+                                            Type = MCBackup.Language.Dictionary("BackupTypes.Everything")
+                                    End Select
                                 ElseIf Line.StartsWith("baseFolderName=") Then
                                     OriginalFolderName = Line.Substring(15) ' Set original folder name to "baseFolderName=" line
                                 ElseIf Line = "groupName=" & Group And Not (Group = "All") And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
@@ -364,7 +371,7 @@ Partial Class MainWindow
 
             ListView.ItemsSource = Items
             ListView.SelectedIndex = -1
-            SidebarTitle.Text = String.Format("{0} element(s)", Items.Count)
+            SidebarTitle.Text = String.Format(MCBackup.Language.Dictionary("MainWindow.Sidebar.NumberElements"), Items.Count)
 
             Select Case My.Settings.ListViewGroupBy
                 Case "OriginalName"
@@ -415,8 +422,8 @@ Partial Class MainWindow
                 RenameButton.IsEnabled = False ' Don't allow anything when no items are selected
                 DeleteButton.IsEnabled = False
 
-                SidebarTitle.Text = String.Format("{0} element(s)", ListView.Items.Count)        'Show total number of elements
-                SidebarTitle.ToolTip = String.Format("{0} element(s)", ListView.Items.Count)
+                SidebarTitle.Text = String.Format(MCBackup.Language.Dictionary("MainWindow.Sidebar.NumberElements"), ListView.Items.Count)        'Show total number of elements
+                SidebarTitle.ToolTip = String.Format(MCBackup.Language.Dictionary("MainWindow.Sidebar.NumberElements"), ListView.Items.Count)
 
                 ListViewRestoreItem.IsEnabled = False
                 ListViewDeleteItem.IsEnabled = False         'Disable ContextMenu items
@@ -458,7 +465,14 @@ Partial Class MainWindow
                             Dim Line As String = SR.ReadLine
                             If Not Line.StartsWith("#") Then
                                 If Line.StartsWith("type=") Then
-                                    Type = Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Line.Substring(5)) ' Set type to capitalized "type=" line
+                                    Select Case Line.Substring(5)
+                                        Case "save"
+                                            Type = MCBackup.Language.Dictionary("BackupTypes.Save")
+                                        Case "version"
+                                            Type = MCBackup.Language.Dictionary("BackupTypes.Version")
+                                        Case "everything"
+                                            Type = MCBackup.Language.Dictionary("BackupTypes.Everything")
+                                    End Select
                                 ElseIf Line.StartsWith("baseFolderName=") Then
                                     OriginalFolderName = Line.Substring(15) ' Set original folder name to "baseFolderName=" line
                                 End If
@@ -478,8 +492,8 @@ Partial Class MainWindow
                 RenameButton.IsEnabled = False ' Only allow deletion if more than 1 item is selected
                 DeleteButton.IsEnabled = True
 
-                SidebarTitle.Text = String.Format("{0} elements selected", ListView.SelectedItems.Count)   'Set sidebar title to number of selected items
-                SidebarTitle.ToolTip = String.Format("{0} elements selected", ListView.SelectedItems.Count)
+                SidebarTitle.Text = String.Format(MCBackup.Language.Dictionary("MainWindow.Sidebar.NumberElementsSelected"), ListView.SelectedItems.Count)   'Set sidebar title to number of selected items
+                SidebarTitle.ToolTip = String.Format(MCBackup.Language.Dictionary("MainWindow.Sidebar.NumberElementsSelected"), ListView.SelectedItems.Count)
 
                 ListViewRestoreItem.IsEnabled = False
                 ListViewDeleteItem.IsEnabled = True
@@ -518,6 +532,22 @@ Partial Class MainWindow
 
             SearchTextBox.Text = MCBackup.Language.Dictionary("MainWindow.Search")
             SearchTextBox.Foreground = New SolidColorBrush(Colors.Gray)
+
+            ListViewSortByItem.Header = MCBackup.Language.Dictionary("MainWindow.ListView.ContextMenu.SortBy")
+            ListViewSortByNameItem.Header = MCBackup.Language.Dictionary("MainWindow.ListView.ContextMenu.SortBy.Name")
+            ListViewSortByDateCreatedItem.Header = MCBackup.Language.Dictionary("MainWindow.ListView.ContextMenu.SortBy.DateCreated")
+            ListViewSortByTypeItem.Header = MCBackup.Language.Dictionary("MainWindow.ListView.ContextMenu.SortBy.Type")
+            ListViewSortAscendingItem.Header = MCBackup.Language.Dictionary("MainWindow.ListView.ContextMenu.SortBy.Ascending")
+            ListViewSortDescendingItem.Header = MCBackup.Language.Dictionary("MainWindow.ListView.ContextMenu.SortBy.Descending")
+
+            ListViewGroupByItem.Header = MCBackup.Language.Dictionary("MainWindow.ListView.ContextMenu.GroupBy")
+            ListViewGroupByNameItem.Header = MCBackup.Language.Dictionary("MainWindow.ListView.ContextMenu.GroupBy.OriginalName")
+            ListViewGroupByTypeItem.Header = MCBackup.Language.Dictionary("MainWindow.ListView.ContextMenu.GroupBy.Type")
+            ListViewGroupByNothingItem.Header = MCBackup.Language.Dictionary("MainWindow.ListView.ContextMenu.GroupBy.Nothing")
+
+            ListViewRestoreItem.Header = MCBackup.Language.Dictionary("MainWindow.RestoreButton.Content")
+            ListViewDeleteItem.Header = MCBackup.Language.Dictionary("MainWindow.DeleteButton.Content")
+            ListViewRenameItem.Header = MCBackup.Language.Dictionary("MainWindow.RenameButton.Content")
         Catch
         End Try
     End Sub

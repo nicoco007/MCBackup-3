@@ -73,7 +73,7 @@ Partial Public Class Options
 
         ReloadBackupGroups()
     End Sub
-#Region "mini"
+
     Private Sub AlwaysCloseCheckBox_Checked(sender As Object, e As RoutedEventArgs) Handles AlwaysCloseCheckBox.Click
         CloseToTrayRadioButton.IsEnabled = AlwaysCloseCheckBox.IsChecked
         CloseCompletelyRadioButton.IsEnabled = AlwaysCloseCheckBox.IsChecked
@@ -86,10 +86,8 @@ Partial Public Class Options
                 SavesFolderTextBox.Text = FolderBrowserDialog.SelectedPath & "\saves"
                 Exit Sub
             Else
-                If MetroMessageBox.Show("Minecraft is not installed in that folder! Try again?", "Error!", MessageBoxButton.YesNo, MessageBoxImage.Error) = Windows.Forms.DialogResult.Yes Then ' Ask if user wants to try finding folder again
+                If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.NotInstalledInFolder"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = Windows.Forms.DialogResult.Yes Then ' Ask if user wants to try finding folder again
                     BrowseMinecraftFolderButton_Click(sender, e) ' Restart from beginning if "Yes"
-                Else
-                    Me.Close() ' Close program if "No"
                 End If
             End If
         End If
@@ -103,18 +101,21 @@ Partial Public Class Options
                 BackupsFolderTextBox.Text = FolderBrowserDialog.SelectedPath
             Catch ex As Exception
                 Log.Print(ex.Message, Log.Type.Severe)
-                MetroMessageBox.Show("Error: Unable to set backups folder to """ & FolderBrowserDialog.SelectedPath & """", "Error!", MessageBoxButton.OK, MessageBoxImage.Error)
+                MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.SetBackupsFolderError"), FolderBrowserDialog.SelectedPath), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             End Try
         End If
     End Sub
 
     Private Sub BrowseSavesFolderButton_Click(sender As Object, e As RoutedEventArgs) Handles BrowseSavesFolderButton.Click
         If FolderBrowserDialog.ShowDialog = Forms.DialogResult.OK Then
-            Dim folderPath() As String = FolderBrowserDialog.SelectedPath.Split("\")
-            Dim folder As String = folderPath.Last
-            If Not folder = "saves" Then
-                If MetroMessageBox.Show("Are you sure this is a saves folder? It's name isn't even ""saves""!", "Are you sure?", MessageBoxButton.YesNoCancel, MessageBoxImage.Question) = Forms.DialogResult.Yes Then
+            Dim Folder = IO.Path.GetDirectoryName(FolderBrowserDialog.SelectedPath)
+            Dim Result As MessageBoxResult = MetroMessageBox.Show("Are you sure this is a saves folder? It's name isn't even ""saves""!", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNoCancel, MessageBoxImage.Question)
+            Log.Print(Result.ToString)
+            If Not Folder = "saves" Then
+                If Result = MessageBoxResult.Yes Then
                     SavesFolderTextBox.Text = FolderBrowserDialog.SelectedPath
+                ElseIf Result = MessageBoxResult.No Then
+                    BrowseSavesFolderButton_Click(sender, e)
                 Else
                     Exit Sub
                 End If
@@ -362,7 +363,6 @@ Partial Public Class Options
             Process.Start(Main.StartupPath & "\mcbackup.exe")
         End If
     End Sub
-#End Region
 
 #Region "Backup Groups Tab"
     Private Sub ReloadBackupGroups()
@@ -401,6 +401,7 @@ Partial Public Class Options
 
     Private Sub CreateNewGroupButton_Click(sender As Object, e As RoutedEventArgs) Handles CreateNewGroupButton.Click
         My.Settings.BackupGroups.Add(CreateNewGroupTextBox.Text)
+        CreateNewGroupTextBox.Text = ""
         ReloadBackupGroups()
     End Sub
 

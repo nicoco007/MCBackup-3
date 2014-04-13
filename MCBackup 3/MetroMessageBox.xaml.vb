@@ -61,13 +61,13 @@ Public Class MetroMessageBox
 
     Public Shared Sub ShowButtons(Button As MessageBoxButton)
         Select Case Button
-            Case 0
+            Case MessageBoxButton.OK
                 MsgBox.Button1.Visibility = Windows.Visibility.Visible
                 MsgBox.Button1.Content = "OK"
                 MsgBox.Button1.Tag = MessageBoxResult.OK
                 MsgBox.Button2.Visibility = Windows.Visibility.Collapsed
                 MsgBox.Button3.Visibility = Windows.Visibility.Collapsed
-            Case 1
+            Case MessageBoxButton.OKCancel
                 MsgBox.Button1.Visibility = Windows.Visibility.Visible
                 MsgBox.Button1.Content = "Cancel"
                 MsgBox.Button1.Tag = MessageBoxResult.Cancel
@@ -75,7 +75,7 @@ Public Class MetroMessageBox
                 MsgBox.Button2.Content = "OK"
                 MsgBox.Button2.Tag = MessageBoxResult.OK
                 MsgBox.Button3.Visibility = Windows.Visibility.Collapsed
-            Case 4
+            Case MessageBoxButton.YesNo
                 MsgBox.Button1.Visibility = Windows.Visibility.Visible
                 MsgBox.Button1.Content = "No"
                 MsgBox.Button1.Tag = MessageBoxResult.No
@@ -83,7 +83,7 @@ Public Class MetroMessageBox
                 MsgBox.Button2.Content = "Yes"
                 MsgBox.Button2.Tag = MessageBoxResult.Yes
                 MsgBox.Button3.Visibility = Windows.Visibility.Collapsed
-            Case 3
+            Case MessageBoxButton.YesNoCancel
                 MsgBox.Button1.Visibility = Windows.Visibility.Visible
                 MsgBox.Button1.Content = "Cancel"
                 MsgBox.Button1.Tag = MessageBoxResult.Cancel
@@ -103,13 +103,13 @@ Public Class MetroMessageBox
         End If
 
         Select Case Image
-            Case 16
+            Case MessageBoxImage.Error
                 MsgBox.Image.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/msgbox.error.png"))
                 System.Media.SystemSounds.Hand.Play()
-            Case 32
+            Case MessageBoxImage.Question
                 MsgBox.Image.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/msgbox.question.png"))
                 System.Media.SystemSounds.Asterisk.Play()
-            Case 64
+            Case MessageBoxImage.Information
                 MsgBox.Image.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/msgbox.info.png"))
                 System.Media.SystemSounds.Asterisk.Play()
         End Select
@@ -126,7 +126,7 @@ Public Class MetroMessageBox
     End Sub
 
     Private Sub Button3_Click(sender As Object, e As RoutedEventArgs) Handles Button3.Click
-        Result = Button2.Tag
+        Result = Button3.Tag
         Me.Close()
     End Sub
 End Class

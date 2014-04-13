@@ -1,5 +1,4 @@
 ﻿Imports System.ComponentModel
-Imports MahApps.Metro
 
 Public Class SortAdorner
     Inherits Adorner
