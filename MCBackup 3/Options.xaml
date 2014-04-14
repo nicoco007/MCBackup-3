@@ -147,10 +147,10 @@
             </TabItem>
             <TabItem Header="Groups">
                 <Grid>
-                    <ListBox x:Name="BackupGroupsListBox" HorizontalAlignment="Left" Height="310" VerticalAlignment="Top" Width="150" Margin="10,10,0,0" BorderThickness="1"/>
-                    <TextBox x:Name="CreateNewGroupTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Width="200" Margin="165,10,0,0" MaxLength="16"/>
-                    <Button x:Name="CreateNewGroupButton" Content="+" HorizontalAlignment="Left" VerticalAlignment="Top" Width="26" Margin="370,10,0,0" Height="26" Padding="0" IsEnabled="False"/>
-                    <Button x:Name="DeleteGroupButton" Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="165,41,0,0" IsEnabled="False"/>
+                    <TextBox x:Name="CreateNewGroupTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Width="194" Margin="312,10,0,0" MaxLength="16"/>
+                    <Button x:Name="CreateNewGroupButton" Content="+" HorizontalAlignment="Left" VerticalAlignment="Top" Width="26" Margin="511,10,0,0" Height="26" Padding="0" IsEnabled="False"/>
+                    <Button x:Name="DeleteGroupButton" Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="312,41,0,0" IsEnabled="False"/>
+                    <ListBox x:Name="BackupGroupsListBox" HorizontalAlignment="Left" Height="310" VerticalAlignment="Top" Width="194" BorderThickness="1" Margin="113,10,0,0"/>
                 </Grid>
             </TabItem>
         </TabControl>

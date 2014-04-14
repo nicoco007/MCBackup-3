@@ -165,6 +165,9 @@ Partial Class MainWindow
         Splash.Progress.Value += 1
         Splash.Progress.Refresh()
 
+        Me.Width = My.Settings.WindowSize.Width
+        Me.Height = My.Settings.WindowSize.Height
+
         If My.Settings.BackupsFolderLocation = "" Then
             My.Settings.BackupsFolderLocation = StartupPath & "\backups"
         End If
@@ -1191,7 +1194,10 @@ Partial Class MainWindow
                 Case CloseType.CloseToTray
                     e.Cancel = True
                     Me.Hide()
-                    NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RunningBackground"), MCBackup.Language.Dictionary("BalloonTip.RunningBackground"), System.Windows.Forms.ToolTipIcon.Info)
+                    If My.Settings.FirstCloseToTray Then
+                        NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RunningBackground"), MCBackup.Language.Dictionary("BalloonTip.RunningBackground"), System.Windows.Forms.ToolTipIcon.Info)
+                        My.Settings.FirstCloseToTray = False
+                    End If
                     Log.Print("Closing to tray")
                     Exit Sub
                 Case CloseType.CloseCompletely
@@ -1200,30 +1206,29 @@ Partial Class MainWindow
                     e.Cancel = True
                     Exit Sub
             End Select
-
-            Try
-                If Process.GetProcessesByName("mcmap").Count > 0 Then
-                    Log.Print("Killing Cartograph Process")
-                    MCMap.Kill()
-                End If
-            Catch
-            End Try
-
-            NotifyIcon.Visible = False
-            NotifyIcon.Dispose()
-
-            My.Settings.SidebarWidth = GridSidebarColumn.Width.Value
-
-            My.Settings.AutoBkpPrefix = AutoBackupWindow.PrefixTextBox.Text
-            My.Settings.AutoBkpSuffix = AutoBackupWindow.SuffixTextBox.Text
-
-            Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
-            My.Settings.ListViewSortBy = View.SortDescriptions(0).PropertyName
-            My.Settings.ListViewSortByDirection = View.SortDescriptions(0).Direction
-
-            Log.Print("Someone is closing me!")
-            My.Settings.Save()
         End If
+
+        If Process.GetProcessesByName("mcmap").Count > 0 Then
+            MCMap.Kill()
+            Log.Print("Killed MCMap Process")
+        End If
+
+        NotifyIcon.Visible = False
+        NotifyIcon.Dispose()
+
+        My.Settings.SidebarWidth = GridSidebarColumn.Width.Value
+
+        My.Settings.AutoBkpPrefix = AutoBackupWindow.PrefixTextBox.Text
+        My.Settings.AutoBkpSuffix = AutoBackupWindow.SuffixTextBox.Text
+
+        Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
+        My.Settings.ListViewSortBy = View.SortDescriptions(0).PropertyName
+        My.Settings.ListViewSortByDirection = View.SortDescriptions(0).Direction
+
+        My.Settings.WindowSize = New Size(Me.Width, Me.Height)
+
+        Log.Print("Someone is closing me!")
+        My.Settings.Save()
     End Sub
 #End Region
 
@@ -1290,6 +1295,7 @@ Partial Class MainWindow
 
     Private Sub ListView_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles ListView.MouseDown
         ListView.SelectedIndex = -1
+        ListView.Focus()
     End Sub
 End Class
 

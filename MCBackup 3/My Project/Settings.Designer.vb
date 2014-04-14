@@ -305,15 +305,37 @@ Partial Friend NotInheritable Class MySettings
     End Property
     
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
-     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-     Global.System.Configuration.DefaultSettingValueAttribute("<?xml version=""1.0"" encoding=""utf-16""?>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"<ArrayOfString xmlns:xsi=""http://www.w3."& _ 
-        "org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" />")>  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute()>  _
     Public Property BackupGroups() As Global.System.Collections.Specialized.StringCollection
         Get
             Return CType(Me("BackupGroups"),Global.System.Collections.Specialized.StringCollection)
         End Get
         Set
             Me("BackupGroups") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+    Public Property FirstCloseToTray() As Boolean
+        Get
+            Return CType(Me("FirstCloseToTray"),Boolean)
+        End Get
+        Set
+            Me("FirstCloseToTray") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("980,600")>  _
+    Public Property WindowSize() As Global.System.Windows.Size
+        Get
+            Return CType(Me("WindowSize"),Global.System.Windows.Size)
+        End Get
+        Set
+            Me("WindowSize") = value
         End Set
     End Property
 End Class
