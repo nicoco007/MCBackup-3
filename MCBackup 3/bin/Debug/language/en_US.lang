@@ -11,8 +11,6 @@ MainWindow.CullButton.Content=Selective Cull
 MainWindow.ListView.Columns(0).Header=Name
 MainWindow.ListView.Columns(1).Header=Date Created
 MainWindow.ListView.Columns(2).Header=Type
-MainWindow.OriginalNameLabel.Text=Original Name
-MainWindow.TypeLabel.Text=Type
 
 MainWindow.MenuBar.Items(0).Header=File
 MainWindow.MenuBar.Items(0).Items(0).Header=Quit
@@ -40,6 +38,11 @@ MainWindow.ListView.ContextMenu.GroupBy.Nothing=Nothing
 MainWindow.Sidebar.NoBackupSelected=No backup selected.
 MainWindow.Sidebar.NumberElementsSelected={0} elements selected
 MainWindow.Sidebar.NumberElements={0} elements
+MainWindow.Sidebar.OriginalNameLabel.Text=Original Name:
+MainWindow.Sidebar.TypeLabel.Text=Type:
+MainWindow.Sidebar.DescriptionLabel.Text=Description:
+MainWindow.Sidebar.Description.NoDesc=No description.
+MainWindow.Sidebar.Description.NoItem=No item selected.
 
 MainWindow.Search=Search...
 

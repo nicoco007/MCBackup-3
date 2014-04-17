@@ -37,8 +37,9 @@ Public Class Language
         Dictionary.Add("MainWindow.ListView.Columns(0).Header", FindString("MainWindow.ListView.Columns(0).Header", FileName))
         Dictionary.Add("MainWindow.ListView.Columns(1).Header", FindString("MainWindow.ListView.Columns(1).Header", FileName))
         Dictionary.Add("MainWindow.ListView.Columns(2).Header", FindString("MainWindow.ListView.Columns(2).Header", FileName))
-        Dictionary.Add("MainWindow.OriginalNameLabel.Text", FindString("MainWindow.OriginalNameLabel.Text", FileName))
-        Dictionary.Add("MainWindow.TypeLabel.Text", FindString("MainWindow.TypeLabel.Text", FileName))
+        Dictionary.Add("MainWindow.Sidebar.OriginalNameLabel.Text", FindString("MainWindow.Sidebar.OriginalNameLabel.Text", FileName))
+        Dictionary.Add("MainWindow.Sidebar.TypeLabel.Text", FindString("MainWindow.Sidebar.TypeLabel.Text", FileName))
+        Dictionary.Add("MainWindow.Sidebar.DescriptionLabel.Text", FindString("MainWindow.Sidebar.DescriptionLabel.Text", FileName))
 
         Dictionary.Add("MainWindow.MenuBar.Items(0).Header", FindString("MainWindow.MenuBar.Items(0).Header", FileName))
         Dictionary.Add("MainWindow.MenuBar.Items(0).Items(0).Header", FindString("MainWindow.MenuBar.Items(0).Items(0).Header", FileName))
@@ -56,6 +57,8 @@ Public Class Language
         Dictionary.Add("MainWindow.Sidebar.NoBackupSelected", FindString("MainWindow.Sidebar.NoBackupSelected", FileName))
         Dictionary.Add("MainWindow.Sidebar.NumberElementsSelected", FindString("MainWindow.Sidebar.NumberElementsSelected", FileName))
         Dictionary.Add("MainWindow.Sidebar.NumberElements", FindString("MainWindow.Sidebar.NumberElements", FileName))
+        Dictionary.Add("MainWindow.Sidebar.Description.NoDesc", FindString("MainWindow.Sidebar.Description.NoDesc", FileName))
+        Dictionary.Add("MainWindow.Sidebar.Description.NoItem", FindString("MainWindow.Sidebar.Description.NoItem", FileName))
 
         Dictionary.Add("MainWindow.Search", FindString("MainWindow.Search", FileName))
 

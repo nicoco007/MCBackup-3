@@ -55,7 +55,7 @@
     <Grid Height="Auto" VerticalAlignment="Stretch">
         <Grid Margin="10,60,10,132">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="672*" MinWidth="300"/>
+                <ColumnDefinition Width="672" MinWidth="300"/>
                 <ColumnDefinition Width="1"/>
                 <ColumnDefinition Name="GridSidebarColumn" Width="280*" MinWidth="280"/>
             </Grid.ColumnDefinitions>
@@ -86,7 +86,7 @@
                 </ListView.ContextMenu>
                 <ListView.View>
                     <GridView x:Name="ListViewGridView">
-                        <GridViewColumn Width="320">
+                        <GridViewColumn Width="400">
                             <GridViewColumn.Header>
                                 <GridViewColumnHeader Tag="Name" x:Name="NameColumnHeader">Name</GridViewColumnHeader>
                             </GridViewColumn.Header>
@@ -153,10 +153,11 @@
                     <TextBlock Name="SidebarTitle" Text="XXX element(s)" Foreground="#FF1F3995" FontSize="20" FontFamily="Segoe UI" Padding="5" TextTrimming="CharacterEllipsis" Height="38" VerticalAlignment="Top"/>
                     <Image x:Name="ThumbnailImage" Source="Resources/nothumb.png"  Margin="10,37,10,138"/>
                     <TextBlock x:Name="SidebarTypeLabel" Text="Type: " Foreground="#FF5A6779" Padding="5" Height="Auto" VerticalAlignment="Bottom" Margin="0,0,0,107" HorizontalAlignment="Left" Width="99"/>
-                    <TextBlock x:Name="SidebarTypeContent" Padding="5" Margin="100,0,0,107" VerticalAlignment="Bottom"/>
+                    <TextBlock x:Name="SidebarTypeContent" Padding="5" Margin="100,0,0,107" VerticalAlignment="Bottom" Text="&lt;Type&gt;"/>
                     <TextBlock x:Name="SidebarOriginalNameLabel" Text="Original Name: " Foreground="#FF5A6779" Padding="5" Height="Auto" VerticalAlignment="Bottom" Margin="1,0,0,76" HorizontalAlignment="Left" Width="99"/>
-                    <TextBlock x:Name="SidebarOriginalNameContent" Padding="5" Margin="100,0,0,76" VerticalAlignment="Bottom"/>
-                    <TextBlock x:Name="DescriptionTextBox" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Margin="10,304,0,0" Height="61" Width="253"/>
+                    <TextBlock x:Name="SidebarOriginalNameContent" Padding="5" Margin="100,0,0,76" VerticalAlignment="Bottom" Text="&lt;Original Name&gt;"/>
+                    <TextBlock x:Name="DescriptionTextBox" HorizontalAlignment="Left" TextWrapping="Wrap" Text="&lt;Description&gt;" VerticalAlignment="Top" Margin="1,330,0,0" Height="45" Width="272" Padding="5,0" TextTrimming="WordEllipsis"/>
+                    <TextBlock x:Name="SidebarDescriptionLabel" Text="Description :" Foreground="#FF5A6779" Padding="5" Height="Auto" VerticalAlignment="Bottom" Margin="1,0,0,45" HorizontalAlignment="Left" Width="99"/>
                 </Grid>
             </Border>
         </Grid>

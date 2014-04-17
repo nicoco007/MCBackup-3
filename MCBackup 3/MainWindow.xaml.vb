@@ -323,18 +323,15 @@ Partial Class MainWindow
             Dim Items As New List(Of ListViewBackupItem)()
 
             For Each Folder In Folders ' For each folder in the backups folder
-                Dim Type As String = "[ERROR]"                  ' <╗
-                Dim Description As String = "[ERROR]"           ' <╬ Create variables with default value [ERROR], in case one of the values doesn't exist
-                Dim OriginalFolderName As String = "[ERROR]"    ' <╝
+                Dim Type As String = "[ERROR]"                  ' Create variables with default value [ERROR], in case one of the values doesn't exist
+                Dim OriginalFolderName As String = "[ERROR]"    ' 
 
                 Try
                     Using SR As New StreamReader(Directory.ToString & "\" & Folder.ToString & "\info.mcb")
                         Do While SR.Peek <> -1
                             Dim Line As String = SR.ReadLine
                             If Not Line.StartsWith("#") Then
-                                If Line.StartsWith("desc=") Then ' If the line starts with description... 
-                                    Description = Line.Substring(5) ' ...set description subitem to that
-                                ElseIf Line.StartsWith("type=") Then
+                                If Line.StartsWith("type=") Then
                                     Select Case Line.Substring(5)
                                         Case "save"
                                             Type = MCBackup.Language.Dictionary("BackupTypes.Save")
@@ -347,11 +344,11 @@ Partial Class MainWindow
                                     OriginalFolderName = Line.Substring(15) ' Set original folder name to "baseFolderName=" line
                                 ElseIf Line = "groupName=" & Group And Not (Group = "All") And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
                                     If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
-                                        Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), OriginalFolderName, Type))
+                                        Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), OriginalFolderName, Type))
                                     ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
-                                        Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
+                                        Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
                                     Else
-                                        Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
+                                        Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
                                     End If
                                 End If
                             End If
@@ -360,11 +357,11 @@ Partial Class MainWindow
 
                     If Group = "All" And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
                         If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
-                            Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), OriginalFolderName, Type))
+                            Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), OriginalFolderName, Type))
                         ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
-                            Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
+                            Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
                         Else
-                            Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), Description, New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
+                            Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
                         End If
                     End If
                 Catch ex As Exception
@@ -419,7 +416,6 @@ Partial Class MainWindow
 
     Private Sub ListView_SelectionChanged(sender As Object, e As EventArgs) Handles ListView.SelectionChanged
         Select Case ListView.SelectedItems.Count
-
             Case 0
                 RestoreButton.IsEnabled = False
                 RenameButton.IsEnabled = False ' Don't allow anything when no items are selected
@@ -437,6 +433,8 @@ Partial Class MainWindow
                 SidebarOriginalNameContent.ToolTip = MCBackup.Language.Dictionary("MainWindow.Sidebar.NoBackupSelected")
                 SidebarTypeContent.Text = "-"
                 SidebarTypeContent.ToolTip = MCBackup.Language.Dictionary("MainWindow.Sidebar.NoBackupSelected")
+
+                DescriptionTextBox.Text = MCBackup.Language.Dictionary("MainWindow.Sidebar.Description.NoItem")
             Case 1
                 RestoreButton.IsEnabled = True
                 RenameButton.IsEnabled = True ' Allow anything if only 1 item is selected
@@ -478,6 +476,8 @@ Partial Class MainWindow
                                     End Select
                                 ElseIf Line.StartsWith("baseFolderName=") Then
                                     OriginalFolderName = Line.Substring(15) ' Set original folder name to "baseFolderName=" line
+                                ElseIf Line.StartsWith("desc=") Then
+                                    DescriptionTextBox.Text = IIf(String.IsNullOrEmpty(Line.Substring(5)), MCBackup.Language.Dictionary("MainWindow.Sidebar.Description.NoDesc"), Line.Substring(5))
                                 End If
                             End If
                         Loop
@@ -501,6 +501,8 @@ Partial Class MainWindow
                 ListViewRestoreItem.IsEnabled = False
                 ListViewDeleteItem.IsEnabled = True
                 ListViewRenameItem.IsEnabled = False
+
+                DescriptionTextBox.Text = MCBackup.Language.Dictionary("MainWindow.Sidebar.Description.NoItem")
         End Select
     End Sub
 
@@ -518,8 +520,9 @@ Partial Class MainWindow
             DateCreatedColumnHeader.Content = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(1).Header")
             TypeColumnHeader.Content = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(2).Header")
 
-            SidebarOriginalNameLabel.Text = MCBackup.Language.Dictionary("MainWindow.OriginalNameLabel.Text") & ":"
-            SidebarTypeLabel.Text = MCBackup.Language.Dictionary("MainWindow.TypeLabel.Text") & ":"
+            SidebarOriginalNameLabel.Text = MCBackup.Language.Dictionary("MainWindow.Sidebar.OriginalNameLabel.Text")
+            SidebarTypeLabel.Text = MCBackup.Language.Dictionary("MainWindow.Sidebar.TypeLabel.Text")
+            SidebarDescriptionLabel.Text = MCBackup.Language.Dictionary("MainWindow.Sidebar.DescriptionLabel.Text")
 
             EditToolbarButton.Content = MCBackup.Language.Dictionary("MainWindow.MenuBar.Items(1).Header")
             EditContextMenu.Items(0).Header = MCBackup.Language.Dictionary("MainWindow.MenuBar.Items(1).Items(0).Header")
@@ -579,7 +582,7 @@ Partial Class MainWindow
             MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.BackupInProgress"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             Exit Sub
         End If
-        Log.Print("Starting new backup <name=""" & BackupInfo(0) & """; description=""" & BackupInfo(1) & """; path=""" & BackupInfo(2) & """; type=""" & BackupInfo(3) & """;>")
+        Log.Print("Starting new backup (Name: '" & BackupInfo(0) & "'; Description: '" & BackupInfo(1) & "'; Path: '" & BackupInfo(2) & "'; Type: '" & BackupInfo(3) & "')")
         ListView.IsEnabled = False
         BackupButton.IsEnabled = False
         RestoreButton.IsEnabled = False
@@ -1329,16 +1332,6 @@ Public Class ListViewBackupItem
         End Set
     End Property
 
-    Private m_Description As String
-    Public Property Description() As String
-        Get
-            Return m_Description
-        End Get
-        Set(value As String)
-            m_Description = value
-        End Set
-    End Property
-
     Private m_Color As SolidColorBrush
     Public Property Color() As SolidColorBrush
         Get
@@ -1369,10 +1362,9 @@ Public Class ListViewBackupItem
         End Set
     End Property
 
-    Public Sub New(Name As String, DateCreated As String, Description As String, Color As SolidColorBrush, OriginalName As String, Type As String)
+    Public Sub New(Name As String, DateCreated As String, Color As SolidColorBrush, OriginalName As String, Type As String)
         Me.Name = Name
         Me.DateCreated = DateCreated
-        Me.Description = Description
         Me.Color = Color
         Me.OriginalName = OriginalName
         Me.Type = Type

@@ -11,8 +11,6 @@ MainWindow.CullButton.Content=Supression Sélective
 MainWindow.ListView.Columns(0).Header=Nom
 MainWindow.ListView.Columns(1).Header=Date de création
 MainWindow.ListView.Columns(2).Header=Type
-MainWindow.OriginalNameLabel.Text=Nom original
-MainWindow.TypeLabel.Text=Type
 
 MainWindow.MenuBar.Items(0).Header=Fichier
 MainWindow.MenuBar.Items(0).Items(0).Header=Quitter
@@ -29,6 +27,11 @@ MainWindow.MenuBar.Items(3).Items(3).Header=À propos
 MainWindow.Sidebar.NoBackupSelected=Aucune sauvegarde sélectionnée.
 MainWindow.Sidebar.NumberElementsSelected={0} éléments sélectionnés
 MainWindow.Sidebar.NumberElements={0} élément(s)
+MainWindow.Sidebar.OriginalNameLabel.Text=Nom original :
+MainWindow.Sidebar.TypeLabel.Text=Type :
+MainWindow.Sidebar.DescriptionLabel.Text=Description :
+MainWindow.Sidebar.Description.NoDesc=Aucune description.
+MainWindow.Sidebar.Description.NoItem=Aucun élément sélectionné.
 
 MainWindow.Search=Rechercher...
 
