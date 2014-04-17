@@ -1206,29 +1206,29 @@ Partial Class MainWindow
                     e.Cancel = True
                     Exit Sub
             End Select
+
+            If Process.GetProcessesByName("mcmap").Count > 0 Then
+                MCMap.Kill()
+                Log.Print("Killed MCMap Process")
+            End If
+
+            NotifyIcon.Visible = False
+            NotifyIcon.Dispose()
+
+            My.Settings.SidebarWidth = GridSidebarColumn.Width.Value
+
+            My.Settings.AutoBkpPrefix = AutoBackupWindow.PrefixTextBox.Text
+            My.Settings.AutoBkpSuffix = AutoBackupWindow.SuffixTextBox.Text
+
+            Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
+            My.Settings.ListViewSortBy = View.SortDescriptions(0).PropertyName
+            My.Settings.ListViewSortByDirection = View.SortDescriptions(0).Direction
+
+            My.Settings.WindowSize = New Size(Me.Width, Me.Height)
+
+            Log.Print("Someone is closing me!")
+            My.Settings.Save()
         End If
-
-        If Process.GetProcessesByName("mcmap").Count > 0 Then
-            MCMap.Kill()
-            Log.Print("Killed MCMap Process")
-        End If
-
-        NotifyIcon.Visible = False
-        NotifyIcon.Dispose()
-
-        My.Settings.SidebarWidth = GridSidebarColumn.Width.Value
-
-        My.Settings.AutoBkpPrefix = AutoBackupWindow.PrefixTextBox.Text
-        My.Settings.AutoBkpSuffix = AutoBackupWindow.SuffixTextBox.Text
-
-        Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
-        My.Settings.ListViewSortBy = View.SortDescriptions(0).PropertyName
-        My.Settings.ListViewSortByDirection = View.SortDescriptions(0).Direction
-
-        My.Settings.WindowSize = New Size(Me.Width, Me.Height)
-
-        Log.Print("Someone is closing me!")
-        My.Settings.Save()
     End Sub
 #End Region
 

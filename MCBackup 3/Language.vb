@@ -26,12 +26,6 @@ Public Class Language
         ErrorOccured = False
         Log.Print("Loading language from file '" & FileName & "'...")
         Dictionary.Clear()
-        Dictionary.Add("Splash.Status.Starting", FindString("Splash.Status.Starting", FileName))
-        Dictionary.Add("Splash.Status.LoadingLang", FindString("Splash.Status.LoadingLang", FileName))
-        Dictionary.Add("Splash.Status.LoadingProps", FindString("Splash.Status.LoadingProps", FileName))
-        Dictionary.Add("Splash.Status.CheckingUpdates", FindString("Splash.Status.CheckingUpdates", FileName))
-        Dictionary.Add("Splash.Status.FindingMinecraft", FindString("Splash.Status.FindingMinecraft", FileName))
-        Dictionary.Add("Splash.Status.Done", FindString("Splash.Status.Done", FileName))
 
         ' = Main Window =
         Dictionary.Add("MainWindow.BackupButton.Content", FindString("MainWindow.BackupButton.Content", FileName))
@@ -247,6 +241,12 @@ Public Class Language
         Dictionary.Add("BackupTypes.Version", FindString("BackupTypes.Version", FileName))
         Dictionary.Add("BackupTypes.Everything", FindString("BackupTypes.Everything", FileName))
 
+        ' = Metro Message Box =
+        Dictionary.Add("MetroMsgBox.Button.OK", FindString("MetroMsgBox.Button.OK", FileName))
+        Dictionary.Add("MetroMsgBox.Button.Yes", FindString("MetroMsgBox.Button.Yes", FileName))
+        Dictionary.Add("MetroMsgBox.Button.No", FindString("MetroMsgBox.Button.No", FileName))
+        Dictionary.Add("MetroMsgBox.Button.Cancel", FindString("MetroMsgBox.Button.Cancel", FileName))
+
         If ErrorOccured Then
             Log.Print("Language loaded with errors. Please try solving the error(s) above.")
         Else
@@ -261,32 +261,24 @@ Public Class Language
                 LineNumber += 1
                 Dim Line As String = SR.ReadLine
 
-                If Line.StartsWith(Identifier & "=""") And Not Line.StartsWith("#") Then
-                    Dim ReturnString = Line.Substring(Identifier.Length + 2)
-
-                    If Not ReturnString.Length - 1 = ReturnString.LastIndexOf("""") Then
-                        Log.Print("FORMATTING ERROR @ LINE " & LineNumber & ": Look around '" & ReturnString.Substring(ReturnString.LastIndexOf("""") + 1) & "'", Log.Type.Warning)
-                        ErrorOccured = True
-                        Return Identifier
-                        Exit Function
-                    End If
+                If Line.StartsWith(Identifier & "=") And Not Line.StartsWith("#") Then
+                    Dim ReturnString = Line.Substring(Identifier.Length + 1)
 
                     If ReturnString.Length - 1 = 0 Then
                         Log.Print("FORMATTING ERROR @ LINE " & LineNumber & ": Entry is empty!", Log.Type.Warning)
                         ErrorOccured = True
-                        Return Identifier
+                        Return Identifier.Split(".").Last & "." & Identifier.Split(".")(Identifier.Split(".").Count - 2)
                     End If
 
-                    ReturnString = ReturnString.Remove(ReturnString.LastIndexOf(""""))
                     Return ReturnString.Replace("\n", vbNewLine)
                 End If
             End While
         End Using
-        Log.Print("FORMATTING ERROR: """ & Identifier & """ indentifier not found!", Log.Type.Warning)
+        Log.Print("Language file error: '" & Identifier & "' identifier not found, added automatically. Please fill it in ASAP!", Log.Type.Warning)
         Using SW As New StreamWriter(Main.StartupPath & "\language\" & FileName, True)
-            SW.Write(vbNewLine & Identifier & "=""""")
+            SW.Write(vbNewLine & Identifier & "=")
         End Using
         ErrorOccured = True
-        Return Identifier
+        Return Identifier.Split(".").Last & "." & Identifier.Split(".")(Identifier.Split(".").Count - 2)
     End Function
 End Class

@@ -117,8 +117,8 @@ Partial Public Class Options
     Private Sub BrowseSavesFolderButton_Click(sender As Object, e As RoutedEventArgs) Handles BrowseSavesFolderButton.Click
         If FolderBrowserDialog.ShowDialog = Forms.DialogResult.OK Then
             Dim Folder = IO.Path.GetDirectoryName(FolderBrowserDialog.SelectedPath)
-            Dim Result As MessageBoxResult = MetroMessageBox.Show("Are you sure this is a saves folder? It's name isn't even ""saves""!", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNoCancel, MessageBoxImage.Question)
-            Log.Print(Result.ToString)
+            Dim Result As MessageBoxResult = MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.SetSavesFolderWarning"), Folder), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNoCancel, MessageBoxImage.Question)
+
             If Not Folder = "saves" Then
                 If Result = MessageBoxResult.Yes Then
                     SavesFolderTextBox.Text = FolderBrowserDialog.SelectedPath
@@ -175,7 +175,7 @@ Partial Public Class Options
             My.Settings.BackgroundImageStretch = Int(Brush.Stretch)
             Main.Background = Brush
         Catch ex As Exception
-            Log.Print("[SEVERE] " & ex.Message)
+            Log.Print(ex.Message, Log.Type.Severe)
         End Try
     End Sub
 
