@@ -24,8 +24,9 @@ Partial Public Class Options
     Private FolderBrowserDialog As New System.Windows.Forms.FolderBrowserDialog
     Private OpenFileDialog As New System.Windows.Forms.OpenFileDialog
 
-    Sub New()
+    Public Sub New()
         InitializeComponent()
+
         OpenFileDialog.Filter = MCBackup.Language.Dictionary("OptionsWindow.AllSupportedImages") & " (*bmp, *.jpg, *.jpeg, *.png)|*bmp;*.gif;*.png;*.jpg;*.jpeg|BMP (*.bmp)|*.bmp|JPEG (*.jpg, *.jpeg)|*.jpg;*.jpeg|PNG (*.png)|*.png"
 
         MinecraftFolderTextBox.Text = My.Settings.MinecraftFolderLocation
@@ -54,6 +55,13 @@ Partial Public Class Options
         BlueColorLabel.ContextMenu = Nothing
     End Sub
 
+    Public Overloads Sub ShowDialog(Tab As Integer)
+        If Not Tab > TabControl.Items.Count - 1 Then
+            TabControl.SelectedIndex = Tab
+        End If
+        MyBase.ShowDialog()
+    End Sub
+
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
         Dim LanguageDirectory As New IO.DirectoryInfo(Main.StartupPath & "\language")
         Dim LanguageFiles As IO.FileInfo() = LanguageDirectory.GetFiles()
@@ -63,7 +71,7 @@ Partial Public Class Options
             LanguagesComboBox.Items.Add(New TaggedComboBoxItem(MCBackup.Language.FindString("fullname", LanguageFile.Name) & " (" & IO.Path.GetFileNameWithoutExtension(LanguageFile.Name) & ")", LanguageFile.Name))
         Next
 
-        LanguagesComboBox.SelectedItem = LanguagesComboBox.Items.OfType(Of TaggedComboBoxItem)().FirstOrDefault(Function(t) t.Tag = My.Settings.Language & ".lang")
+        LanguagesComboBox.SelectedItem = LanguagesComboBox.Items.OfType(Of TaggedComboBoxItem)().FirstOrDefault(Function(Item) Item.Tag = My.Settings.Language & ".lang")
 
         AlwaysCloseCheckBox_Checked(sender, Nothing)
 
@@ -212,6 +220,11 @@ Partial Public Class Options
         CloseButton.Content = MCBackup.Language.Dictionary("OptionsWindow.CloseButton.Content")
         ResetButton.Content = MCBackup.Language.Dictionary("OptionsWindow.ResetButton.Content")
 
+        GeneralTabItem.Header = MCBackup.Language.Dictionary("OptionsWindow.Tabs.General")
+        AppearanceTabItem.Header = MCBackup.Language.Dictionary("OptionsWindow.Tabs.Appearance")
+        FoldersTabItem.Header = MCBackup.Language.Dictionary("OptionsWindow.Tabs.Folders")
+        GroupsTabItem.Header = MCBackup.Language.Dictionary("OptionsWindow.Tabs.Groups")
+
         ' General Tab
         GeneralOptionsGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.GeneralOptionsGroupBox.Header")
         CloseToTrayOptionsGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.CloseToTrayOptionsGroupBox.Header")
@@ -241,6 +254,9 @@ Partial Public Class Options
         BackgroundImageBrowseButton.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content")
         BackgroundImageRemoveButton.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content")
         ThemeLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.ThemeLabel.Content")
+        SampleTextG1.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SampleText")
+        SampleTextY1.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SampleText")
+        SampleTextR1.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SampleText")
 
         ThemeComboBox.Items.Clear()
 
@@ -263,6 +279,12 @@ Partial Public Class Options
         BrowseMinecraftFolderButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersPanel.BrowseButton.Content")
         BrowseSavesFolderButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersPanel.BrowseButton.Content")
         BrowseBackupsFolderButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersPanel.BrowseButton.Content")
+
+        ' Groups
+        AddNewGroupGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.GroupsTab.AddNewGroupGroupBox.Header")
+        OtherOptionsGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.GroupsTab.OtherOptionsGroupBox.Header")
+        DeleteGroupButton.Content = MCBackup.Language.Dictionary("OptionsWindow.GroupsTab.DeleteGroupButton.Text")
+        RenameGroupButton.Content = MCBackup.Language.Dictionary("OptionsWindow.GroupsTab.RenameGroupButton.Text")
     End Sub
 
     Private Sub ColorSlider_ValueChanged(sender As Object, e As RoutedPropertyChangedEventArgs(Of Double)) Handles RedColorSlider.ValueChanged, GreenColorSlider.ValueChanged, BlueColorSlider.ValueChanged
@@ -352,15 +374,12 @@ Partial Public Class Options
     End Sub
 
     Private Sub ResetButton_Click(sender As Object, e As RoutedEventArgs) Handles ResetButton.Click
-        'If MetroMessageBox.Show("Are you sure you want to reset all of your settings?" & vbNewLine & vbNewLine & "Click 'Yes' to reset all your settings and restart MCBackup.", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.Yes Then
-        If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.ResetSettings").Replace("\n", vbNewLine), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.Yes Then
-
+        If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.ResetSettings"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.Yes Then
             My.Settings.Reset()
 
-            Main.ClsType = CloseAction.CloseType.ForceClose
+            Process.Start(Application.ResourceAssembly.Location)
+            Main.ClsType = CloseAction.CloseType.CloseCompletely
             Main.Close()
-
-            Process.Start(Main.StartupPath & "\mcbackup.exe")
         End If
     End Sub
 
@@ -406,8 +425,10 @@ Partial Public Class Options
     End Sub
 
     Private Sub DeleteGroupButton_Click(sender As Object, e As RoutedEventArgs) Handles DeleteGroupButton.Click
-        My.Settings.BackupGroups.RemoveAt(BackupGroupsListBox.SelectedIndex)
-        ReloadBackupGroups()
+        If MetroMessageBox.Show("Are you sure you want to delete this group? It will be lost forever (a long time)!", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.Yes Then
+            My.Settings.BackupGroups.RemoveAt(BackupGroupsListBox.SelectedIndex)
+            ReloadBackupGroups()
+        End If
     End Sub
 #End Region
 End Class

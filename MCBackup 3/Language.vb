@@ -134,6 +134,8 @@ Public Class Language
         Dictionary.Add("BackupWindow.ListBox.Columns(0).Header", FindString("BackupWindow.ListBox.Columns(0).Header", FileName))
         Dictionary.Add("BackupWindow.StartButton.Content", FindString("BackupWindow.StartButton.Content", FileName))
         Dictionary.Add("BackupWindow.CancelButton.Content", FindString("BackupWindow.CancelButton.Content", FileName))
+        Dictionary.Add("BackupWindow.Groups.None", FindString("BackupWindow.Groups.None", FileName))
+        Dictionary.Add("BackupWindow.Groups.EditGroups", FindString("BackupWindow.Groups.EditGroups", FileName))
 
         Main.LoadLanguage()
 
@@ -189,6 +191,7 @@ Public Class Language
         Dictionary.Add("OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content", FindString("OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content", FileName))
         Dictionary.Add("OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content", FindString("OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content", FileName))
         Dictionary.Add("OptionsWindow.AppearancePanel.ThemeLabel.Content", FindString("OptionsWindow.AppearancePanel.ThemeLabel.Content", FileName))
+        Dictionary.Add("OptionsWindow.AppearancePanel.SampleText", FindString("OptionsWindow.AppearancePanel.SampleText", FileName))
 
         Dictionary.Add("OptionsWindow.AppearancePanel.Themes", FindString("OptionsWindow.AppearancePanel.Themes", FileName))
         Dictionary.Add("OptionsWindow.AppearancePanel.ThemeTags", FindString("OptionsWindow.AppearancePanel.ThemeTags", FileName))
@@ -199,6 +202,16 @@ Public Class Language
         Dictionary.Add("OptionsWindow.FoldersPanel.SavesFolderLocationLabel.Content", FindString("OptionsWindow.FoldersPanel.SavesFolderLocationLabel.Content", FileName))
         Dictionary.Add("OptionsWindow.FoldersPanel.BackupsFolderLocationLabel.Content", FindString("OptionsWindow.FoldersPanel.BackupsFolderLocationLabel.Content", FileName))
         Dictionary.Add("OptionsWindow.FoldersPanel.BrowseButton.Content", FindString("OptionsWindow.FoldersPanel.BrowseButton.Content", FileName))
+
+        Dictionary.Add("OptionsWindow.GroupsTab.AddNewGroupGroupBox.Header", FindString("OptionsWindow.GroupsTab.AddNewGroupGroupBox.Header", FileName))
+        Dictionary.Add("OptionsWindow.GroupsTab.OtherOptionsGroupBox.Header", FindString("OptionsWindow.GroupsTab.OtherOptionsGroupBox.Header", FileName))
+        Dictionary.Add("OptionsWindow.GroupsTab.DeleteGroupButton.Text", FindString("OptionsWindow.GroupsTab.DeleteGroupButton.Text", FileName))
+        Dictionary.Add("OptionsWindow.GroupsTab.RenameGroupButton.Text", FindString("OptionsWindow.GroupsTab.RenameGroupButton.Text", FileName))
+
+        Dictionary.Add("OptionsWindow.Tabs.General", FindString("OptionsWindow.Tabs.General", FileName))
+        Dictionary.Add("OptionsWindow.Tabs.Appearance", FindString("OptionsWindow.Tabs.Appearance", FileName))
+        Dictionary.Add("OptionsWindow.Tabs.Folders", FindString("OptionsWindow.Tabs.Folders", FileName))
+        Dictionary.Add("OptionsWindow.Tabs.Groups", FindString("OptionsWindow.Tabs.Groups", FileName))
 
         ' = Rename Window =
         Dictionary.Add("RenameWindow.Title", FindString("RenameWindow.Title", FileName))
@@ -254,14 +267,14 @@ Public Class Language
                     If Not ReturnString.Length - 1 = ReturnString.LastIndexOf("""") Then
                         Log.Print("FORMATTING ERROR @ LINE " & LineNumber & ": Look around '" & ReturnString.Substring(ReturnString.LastIndexOf("""") + 1) & "'", Log.Type.Warning)
                         ErrorOccured = True
-                        Return "[ERROR]"
+                        Return Identifier
                         Exit Function
                     End If
 
                     If ReturnString.Length - 1 = 0 Then
                         Log.Print("FORMATTING ERROR @ LINE " & LineNumber & ": Entry is empty!", Log.Type.Warning)
                         ErrorOccured = True
-                        Return "[ERROR]"
+                        Return Identifier
                     End If
 
                     ReturnString = ReturnString.Remove(ReturnString.LastIndexOf(""""))
@@ -274,6 +287,6 @@ Public Class Language
             SW.Write(vbNewLine & Identifier & "=""""")
         End Using
         ErrorOccured = True
-        Return "[ERROR]"
+        Return Identifier
     End Function
 End Class

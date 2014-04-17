@@ -22,7 +22,7 @@ Public Class MetroMessageBox
         InitializeComponent()
     End Sub
 
-    Public Overloads Shared Function Show(Message As String)
+    Public Overloads Shared Function Show(Message As String) As MessageBoxResult
         MsgBox = New MetroMessageBox
         MsgBox.Title = Application.Current.MainWindow.Title
         MsgBox.Message.Text = Message
@@ -31,7 +31,7 @@ Public Class MetroMessageBox
         Return Result
     End Function
 
-    Public Overloads Shared Function Show(Message As String, Caption As String)
+    Public Overloads Shared Function Show(Message As String, Caption As String) As MessageBoxResult
         MsgBox = New MetroMessageBox
         MsgBox.Title = Caption
         MsgBox.Message.Text = Message
@@ -40,7 +40,7 @@ Public Class MetroMessageBox
         Return Result
     End Function
 
-    Public Overloads Shared Function Show(Message As String, Caption As String, Buttons As MessageBoxButton)
+    Public Overloads Shared Function Show(Message As String, Caption As String, Buttons As MessageBoxButton) As MessageBoxResult
         MsgBox = New MetroMessageBox
         MsgBox.Title = Caption
         MsgBox.Message.Text = Message
@@ -49,7 +49,7 @@ Public Class MetroMessageBox
         Return Result
     End Function
 
-    Public Overloads Shared Function Show(Message As String, Caption As String, Buttons As MessageBoxButton, Image As MessageBoxImage)
+    Public Overloads Shared Function Show(Message As String, Caption As String, Buttons As MessageBoxButton, Image As MessageBoxImage) As MessageBoxResult
         MsgBox = New MetroMessageBox
         MsgBox.Title = Caption
         MsgBox.Message.Text = Message

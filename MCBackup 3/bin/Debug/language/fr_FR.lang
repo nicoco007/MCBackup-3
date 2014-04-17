@@ -98,6 +98,8 @@ BackupWindow.Version="Version"
 BackupWindow.ListBox.Columns(0).Header="Nom"
 BackupWindow.StartButton.Content="Démarrer"
 BackupWindow.CancelButton.Content="Annuler"
+BackupWindow.Groups.None="Aucun"
+BackupWindow.Groups.EditGroups="Modifier les groupes..."
 
 AutoBackupWindow.Title="Sauvegarde Automatique"
 AutoBackupWindow.BackupEveryLabel.Content="Sauvegarder toute les"
@@ -141,6 +143,7 @@ OptionsWindow.AppearancePanel.SizeModeComboBox.Items(2).Content="Ajuster"
 OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content="Remplir"
 OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content="Parcourir..."
 OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content="Retirer"
+OptionsWindow.AppearancePanel.SampleText="Texte d'exemple"
 
 ## ONLY MODIFY THE ORDER OF 'ThemeTags', OR THE PROGRAM *WILL* CRASH ##
 OptionsWindow.AppearancePanel.Themes="Acier;Ambre;Bleu;Brun;Cobalt;Cramoisi;Cyan;Émeraude;Indigo;Jaune;Lime;Magenta;Mauve;Olive;Orange;Pourpre;Rose;Rouge;Sienne;Turquoise;Vert;Violet"
@@ -151,6 +154,16 @@ OptionsWindow.FoldersPanel.MinecraftFolderLocationLabel.Content="Dossier Minecra
 OptionsWindow.FoldersPanel.SavesFolderLocationLabel.Content="Dossier des mondes"
 OptionsWindow.FoldersPanel.BackupsFolderLocationLabel.Content="Dossier des sauvegardes"
 OptionsWindow.FoldersPanel.BrowseButton.Content="Parcourir"
+
+OptionsWindow.GroupsTab.AddNewGroupGroupBox.Header="Ajouter un nouveau groupe"
+OptionsWindow.GroupsTab.OtherOptionsGroupBox.Header="Autres options"
+OptionsWindow.GroupsTab.DeleteGroupButton.Text="Supprimer"
+OptionsWindow.GroupsTab.RenameGroupButton.Text="Renommer"
+
+OptionsWindow.Tabs.General="Général"
+OptionsWindow.Tabs.Appearance="Apparence"
+OptionsWindow.Tabs.Folders="Dossiers"
+OptionsWindow.Tabs.Groups="Groupes"
 
 RenameWindow.Title="Renommer"
 RenameWindow.RenameButton.Content="Renommer"
@@ -187,7 +200,7 @@ NotifyIcon.ContextMenu.ExitItem.Text="Quitter"
 OptionsWindow.CloseButton.Content="Fermer"
 OptionsWindow.ResetButton.Content="Réinitialiser"
 OptionsWindow.AppearancePanel.ThemeLabel.Content="Thème"
-MainWindow.ListView.ContextMenu.GroupBy.DateCreated=""
+OptionsWindow.AppearancePanel.ThemeLabel.Content="Thème"
 
 BackupTypes.Save="Monde"
 BackupTypes.Version="Version"

@@ -31,43 +31,34 @@ Public Class Backup
         DateAndTimeRadioButton.IsChecked = True
         SaveRadioButton.IsChecked = True
 
-        Try
-            SavesListView.Items.Clear()
-            Dim SavesDirectory As New IO.DirectoryInfo(My.Settings.SavesFolderLocation)
-            Dim SavesFolders As IO.DirectoryInfo() = SavesDirectory.GetDirectories()
-            Dim SavesFolder As IO.DirectoryInfo
+        SavesListView.Items.Clear()
+        Dim SavesDirectory As New IO.DirectoryInfo(My.Settings.SavesFolderLocation)
+        Dim SavesFolders As IO.DirectoryInfo() = SavesDirectory.GetDirectories()
+        Dim SavesFolder As IO.DirectoryInfo
 
-            For Each SavesFolder In SavesFolders
-                SavesListView.Items.Add(SavesFolder.ToString)
-            Next
-        Catch ex As Exception
-            Log.Print(ex.Message, Log.Type.Severe)
-            MetroMessageBox.Show("Error: " & ex.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error)
-        End Try
+        For Each SavesFolder In SavesFolders
+            SavesListView.Items.Add(SavesFolder.ToString)
+        Next
 
-        Try
-            VersionsListView.Items.Clear()
-            Dim VersionsDirectory As New IO.DirectoryInfo(My.Settings.MinecraftFolderLocation & "\versions")
-            Dim VersionsFolders As IO.DirectoryInfo() = VersionsDirectory.GetDirectories()
-            Dim VersionsFolder As IO.DirectoryInfo
+        VersionsListView.Items.Clear()
+        Dim VersionsDirectory As New IO.DirectoryInfo(My.Settings.MinecraftFolderLocation & "\versions")
+        Dim VersionsFolders As IO.DirectoryInfo() = VersionsDirectory.GetDirectories()
+        Dim VersionsFolder As IO.DirectoryInfo
 
-            For Each VersionsFolder In VersionsFolders
-                VersionsListView.Items.Add(VersionsFolder.ToString)
-            Next
-        Catch ex As Exception
-            Log.Print(ex.Message, Log.Type.Severe)
-            MetroMessageBox.Show("Error: " & ex.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error)
-        End Try
+        For Each VersionsFolder In VersionsFolders
+            VersionsListView.Items.Add(VersionsFolder.ToString)
+        Next
 
         Name_CheckChanged(sender, e)
         BackupType_CheckChanged(sender, e)
 
         CustomNameTextBox.Width = 449 - CustomNameRadioButton.ActualWidth
 
-        GroupsComboBox.Items.Add("None")
+        GroupsComboBox.Items.Add(MCBackup.Language.Dictionary("BackupWindow.Groups.None"))
         For Each Group As String In My.Settings.BackupGroups
             GroupsComboBox.Items.Add(Group)
         Next
+        GroupsComboBox.Items.Add(MCBackup.Language.Dictionary("BackupWindow.Groups.EditGroups"))
 
         GroupsComboBox.SelectedIndex = 0
     End Sub
@@ -161,4 +152,22 @@ Public Class Backup
     End Sub
 
 
+    Private Sub GroupsComboBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles GroupsComboBox.SelectionChanged
+        If GroupsComboBox.SelectedIndex = GroupsComboBox.Items.Count - 1 And GroupsComboBox.Items.Count > 1 Then
+            GroupsComboBox.SelectedIndex = 0
+
+            Dim OptionsWindow As New Options
+            OptionsWindow.Owner = Me
+            OptionsWindow.ShowDialog(3)
+
+            GroupsComboBox.Items.Clear()
+            GroupsComboBox.Items.Add(MCBackup.Language.Dictionary("BackupWindow.Groups.None"))
+            For Each Group As String In My.Settings.BackupGroups
+                GroupsComboBox.Items.Add(Group)
+            Next
+            GroupsComboBox.Items.Add(MCBackup.Language.Dictionary("BackupWindow.Groups.EditGroups"))
+
+            GroupsComboBox.SelectedIndex = 0
+        End If
+    End Sub
 End Class

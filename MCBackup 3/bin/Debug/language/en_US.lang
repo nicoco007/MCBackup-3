@@ -97,6 +97,8 @@ BackupWindow.Version="Version"
 BackupWindow.ListBox.Columns(0).Header="Name"
 BackupWindow.StartButton.Content="Start"
 BackupWindow.CancelButton.Content="Cancel"
+BackupWindow.Groups.None="None"
+BackupWindow.Groups.EditGroups="Edit Groups..."
 
 AutoBackupWindow.Title="Automatic Backup"
 AutoBackupWindow.BackupEveryLabel.Content="Backup every"
@@ -150,6 +152,17 @@ OptionsWindow.FoldersPanel.MinecraftFolderLocationLabel.Content="Minecraft Folde
 OptionsWindow.FoldersPanel.SavesFolderLocationLabel.Content="Saves Folder Location"
 OptionsWindow.FoldersPanel.BackupsFolderLocationLabel.Content="Backups Folder Location"
 OptionsWindow.FoldersPanel.BrowseButton.Content="Browse"
+
+OptionsWindow.Tabs.General="General"
+OptionsWindow.Tabs.Appearance="Appearance"
+OptionsWindow.Tabs.Folders="Folders"
+OptionsWindow.Tabs.Groups="Groups"
+
+OptionsWindow.AppearancePanel.SampleText="Sample Text"
+OptionsWindow.GroupsTab.AddNewGroupGroupBox.Header="Add new group"
+OptionsWindow.GroupsTab.OtherOptionsGroupBox.Header="Other options"
+OptionsWindow.GroupsTab.DeleteGroupButton.Text="Delete"
+OptionsWindow.GroupsTab.RenameGroupButton.Text="Rename"
 
 RenameWindow.Title="Rename"
 RenameWindow.RenameButton.Content="Rename"

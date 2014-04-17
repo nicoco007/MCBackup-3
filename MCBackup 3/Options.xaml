@@ -22,8 +22,8 @@
     Title="Options" Height="450" Width="680" Loaded="Window_Loaded" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" WindowTransitionsEnabled="False" BorderBrush="{DynamicResource AccentColorBrush}" BorderThickness="1">
 
     <Grid>
-        <TabControl Margin="0,0,0,42">
-            <TabItem Header="General">
+        <TabControl Margin="0,0,0,42" x:Name="TabControl">
+            <TabItem x:Name="GeneralTabItem" Header="General">
                 <Grid>
                     <GroupBox x:Name="LanguageGroupBox" Header="Language" Margin="10,146,0,0" Canvas.Left="10" Canvas.Top="146" Height="86" HorizontalAlignment="Left" Width="320" VerticalAlignment="Top">
                         <Grid>
@@ -56,7 +56,7 @@
                     </GroupBox>
                 </Grid>
             </TabItem>
-            <TabItem Header="Appearance">
+            <TabItem x:Name="AppearanceTabItem" Header="Appearance">
                 <Grid>
                     <GroupBox x:Name="StatusTextColorGroupBox" Header="Status Text Color" HorizontalAlignment="Left" Margin="10,193,0,0" VerticalAlignment="Top" Canvas.Left="10" Canvas.Top="193" Height="115" Width="320">
                         <Grid>
@@ -96,9 +96,9 @@
                     <GroupBox x:Name="ListViewTextColorIntensityGroupBox" Header="ListView Text Color Intensity" Margin="336,193,0,0" Height="115" Width="322" Canvas.Left="335" Canvas.Top="193" HorizontalAlignment="Left" VerticalAlignment="Top">
                         <Grid>
                             <Slider x:Name="ListViewTextColorIntensitySlider" Maximum="255" Height="18" VerticalAlignment="Top" Margin="10,18,10,0"/>
-                            <Label x:Name="SampleTextR1" Content="Sample Text" Margin="203,36,0,0" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Width="Auto" Padding="2"/>
-                            <Label x:Name="SampleTextY1" Content="Sample Text" Margin="130,36,0,0" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Width="Auto" Padding="2"/>
-                            <Label x:Name="SampleTextG1" Content="Sample Text" Margin="0,36,185,0" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Right" Width="Auto" Padding="2"/>
+                            <Label x:Name="SampleTextR1" Content="Sample Text" Margin="210,36,0,0" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Width="90" Padding="2" HorizontalContentAlignment="Left"/>
+                            <Label x:Name="SampleTextY1" Content="Sample Text" Margin="105,36,105,0" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Center" Width="100" Padding="2" HorizontalContentAlignment="Center"/>
+                            <Label x:Name="SampleTextG1" Content="Sample Text" Margin="0,36,210,0" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Right" Width="90" Padding="2" HorizontalContentAlignment="Right"/>
                         </Grid>
                     </GroupBox>
                     <GroupBox x:Name="GeneralAppearanceGroupBox" Header="General Appearance" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Canvas.Left="10" Canvas.Top="10" Height="178" Width="648">
@@ -128,7 +128,7 @@
                     </GroupBox>
                 </Grid>
             </TabItem>
-            <TabItem Header="Folders">
+            <TabItem x:Name="FoldersTabItem" Header="Folders">
                 <Grid>
                     <GroupBox x:Name="GeneralFoldersGroupBox" Header="General Folders" Margin="10,10,0,0" VerticalAlignment="Top" Canvas.Left="10" Canvas.Top="10" Height="145" HorizontalAlignment="Left" Width="648">
                         <Grid>
@@ -145,12 +145,22 @@
                     </GroupBox>
                 </Grid>
             </TabItem>
-            <TabItem Header="Groups">
+            <TabItem x:Name="GroupsTabItem" Header="Groups">
                 <Grid>
-                    <TextBox x:Name="CreateNewGroupTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Width="194" Margin="312,10,0,0" MaxLength="16"/>
-                    <Button x:Name="CreateNewGroupButton" Content="+" HorizontalAlignment="Left" VerticalAlignment="Top" Width="26" Margin="511,10,0,0" Height="26" Padding="0" IsEnabled="False"/>
-                    <Button x:Name="DeleteGroupButton" Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="312,41,0,0" IsEnabled="False"/>
-                    <ListBox x:Name="BackupGroupsListBox" HorizontalAlignment="Left" Height="310" VerticalAlignment="Top" Width="194" BorderThickness="1" Margin="113,10,0,0"/>
+                    <ListBox x:Name="BackupGroupsListBox" HorizontalAlignment="Left" Height="310" VerticalAlignment="Top" Width="194" BorderThickness="1" Margin="113,10,0,0" BorderBrush="#FFC8C8C8"/>
+                    <GroupBox x:Name="AddNewGroupGroupBox" Header="Add new group" HorizontalAlignment="Left" Margin="312,10,0,0" VerticalAlignment="Top" Height="65" Width="237">
+                        <Grid>
+                            <TextBox x:Name="CreateNewGroupTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Width="194" MaxLength="16"/>
+                            <Button x:Name="CreateNewGroupButton" Content="+" HorizontalAlignment="Left" VerticalAlignment="Top" Width="26" Margin="199,0,0,0" Height="26" Padding="0" IsEnabled="False"/>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox x:Name="OtherOptionsGroupBox" Header="Other options" HorizontalAlignment="Left" Margin="312,80,0,0" VerticalAlignment="Top" Height="89" Width="237">
+                        <Grid>
+                            <Button x:Name="DeleteGroupButton" Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="90" Margin="10,10,0,0" IsEnabled="False"/>
+                            <Button x:Name="RenameGroupButton" Content="Rename" HorizontalAlignment="Left" VerticalAlignment="Top" Width="90" Margin="125,10,0,0" IsEnabled="False"/>
+
+                        </Grid>
+                    </GroupBox>
                 </Grid>
             </TabItem>
         </TabControl>
