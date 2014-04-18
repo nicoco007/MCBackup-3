@@ -1299,6 +1299,12 @@ Partial Class MainWindow
         ListView.SelectedIndex = -1
         ListView.Focus()
     End Sub
+
+    Private Sub ListView_KeyDown(sender As Object, e As KeyEventArgs) Handles ListView.KeyDown
+        If e.Key = Key.Delete And ListView.SelectedItems.Count > 0 Then
+            DeleteButton_Click(sender, Nothing)
+        End If
+    End Sub
 End Class
 
 Public Class CloseAction
