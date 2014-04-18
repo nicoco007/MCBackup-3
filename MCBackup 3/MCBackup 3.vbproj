@@ -124,9 +124,6 @@
     <Compile Include="UpdateDialog.xaml.vb">
       <DependentUpon>UpdateDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WhatsNewWindow.xaml.vb">
-      <DependentUpon>WhatsNewWindow.xaml</DependentUpon>
-    </Compile>
     <Page Include="About.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -186,10 +183,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UpdateDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="WhatsNewWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

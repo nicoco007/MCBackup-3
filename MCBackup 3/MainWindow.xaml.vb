@@ -270,18 +270,7 @@ Partial Class MainWindow
         Splash.Status.Refresh()
 
         Splash.Hide()
-        If My.Settings.FirstTimeRun Then
-            Dim WhatsNewWindow As New WhatsNewWindow
-            WhatsNewWindow.Left = Me.Left
-            WhatsNewWindow.Top = Me.Top
-            WhatsNewWindow.Width = Me.Width
-            WhatsNewWindow.Height = Me.Height
-            Me.Show()
-            WhatsNewWindow.ShowDialog()
-            My.Settings.FirstTimeRun = False
-        Else
-            Me.Show()
-        End If
+        Me.Show()
     End Sub
 
     Private Sub MinecraftFolderSearch()

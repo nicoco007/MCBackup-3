@@ -14,14 +14,6 @@ InitializeComponent
 	<summary>
 MainWindow
 </summary>
-</member><member name="M:MCBackup.WhatsNewWindow.InitializeComponent">
-	<summary>
-InitializeComponent
-</summary>
-</member><member name="T:MCBackup.WhatsNewWindow">
-	<summary>
-WhatsNewWindow
-</summary>
 </member><member name="M:MCBackup.ErrorWindow.InitializeComponent">
 	<summary>
 InitializeComponent
