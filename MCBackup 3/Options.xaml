@@ -150,7 +150,7 @@
                     <ListBox x:Name="BackupGroupsListBox" HorizontalAlignment="Left" Height="310" VerticalAlignment="Top" Width="194" BorderThickness="1" Margin="113,10,0,0" BorderBrush="#FFC8C8C8"/>
                     <GroupBox x:Name="AddNewGroupGroupBox" Header="Add new group" HorizontalAlignment="Left" Margin="312,10,0,0" VerticalAlignment="Top" Height="65" Width="237">
                         <Grid>
-                            <TextBox x:Name="CreateNewGroupTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Width="194" MaxLength="16"/>
+                            <TextBox x:Name="CreateNewGroupTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="NoWrap" VerticalAlignment="Top" Width="194" MaxLength="32"/>
                             <Button x:Name="CreateNewGroupButton" Content="+" HorizontalAlignment="Left" VerticalAlignment="Top" Width="26" Margin="199,0,0,0" Height="26" Padding="0" IsEnabled="False"/>
                         </Grid>
                     </GroupBox>

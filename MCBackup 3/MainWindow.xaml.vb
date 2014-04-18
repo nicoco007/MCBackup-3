@@ -28,7 +28,6 @@ Imports System.Globalization
 Imports MahApps.Metro
 Imports System.Threading
 
-
 Partial Class MainWindow
 #Region "Variables"
     Private AppData As String = Environ("APPDATA")
@@ -271,7 +270,18 @@ Partial Class MainWindow
         Splash.Status.Refresh()
 
         Splash.Hide()
-        Me.Show()
+        If My.Settings.FirstTimeRun Then
+            Dim WhatsNewWindow As New WhatsNewWindow
+            WhatsNewWindow.Left = Me.Left
+            WhatsNewWindow.Top = Me.Top
+            WhatsNewWindow.Width = Me.Width
+            WhatsNewWindow.Height = Me.Height
+            Me.Show()
+            WhatsNewWindow.ShowDialog()
+            My.Settings.FirstTimeRun = False
+        Else
+            Me.Show()
+        End If
     End Sub
 
     Private Sub MinecraftFolderSearch()
@@ -887,7 +897,7 @@ Partial Class MainWindow
         Me.Close()
     End Sub
 
-    Private Sub OptionsMenuItem_Click(sender As Object, e As RoutedEventArgs)
+    Public Sub OptionsMenuItem_Click(sender As Object, e As RoutedEventArgs)
         Dim OptionsWindow As New Options
         OptionsWindow.Owner = Me
         OptionsWindow.ShowDialog()

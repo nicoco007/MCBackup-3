@@ -156,19 +156,18 @@ Public Class Backup
     Private Sub GroupsComboBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles GroupsComboBox.SelectionChanged
         If GroupsComboBox.SelectedIndex = GroupsComboBox.Items.Count - 1 And GroupsComboBox.Items.Count > 1 Then
             GroupsComboBox.SelectedIndex = 0
+            Me.Close()
+            Main.OptionsMenuItem_Click(sender, Nothing)
 
-            Dim OptionsWindow As New Options
-            OptionsWindow.Owner = Main
-            OptionsWindow.ShowDialog(3)
 
-            GroupsComboBox.Items.Clear()
-            GroupsComboBox.Items.Add(MCBackup.Language.Dictionary("BackupWindow.Groups.None"))
-            For Each Group As String In My.Settings.BackupGroups
-                GroupsComboBox.Items.Add(Group)
-            Next
-            GroupsComboBox.Items.Add(MCBackup.Language.Dictionary("BackupWindow.Groups.EditGroups"))
+            'GroupsComboBox.Items.Clear()
+            'GroupsComboBox.Items.Add(MCBackup.Language.Dictionary("BackupWindow.Groups.None"))
+            'For Each Group As String In My.Settings.BackupGroups
+            '    GroupsComboBox.Items.Add(Group)
+            'Next
+            'GroupsComboBox.Items.Add(MCBackup.Language.Dictionary("BackupWindow.Groups.EditGroups"))
 
-            GroupsComboBox.SelectedIndex = 0
+            'GroupsComboBox.SelectedIndex = 0
         End If
     End Sub
 End Class

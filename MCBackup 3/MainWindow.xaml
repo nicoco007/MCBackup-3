@@ -52,7 +52,7 @@
         </Controls:WindowCommands>
     </Controls:MetroWindow.WindowCommands>
 
-    <Grid Height="Auto" VerticalAlignment="Stretch">
+    <Grid Name="MainGrid" Height="Auto" VerticalAlignment="Stretch">
         <Grid Margin="10,60,10,132">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="672*" MinWidth="300"/>

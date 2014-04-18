@@ -75,5 +75,8 @@
     <Setting Name="WindowSize" Type="System.Windows.Size" Scope="User">
       <Value Profile="(Default)">980,600</Value>
     </Setting>
+    <Setting Name="FirstTimeRun" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

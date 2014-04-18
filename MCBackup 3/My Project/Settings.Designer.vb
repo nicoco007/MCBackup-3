@@ -340,6 +340,18 @@ Partial Friend NotInheritable Class MySettings
             Me("WindowSize") = value
         End Set
     End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+    Public Property FirstTimeRun() As Boolean
+        Get
+            Return CType(Me("FirstTimeRun"),Boolean)
+        End Get
+        Set
+            Me("FirstTimeRun") = value
+        End Set
+    End Property
 End Class
 
 Namespace My
