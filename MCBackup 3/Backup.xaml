@@ -20,7 +20,7 @@
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Backup" Height="500" Width="660" Icon="MCBackup.ico" WindowStyle="ToolWindow" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Loaded="Window_Loaded" WindowTransitionsEnabled="False">
-    
+
     <Grid HorizontalAlignment="Left" Width="644" Height="462" VerticalAlignment="Top">
         <GroupBox x:Name="BackupDetailsGroupBox" Header="Backup Details" HorizontalAlignment="Left" VerticalAlignment="Top" Height="187" Width="622" Margin="10,10,0,0">
             <GroupBox x:Name="BackupNameGroupBox" Header="Backup Name" HorizontalAlignment="Left" VerticalAlignment="Top" Height="75" Width="602" Margin="4,3,0,0"/>
@@ -28,8 +28,8 @@
         <RadioButton x:Name="CustomNameRadioButton" Content="Custom Name" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="157,88,0,0" GroupName="BackupName"/>
         <RadioButton x:Name="DateAndTimeRadioButton" Content="Date and Time" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="32,88,0,0" IsChecked="True" GroupName="BackupName"/>
         <TextBox x:Name="CustomNameTextBox" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Margin="0,84,33,0" MaxLines="1" HorizontalAlignment="Right" Width="349"/>
-        <Label x:Name="ShortDescriptionLabel" Content="Short Description (Max. 64 characters, optional)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,132,0,0" Width="602"/>
-        <TextBox x:Name="DescriptionTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="602" Margin="20,158,0,0" MaxLines="1" MaxLength="64"/>
+        <Label x:Name="ShortDescriptionLabel" Content="Short Description (Max. 128 characters, optional)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,132,0,0" Width="602"/>
+        <TextBox x:Name="DescriptionTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="602" Margin="20,158,0,0" MaxLines="1" MaxLength="128"/>
         <RadioButton x:Name="SaveRadioButton" Content="Save" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,207,0,0" Style="{StaticResource {x:Type ToggleButton}}" Width="204" IsChecked="True" GroupName="BackupType"/>
         <RadioButton x:Name="VersionRadioButton" Content="Version" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="430,207,0,0" Style="{StaticResource {x:Type ToggleButton}}" Width="204" GroupName="BackupType"/>
         <RadioButton x:Name="EverythingRadioButton" Content="Whole .minecraft Folder" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="219,207,0,0" Style="{StaticResource {x:Type ToggleButton}}" Width="206" GroupName="BackupType"/>
@@ -47,8 +47,9 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button x:Name="StartButton" Content="Start" VerticalAlignment="Top" Margin="247,299,247,0" Width="150" Height="40" FontSize="24" IsDefault="True"/>
-        <Button x:Name="CancelButton" Content="Cancel" VerticalAlignment="Top" Margin="284,352,0,0" HorizontalAlignment="Left" Width="75"/>
-        <ComboBox x:Name="GroupsComboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Margin="247,252,0,0"/>
+        <Button x:Name="StartButton" Content="Start" VerticalAlignment="Top" Margin="247,343,247,0" Width="150" Height="40" FontSize="24" IsDefault="True"/>
+        <Button x:Name="CancelButton" Content="Cancel" VerticalAlignment="Top" Margin="284,396,0,0" HorizontalAlignment="Left" Width="75"/>
+        <ComboBox x:Name="GroupsComboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Margin="247,291,0,0"/>
+        <Label x:Name="GroupLabel" Content="Group:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="247,265,0,0" Width="150"/>
     </Grid>
 </Controls:MetroWindow>

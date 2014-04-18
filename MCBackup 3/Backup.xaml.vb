@@ -145,6 +145,7 @@ Public Class Backup
         SavesListViewGridView.Columns(0).Header = MCBackup.Language.Dictionary("BackupWindow.ListBox.Columns(0).Header")
         StartButton.Content = MCBackup.Language.Dictionary("BackupWindow.StartButton.Content")
         CancelButton.Content = MCBackup.Language.Dictionary("BackupWindow.CancelButton.Content")
+        GroupLabel.Content = MCBackup.Language.Dictionary("BackupWindow.GroupLabel.Text")
     End Sub
 
     Private Sub CancelButton_Click(sender As Object, e As RoutedEventArgs) Handles CancelButton.Click
@@ -157,7 +158,7 @@ Public Class Backup
             GroupsComboBox.SelectedIndex = 0
 
             Dim OptionsWindow As New Options
-            OptionsWindow.Owner = Me
+            OptionsWindow.Owner = Main
             OptionsWindow.ShowDialog(3)
 
             GroupsComboBox.Items.Clear()

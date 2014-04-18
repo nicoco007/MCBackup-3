@@ -131,6 +131,7 @@ Public Class Language
         Dictionary.Add("BackupWindow.ListBox.Columns(0).Header", FindString("BackupWindow.ListBox.Columns(0).Header", FileName))
         Dictionary.Add("BackupWindow.StartButton.Content", FindString("BackupWindow.StartButton.Content", FileName))
         Dictionary.Add("BackupWindow.CancelButton.Content", FindString("BackupWindow.CancelButton.Content", FileName))
+        Dictionary.Add("BackupWindow.GroupLabel.Text", FindString("BackupWindow.GroupLabel.Text", FileName))
         Dictionary.Add("BackupWindow.Groups.None", FindString("BackupWindow.Groups.None", FileName))
         Dictionary.Add("BackupWindow.Groups.EditGroups", FindString("BackupWindow.Groups.EditGroups", FileName))
 
@@ -267,10 +268,10 @@ Public Class Language
                 If Line.StartsWith(Identifier & "=") And Not Line.StartsWith("#") Then
                     Dim ReturnString = Line.Substring(Identifier.Length + 1)
 
-                    If ReturnString.Length - 1 = 0 Then
+                    If String.IsNullOrEmpty(ReturnString) Then
                         Log.Print("FORMATTING ERROR @ LINE " & LineNumber & ": Entry is empty!", Log.Type.Warning)
                         ErrorOccured = True
-                        Return Identifier.Split(".").Last & "." & Identifier.Split(".")(Identifier.Split(".").Count - 2)
+                        Return Identifier.Split(".")(Identifier.Split(".").Count - 2) & "." & Identifier.Split(".").Last
                     End If
 
                     Return ReturnString.Replace("\n", vbNewLine)
@@ -282,6 +283,6 @@ Public Class Language
             SW.Write(vbNewLine & Identifier & "=")
         End Using
         ErrorOccured = True
-        Return Identifier.Split(".").Last & "." & Identifier.Split(".")(Identifier.Split(".").Count - 2)
+        Return Identifier.Split(".")(Identifier.Split(".").Count - 2) & "." & Identifier.Split(".").Last
     End Function
 End Class

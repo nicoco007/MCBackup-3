@@ -101,6 +101,7 @@ BackupWindow.Version=Version
 BackupWindow.ListBox.Columns(0).Header=Nom
 BackupWindow.StartButton.Content=Démarrer
 BackupWindow.CancelButton.Content=Annuler
+BackupWindow.GroupLabel.Text=Groupe :
 BackupWindow.Groups.None=Aucun
 BackupWindow.Groups.EditGroups=Modifier les groupes...
 
