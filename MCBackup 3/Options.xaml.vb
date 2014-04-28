@@ -116,17 +116,15 @@ Partial Public Class Options
 
     Private Sub BrowseSavesFolderButton_Click(sender As Object, e As RoutedEventArgs) Handles BrowseSavesFolderButton.Click
         If FolderBrowserDialog.ShowDialog = Forms.DialogResult.OK Then
-            Dim Folder = IO.Path.GetDirectoryName(FolderBrowserDialog.SelectedPath)
-            Dim Result As MessageBoxResult = MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.SetSavesFolderWarning"), Folder), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNoCancel, MessageBoxImage.Question)
-
-            If Not Folder = "saves" Then
-                If Result = MessageBoxResult.Yes Then
-                    SavesFolderTextBox.Text = FolderBrowserDialog.SelectedPath
-                ElseIf Result = MessageBoxResult.No Then
-                    BrowseSavesFolderButton_Click(sender, e)
-                Else
-                    Exit Sub
-                End If
+            If Not IO.Path.GetFileName(FolderBrowserDialog.SelectedPath) = "saves" Then
+                Select Case MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.SetSavesFolderWarning"), FolderBrowserDialog.SelectedPath), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNoCancel, MessageBoxImage.Question)
+                    Case MessageBoxResult.Yes
+                        SavesFolderTextBox.Text = FolderBrowserDialog.SelectedPath
+                    Case MessageBoxResult.No
+                        BrowseSavesFolderButton_Click(sender, e)
+                    Case Else
+                        Exit Sub
+                End Select
             Else
                 SavesFolderTextBox.Text = FolderBrowserDialog.SelectedPath
             End If
