@@ -25,7 +25,8 @@ Public Class ErrorWindow
             Try
                 newMessageBox = New ErrorWindow
                 newMessageBox.MessageLabel.Content = Message
-                newMessageBox.ErrorTextBlock.Text = Exception.Message
+                Dim StackTrace As New StackTrace(Exception, True)
+                newMessageBox.ErrorTextBlock.Text = String.Format("Error at line {0} in file {1}: {2}", StackTrace.GetFrame(0).GetFileLineNumber, IO.Path.GetFileName(StackTrace.GetFrame(0).GetFileName), Exception.Message)
                 newMessageBox.Title = MCBackup.Language.Dictionary("Message.Caption.Error")
                 newMessageBox.ContinueButton.Content = MCBackup.Language.Dictionary("ErrorForm.ContinueButton.Content")
                 newMessageBox.CopyToClipboardButton.Content = MCBackup.Language.Dictionary("ErrorForm.CopyToClipboardButton.Content")
@@ -34,7 +35,8 @@ Public Class ErrorWindow
             Catch ex As Exception
                 newMessageBox = New ErrorWindow
                 newMessageBox.MessageLabel.Content = Message
-                newMessageBox.ErrorTextBlock.Text = Exception.Message
+                Dim StackTrace As New StackTrace(Exception, True)
+                newMessageBox.ErrorTextBlock.Text = String.Format("Error at line {0} in file {1}: {2}", StackTrace.GetFrame(0).GetFileLineNumber, IO.Path.GetFileName(StackTrace.GetFrame(0).GetFileName), Exception.Message)
                 System.Media.SystemSounds.Hand.Play()
                 newMessageBox.ShowDialog()
             End Try

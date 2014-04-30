@@ -135,7 +135,7 @@ Public Class Language
         Dictionary.Add("BackupWindow.Groups.None", FindString("BackupWindow.Groups.None", FileName))
         Dictionary.Add("BackupWindow.Groups.EditGroups", FindString("BackupWindow.Groups.EditGroups", FileName))
 
-        Main.LoadLanguage()
+        'Main.LoadLanguage()
 
         ' = Automatic Backup Window =
         Dictionary.Add("AutoBackupWindow.Title", FindString("AutoBackupWindow.Title", FileName))
@@ -149,7 +149,7 @@ Public Class Language
         Dictionary.Add("AutoBackupWindow.StartButton.Content.Start", FindString("AutoBackupWindow.StartButton.Content.Start", FileName))
         Dictionary.Add("AutoBackupWindow.StartButton.Content.Stop", FindString("AutoBackupWindow.StartButton.Content.Stop", FileName))
 
-        Main.AutoBackupWindow.LoadLanguage()
+        'Main.AutoBackupWindow.LoadLanguage()
 
         ' = Options Window =
         Dictionary.Add("OptionsWindow.Title", FindString("OptionsWindow.Title", FileName))
