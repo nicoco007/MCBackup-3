@@ -87,7 +87,10 @@ Partial Class MainWindow
         Splash.Progress.Refresh()
 
         Me.Title = "MCBackup " & ApplicationVersion
+    End Sub
 
+    Private Sub Main_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
+        Me.Hide()
         Splash.ShowStatus("Splash.Status.LoadingLang", "Loading Language...")
 
         Splash.Progress.Value += 1
@@ -187,10 +190,7 @@ Partial Class MainWindow
 
         Splash.Progress.Value += 1
         Splash.Progress.Refresh()
-    End Sub
 
-    Private Sub Main_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
-        Me.Hide()
         GridSidebarColumn.Width = New System.Windows.GridLength(My.Settings.SidebarWidth, GridUnitType.Star)
 
         Splash.Progress.Value += 1
