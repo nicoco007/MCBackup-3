@@ -200,6 +200,16 @@ Partial Class MainWindow
             Log.Print("Searching for updates...")
             Splash.ShowStatus("Splash.Status.CheckingUpdates", "Checking for Updates...")
 
+            Log.Print("Connecting to http://content.nicoco007.com...")
+            Try
+                My.Computer.Network.Ping("content.nicoco007.com", 1000)
+                Log.Print("Successfully connected.")
+            Catch ex As Exception
+                Log.Print("Could not connect to content.nicoco007.com, skipping update check...", Log.Type.Warning)
+                Load2()
+                Exit Sub
+            End Try
+
             Splash.Status.Refresh()
 
             Splash.Progress.Value += 1
@@ -208,11 +218,10 @@ Partial Class MainWindow
             Dim WebClient As New WebClient
             AddHandler WebClient.DownloadStringCompleted, AddressOf WebClient_DownloadedStringAsync
             WebClient.DownloadStringAsync(New Uri("http://content.nicoco007.com/downloads/mcbackup-3/version"))
-            Exit Sub
         Else
             Log.Print("Update checking disabled, skipping...")
+            Load2()
         End If
-        Load2()
     End Sub
 
     Private Sub WebClient_DownloadedStringAsync(sender As Object, e As DownloadStringCompletedEventArgs)
@@ -266,8 +275,8 @@ Partial Class MainWindow
 
         My.Computer.FileSystem.CreateDirectory(My.Settings.SavesFolderLocation)
 
-        Log.Print("Minecraft folder set to """ & My.Settings.MinecraftFolderLocation & """")
-        Log.Print("Saves folder set to """ & My.Settings.SavesFolderLocation & """")
+        Log.Print("Minecraft folder set to '" & My.Settings.MinecraftFolderLocation & "'")
+        Log.Print("Saves folder set to '" & My.Settings.SavesFolderLocation & "'")
 
         RefreshBackupsList()
         ReloadBackupGroups()

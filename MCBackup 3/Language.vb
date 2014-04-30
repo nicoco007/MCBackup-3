@@ -251,7 +251,7 @@ Public Class Language
         Main.AutoBackupWindow.LoadLanguage()
 
         If ErrorOccured Then
-            Log.Print("Language loaded with errors. Please try solving the error(s) above.")
+            Log.Print("Language loaded with errors. Please try solving the error(s) above.", Log.Type.Warning)
         Else
             Log.Print("Language loaded. No errors occured.")
         End If
