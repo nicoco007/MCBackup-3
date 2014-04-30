@@ -87,10 +87,7 @@ Partial Class MainWindow
         Splash.Progress.Refresh()
 
         Me.Title = "MCBackup " & ApplicationVersion
-    End Sub
 
-    Private Sub Main_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
-        Me.Hide()
         Splash.ShowStatus("Splash.Status.LoadingLang", "Loading Language...")
 
         Splash.Progress.Value += 1
@@ -177,14 +174,13 @@ Partial Class MainWindow
         If Not My.Computer.FileSystem.DirectoryExists(My.Settings.BackupsFolderLocation) Then
             If MetroMessageBox.Show("Your backups folder cannot be found. This either means it has been deleted, or it is on a disconnected network drive. Press OK to reset your backups folder. Press Cancel to quit MCBackup.", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.OKCancel) = MessageBoxResult.OK Then
                 My.Settings.BackupsFolderLocation = StartupPath & "\backups"
+                My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation)
             Else
                 Me.ClsType = CloseType.ForceClose
                 Me.Close()
                 Exit Sub
             End If
         End If
-
-        My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation)
 
         Log.Print("Set Backups folder location to '" & My.Settings.BackupsFolderLocation & "'")
 
@@ -195,6 +191,10 @@ Partial Class MainWindow
 
         Splash.Progress.Value += 1
         Splash.Progress.Refresh()
+    End Sub
+
+    Private Sub Main_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
+        Me.Hide()
 
         If My.Settings.CheckForUpdates Then
             Log.Print("Searching for updates...")
@@ -288,6 +288,8 @@ Partial Class MainWindow
 
         Splash.Status.Refresh()
 
+        LoadLanguage()
+
         Splash.Hide()
         Me.Show()
     End Sub
@@ -298,8 +300,8 @@ Partial Class MainWindow
                 MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.Info.MinecraftFolderSetTo"), FolderBrowserDialog.SelectedPath), MCBackup.Language.Dictionary("Message.Caption.Information"), MessageBoxButton.OK, MessageBoxImage.Error) ' Tell user that folder has been selected successfully
                 My.Settings.MinecraftFolderLocation = FolderBrowserDialog.SelectedPath
                 My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
-                Log.Print("Minecraft folder set to """ & My.Settings.MinecraftFolderLocation & """")
-                Log.Print("Saves folder set to """ & My.Settings.SavesFolderLocation & """")
+                Log.Print("Minecraft folder set to '" & My.Settings.MinecraftFolderLocation & "'")
+                Log.Print("Saves folder set to '" & My.Settings.SavesFolderLocation & "'")
                 Exit Sub
             Else
                 If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.NotInstalledInFolder"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = Windows.Forms.DialogResult.Yes Then ' Ask if user wants to try finding folder again
@@ -321,8 +323,8 @@ Partial Class MainWindow
             GroupsTabControl.IsEnabled = False
             ProgressBar.IsIndeterminate = True
             StatusLabel.Content = "Reloading backups list, please wait..."
-            Dim Trd = New Thread(AddressOf RefreshBackupsList_Thread)
-            Trd.Start()
+            Dim Thread = New Thread(AddressOf RefreshBackupsList_Thread)
+            Thread.Start()
         End If
     End Sub
 
@@ -572,7 +574,8 @@ Partial Class MainWindow
             ListViewRestoreItem.Header = MCBackup.Language.Dictionary("MainWindow.RestoreButton.Content")
             ListViewDeleteItem.Header = MCBackup.Language.Dictionary("MainWindow.DeleteButton.Content")
             ListViewRenameItem.Header = MCBackup.Language.Dictionary("MainWindow.RenameButton.Content")
-        Catch
+        Catch ex As Exception
+            ErrorWindow.Show("", ex)
         End Try
     End Sub
 
@@ -1275,7 +1278,9 @@ Partial Class MainWindow
 
 #Region "Search Text Box"
     Private Sub SearchTextBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles SearchTextBox.TextChanged
-        RefreshBackupsList()
+        If Me.IsLoaded Then
+            RefreshBackupsList()
+        End If
     End Sub
 
     Private Sub SearchTextBox_LostFocus(sender As Object, e As RoutedEventArgs) Handles SearchTextBox.LostFocus
@@ -1335,62 +1340,3 @@ Public Class CloseAction
     End Enum
 End Class
 
-Public Class ListViewBackupItem
-    Private m_Name As String
-    Public Property Name() As String
-        Get
-            Return m_Name
-        End Get
-        Set(value As String)
-            m_Name = value
-        End Set
-    End Property
-
-    Private m_DateCreated As String
-    Public Property DateCreated() As String
-        Get
-            Return m_DateCreated
-        End Get
-        Set(value As String)
-            m_DateCreated = value
-        End Set
-    End Property
-
-    Private m_Color As SolidColorBrush
-    Public Property Color() As SolidColorBrush
-        Get
-            Return m_Color
-        End Get
-        Set(value As SolidColorBrush)
-            m_Color = value
-        End Set
-    End Property
-
-    Private m_OriginalName As String
-    Public Property OriginalName() As String
-        Get
-            Return m_OriginalName
-        End Get
-        Set(value As String)
-            m_OriginalName = value
-        End Set
-    End Property
-
-    Private m_Type As String
-    Public Property Type() As String
-        Get
-            Return m_Type
-        End Get
-        Set(value As String)
-            m_Type = value
-        End Set
-    End Property
-
-    Public Sub New(Name As String, DateCreated As String, Color As SolidColorBrush, OriginalName As String, Type As String)
-        Me.Name = Name
-        Me.DateCreated = DateCreated
-        Me.Color = Color
-        Me.OriginalName = OriginalName
-        Me.Type = Type
-    End Sub
-End Class

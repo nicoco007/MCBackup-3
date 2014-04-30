@@ -21,12 +21,11 @@ Imports MahApps.Metro
 
 Partial Public Class Options
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
-    Private FolderBrowserDialog As New System.Windows.Forms.FolderBrowserDialog
+    Private FolderBrowserDialog As New FolderSelectDialog
     Private OpenFileDialog As New System.Windows.Forms.OpenFileDialog
 
     Public Sub New()
         InitializeComponent()
-
         OpenFileDialog.Filter = MCBackup.Language.Dictionary("OptionsWindow.AllSupportedImages") & " (*bmp, *.jpg, *.jpeg, *.png)|*bmp;*.gif;*.png;*.jpg;*.jpeg|BMP (*.bmp)|*.bmp|JPEG (*.jpg, *.jpeg)|*.jpg;*.jpeg|PNG (*.png)|*.png"
 
         MinecraftFolderTextBox.Text = My.Settings.MinecraftFolderLocation
@@ -88,10 +87,11 @@ Partial Public Class Options
     End Sub
 
     Private Sub BrowseMinecraftFolderButton_Click(sender As Object, e As RoutedEventArgs) Handles BrowseMinecraftFolderButton.Click
-        If FolderBrowserDialog.ShowDialog = Forms.DialogResult.OK Then
-            If My.Computer.FileSystem.FileExists(FolderBrowserDialog.SelectedPath & "\launcher.jar") Then ' Check if Minecraft exists in that folder
-                MinecraftFolderTextBox.Text = FolderBrowserDialog.SelectedPath
-                SavesFolderTextBox.Text = FolderBrowserDialog.SelectedPath & "\saves"
+        FolderBrowserDialog.InitialDirectory = My.Settings.MinecraftFolderLocation
+        If FolderBrowserDialog.ShowDialog() = Forms.DialogResult.OK Then
+            If My.Computer.FileSystem.FileExists(FolderBrowserDialog.FileName & "\launcher.jar") Then ' Check if Minecraft exists in that folder
+                MinecraftFolderTextBox.Text = FolderBrowserDialog.FileName
+                SavesFolderTextBox.Text = FolderBrowserDialog.FileName & "\saves"
                 Exit Sub
             Else
                 If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.NotInstalledInFolder"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = Windows.Forms.DialogResult.Yes Then ' Ask if user wants to try finding folder again
@@ -102,31 +102,33 @@ Partial Public Class Options
     End Sub
 
     Private Sub BrowseBackupsFolderButton_Click(sender As Object, e As RoutedEventArgs) Handles BrowseBackupsFolderButton.Click
-        If FolderBrowserDialog.ShowDialog = Forms.DialogResult.OK Then
+        FolderBrowserDialog.InitialDirectory = My.Settings.BackupsFolderLocation
+        If FolderBrowserDialog.ShowDialog() = Forms.DialogResult.OK Then
             Try
-                IO.File.Create(FolderBrowserDialog.SelectedPath & "\.tmp").Dispose()
-                My.Computer.FileSystem.DeleteFile(FolderBrowserDialog.SelectedPath & "\.tmp")
-                BackupsFolderTextBox.Text = FolderBrowserDialog.SelectedPath
+                IO.File.Create(FolderBrowserDialog.FileName & "\.tmp").Dispose()
+                My.Computer.FileSystem.DeleteFile(FolderBrowserDialog.FileName & "\.tmp")
+                BackupsFolderTextBox.Text = FolderBrowserDialog.FileName
             Catch ex As Exception
                 Log.Print(ex.Message, Log.Type.Severe)
-                MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.SetBackupsFolderError"), FolderBrowserDialog.SelectedPath), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.SetBackupsFolderError"), FolderBrowserDialog.FileName), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             End Try
         End If
     End Sub
 
     Private Sub BrowseSavesFolderButton_Click(sender As Object, e As RoutedEventArgs) Handles BrowseSavesFolderButton.Click
+        FolderBrowserDialog.InitialDirectory = My.Settings.SavesFolderLocation
         If FolderBrowserDialog.ShowDialog = Forms.DialogResult.OK Then
-            If Not IO.Path.GetFileName(FolderBrowserDialog.SelectedPath) = "saves" Then
-                Select Case MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.SetSavesFolderWarning"), FolderBrowserDialog.SelectedPath), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNoCancel, MessageBoxImage.Question)
+            If Not IO.Path.GetFileName(FolderBrowserDialog.FileName) = "saves" Then
+                Select Case MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.SetSavesFolderWarning"), FolderBrowserDialog.FileName), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNoCancel, MessageBoxImage.Question)
                     Case MessageBoxResult.Yes
-                        SavesFolderTextBox.Text = FolderBrowserDialog.SelectedPath
+                        SavesFolderTextBox.Text = FolderBrowserDialog.FileName
                     Case MessageBoxResult.No
                         BrowseSavesFolderButton_Click(sender, e)
                     Case Else
                         Exit Sub
                 End Select
             Else
-                SavesFolderTextBox.Text = FolderBrowserDialog.SelectedPath
+                SavesFolderTextBox.Text = FolderBrowserDialog.FileName
             End If
         End If
     End Sub
@@ -429,31 +431,50 @@ Partial Public Class Options
         End If
     End Sub
 #End Region
-End Class
 
-Public Class TaggedComboBoxItem
-    Private m_Name As String
-    Public Property Name() As String
-        Get
-            Return m_Name
-        End Get
-        Set(value As String)
-            m_Name = value
-        End Set
-    End Property
+    Private Sub MinecraftFolderTextBox_LostFocus(sender As Object, e As RoutedEventArgs) Handles MinecraftFolderTextBox.LostFocus, SavesFolderTextBox.LostFocus, BackupsFolderTextBox.LostFocus
+        If My.Computer.FileSystem.DirectoryExists(MinecraftFolderTextBox.Text) Then
+            If My.Computer.FileSystem.FileExists(MinecraftFolderTextBox.Text & "\launcher.jar") Then ' Check if Minecraft exists in that folder
+                MinecraftFolderTextBox.Text = MinecraftFolderTextBox.Text
+                SavesFolderTextBox.Text = MinecraftFolderTextBox.Text & "\saves"
+                Exit Sub
+            Else
+                MetroMessageBox.Show(String.Format("Minecraft is not installed in '{0}'!", MinecraftFolderTextBox.Text), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                MinecraftFolderTextBox.Text = My.Settings.MinecraftFolderLocation
+            End If
+        Else
+            MetroMessageBox.Show(String.Format("The folder '{0}' does not exist!", MinecraftFolderTextBox.Text), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            MinecraftFolderTextBox.Text = My.Settings.MinecraftFolderLocation
+        End If
+    End Sub
 
-    Private m_Tag As String
-    Public Property Tag() As String
-        Get
-            Return m_Tag
-        End Get
-        Set(value As String)
-            m_Tag = value
-        End Set
-    End Property
+    Private Sub SavesFolderTextBox_LostFocus(sender As Object, e As RoutedEventArgs) Handles SavesFolderTextBox.LostFocus
+        If My.Computer.FileSystem.DirectoryExists(SavesFolderTextBox.Text) Then
+            If Not IO.Path.GetFileName(SavesFolderTextBox.Text) = "saves" Then
+                If MetroMessageBox.Show(String.Format("Are you sure '{0}' is a saves folder? It is not named 'saves'!", SavesFolderTextBox.Text)) = MessageBoxResult.Yes Then
+                    My.Settings.SavesFolderLocation = SavesFolderTextBox.Text
+                End If
+            End If
+        Else
+            MetroMessageBox.Show(String.Format("'{0}' does not exist!", SavesFolderTextBox.Text), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            SavesFolderTextBox.Text = My.Settings.SavesFolderLocation
+        End If
+    End Sub
 
-    Public Sub New(Name As String, Tag As String)
-        Me.Name = Name
-        Me.Tag = Tag
+    Private Sub BackupsFolderTextBox_LostFocus(sender As Object, e As RoutedEventArgs) Handles BackupsFolderTextBox.LostFocus
+        If My.Computer.FileSystem.DirectoryExists(BackupsFolderTextBox.Text) Then
+            Try
+                IO.File.Create(BackupsFolderTextBox.Text & "\.tmp").Dispose()
+                My.Computer.FileSystem.DeleteFile(BackupsFolderTextBox.Text & "\.tmp")
+                My.Settings.BackupsFolderLocation = BackupsFolderTextBox.Text
+            Catch ex As Exception
+                Log.Print(ex.Message, Log.Type.Severe)
+                MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.SetBackupsFolderError"), BackupsFolderTextBox.Text), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                BackupsFolderTextBox.Text = My.Settings.BackupsFolderLocation
+            End Try
+        Else
+            MetroMessageBox.Show(String.Format("'{0}' does not exist!", BackupsFolderTextBox.Text), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            BackupsFolderTextBox.Text = My.Settings.BackupsFolderLocation
+        End If
     End Sub
 End Class

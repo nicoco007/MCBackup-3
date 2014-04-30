@@ -247,8 +247,10 @@ Public Class Language
         Dictionary.Add("MetroMsgBox.Button.No", FindString("MetroMsgBox.Button.No", FileName))
         Dictionary.Add("MetroMsgBox.Button.Cancel", FindString("MetroMsgBox.Button.Cancel", FileName))
 
-        Main.LoadLanguage()
-        Main.AutoBackupWindow.LoadLanguage()
+        If Main IsNot Nothing Then
+            Main.LoadLanguage()
+            Main.AutoBackupWindow.LoadLanguage()
+        End If
 
         If ErrorOccured Then
             Log.Print("Language loaded with errors. Please try solving the error(s) above.", Log.Type.Warning)

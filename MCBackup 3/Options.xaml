@@ -134,12 +134,12 @@
                         <Grid>
                             <Label x:Name="MinecraftFolderLocationLabel" Content="Minecraft Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Width="159" Margin="4,6,0,0"/>
                             <Label x:Name="BackupsFolderLocationLabel" Content="Backups Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Width="159" Margin="4,74,0,0"/>
-                            <TextBox x:Name="MinecraftFolderTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="377" IsReadOnly="True" Margin="168,6,0,0"/>
-                            <TextBox x:Name="BackupsFolderTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="377" IsReadOnly="True" Margin="168,74,0,0"/>
+                            <TextBox x:Name="MinecraftFolderTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="377" Margin="168,6,0,0"/>
+                            <TextBox x:Name="BackupsFolderTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="377" Margin="168,74,0,0"/>
                             <Button x:Name="BrowseBackupsFolderButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="550,72,0,0"/>
                             <Button x:Name="BrowseMinecraftFolderButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Padding="10,5" Margin="550,4,0,0"/>
                             <Label x:Name="SavesFolderLocationLabel" Content="Saves Folder Location" HorizontalAlignment="Left" VerticalAlignment="Top" Width="159" Margin="4,40,0,0"/>
-                            <TextBox x:Name="SavesFolderTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="377" IsReadOnly="True" Margin="168,40,0,0"/>
+                            <TextBox x:Name="SavesFolderTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="377" Margin="168,40,0,0"/>
                             <Button x:Name="BrowseSavesFolderButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="550,38,0,0"/>
                         </Grid>
                     </GroupBox>

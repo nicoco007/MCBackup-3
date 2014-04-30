@@ -16,7 +16,7 @@
 
 Imports System.Windows.Threading
 
-Module ControlRefreshExtension
+Module ControlRefresh
     Private EmptyDelegate As Action = Sub()
                                       End Sub
 

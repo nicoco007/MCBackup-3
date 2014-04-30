@@ -104,12 +104,16 @@
     <Compile Include="ErrorWindow.xaml.vb">
       <DependentUpon>ErrorWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Extension Classes\FolderBrowserDialog\FolderSelectDialog.vb" />
+    <Compile Include="Extension Classes\FolderBrowserDialog\Reflector.vb" />
+    <Compile Include="Extension Classes\ListViewBackupItem.vb" />
+    <Compile Include="Extension Classes\TaggedComboBoxItem.vb" />
     <Compile Include="Language.vb" />
     <Compile Include="Log.vb" />
     <Compile Include="MetroMessageBox.xaml.vb">
       <DependentUpon>MetroMessageBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ControlRefreshExtension.vb" />
+    <Compile Include="Extension Classes\ControlRefresh.vb" />
     <Compile Include="Options.xaml.vb">
       <DependentUpon>Options.xaml</DependentUpon>
     </Compile>
@@ -117,7 +121,7 @@
       <DependentUpon>Rename.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings.vb" />
-    <Compile Include="SortAdorner.vb" />
+    <Compile Include="Extension Classes\SortAdorner.vb" />
     <Compile Include="Splash.xaml.vb">
       <DependentUpon>Splash.xaml</DependentUpon>
     </Compile>
