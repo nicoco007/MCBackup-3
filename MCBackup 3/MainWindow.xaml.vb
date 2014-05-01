@@ -40,7 +40,6 @@ Partial Class MainWindow
     Private DeleteForRestoreBackgroundWorker As New BackgroundWorker()
     Private RestoreBackgroundWorker As New BackgroundWorker()
     Private DeleteBackgroundWorker As New BackgroundWorker()
-    Private ThumbnailBackgroundWorker As New BackgroundWorker()
 
     Public StartupPath As String = Directory.GetCurrentDirectory()
     Public ApplicationVersion As String = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()
@@ -80,8 +79,6 @@ Partial Class MainWindow
         AddHandler RestoreBackgroundWorker.RunWorkerCompleted, New RunWorkerCompletedEventHandler(AddressOf RestoreBackgroundWorker_RunWorkerCompleted)
         AddHandler DeleteBackgroundWorker.DoWork, New DoWorkEventHandler(AddressOf DeleteBackgroundWorker_DoWork)
         AddHandler DeleteBackgroundWorker.RunWorkerCompleted, New RunWorkerCompletedEventHandler(AddressOf DeleteBackgroundWorker_RunWorkerCompleted)
-        AddHandler ThumbnailBackgroundWorker.DoWork, New DoWorkEventHandler(AddressOf ThumbnailBackgroundWorker_DoWork)
-        AddHandler ThumbnailBackgroundWorker.RunWorkerCompleted, New RunWorkerCompletedEventHandler(AddressOf ThumbnailBackgroundWorker_RunWorkerCompleted)
 
         Splash.Progress.Value += 1
         Splash.Progress.Refresh()
@@ -187,7 +184,7 @@ Partial Class MainWindow
         Splash.Progress.Value += 1
         Splash.Progress.Refresh()
 
-        GridSidebarColumn.Width = New System.Windows.GridLength(My.Settings.SidebarWidth, GridUnitType.Star)
+        GridSidebarColumn.Width = My.Settings.SidebarWidth
 
         Splash.Progress.Value += 1
         Splash.Progress.Refresh()
@@ -322,7 +319,7 @@ Partial Class MainWindow
             ListView.IsEnabled = False
             GroupsTabControl.IsEnabled = False
             ProgressBar.IsIndeterminate = True
-            StatusLabel.Content = "Reloading backups list, please wait..."
+            StatusLabel.Content = MCBackup.Language.Dictionary("Status.RefreshingBackupsList")
             Dim Thread = New Thread(AddressOf RefreshBackupsList_Thread)
             Thread.Start()
         End If
@@ -670,47 +667,37 @@ Partial Class MainWindow
 
     Private Sub CreateThumb(Path As String)
         StatusLabel.Content = MCBackup.Language.Dictionary(String.Format("Status.CreatingThumb", 0))
-        ThumbnailBackgroundWorker.RunWorkerAsync()
+        Dim Thread As New Thread(AddressOf ThumbnailBackgroundWorker_DoWork)
+        Thread.Start()
         WorldPath = Path
     End Sub
 
-    Private MCMap As New Process()
-
     Private Sub ThumbnailBackgroundWorker_DoWork()
-        Try
-            With MCMap.StartInfo
-                .FileName = Chr(34) & StartupPath & "\mcmap\mcmap.exe" & Chr(34)
-                .WorkingDirectory = StartupPath & "\mcmap\"
-                .Arguments = " -from -15 -15 -to 15 15 -file """ & My.Settings.BackupsFolderLocation & "\" & BackupInfo(0) & "\thumb.png"" " & """" & WorldPath & """"
-                .CreateNoWindow = True
-                .UseShellExecute = False
-                .RedirectStandardError = True
-                .RedirectStandardOutput = True
-            End With
+        Dim MCMap As New Process
 
-            AddHandler MCMap.OutputDataReceived, AddressOf MCMap_OutputDataReceived
-            AddHandler MCMap.ErrorDataReceived, AddressOf MCMap_ErrorDataReceived
+        With MCMap.StartInfo
+            .FileName = Chr(34) & StartupPath & "\mcmap\mcmap.exe" & Chr(34)
+            .WorkingDirectory = StartupPath & "\mcmap\"
+            .Arguments = String.Format(" -from -15 -15 -to 15 15 -file ""{0}\{1}\thumb.png"" ""{2}""", My.Settings.BackupsFolderLocation, BackupInfo(0), WorldPath)
+            .CreateNoWindow = True
+            .UseShellExecute = False
+            .RedirectStandardError = True
+            .RedirectStandardOutput = True
+        End With
 
-            With MCMap
-                .Start()
-                .BeginOutputReadLine()
-                .BeginErrorReadLine()
-                .WaitForExit()
-            End With
-        Catch ex As Exception
-            Log.Print(ex.Message, Log.Type.Severe)
-        End Try
-    End Sub
+        AddHandler MCMap.OutputDataReceived, AddressOf MCMap_DataReceived
+        AddHandler MCMap.ErrorDataReceived, AddressOf MCMap_DataReceived
 
-    Private Sub MCMap_OutputDataReceived(sender As Object, e As DataReceivedEventArgs)
-        MCMap_DataReceived(sender, e)
-    End Sub
-
-    Private Sub MCMap_ErrorDataReceived(sender As Object, e As DataReceivedEventArgs)
-        MCMap_DataReceived(sender, e)
+        With MCMap
+            .Start()
+            .BeginOutputReadLine()
+            .BeginErrorReadLine()
+            .WaitForExit()
+        End With
     End Sub
 
     Private StepNumber As Integer
+
     Private Sub MCMap_DataReceived(sender As Object, e As DataReceivedEventArgs)
         If e.Data = Nothing Then
             Exit Sub
@@ -729,13 +716,14 @@ Partial Class MainWindow
 
         If e.Data.Contains("[") And e.Data.Contains("]") Then
             Dim PercentComplete As Double = (Val(e.Data.Substring(2).Remove(1)) / 4) + (StepNumber * 25)
-            Debug.Print(PercentComplete)
             UpdateProgress(PercentComplete)
             StatusLabel_Content(String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), Int(PercentComplete)))
+        ElseIf e.Data = "Job complete." Then
+            Dispatcher.Invoke(Sub() ThumbnailGenerationComplete())
         End If
     End Sub
 
-    Private Sub ThumbnailBackgroundWorker_RunWorkerCompleted()
+    Private Sub ThumbnailGenerationComplete()
         UpdateProgress(100)
         RefreshBackupsList()
         StatusLabel.Content = MCBackup.Language.Dictionary("Status.BackupComplete")
@@ -1231,15 +1219,10 @@ Partial Class MainWindow
                     Exit Sub
             End Select
 
-            If Process.GetProcessesByName("mcmap").Count > 0 Then
-                MCMap.Kill()
-                Log.Print("Killed MCMap Process")
-            End If
-
             NotifyIcon.Visible = False
             NotifyIcon.Dispose()
 
-            My.Settings.SidebarWidth = GridSidebarColumn.Width.Value
+            My.Settings.SidebarWidth = GridSidebarColumn.Width
 
             My.Settings.AutoBkpPrefix = AutoBackupWindow.PrefixTextBox.Text
             My.Settings.AutoBkpSuffix = AutoBackupWindow.SuffixTextBox.Text

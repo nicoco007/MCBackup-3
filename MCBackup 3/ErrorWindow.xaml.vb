@@ -27,9 +27,14 @@ Public Class ErrorWindow
                 newMessageBox.MessageLabel.Content = Message
                 Dim StackTrace As New StackTrace(Exception, True)
                 For Each st As StackFrame In StackTrace.GetFrames
-                    If st.GetFileLineNumber <> 0 Then
-                        newMessageBox.ErrorTextBlock.Text = String.Format("Error at line {0} in file {1}: {2}", st.GetFileLineNumber, IO.Path.GetFileName(st.GetFileName), Exception.Message)
+                    If String.IsNullOrEmpty(StackTrace.GetFrame(0).GetFileName) Then
+                        If st.GetFileLineNumber <> 0 Then
+                            newMessageBox.ErrorTextBlock.Text = String.Format("Error at line {0} in file {1}: {2}", st.GetFileLineNumber, IO.Path.GetFileName(st.GetFileName), Exception.Message)
+                        End If
+                    Else
+                        newMessageBox.ErrorTextBlock.Text = String.Format("Error at line {0} in file {1}: {2}", StackTrace.GetFrame(0).GetFileLineNumber, IO.Path.GetFileName(StackTrace.GetFrame(0).GetFileName), Exception.Message)
                     End If
+                    
                     Log.Print(st.ToString, Log.Type.Severe)
                 Next
                 newMessageBox.Title = MCBackup.Language.Dictionary("Message.Caption.Error")
@@ -42,8 +47,12 @@ Public Class ErrorWindow
                 newMessageBox.MessageLabel.Content = Message
                 Dim StackTrace As New StackTrace(Exception, True)
                 For Each st As StackFrame In StackTrace.GetFrames
-                    If st.GetFileLineNumber <> 0 And st.GetFileName <> Nothing Then
-                        newMessageBox.ErrorTextBlock.Text = String.Format("Error at line {0} in file {1}: {2}", st.GetFileLineNumber, IO.Path.GetFileName(st.GetFileName), Exception.Message)
+                    If String.IsNullOrEmpty(StackTrace.GetFrame(0).GetFileName) Then
+                        If st.GetFileLineNumber <> 0 Then
+                            newMessageBox.ErrorTextBlock.Text = String.Format("Error at line {0} in file {1}: {2}", st.GetFileLineNumber, IO.Path.GetFileName(st.GetFileName), Exception.Message)
+                        End If
+                    Else
+                        newMessageBox.ErrorTextBlock.Text = String.Format("Error at line {0} in file {1}: {2}", StackTrace.GetFrame(0).GetFileLineNumber, IO.Path.GetFileName(StackTrace.GetFrame(0).GetFileName), Exception.Message)
                     End If
                 Next
                 System.Media.SystemSounds.Hand.Play()

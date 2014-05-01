@@ -55,9 +55,9 @@
     <Grid Name="MainGrid" Height="Auto" VerticalAlignment="Stretch">
         <Grid Margin="10,60,10,132">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="672*" MinWidth="300"/>
-                <ColumnDefinition Width="1"/>
-                <ColumnDefinition Name="GridSidebarColumn" Width="280" MinWidth="280"/>
+                <ColumnDefinition Width="3*" MinWidth="300"/>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Name="GridSidebarColumn" Width="*" MinWidth="280"/>
             </Grid.ColumnDefinitions>
 
             <ListView x:Name="ListView" BorderThickness="1" BorderBrush="#FF646464" Margin="0,0,5,0">

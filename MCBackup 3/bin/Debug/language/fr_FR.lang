@@ -57,6 +57,7 @@ Status.Restoring=Restauration... ({0}% complétée)
 Status.RestoreComplete=Restauration terminée; Prêt.
 Status.Deleting=Suppression...
 Status.DeleteComplete=Suppression terminée; Prêt.
+Status.RefreshingBackupsList=Rafraîchissement de la liste des sauvegardes, veuillez patienter...
 
 # Messages
 Message.Caption.Information=Information

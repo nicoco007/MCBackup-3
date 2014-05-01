@@ -47,9 +47,6 @@
     <Setting Name="AutoBkpSuffix" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="SidebarWidth" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">240</Value>
-    </Setting>
     <Setting Name="Theme" Type="System.String" Scope="User">
       <Value Profile="(Default)">Cyan</Value>
     </Setting>
@@ -75,8 +72,11 @@
     <Setting Name="WindowSize" Type="System.Windows.Size" Scope="User">
       <Value Profile="(Default)">980,600</Value>
     </Setting>
-    <Setting Name="FirstTimeRun" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+    <Setting Name="IsWindowMaximized" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SidebarWidth" Type="System.Windows.GridLength" Scope="User">
+      <Value Profile="(Default)">3*</Value>
     </Setting>
   </Settings>
 </SettingsFile>

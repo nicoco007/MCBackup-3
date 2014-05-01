@@ -114,6 +114,31 @@ InitializeComponent
 	<summary>
 UpdateDialog
 </summary>
+</member><member name="P:MCBackup.My.Resources.Resources.ResourceManager">
+	<summary>
+  Retourne l'instance ResourceManager mise en cache utilisée par cette classe.
+</summary>
+</member><member name="P:MCBackup.My.Resources.Resources.Culture">
+	<summary>
+  Remplace la propriété CurrentUICulture du thread actuel pour toutes
+  les recherches de ressources à l'aide de cette classe de ressource fortement typée.
+</summary>
+</member><member name="P:MCBackup.My.Resources.Resources.msgbox_error">
+	<summary>
+  Recherche une ressource localisée de type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:MCBackup.My.Resources.Resources.msgbox_info">
+	<summary>
+  Recherche une ressource localisée de type System.Drawing.Bitmap.
+</summary>
+</member><member name="P:MCBackup.My.Resources.Resources.msgbox_question">
+	<summary>
+  Recherche une ressource localisée de type System.Drawing.Bitmap.
+</summary>
+</member><member name="T:MCBackup.My.Resources.Resources">
+	<summary>
+  Une classe de ressource fortement typée destinée, entre autres, à la consultation des chaînes localisées.
+</summary>
 </member><member name="M:MCBackup.FolderSelectDialog.#ctor">
 	<summary>
  Default constructor
@@ -159,6 +184,48 @@ UpdateDialog
 	<summary>
  Creates IWin32Window around an IntPtr
  </summary>
+</member><member name="M:MCBackup.Log.StartNew">
+	<summary>
+ Starts new logging session
+ </summary>
+	<remarks></remarks>
+</member><member name="M:MCBackup.Log.DPrint(System.String)">
+	<summary>
+ Prints a plain message in the log, whithout timestamp.
+ </summary>
+	<param name="Message">Message to print in log</param>
+	<remarks></remarks>
+</member><member name="M:MCBackup.Log.Print(System.String)">
+	<summary>
+ Prints a message in the log, with a timestamp and INFO tag.
+ </summary>
+	<param name="Message">Message to print in log</param>
+	<remarks></remarks>
+</member><member name="M:MCBackup.Log.Print(System.String,System.String)">
+	<summary>
+ Prints a message in the log, with a timestamp and specified tag.
+ </summary>
+	<param name="Message">Message to print in log</param>
+	<param name="LogType">Tag to show ([INFO], [WARNING], [SEVERE])</param>
+	<remarks></remarks>
+</member><member name="M:MCBackup.Log.DebugTimeStamp">
+	<summary>
+ Returns a log timestamp
+ </summary>
+	<returns>A timestamp in the form YYYY-MM-DD hh:mm:ss</returns>
+	<remarks></remarks>
+</member><member name="M:MCBackup.Log.GetWindowsVersion">
+	<summary>
+ Converts Windows NT version to 'human-readable' name
+ </summary>
+	<returns>Windows OS Version name</returns>
+	<remarks></remarks>
+</member><member name="M:MCBackup.Log.GetWindowsArch">
+	<summary>
+ Gets windows architecture
+ </summary>
+	<returns>Windows architecture (32/64bit)</returns>
+	<remarks></remarks>
 </member><member name="M:MCBackup.Reflector.#ctor(System.String)">
 	<summary>
  Constructor
@@ -248,73 +315,6 @@ UpdateDialog
  Example:
  var r = new Reflector("System.Windows.Forms");
  </summary>
-</member><member name="P:MCBackup.My.Resources.Resources.ResourceManager">
-	<summary>
-  Retourne l'instance ResourceManager mise en cache utilisée par cette classe.
-</summary>
-</member><member name="P:MCBackup.My.Resources.Resources.Culture">
-	<summary>
-  Remplace la propriété CurrentUICulture du thread actuel pour toutes
-  les recherches de ressources à l'aide de cette classe de ressource fortement typée.
-</summary>
-</member><member name="P:MCBackup.My.Resources.Resources.msgbox_error">
-	<summary>
-  Recherche une ressource localisée de type System.Drawing.Bitmap.
-</summary>
-</member><member name="P:MCBackup.My.Resources.Resources.msgbox_info">
-	<summary>
-  Recherche une ressource localisée de type System.Drawing.Bitmap.
-</summary>
-</member><member name="P:MCBackup.My.Resources.Resources.msgbox_question">
-	<summary>
-  Recherche une ressource localisée de type System.Drawing.Bitmap.
-</summary>
-</member><member name="T:MCBackup.My.Resources.Resources">
-	<summary>
-  Une classe de ressource fortement typée destinée, entre autres, à la consultation des chaînes localisées.
-</summary>
-</member><member name="M:MCBackup.Log.StartNew">
-	<summary>
- Starts new logging session
- </summary>
-	<remarks></remarks>
-</member><member name="M:MCBackup.Log.DPrint(System.String)">
-	<summary>
- Prints a plain message in the log, whithout timestamp.
- </summary>
-	<param name="Message">Message to print in log</param>
-	<remarks></remarks>
-</member><member name="M:MCBackup.Log.Print(System.String)">
-	<summary>
- Prints a message in the log, with a timestamp and INFO tag.
- </summary>
-	<param name="Message">Message to print in log</param>
-	<remarks></remarks>
-</member><member name="M:MCBackup.Log.Print(System.String,System.String)">
-	<summary>
- Prints a message in the log, with a timestamp and specified tag.
- </summary>
-	<param name="Message">Message to print in log</param>
-	<param name="LogType">Tag to show ([INFO], [WARNING], [SEVERE])</param>
-	<remarks></remarks>
-</member><member name="M:MCBackup.Log.DebugTimeStamp">
-	<summary>
- Returns a log timestamp
- </summary>
-	<returns>A timestamp in the form YYYY-MM-DD hh:mm:ss</returns>
-	<remarks></remarks>
-</member><member name="M:MCBackup.Log.GetWindowsVersion">
-	<summary>
- Converts Windows NT version to 'human-readable' name
- </summary>
-	<returns>Windows OS Version name</returns>
-	<remarks></remarks>
-</member><member name="M:MCBackup.Log.GetWindowsArch">
-	<summary>
- Gets windows architecture
- </summary>
-	<returns>Windows architecture (32/64bit)</returns>
-	<remarks></remarks>
 </member><member name="P:MCBackup.My.MyWpfExtension.Application">
 	<summary>
  Returns the application object for the running application

@@ -84,6 +84,7 @@ Public Class Language
         Dictionary.Add("Status.RestoreComplete", FindString("Status.RestoreComplete", FileName))
         Dictionary.Add("Status.Deleting", FindString("Status.Deleting", FileName))
         Dictionary.Add("Status.DeleteComplete", FindString("Status.DeleteComplete", FileName))
+        Dictionary.Add("Status.RefreshingBackupsList", FindString("Status.RefreshingBackupsList", FileName))
 
         ' = Messages =
         Dictionary.Add("Message.Caption.Information", FindString("Message.Caption.Information", FileName))
@@ -249,7 +250,9 @@ Public Class Language
 
         If Main IsNot Nothing Then
             Main.LoadLanguage()
-            Main.AutoBackupWindow.LoadLanguage()
+            If Main.AutoBackupWindow IsNot Nothing Then
+                Main.AutoBackupWindow.LoadLanguage()
+            End If
         End If
 
         If ErrorOccured Then
@@ -280,7 +283,7 @@ Public Class Language
             End While
         End Using
         Log.Print("[Language] Error: '" & Identifier & "' identifier not found, added automatically.", Log.Type.Warning)
-        Using SW As New StreamWriter(Main.StartupPath & "\language\" & FileName, True)
+        Using SW As New StreamWriter(Directory.GetCurrentDirectory() & "\language\" & FileName, True)
             SW.Write(vbNewLine & Identifier & "=")
         End Using
         ErrorOccured = True

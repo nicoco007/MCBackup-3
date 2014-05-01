@@ -56,6 +56,7 @@ Status.Restoring=Restoring... ({0}% Complete)
 Status.RestoreComplete=Restore Complete; Ready
 Status.Deleting=Deleting...
 Status.DeleteComplete=Delete Complete; Ready
+Status.RefreshingBackupsList=Refreshing backups list, please wait...
 
 # Messages
 Message.Caption.Information=Information
