@@ -78,6 +78,13 @@ Message.ResetSettings=Êtes-vous sûr de vouloir réinitialiser vos préférence
 Message.BackupInProgress=Une sauvegarde est déjà en cours! Veuillez attendre qu'elle finisse avant d'en démarrer une autre.
 Message.SetBackupsFolderError=Impossible de définir le dossier '{0}' comme dossier de sauvegardes.\n\nVérifiez si vous avez le droit d'écrire dans ce dossier.
 Message.SetSavesFolderWarning=Êtes-vous sûr que {0} est un dossier de sauvegardes? Il n'est pas nommé 'saves'!
+Message.BackupNameCannotContainIllegalCharacters=Le nom de sauvegarde ne peut pas contenir les caractèrs\n\ / : * ? "" < > |\nVérifiez le préfixe/suffixe.
+Message.CopiedToClipboard=Copié dans le presse-papiers
+Message.Caption.Copied=Copié
+Message.BackupsFolderNotFound=Votre dossier de sauvegardes n'a pas pu être trouvé. Ceci veut dire qu'il a été supprimé ou est sur un lecteur réseau déconnecté. Appuyez sur OK pour réinitialiser l'emplacement de votre dossier de sauvegardes. Appuyez sur Annuler pour quitter MCBackup.
+Message.MinecraftNotIn=Minecraft n'est pas installé dans '{0}'!
+Message.FolderDoesNotExist=Le dossier '{0}' n'existe pas!
+Message.AreYouSureDeleteGroup=Êtes-vous sûr de vouloir supprimer ce groupe? Il sera perdu pour toujours (très longtemps)!
 
 BalloonTip.Title.BackupError=Erreur de sauvegarde!
 BalloonTip.BackupError=Une erreur est survenue lors de la sauvegarde.
@@ -215,3 +222,5 @@ MetroMsgBox.Button.OK=OK
 MetroMsgBox.Button.Yes=Oui
 MetroMsgBox.Button.No=Non
 MetroMsgBox.Button.Cancel=Annuler
+
+AreYouSureDeleteGroup=

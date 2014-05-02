@@ -105,6 +105,13 @@ Public Class Language
         Dictionary.Add("Message.BackupInProgress", FindString("Message.BackupInProgress", FileName))
         Dictionary.Add("Message.SetBackupsFolderError", FindString("Message.SetBackupsFolderError", FileName))
         Dictionary.Add("Message.SetSavesFolderWarning", FindString("Message.SetSavesFolderWarning", FileName))
+        Dictionary.Add("Message.BackupNameCannotContainIllegalCharacters", FindString("Message.BackupNameCannotContainIllegalCharacters", FileName))
+        Dictionary.Add("Message.CopiedToClipboard", FindString("Message.CopiedToClipboard", FileName))
+        Dictionary.Add("Message.Caption.Copied", FindString("Message.Caption.Copied", FileName))
+        Dictionary.Add("Message.BackupsFolderNotFound", FindString("Message.BackupsFolderNotFound", FileName))
+        Dictionary.Add("Message.MinecraftNotIn", FindString("Message.MinecraftNotIn", FileName))
+        Dictionary.Add("Message.FolderDoesNotExist", FindString("Message.FolderDoesNotExist", FileName))
+        Dictionary.Add("Message.AreYouSureDeleteGroup", FindString("Message.AreYouSureDeleteGroup", FileName))
 
         ' = Balloon Tips =
         Dictionary.Add("BalloonTip.Title.BackupError", FindString("BalloonTip.Title.BackupError", FileName))
@@ -247,13 +254,6 @@ Public Class Language
         Dictionary.Add("MetroMsgBox.Button.Yes", FindString("MetroMsgBox.Button.Yes", FileName))
         Dictionary.Add("MetroMsgBox.Button.No", FindString("MetroMsgBox.Button.No", FileName))
         Dictionary.Add("MetroMsgBox.Button.Cancel", FindString("MetroMsgBox.Button.Cancel", FileName))
-
-        If Main IsNot Nothing Then
-            Main.LoadLanguage()
-            If Main.AutoBackupWindow IsNot Nothing Then
-                Main.AutoBackupWindow.LoadLanguage()
-            End If
-        End If
 
         If ErrorOccured Then
             Log.Print("Language loaded with errors. Please try solving the error(s) above.", Log.Type.Warning)

@@ -77,6 +77,13 @@ Message.ResetSettings=Are you sure you want to reset all of your settings?\n\nCl
 Message.BackupInProgress=A backup is currently in progress! Please wait until it is complete before starting a new one.
 Message.SetBackupsFolderError=An error occured while trying to set folder {0} as backups folder.\n\nPlease check if you have writing permissions in that folder.
 Message.SetSavesFolderWarning=Are you sure '{0}' is a saves folder? It isn't named 'saves'!
+Message.BackupNameCannotContainIllegalCharacters=Backup name cannot contain characters\n\ / : * ? "" < > |\nCheck the prefix/suffix boxes.
+Message.CopiedToClipboard=Copied to clipboard.
+Message.Caption.Copied=Copied
+Message.BackupsFolderNotFound=Your backups folder cannot be found. This either means it has been deleted, or it is on a disconnected network drive. Press OK to reset your backups folder. Press Cancel to quit MCBackup.
+Message.MinecraftNotIn=Minecraft is not installed in '{0}'!
+Message.FolderDoesNotExist=The folder '{0}' does not exist!
+Message.AreYouSureDeleteGroup=Are you sure you want to delete this group? It will be lost forever (a long time)!
 
 BalloonTip.Title.BackupError=Backup Error!
 BalloonTip.BackupError=An error occured during the backup.

@@ -169,7 +169,7 @@ Partial Class MainWindow
         End If
 
         If Not My.Computer.FileSystem.DirectoryExists(My.Settings.BackupsFolderLocation) Then
-            If MetroMessageBox.Show("Your backups folder cannot be found. This either means it has been deleted, or it is on a disconnected network drive. Press OK to reset your backups folder. Press Cancel to quit MCBackup.", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.OKCancel) = MessageBoxResult.OK Then
+            If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.BackupsFolderNotFound"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OKCancel) = MessageBoxResult.OK Then
                 My.Settings.BackupsFolderLocation = StartupPath & "\backups"
                 My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation)
             Else

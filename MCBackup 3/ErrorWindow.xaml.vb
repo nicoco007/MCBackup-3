@@ -19,6 +19,7 @@ Imports System.Threading
 
 Public Class ErrorWindow
     Shared newMessageBox As ErrorWindow
+    Private Main = DirectCast(Application.Current.MainWindow, MainWindow)
 
     Public Overloads Shared Sub Show(Message As String, Exception As Exception)
         If Application.Current.Dispatcher.CheckAccess() Then
@@ -65,7 +66,15 @@ Public Class ErrorWindow
 
     Private Sub CopyToClipboardButton_Click(sender As Object, e As RoutedEventArgs) Handles CopyToClipboardButton.Click
         Clipboard.SetData(DataFormats.Text, newMessageBox.ErrorTextBlock.Text)
-        MessageBox.Show("Copied to clipboard.", "Copied")
+        If Main IsNot Nothing Then
+            If Main.IsLoaded Then
+                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.CopiedToClipboard"), MCBackup.Language.Dictionary("Message.Caption.Copied"), MessageBoxButton.OK, MessageBoxImage.Information)
+            Else
+                MetroMessageBox.Show("Copied to clipboard.", "Copied", MessageBoxButton.OK, MessageBoxImage.Information)
+            End If
+        Else
+            MetroMessageBox.Show("Copied to clipboard.", "Copied", MessageBoxButton.OK, MessageBoxImage.Information)
+        End If
     End Sub
 
     Private Sub ContinueButton_Click(sender As Object, e As RoutedEventArgs) Handles ContinueButton.Click

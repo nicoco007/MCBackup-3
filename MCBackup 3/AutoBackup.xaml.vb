@@ -93,13 +93,8 @@ Public Class AutoBackup
             PrefixTextBox.IsEnabled = True
             SuffixTextBox.IsEnabled = True
         Else
-            If WorldName = "" Then
-                MetroMessageBox.Show("Please select a world to automatically back up.", "Error!", MessageBoxButton.OK, MessageBoxImage.Error)
-                Exit Sub
-            End If
-
-            If Regex.IsMatch(PrefixTextBox.Text, "[\/?""|:<>*]") Or Regex.IsMatch(SuffixTextBox.Text, "[\/?""|:<>*]") Then
-                MetroMessageBox.Show("Backup name cannot contain characters" & vbNewLine & "\ / : * ? "" < > |" & vbNewLine & "Check the prefix/suffix boxes.", "Error!", MessageBoxButton.OK, MessageBoxImage.Error)
+            If Regex.IsMatch(PrefixTextBox.Text, "[\/:*?""<>|]") Or Regex.IsMatch(SuffixTextBox.Text, "[\/:*?""<>|]") Then
+                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.BackupNameCannotContainIllegalCharacters"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
                 Exit Sub
             End If
 

@@ -59,6 +59,17 @@ Public Class MetroMessageBox
         Return Result
     End Function
 
+    Public Overloads Shared Function Show(Message As String, Caption As String, Buttons As MessageBoxButton, Image As MessageBoxImage, TextAlign As TextAlignment) As MessageBoxResult
+        MsgBox = New MetroMessageBox
+        MsgBox.Title = Caption
+        MsgBox.Message.Text = Message
+        MsgBox.Message.TextAlignment = TextAlign
+        ShowButtons(Buttons)
+        ShowImage(Image)
+        MsgBox.ShowDialog()
+        Return Result
+    End Function
+
     Public Shared Sub ShowButtons(Button As MessageBoxButton)
         Select Case Button
             Case MessageBoxButton.OK

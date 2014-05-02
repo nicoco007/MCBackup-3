@@ -211,6 +211,8 @@ Partial Public Class Options
             MCBackup.Language.Load(LanguagesComboBox.SelectedItem.Tag)
             My.Settings.Language = IO.Path.GetFileNameWithoutExtension(LanguagesComboBox.SelectedItem.Tag)
             LoadLanguage()
+            Main.LoadLanguage()
+            Main.AutoBackupWindow.LoadLanguage()
         End If
     End Sub
 
@@ -425,7 +427,7 @@ Partial Public Class Options
     End Sub
 
     Private Sub DeleteGroupButton_Click(sender As Object, e As RoutedEventArgs) Handles DeleteGroupButton.Click
-        If MetroMessageBox.Show("Are you sure you want to delete this group? It will be lost forever (a long time)!", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.Yes Then
+        If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.AreYouSureDeleteGroup"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.Yes Then
             My.Settings.BackupGroups.RemoveAt(BackupGroupsListBox.SelectedIndex)
             ReloadBackupGroups()
         End If
@@ -439,11 +441,11 @@ Partial Public Class Options
                 SavesFolderTextBox.Text = MinecraftFolderTextBox.Text & "\saves"
                 Exit Sub
             Else
-                MetroMessageBox.Show(String.Format("Minecraft is not installed in '{0}'!", MinecraftFolderTextBox.Text), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.MinecraftNotIn"), MinecraftFolderTextBox.Text), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
                 MinecraftFolderTextBox.Text = My.Settings.MinecraftFolderLocation
             End If
         Else
-            MetroMessageBox.Show(String.Format("The folder '{0}' does not exist!", MinecraftFolderTextBox.Text), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.FolderDoesNotExist"), MinecraftFolderTextBox.Text), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             MinecraftFolderTextBox.Text = My.Settings.MinecraftFolderLocation
         End If
     End Sub
@@ -451,12 +453,12 @@ Partial Public Class Options
     Private Sub SavesFolderTextBox_LostFocus(sender As Object, e As RoutedEventArgs) Handles SavesFolderTextBox.LostFocus
         If My.Computer.FileSystem.DirectoryExists(SavesFolderTextBox.Text) Then
             If Not IO.Path.GetFileName(SavesFolderTextBox.Text) = "saves" Then
-                If MetroMessageBox.Show(String.Format("Are you sure '{0}' is a saves folder? It is not named 'saves'!", SavesFolderTextBox.Text)) = MessageBoxResult.Yes Then
+                If MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("SetSavesFolderWarning"), SavesFolderTextBox.Text)) = MessageBoxResult.Yes Then
                     My.Settings.SavesFolderLocation = SavesFolderTextBox.Text
                 End If
             End If
         Else
-            MetroMessageBox.Show(String.Format("'{0}' does not exist!", SavesFolderTextBox.Text), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.FolderDoesNotExist"), SavesFolderTextBox.Text), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             SavesFolderTextBox.Text = My.Settings.SavesFolderLocation
         End If
     End Sub
@@ -473,7 +475,7 @@ Partial Public Class Options
                 BackupsFolderTextBox.Text = My.Settings.BackupsFolderLocation
             End Try
         Else
-            MetroMessageBox.Show(String.Format("'{0}' does not exist!", BackupsFolderTextBox.Text), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.FolderDoesNotExist"), BackupsFolderTextBox.Text), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             BackupsFolderTextBox.Text = My.Settings.BackupsFolderLocation
         End If
     End Sub
