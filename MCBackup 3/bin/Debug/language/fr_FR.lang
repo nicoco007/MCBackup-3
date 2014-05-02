@@ -85,6 +85,7 @@ Message.BackupsFolderNotFound=Votre dossier de sauvegardes n'a pas pu être trou
 Message.MinecraftNotIn=Minecraft n'est pas installé dans '{0}'!
 Message.FolderDoesNotExist=Le dossier '{0}' n'existe pas!
 Message.AreYouSureDeleteGroup=Êtes-vous sûr de vouloir supprimer ce groupe? Il sera perdu pour toujours (très longtemps)!
+Message.BackupAlreadyExists=Cette sauvegarde existe déjà! Entrez un autre nom.
 
 BalloonTip.Title.BackupError=Erreur de sauvegarde!
 BalloonTip.BackupError=Une erreur est survenue lors de la sauvegarde.
@@ -222,5 +223,3 @@ MetroMsgBox.Button.OK=OK
 MetroMsgBox.Button.Yes=Oui
 MetroMsgBox.Button.No=Non
 MetroMsgBox.Button.Cancel=Annuler
-
-AreYouSureDeleteGroup=

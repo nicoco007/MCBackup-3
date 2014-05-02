@@ -112,6 +112,7 @@ Public Class Language
         Dictionary.Add("Message.MinecraftNotIn", FindString("Message.MinecraftNotIn", FileName))
         Dictionary.Add("Message.FolderDoesNotExist", FindString("Message.FolderDoesNotExist", FileName))
         Dictionary.Add("Message.AreYouSureDeleteGroup", FindString("Message.AreYouSureDeleteGroup", FileName))
+        Dictionary.Add("Message.BackupAlreadyExists", FindString("Message.BackupAlreadyExists", FileName))
 
         ' = Balloon Tips =
         Dictionary.Add("BalloonTip.Title.BackupError", FindString("BalloonTip.Title.BackupError", FileName))
