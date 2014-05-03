@@ -453,7 +453,7 @@ Partial Public Class Options
     Private Sub SavesFolderTextBox_LostFocus(sender As Object, e As RoutedEventArgs) Handles SavesFolderTextBox.LostFocus
         If My.Computer.FileSystem.DirectoryExists(SavesFolderTextBox.Text) Then
             If Not IO.Path.GetFileName(SavesFolderTextBox.Text) = "saves" Then
-                If MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("SetSavesFolderWarning"), SavesFolderTextBox.Text)) = MessageBoxResult.Yes Then
+                If MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.SetSavesFolderWarning"), SavesFolderTextBox.Text)) = MessageBoxResult.Yes Then
                     My.Settings.SavesFolderLocation = SavesFolderTextBox.Text
                 End If
             End If

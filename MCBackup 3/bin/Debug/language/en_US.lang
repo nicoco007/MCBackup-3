@@ -12,17 +12,15 @@ MainWindow.ListView.Columns(0).Header=Name
 MainWindow.ListView.Columns(1).Header=Date Created
 MainWindow.ListView.Columns(2).Header=Type
 
-MainWindow.MenuBar.Items(0).Header=File
-MainWindow.MenuBar.Items(0).Items(0).Header=Quit
-MainWindow.MenuBar.Items(1).Header=Edit
-MainWindow.MenuBar.Items(1).Items(0).Header=Refresh Backups List
-MainWindow.MenuBar.Items(1).Items(1).Header=Backups Folder
-MainWindow.MenuBar.Items(2).Header=Tools
-MainWindow.MenuBar.Items(2).Items(0).Header=Preferences
-MainWindow.MenuBar.Items(3).Header=Help
-MainWindow.MenuBar.Items(3).Items(0).Header=Report a bug
-MainWindow.MenuBar.Items(3).Items(2).Header=Website
-MainWindow.MenuBar.Items(3).Items(3).Header=About
+MainWindow.Toolbar.EditButton.Text=Edit
+MainWindow.Toolbar.EditContextMenu.Items(0).Header=Refresh Backups List
+MainWindow.Toolbar.EditContextMenu.Items(1).Header=Backups Folder
+MainWindow.Toolbar.ToolsButton.Text=Tools
+MainWindow.Toolbar.ToolsContextMenu.Items(0).Header=Preferences
+MainWindow.Toolbar.HelpButton.Text=Help
+MainWindow.Toolbar.HelpContextMenu.Items(0).Header=Report a bug
+MainWindow.Toolbar.HelpContextMenu.Items(2).Header=Website
+MainWindow.Toolbar.HelpContextMenu.Items(3).Header=About
 
 MainWindow.ListView.ContextMenu.SortBy=Sort by
 MainWindow.ListView.ContextMenu.SortBy.Name=Name
@@ -62,14 +60,11 @@ Status.RefreshingBackupsList=Refreshing backups list, please wait...
 Message.Caption.Information=Information
 Message.Caption.Error=Error!
 Message.Caption.AreYouSure=Are you sure?
-Message.Error.NoMinecraftInstall=MCBackup was unable to find an installation of Minecraft on your computer. Please select your Minecraft folder in the following dialog.
+Message.NoMinecraftInstallError=MCBackup was unable to find an installation of Minecraft on your computer. Please select your Minecraft folder in the following dialog.
 Message.Info.MinecraftFolderSetTo=Minecraft folder set to {0}
 Message.NotInstalledInFolder=Minecraft is not installed in that folder! Try again?
-Message.BackupError=An error occured during the backup.
 Message.RestoreAreYouSure=Are you sure you want to restore this backup? This will overwrite any existing content!
-Message.RestoreError=An error occured during the restore.
 Message.DeleteAreYouSure=Are you sure you want to delete the selected backup(s)?
-Message.DeleteError=An error occured during the removal.
 Message.EnterValidName=Please enter a valid name.
 Message.ChooseSave=Please choose a save to back up.
 Message.ChooseVersion=Please choose a version to back up.
@@ -124,9 +119,6 @@ AutoBackupWindow.StartButton.Content.Start=Start
 AutoBackupWindow.StartButton.Content.Stop=Stop
 
 OptionsWindow.Title=Preferences
-OptionsWindow.GeneralPanel.ListBox.Items(0).Content=General
-OptionsWindow.GeneralPanel.ListBox.Items(1).Content=Appearance
-OptionsWindow.GeneralPanel.ListBox.Items(2).Content=Folders
 
 OptionsWindow.AllSupportedImages=All Supported Images
 
@@ -220,3 +212,9 @@ MetroMsgBox.Button.OK=OK
 MetroMsgBox.Button.Yes=Yes
 MetroMsgBox.Button.No=No
 MetroMsgBox.Button.Cancel=Cancel
+
+Message.BackupAlreadyExists=That backup already exists! Please enter another name.
+Exception.Backup=An error occured during the backup.
+Exception.Restore=An error occured during the restore.
+Exception.Delete=An error occured during the removal.
+Exception.Rename=An error occured while trying to rename the backup.

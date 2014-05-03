@@ -343,7 +343,7 @@ Partial Friend NotInheritable Class MySettings
     
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-     Global.System.Configuration.DefaultSettingValueAttribute("3*")>  _
+     Global.System.Configuration.DefaultSettingValueAttribute("*")>  _
     Public Property SidebarWidth() As Global.System.Windows.GridLength
         Get
             Return CType(Me("SidebarWidth"),Global.System.Windows.GridLength)

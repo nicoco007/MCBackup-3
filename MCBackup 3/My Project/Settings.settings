@@ -76,7 +76,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="SidebarWidth" Type="System.Windows.GridLength" Scope="User">
-      <Value Profile="(Default)">3*</Value>
+      <Value Profile="(Default)">*</Value>
     </Setting>
   </Settings>
 </SettingsFile>

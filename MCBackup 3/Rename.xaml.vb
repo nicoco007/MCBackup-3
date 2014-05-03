@@ -41,8 +41,7 @@ Public Class Rename
                 Exit Sub
             End If
         Catch ex As Exception
-            ErrorWindow.Show("Could not rename backup: ", ex)
-            Log.Print(ex.Message, Log.Type.Severe)
+            ErrorWindow.Show(MCBackup.Language.Dictionary("Exception.Rename"), ex)
         End Try
         Main.RefreshBackupsList()
         Me.Close()

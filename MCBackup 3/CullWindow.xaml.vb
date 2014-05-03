@@ -68,7 +68,7 @@ Public Class CullWindow
             Try
                 My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & Item, FileIO.DeleteDirectoryOption.DeleteAllContents)
             Catch ex As Exception
-                ErrorWindow.Show(MCBackup.Language.Dictionary("Message.DeleteError"), ex)
+                ErrorWindow.Show(MCBackup.Language.Dictionary("Exception.Delete"), ex)
             End Try
         Next
     End Sub

@@ -260,7 +260,7 @@ Partial Class MainWindow
                 My.Settings.MinecraftFolderLocation = AppData & "\.minecraft" ' Set folder location to default Minecraft folder location
                 My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
             Else
-                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.Error.NoMinecraftInstall"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.NoMinecraftInstallError"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
                 Log.Print("Minecraft folder not found", Log.Type.Warning)
                 MinecraftFolderSearch()
                 Exit Sub
@@ -541,15 +541,15 @@ Partial Class MainWindow
             SidebarTypeLabel.Text = MCBackup.Language.Dictionary("MainWindow.Sidebar.TypeLabel.Text")
             SidebarDescriptionLabel.Text = MCBackup.Language.Dictionary("MainWindow.Sidebar.DescriptionLabel.Text")
 
-            EditToolbarButton.Content = MCBackup.Language.Dictionary("MainWindow.MenuBar.Items(1).Header")
-            EditContextMenu.Items(0).Header = MCBackup.Language.Dictionary("MainWindow.MenuBar.Items(1).Items(0).Header")
-            EditContextMenu.Items(1).Header = MCBackup.Language.Dictionary("MainWindow.MenuBar.Items(1).Items(1).Header")
-            ToolsToolbarButton.Content = MCBackup.Language.Dictionary("MainWindow.MenuBar.Items(2).Header")
-            ToolsContextMenu.Items(0).Header = MCBackup.Language.Dictionary("MainWindow.MenuBar.Items(2).Items(0).Header")
-            HelpToolbarButton.Content = MCBackup.Language.Dictionary("MainWindow.MenuBar.Items(3).Header")
-            HelpContextMenu.Items(0).Header = MCBackup.Language.Dictionary("MainWindow.MenuBar.Items(3).Items(0).Header")
-            HelpContextMenu.Items(2).Header = MCBackup.Language.Dictionary("MainWindow.MenuBar.Items(3).Items(2).Header")
-            HelpContextMenu.Items(3).Header = MCBackup.Language.Dictionary("MainWindow.MenuBar.Items(3).Items(3).Header")
+            EditToolbarButton.Content = MCBackup.Language.Dictionary("MainWindow.Toolbar.EditButton.Text")
+            EditContextMenu.Items(0).Header = MCBackup.Language.Dictionary("MainWindow.Toolbar.EditContextMenu.Items(0).Header")
+            EditContextMenu.Items(1).Header = MCBackup.Language.Dictionary("MainWindow.Toolbar.EditContextMenu.Items(1).Header")
+            ToolsToolbarButton.Content = MCBackup.Language.Dictionary("MainWindow.Toolbar.ToolsButton.Text")
+            ToolsContextMenu.Items(0).Header = MCBackup.Language.Dictionary("MainWindow.Toolbar.ToolsContextMenu.Items(0).Header")
+            HelpToolbarButton.Content = MCBackup.Language.Dictionary("MainWindow.Toolbar.HelpButton.Text")
+            HelpContextMenu.Items(0).Header = MCBackup.Language.Dictionary("MainWindow.Toolbar.HelpContextMenu.Items(0).Header")
+            HelpContextMenu.Items(2).Header = MCBackup.Language.Dictionary("MainWindow.Toolbar.HelpContextMenu.Items(2).Header")
+            HelpContextMenu.Items(3).Header = MCBackup.Language.Dictionary("MainWindow.Toolbar.HelpContextMenu.Items(3).Header")
 
             StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
 
@@ -622,7 +622,7 @@ Partial Class MainWindow
                 SW.Write("groupName=" & BackupInfo(4))
             End Using
         Catch ex As Exception
-            ErrorWindow.Show(MCBackup.Language.Dictionary("Message.BackupError"), ex)
+            ErrorWindow.Show(MCBackup.Language.Dictionary("Exception.Backup"), ex)
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupError"), MCBackup.Language.Dictionary("BalloonTip.BackupError"), System.Windows.Forms.ToolTipIcon.Error)
             Log.Print(ex.Message, Log.Type.Severe)
         End Try
@@ -666,7 +666,7 @@ Partial Class MainWindow
     Private WorldPath As String = ""
 
     Private Sub CreateThumb(Path As String)
-        StatusLabel.Content = MCBackup.Language.Dictionary(String.Format("Status.CreatingThumb", 0))
+        StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), 0)
         Dim Thread As New Thread(AddressOf ThumbnailBackgroundWorker_DoWork)
         Thread.Start()
         WorldPath = Path
@@ -804,7 +804,7 @@ Partial Class MainWindow
                 My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\thumb.png")
             End If
         Catch ex As Exception
-            ErrorWindow.Show(MCBackup.Language.Dictionary("Message.RestoreError"), ex)
+            ErrorWindow.Show(MCBackup.Language.Dictionary("Exception.Restore"), ex)
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RestoreError"), MCBackup.Language.Dictionary("BalloonTip.RestoreError"), System.Windows.Forms.ToolTipIcon.Error)
             Log.Print(ex.Message, Log.Type.Severe)
         End Try
@@ -947,7 +947,7 @@ Partial Class MainWindow
             Try
                 My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & Item, FileIO.DeleteDirectoryOption.DeleteAllContents)
             Catch ex As Exception
-                ErrorWindow.Show(MCBackup.Language.Dictionary("Message.DeleteError"), ex)
+                ErrorWindow.Show(MCBackup.Language.Dictionary("Exception.Delete"), ex)
             End Try
         Next
     End Sub

@@ -12,17 +12,15 @@ MainWindow.ListView.Columns(0).Header=Nom
 MainWindow.ListView.Columns(1).Header=Date de création
 MainWindow.ListView.Columns(2).Header=Type
 
-MainWindow.MenuBar.Items(0).Header=Fichier
-MainWindow.MenuBar.Items(0).Items(0).Header=Quitter
-MainWindow.MenuBar.Items(1).Header=Édition
-MainWindow.MenuBar.Items(1).Items(0).Header=Rafraîchir la liste de sauvegardes
-MainWindow.MenuBar.Items(1).Items(1).Header=Dossier des sauvegardes
-MainWindow.MenuBar.Items(2).Header=Outils
-MainWindow.MenuBar.Items(2).Items(0).Header=Préférences
-MainWindow.MenuBar.Items(3).Header=Aide
-MainWindow.MenuBar.Items(3).Items(0).Header=Signaler un bogue
-MainWindow.MenuBar.Items(3).Items(2).Header=Site Internet
-MainWindow.MenuBar.Items(3).Items(3).Header=À propos
+MainWindow.Toolbar.EditButton.Text=Édition
+MainWindow.Toolbar.EditContextMenu.Items(0).Header=Rafraîchir la liste de sauvegardes
+MainWindow.Toolbar.EditContextMenu.Items(1).Header=Dossier des sauvegardes
+MainWindow.Toolbar.ToolsButton.Text=Outils
+MainWindow.Toolbar.ToolsContextMenu.Items(0).Header=Préférences
+MainWindow.Toolbar.HelpButton.Text=Aide
+MainWindow.Toolbar.HelpContextMenu.Items(0).Header=Signaler un bogue
+MainWindow.Toolbar.HelpContextMenu.Items(2).Header=Site Internet
+MainWindow.Toolbar.HelpContextMenu.Items(3).Header=À propos
 
 MainWindow.Sidebar.NoBackupSelected=Aucune sauvegarde sélectionnée.
 MainWindow.Sidebar.NumberElementsSelected={0} éléments sélectionnés
@@ -63,14 +61,11 @@ Status.RefreshingBackupsList=Rafraîchissement de la liste des sauvegardes, veui
 Message.Caption.Information=Information
 Message.Caption.Error=Erreur!
 Message.Caption.AreYouSure=Êtes-vous sûr?
-Message.Error.NoMinecraftInstall=MCBackup n'a pas pu trouver d'installation de Minecraft. Veuillez sélectionner votre dossier Minecraft dans le dialogue suivant.
+Message.NoMinecraftInstallError=MCBackup n'a pas pu trouver d'installation de Minecraft. Veuillez sélectionner votre dossier Minecraft dans le dialogue suivant.
 Message.Info.MinecraftFolderSetTo=Dossier Minecraft défini vers {0}
 Message.NotInstalledInFolder=Minecraft n'est pas installé dans ce dossier! Réessayer?
-Message.BackupError=Une erreur est survenue lors de la sauvegarde.
 Message.RestoreAreYouSure=Êtes-vous sûr de vouloir restaurer cette sauvegarde? Cette action remplacera toute ancienne donnée!
-Message.RestoreError=Une erreur est survenue lors de la restauration.
 Message.DeleteAreYouSure=Êtes-vous sûr de vouloir supprimer cette/ces sauvegarde(s)?
-Message.DeleteError=Une erreur est survenue durant la suppression.
 Message.EnterValidName=Veuillez entrer un nom valide.
 Message.ChooseSave=Veuillez choisir un monde à sauvegarder.
 Message.ChooseVersion=Veuillez choisir une version à sauvegarder.
@@ -126,9 +121,6 @@ AutoBackupWindow.StartButton.Content.Start=Démarrer
 AutoBackupWindow.StartButton.Content.Stop=Arrêter
 
 OptionsWindow.Title=Préférences
-OptionsWindow.GeneralPanel.ListBox.Items(0).Content=Général
-OptionsWindow.GeneralPanel.ListBox.Items(1).Content=Apparence
-OptionsWindow.GeneralPanel.ListBox.Items(2).Content=Dossiers
 
 OptionsWindow.AllSupportedImages=Tous les types d'images
 
@@ -223,3 +215,9 @@ MetroMsgBox.Button.OK=OK
 MetroMsgBox.Button.Yes=Oui
 MetroMsgBox.Button.No=Non
 MetroMsgBox.Button.Cancel=Annuler
+Message.NoMinecraftInstallError=
+
+Exception.Backup=Une erreur est survenue lors de la sauvegarde.
+Exception.Restore=Une erreur est survenue lors de la restauration.
+Exception.Delete=Une erreur est survenue lors de la suppression.
+Exception.Rename=Une erreur est survenue lors du renommage.

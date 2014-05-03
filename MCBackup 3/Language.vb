@@ -33,6 +33,7 @@ Public Class Language
         Dictionary.Add("MainWindow.DeleteButton.Content", FindString("MainWindow.DeleteButton.Content", FileName))
         Dictionary.Add("MainWindow.RenameButton.Content", FindString("MainWindow.RenameButton.Content", FileName))
         Dictionary.Add("MainWindow.CullButton.Content", FindString("MainWindow.CullButton.Content", FileName))
+        Dictionary.Add("MainWindow.AutomaticBackupButton.Content", FindString("MainWindow.AutomaticBackupButton.Content", FileName))
 
         Dictionary.Add("MainWindow.ListView.Columns(0).Header", FindString("MainWindow.ListView.Columns(0).Header", FileName))
         Dictionary.Add("MainWindow.ListView.Columns(1).Header", FindString("MainWindow.ListView.Columns(1).Header", FileName))
@@ -40,19 +41,6 @@ Public Class Language
         Dictionary.Add("MainWindow.Sidebar.OriginalNameLabel.Text", FindString("MainWindow.Sidebar.OriginalNameLabel.Text", FileName))
         Dictionary.Add("MainWindow.Sidebar.TypeLabel.Text", FindString("MainWindow.Sidebar.TypeLabel.Text", FileName))
         Dictionary.Add("MainWindow.Sidebar.DescriptionLabel.Text", FindString("MainWindow.Sidebar.DescriptionLabel.Text", FileName))
-
-        Dictionary.Add("MainWindow.MenuBar.Items(0).Header", FindString("MainWindow.MenuBar.Items(0).Header", FileName))
-        Dictionary.Add("MainWindow.MenuBar.Items(0).Items(0).Header", FindString("MainWindow.MenuBar.Items(0).Items(0).Header", FileName))
-        Dictionary.Add("MainWindow.MenuBar.Items(1).Header", FindString("MainWindow.MenuBar.Items(1).Header", FileName))
-        Dictionary.Add("MainWindow.MenuBar.Items(1).Items(0).Header", FindString("MainWindow.MenuBar.Items(1).Items(0).Header", FileName))
-        Dictionary.Add("MainWindow.MenuBar.Items(1).Items(1).Header", FindString("MainWindow.MenuBar.Items(1).Items(1).Header", FileName))
-        Dictionary.Add("MainWindow.MenuBar.Items(2).Header", FindString("MainWindow.MenuBar.Items(2).Header", FileName))
-        Dictionary.Add("MainWindow.MenuBar.Items(2).Items(0).Header", FindString("MainWindow.MenuBar.Items(2).Items(0).Header", FileName))
-        Dictionary.Add("MainWindow.MenuBar.Items(3).Header", FindString("MainWindow.MenuBar.Items(3).Header", FileName))
-        Dictionary.Add("MainWindow.MenuBar.Items(3).Items(0).Header", FindString("MainWindow.MenuBar.Items(3).Items(0).Header", FileName))
-        Dictionary.Add("MainWindow.MenuBar.Items(3).Items(2).Header", FindString("MainWindow.MenuBar.Items(3).Items(2).Header", FileName))
-        Dictionary.Add("MainWindow.MenuBar.Items(3).Items(3).Header", FindString("MainWindow.MenuBar.Items(3).Items(3).Header", FileName))
-        Dictionary.Add("MainWindow.AutomaticBackupButton.Content", FindString("MainWindow.AutomaticBackupButton.Content", FileName))
 
         Dictionary.Add("MainWindow.Sidebar.NoBackupSelected", FindString("MainWindow.Sidebar.NoBackupSelected", FileName))
         Dictionary.Add("MainWindow.Sidebar.NumberElementsSelected", FindString("MainWindow.Sidebar.NumberElementsSelected", FileName))
@@ -74,6 +62,16 @@ Public Class Language
         Dictionary.Add("MainWindow.ListView.ContextMenu.GroupBy.Type", FindString("MainWindow.ListView.ContextMenu.GroupBy.Type", FileName))
         Dictionary.Add("MainWindow.ListView.ContextMenu.GroupBy.Nothing", FindString("MainWindow.ListView.ContextMenu.GroupBy.Nothing", FileName))
 
+        Dictionary.Add("MainWindow.Toolbar.EditButton.Text", FindString("MainWindow.Toolbar.EditButton.Text", FileName))
+        Dictionary.Add("MainWindow.Toolbar.EditContextMenu.Items(0).Header", FindString("MainWindow.Toolbar.EditContextMenu.Items(0).Header", FileName))
+        Dictionary.Add("MainWindow.Toolbar.EditContextMenu.Items(1).Header", FindString("MainWindow.Toolbar.EditContextMenu.Items(1).Header", FileName))
+        Dictionary.Add("MainWindow.Toolbar.ToolsButton.Text", FindString("MainWindow.Toolbar.ToolsButton.Text", FileName))
+        Dictionary.Add("MainWindow.Toolbar.ToolsContextMenu.Items(0).Header", FindString("MainWindow.Toolbar.ToolsContextMenu.Items(0).Header", FileName))
+        Dictionary.Add("MainWindow.Toolbar.HelpButton.Text", FindString("MainWindow.Toolbar.HelpButton.Text", FileName))
+        Dictionary.Add("MainWindow.Toolbar.HelpContextMenu.Items(0).Header", FindString("MainWindow.Toolbar.HelpContextMenu.Items(0).Header", FileName))
+        Dictionary.Add("MainWindow.Toolbar.HelpContextMenu.Items(2).Header", FindString("MainWindow.Toolbar.HelpContextMenu.Items(2).Header", FileName))
+        Dictionary.Add("MainWindow.Toolbar.HelpContextMenu.Items(3).Header", FindString("MainWindow.Toolbar.HelpContextMenu.Items(3).Header", FileName))
+
         ' = Statuses =
         Dictionary.Add("Status.Ready", FindString("Status.Ready", FileName))
         Dictionary.Add("Status.BackingUp", FindString("Status.BackingUp", FileName))
@@ -90,14 +88,11 @@ Public Class Language
         Dictionary.Add("Message.Caption.Information", FindString("Message.Caption.Information", FileName))
         Dictionary.Add("Message.Caption.Error", FindString("Message.Caption.Error", FileName))
         Dictionary.Add("Message.Caption.AreYouSure", FindString("Message.Caption.AreYouSure", FileName))
-        Dictionary.Add("Message.Error.NoMinecraftInstall", FindString("Message.Error.NoMinecraftInstall", FileName))
+        Dictionary.Add("Message.NoMinecraftInstallError", FindString("Message.NoMinecraftInstallError", FileName))
         Dictionary.Add("Message.Info.MinecraftFolderSetTo", FindString("Message.Info.MinecraftFolderSetTo", FileName))
         Dictionary.Add("Message.NotInstalledInFolder", FindString("Message.NotInstalledInFolder", FileName))
-        Dictionary.Add("Message.BackupError", FindString("Message.BackupError", FileName))
         Dictionary.Add("Message.RestoreAreYouSure", FindString("Message.RestoreAreYouSure", FileName))
-        Dictionary.Add("Message.RestoreError", FindString("Message.RestoreError", FileName))
         Dictionary.Add("Message.DeleteAreYouSure", FindString("Message.DeleteAreYouSure", FileName))
-        Dictionary.Add("Message.DeleteError", FindString("Message.DeleteError", FileName))
         Dictionary.Add("Message.EnterValidName", FindString("Message.EnterValidName", FileName))
         Dictionary.Add("Message.ChooseSave", FindString("Message.ChooseSave", FileName))
         Dictionary.Add("Message.ChooseVersion", FindString("Message.ChooseVersion", FileName))
@@ -158,9 +153,6 @@ Public Class Language
 
         ' = Options Window =
         Dictionary.Add("OptionsWindow.Title", FindString("OptionsWindow.Title", FileName))
-        Dictionary.Add("OptionsWindow.ListBox.Items(0).Content", FindString("OptionsWindow.GeneralPanel.ListBox.Items(0).Content", FileName))
-        Dictionary.Add("OptionsWindow.ListBox.Items(1).Content", FindString("OptionsWindow.GeneralPanel.ListBox.Items(1).Content", FileName))
-        Dictionary.Add("OptionsWindow.ListBox.Items(2).Content", FindString("OptionsWindow.GeneralPanel.ListBox.Items(2).Content", FileName))
 
         Dictionary.Add("OptionsWindow.CloseButton.Content", FindString("OptionsWindow.CloseButton.Content", FileName))
         Dictionary.Add("OptionsWindow.ResetButton.Content", FindString("OptionsWindow.ResetButton.Content", FileName))
@@ -255,6 +247,12 @@ Public Class Language
         Dictionary.Add("MetroMsgBox.Button.Yes", FindString("MetroMsgBox.Button.Yes", FileName))
         Dictionary.Add("MetroMsgBox.Button.No", FindString("MetroMsgBox.Button.No", FileName))
         Dictionary.Add("MetroMsgBox.Button.Cancel", FindString("MetroMsgBox.Button.Cancel", FileName))
+
+        ' = Errors (exceptions) =
+        Dictionary.Add("Exception.Backup", FindString("Exception.Backup", FileName))
+        Dictionary.Add("Exception.Restore", FindString("Exception.Restore", FileName))
+        Dictionary.Add("Exception.Delete", FindString("Exception.Delete", FileName))
+        Dictionary.Add("Exception.Rename", FindString("Exception.Rename", FileName))
 
         If ErrorOccured Then
             Log.Print("Language loaded with errors. Please try solving the error(s) above.", Log.Type.Warning)
