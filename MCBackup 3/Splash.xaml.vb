@@ -32,5 +32,16 @@ Public Class Splash
         Catch ex As Exception
             Status.Content = DefaultString
         End Try
+        Status.Refresh()
+    End Sub
+
+    Public Sub SetProgress(Progress As Integer)
+        Me.Progress.Value = Progress
+        Me.Progress.Refresh()
+    End Sub
+
+    Public Sub StepProgress()
+        Me.Progress.Value += 1
+        Me.Progress.Refresh()
     End Sub
 End Class

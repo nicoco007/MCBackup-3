@@ -59,15 +59,12 @@ Partial Class MainWindow
 
         Splash.ShowStatus("Splash.Status.Starting", "Starting...")
 
-        Splash.Status.Refresh()
-
         Log.StartNew()
         Log.Print("Starting MCBackup")
 
         ThemeManager.ChangeTheme(My.Application, New Accent(My.Settings.Theme, New Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/" & My.Settings.Theme & ".xaml")), Theme.Light)
 
-        Splash.Progress.Value += 1
-        Splash.Progress.Refresh()
+        Splash.StepProgress()
 
         InitializeComponent()
 
@@ -86,11 +83,7 @@ Partial Class MainWindow
         Me.Title = "MCBackup " & ApplicationVersion
 
         Splash.ShowStatus("Splash.Status.LoadingLang", "Loading Language...")
-
-        Splash.Progress.Value += 1
-        Splash.Progress.Refresh()
-
-        Splash.Status.Refresh()
+        Splash.StepProgress()
 
         Dim DefaultLanguage As String = "en_US"
 
@@ -101,8 +94,7 @@ Partial Class MainWindow
                 DefaultLanguage = "fr_FR"
         End Select
 
-        Splash.Progress.Value += 1
-        Splash.Progress.Refresh()
+        Splash.StepProgress()
 
         Try
             If My.Settings.Language = "" Or My.Settings.Language Is Nothing Then
@@ -121,8 +113,7 @@ Partial Class MainWindow
             Exit Sub
         End Try
 
-        Splash.Progress.Value += 1
-        Splash.Progress.Refresh()
+        Splash.StepProgress()
 
         NotifyIcon.Text = "MCBackup " & ApplicationVersion
         NotifyIcon.Icon = New System.Drawing.Icon(Application.GetResourceStream(New Uri("pack://application:,,,/Resources/icon.ico")).Stream)
@@ -134,23 +125,18 @@ Partial Class MainWindow
         NotifyIcon.ContextMenu = ContextMenu
         NotifyIcon.Visible = True
 
-        Splash.Progress.Value += 1
-        Splash.Progress.Refresh()
+        Splash.StepProgress()
 
         Splash.ShowStatus("Splash.Status.LoadingProps", "Loading Properties...")
 
-        Splash.Status.Refresh()
-
-        Splash.Progress.Value += 1
-        Splash.Progress.Refresh()
+        Splash.StepProgress()
 
         Main.ListView.Opacity = My.Settings.InterfaceOpacity / 100
         Main.Sidebar.Background = New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, 255, 255, 255))
 
         StatusLabel.Foreground = New SolidColorBrush(My.Settings.StatusLabelColor)
 
-        Splash.Progress.Value += 1
-        Splash.Progress.Refresh()
+        Splash.StepProgress()
 
         If Not My.Settings.BackgroundImageLocation = "" And My.Computer.FileSystem.FileExists(My.Settings.BackgroundImageLocation) Then
             Dim Brush As New ImageBrush(New BitmapImage(New Uri(My.Settings.BackgroundImageLocation)))
@@ -158,8 +144,7 @@ Partial Class MainWindow
             Me.Background = Brush
         End If
 
-        Splash.Progress.Value += 1
-        Splash.Progress.Refresh()
+        Splash.StepProgress()
 
         Me.Width = My.Settings.WindowSize.Width
         Me.Height = My.Settings.WindowSize.Height
@@ -181,13 +166,9 @@ Partial Class MainWindow
 
         Log.Print("Set Backups folder location to '" & My.Settings.BackupsFolderLocation & "'")
 
-        Splash.Progress.Value += 1
-        Splash.Progress.Refresh()
+        Splash.StepProgress()
 
         GridSidebarColumn.Width = My.Settings.SidebarWidth
-
-        Splash.Progress.Value += 1
-        Splash.Progress.Refresh()
     End Sub
 
     Private Sub Main_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
@@ -196,6 +177,7 @@ Partial Class MainWindow
         If My.Settings.CheckForUpdates Then
             Log.Print("Searching for updates...")
             Splash.ShowStatus("Splash.Status.CheckingUpdates", "Checking for Updates...")
+            Splash.StepProgress()
 
             Log.Print("Connecting to http://content.nicoco007.com...")
             Try
@@ -207,16 +189,15 @@ Partial Class MainWindow
                 Exit Sub
             End Try
 
-            Splash.Status.Refresh()
-
-            Splash.Progress.Value += 1
-            Splash.Progress.Refresh()
+            Splash.StepProgress()
 
             Dim WebClient As New WebClient
             AddHandler WebClient.DownloadStringCompleted, AddressOf WebClient_DownloadedStringAsync
             WebClient.DownloadStringAsync(New Uri("http://content.nicoco007.com/downloads/mcbackup-3/version"))
         Else
             Log.Print("Update checking disabled, skipping...")
+            Splash.StepProgress()
+            Splash.StepProgress()
             Load2()
         End If
     End Sub
@@ -245,15 +226,8 @@ Partial Class MainWindow
     End Sub
 
     Private Sub Load2()
-        Splash.Progress.Value += 1
-        Splash.Progress.Refresh()
-
         Splash.ShowStatus("Splash.Status.FindingMinecraft", "Finding Minecraft...")
-
-        Splash.Status.Refresh()
-
-        Splash.Progress.Value += 1
-        Splash.Progress.Refresh()
+        Splash.StepProgress()
 
         If Not My.Computer.FileSystem.FileExists(My.Settings.MinecraftFolderLocation & "\launcher.jar") Then ' Check if saved directory exists AND still has Minecraft installed in it
             If My.Computer.FileSystem.FileExists(AppData & "\.minecraft\launcher.jar") Then ' If not, check for the usual Minecraft folder location
@@ -267,8 +241,7 @@ Partial Class MainWindow
             End If
         End If
 
-        Splash.Progress.Value += 1
-        Splash.Progress.Refresh()
+        Splash.StepProgress()
 
         My.Computer.FileSystem.CreateDirectory(My.Settings.SavesFolderLocation)
 
@@ -279,11 +252,7 @@ Partial Class MainWindow
         ReloadBackupGroups()
 
         Splash.ShowStatus("Splash.Status.Done", "Done.")
-
-        Splash.Progress.Value += 1
-        Splash.Progress.Refresh()
-
-        Splash.Status.Refresh()
+        Splash.StepProgress()
 
         LoadLanguage()
 
