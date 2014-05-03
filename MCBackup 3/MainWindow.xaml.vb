@@ -149,6 +149,8 @@ Partial Class MainWindow
         Me.Width = My.Settings.WindowSize.Width
         Me.Height = My.Settings.WindowSize.Height
 
+        If My.Settings.IsWindowMaximized Then Me.WindowState = WindowState.Maximized
+
         If My.Settings.BackupsFolderLocation = "" Then
             My.Settings.BackupsFolderLocation = StartupPath & "\backups"
         End If
@@ -1196,8 +1198,6 @@ Partial Class MainWindow
             My.Settings.SidebarWidth = GridSidebarColumn.Width
             My.Settings.ListViewWidth = GridListViewColumn.Width
 
-            Debug.Print(My.Settings.SidebarWidth.ToString & ";" & My.Settings.ListViewWidth.ToString)
-
             My.Settings.AutoBkpPrefix = AutoBackupWindow.PrefixTextBox.Text
             My.Settings.AutoBkpSuffix = AutoBackupWindow.SuffixTextBox.Text
 
@@ -1206,6 +1206,7 @@ Partial Class MainWindow
             My.Settings.ListViewSortByDirection = View.SortDescriptions(0).Direction
 
             My.Settings.WindowSize = New Size(Me.Width, Me.Height)
+            My.Settings.IsWindowMaximized = IIf(Me.WindowState = WindowState.Maximized, True, False)
 
             Log.Print("Someone is closing me!")
             My.Settings.Save()
