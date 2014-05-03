@@ -185,8 +185,10 @@ CloseToTrayWindow.CancelButton.Content=Annuler
 CloseToTrayWindow.SaveCheckBox.Content=Toujours faire ceci
 CloseToTrayWindow.RevertLabel.Content=Vous pouvez changer cette option dans les préférences.
 
-ErrorForm.ContinueButton.Content=Continuer
-ErrorForm.CopyToClipboardButton.Content=Copier dans le presse-papiers
+ErrorWindow.ContinueButton.Content=Continuer
+ErrorWindow.CopyToClipboardButton.Content=Copier dans le presse-papiers
+ErrorWindow.ErrorAtLine=Erreur à la ligne {0} dans le fichier {1}: {2}
+ErrorWindow.ContactMessage=Si cette erreur persiste, veuillez me contacter au support@nicoco007.com.
 
 Splash.Status.Starting=Démarrage...
 Splash.Status.LoadingLang=Chargement de la langue...

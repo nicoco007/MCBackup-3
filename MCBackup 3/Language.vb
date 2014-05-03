@@ -226,9 +226,11 @@ Public Class Language
         Dictionary.Add("CloseToTrayWindow.SaveCheckBox.Content", FindString("CloseToTrayWindow.SaveCheckBox.Content", FileName))
         Dictionary.Add("CloseToTrayWindow.RevertLabel.Content", FindString("CloseToTrayWindow.RevertLabel.Content", FileName))
 
-        ' = Error form =
-        Dictionary.Add("ErrorForm.ContinueButton.Content", FindString("ErrorForm.ContinueButton.Content", FileName))
-        Dictionary.Add("ErrorForm.CopyToClipboardButton.Content", FindString("ErrorForm.CopyToClipboardButton.Content", FileName))
+        ' = Error window =
+        Dictionary.Add("ErrorWindow.ContinueButton.Content", FindString("ErrorWindow.ContinueButton.Content", FileName))
+        Dictionary.Add("ErrorWindow.CopyToClipboardButton.Content", FindString("ErrorWindow.CopyToClipboardButton.Content", FileName))
+        Dictionary.Add("ErrorWindow.ErrorAtLine", FindString("ErrorWindow.ErrorAtLine", FileName))
+        Dictionary.Add("ErrorWindow.ContactMessage", FindString("ErrorWindow.ContactMessage", FileName))
 
         ' = Cull Window = 
         Dictionary.Add("CullWindow.Title", FindString("CullWindow.Title", FileName))

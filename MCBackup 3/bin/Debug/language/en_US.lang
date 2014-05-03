@@ -183,8 +183,10 @@ CloseToTrayWindow.CancelButton.Content=Cancel
 CloseToTrayWindow.SaveCheckBox.Content=Always do this in the future
 CloseToTrayWindow.RevertLabel.Content=You can always revert this in the options menu.
 
-ErrorForm.ContinueButton.Content=Continue
-ErrorForm.CopyToClipboardButton.Content=Copy to clipboard
+ErrorWindow.ContinueButton.Content=Continue
+ErrorWindow.CopyToClipboardButton.Content=Copy to clipboard
+ErrorWindow.ErrorAtLine=Error at line {0} in file {1}: {2}
+ErrorWindow.ContactMessage=If this error persists, please consider contacting me at support@nicoco007.com.
 
 Splash.Status.Starting=Starting...
 Splash.Status.LoadingLang=Loading Language...

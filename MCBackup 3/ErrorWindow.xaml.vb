@@ -30,17 +30,18 @@ Public Class ErrorWindow
                 For Each st As StackFrame In StackTrace.GetFrames
                     If String.IsNullOrEmpty(StackTrace.GetFrame(0).GetFileName) Then
                         If st.GetFileLineNumber <> 0 Then
-                            newMessageBox.ErrorTextBlock.Text = String.Format("Error at line {0} in file {1}: {2}", st.GetFileLineNumber, IO.Path.GetFileName(st.GetFileName), Exception.Message)
+                            newMessageBox.ErrorTextBlock.Text = String.Format(MCBackup.Language.Dictionary("ErrorWindow.ErrorAtLine"), st.GetFileLineNumber, IO.Path.GetFileName(st.GetFileName), Exception.Message)
                         End If
                     Else
-                        newMessageBox.ErrorTextBlock.Text = String.Format("Error at line {0} in file {1}: {2}", StackTrace.GetFrame(0).GetFileLineNumber, IO.Path.GetFileName(StackTrace.GetFrame(0).GetFileName), Exception.Message)
+                        newMessageBox.ErrorTextBlock.Text = String.Format(MCBackup.Language.Dictionary("ErrorWindow.ErrorAtLine"), StackTrace.GetFrame(0).GetFileLineNumber, IO.Path.GetFileName(StackTrace.GetFrame(0).GetFileName), Exception.Message)
                     End If
                     
                     Log.Print(st.ToString, Log.Type.Severe)
                 Next
                 newMessageBox.Title = MCBackup.Language.Dictionary("Message.Caption.Error")
-                newMessageBox.ContinueButton.Content = MCBackup.Language.Dictionary("ErrorForm.ContinueButton.Content")
-                newMessageBox.CopyToClipboardButton.Content = MCBackup.Language.Dictionary("ErrorForm.CopyToClipboardButton.Content")
+                newMessageBox.ContinueButton.Content = MCBackup.Language.Dictionary("ErrorWindow.ContinueButton.Content")
+                newMessageBox.CopyToClipboardButton.Content = MCBackup.Language.Dictionary("ErrorWindow.CopyToClipboardButton.Content")
+                newMessageBox.ContactMessage.Content = MCBackup.Language.Dictionary("ErrorWindow.ContactMessage")
                 System.Media.SystemSounds.Hand.Play()
                 newMessageBox.ShowDialog()
             Catch ex As Exception
@@ -50,10 +51,10 @@ Public Class ErrorWindow
                 For Each st As StackFrame In StackTrace.GetFrames
                     If String.IsNullOrEmpty(StackTrace.GetFrame(0).GetFileName) Then
                         If st.GetFileLineNumber <> 0 Then
-                            newMessageBox.ErrorTextBlock.Text = String.Format("Error at line {0} in file {1}: {2}", st.GetFileLineNumber, IO.Path.GetFileName(st.GetFileName), Exception.Message)
+                            newMessageBox.ErrorTextBlock.Text = String.Format(MCBackup.Language.Dictionary("ErrorWindow.ErrorAtLine"), st.GetFileLineNumber, IO.Path.GetFileName(st.GetFileName), Exception.Message)
                         End If
                     Else
-                        newMessageBox.ErrorTextBlock.Text = String.Format("Error at line {0} in file {1}: {2}", StackTrace.GetFrame(0).GetFileLineNumber, IO.Path.GetFileName(StackTrace.GetFrame(0).GetFileName), Exception.Message)
+                        newMessageBox.ErrorTextBlock.Text = String.Format(MCBackup.Language.Dictionary("ErrorWindow.ErrorAtLine"), StackTrace.GetFrame(0).GetFileLineNumber, IO.Path.GetFileName(StackTrace.GetFrame(0).GetFileName), Exception.Message)
                     End If
                 Next
                 System.Media.SystemSounds.Hand.Play()

@@ -177,6 +177,12 @@ Partial Class MainWindow
     Private Sub Main_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
         Me.Hide()
 
+        Try
+            Throw New Exception("Something bad happened.")
+        Catch ex As Exception
+            ErrorWindow.Show("Uh oh.", ex)
+        End Try
+
         If My.Settings.CheckForUpdates Then
             Log.Print("Searching for updates...")
             Splash.ShowStatus("Splash.Status.CheckingUpdates", "Checking for Updates...")

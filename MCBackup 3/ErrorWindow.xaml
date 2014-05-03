@@ -25,6 +25,6 @@
         <TextBox x:Name="ErrorTextBlock" TextWrapping="WrapWithOverflow" Height="Auto" Margin="10,36,10,71" Background="{x:Null}" IsReadOnly="True" MaxWidth="600" BorderBrush="Black"/>
         <Button x:Name="CopyToClipboardButton" Content="Copy to clipboard" HorizontalAlignment="Left" Margin="10,0,0,10" Height="30" VerticalAlignment="Bottom" Width="Auto" Padding="10,1"/>
         <Button x:Name="ContinueButton" Content="Continue" Margin="0,0,10,10" Height="29" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="Auto" Padding="10,1"/>
-        <Label Content="If this error persists, please consider contacting me at support@nicoco007.com." HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,45" Width="572"/>
+        <Label x:Name="ContactMessage" Content="If this error persists, please consider contacting me at support@nicoco007.com." HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,45" Width="572"/>
     </Grid>
 </Controls:MetroWindow>
