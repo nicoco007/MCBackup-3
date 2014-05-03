@@ -166,9 +166,10 @@ Partial Class MainWindow
 
         Log.Print("Set Backups folder location to '" & My.Settings.BackupsFolderLocation & "'")
 
-        Splash.StepProgress()
+        GridSidebarColumn.Width = New GridLength(My.Settings.SidebarWidth.Value, GridUnitType.Star)
+        GridListViewColumn.Width = New GridLength(My.Settings.ListViewWidth.Value, GridUnitType.Star)
 
-        GridSidebarColumn.Width = My.Settings.SidebarWidth
+        Splash.StepProgress()
     End Sub
 
     Private Sub Main_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
@@ -968,6 +969,7 @@ Partial Class MainWindow
 
     Private Sub Main_SizeChanged(sender As Object, e As SizeChangedEventArgs) Handles Main.SizeChanged
         Main_LocationChanged(sender, Nothing)
+        InternalGrid.MaxWidth = Me.ActualWidth - 20
     End Sub
 
     Private Sub Main_LocationChanged(sender As Object, e As EventArgs) Handles MyBase.LocationChanged
@@ -1192,6 +1194,9 @@ Partial Class MainWindow
             NotifyIcon.Dispose()
 
             My.Settings.SidebarWidth = GridSidebarColumn.Width
+            My.Settings.ListViewWidth = GridListViewColumn.Width
+
+            Debug.Print(My.Settings.SidebarWidth.ToString & ";" & My.Settings.ListViewWidth.ToString)
 
             My.Settings.AutoBkpPrefix = AutoBackupWindow.PrefixTextBox.Text
             My.Settings.AutoBkpSuffix = AutoBackupWindow.SuffixTextBox.Text

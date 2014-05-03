@@ -352,6 +352,18 @@ Partial Friend NotInheritable Class MySettings
             Me("SidebarWidth") = value
         End Set
     End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("3*")>  _
+    Public Property ListViewWidth() As Global.System.Windows.GridLength
+        Get
+            Return CType(Me("ListViewWidth"),Global.System.Windows.GridLength)
+        End Get
+        Set
+            Me("ListViewWidth") = value
+        End Set
+    End Property
 End Class
 
 Namespace My

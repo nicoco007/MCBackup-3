@@ -53,9 +53,9 @@
     </Controls:MetroWindow.WindowCommands>
 
     <Grid Name="MainGrid" Height="Auto" VerticalAlignment="Stretch">
-        <Grid Margin="10,60,10,132">
+        <Grid Name="InternalGrid" Margin="10,60,10,132">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*" MinWidth="300"/>
+                <ColumnDefinition Name="GridListViewColumn" Width="3*" MinWidth="300"/>
                 <ColumnDefinition Width="4"/>
                 <ColumnDefinition Name="GridSidebarColumn" Width="*" MinWidth="280"/>
             </Grid.ColumnDefinitions>
