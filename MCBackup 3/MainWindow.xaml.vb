@@ -616,11 +616,19 @@ Partial Class MainWindow
         Dim UpdateProgressBarDelegate As New UpdateProgressBarDelegate(AddressOf ProgressBar.SetValue)
 
         Do Until Int(PercentComplete) = 100
-            PercentComplete = Int(GetFolderSize(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0)) / GetFolderSize(BackupInfo(2)) * 100)
+            PercentComplete = GetFolderSize(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0)) / GetFolderSize(BackupInfo(2)) * 100
 
             Dim Copied As Double = GetFolderSize(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0))
+            Dim ToCopy As Double = GetFolderSize(BackupInfo(2))
             Dim Speed As Double = Copied / (BackupStopwatch.ElapsedMilliseconds / 1000 * 1024)
-            StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), Math.Round(PercentComplete, 2), Speed / 1024)
+            Dim TimeLeft As Double = (100 - PercentComplete) * BackupStopwatch.ElapsedMilliseconds / PercentComplete / 1000
+
+            If PercentComplete < 1 Then
+                StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed / 1024, "?")
+            Else
+                StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed / 1024, TimeLeft)
+            End If
+
             Dispatcher.Invoke(UpdateProgressBarDelegate, System.Windows.Threading.DispatcherPriority.Background, New Object() {ProgressBar.ValueProperty, PercentComplete})
             If Environment.OSVersion.Version.Major > 5 Then
                 TaskbarManager.Instance.SetProgressValue(PercentComplete, 100)
@@ -814,9 +822,17 @@ Partial Class MainWindow
         Do Until PercentComplete = 100
             If My.Computer.FileSystem.DirectoryExists(RestoreInfo(1)) Then
                 PercentComplete = GetFolderSize(RestoreInfo(1)) / GetFolderSize(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0)) * 100
+
                 Dim Copied As Double = GetFolderSize(RestoreInfo(1))
                 Dim Speed As Double = Copied / (RestoreStopWatch.ElapsedMilliseconds / 1000 * 1024)
-                StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), Math.Round(PercentComplete, 2), Speed / 1024)
+                Dim TimeLeft As Double = (100 - PercentComplete) * RestoreStopWatch.ElapsedMilliseconds / PercentComplete / 1000
+
+                If PercentComplete < 1 Then
+                    StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed / 1024, "?")
+                Else
+                    StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed / 1024, TimeLeft)
+                End If
+
                 Dispatcher.Invoke(UpdateRestoreProgressBarDelegate, System.Windows.Threading.DispatcherPriority.Background, New Object() {ProgressBar.ValueProperty, Convert.ToDouble(PercentComplete)})
                 If Environment.OSVersion.Version.Major > 5 Then
                     TaskbarManager.Instance.SetProgressValue(PercentComplete, 100)
