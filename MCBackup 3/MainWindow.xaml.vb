@@ -972,8 +972,8 @@ Partial Class MainWindow
     Private Sub DeleteBackgroundWorker_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs)
         StatusLabel.Content = MCBackup.Language.Dictionary("Status.DeleteComplete")
         ProgressBar.IsIndeterminate = False
-        If Environment.OSVersion.Version.Major > 6 And Environment.OSVersion.Version.Minor > 0 Then
-            TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal)
+        If Environment.OSVersion.Version.Major > 5 Then
+            TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress)
         End If
         RefreshBackupsList()
     End Sub
