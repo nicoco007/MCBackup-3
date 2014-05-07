@@ -177,12 +177,6 @@ Partial Class MainWindow
     Private Sub Main_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
         Me.Hide()
 
-        Try
-            Throw New Exception("Something bad happened.")
-        Catch ex As Exception
-            ErrorWindow.Show("Uh oh.", ex)
-        End Try
-
         If My.Settings.CheckForUpdates Then
             Log.Print("Searching for updates...")
             Splash.ShowStatus("Splash.Status.CheckingUpdates", "Checking for Updates...")
@@ -312,17 +306,20 @@ Partial Class MainWindow
             End If
 
             Dim Directory As New IO.DirectoryInfo(My.Settings.BackupsFolderLocation) ' Create a DirectoryInfo variable for the backups folder
-            Dim Folders As IO.DirectoryInfo() = Directory.GetDirectories() ' Get all the directories in the backups folder
-            Dim Folder As IO.DirectoryInfo ' Used to designate a single folder in the backups folder
 
             Dim Items As New List(Of ListViewBackupItem)()
 
-            For Each Folder In Folders ' For each folder in the backups folder
+            For Each Folder As DirectoryInfo In Directory.GetDirectories ' For each folder in the backups folder
                 Dim Type As String = "[ERROR]"                  ' Create variables with default value [ERROR], in case one of the values doesn't exist
                 Dim OriginalFolderName As String = "[ERROR]"    ' 
 
                 Try
-                    Using SR As New StreamReader(Directory.ToString & "\" & Folder.ToString & "\info.mcb")
+                    If Not My.Computer.FileSystem.FileExists(Folder.FullName & "\info.mcb") Then
+                        Log.Print(String.Format("'info.mcb' does not exist in folder '{0}'. This folder will not be considered as a backup.", Folder.Name), Log.Type.Warning)
+                        Exit Try
+                    End If
+
+                    Using SR As New StreamReader(Folder.FullName & "\info.mcb")
                         Do While SR.Peek <> -1
                             Dim Line As String = SR.ReadLine
                             If Not Line.StartsWith("#") Then
@@ -566,6 +563,7 @@ Partial Class MainWindow
 
 #Region "Backup"
     Private Delegate Sub UpdateProgressBarDelegate(ByVal dp As System.Windows.DependencyProperty, ByVal value As Object)
+    Private BackupStopwatch As New Stopwatch
 
     Private Sub BackupButton_Click(sender As Object, e As EventArgs) Handles BackupButton.Click
         Dim BackupWindow As New Backup
@@ -607,6 +605,11 @@ Partial Class MainWindow
     End Sub
 
     Private Sub UpdateBackupProgress()
+        If Not BackupStopwatch.IsRunning Then
+            BackupStopwatch.Reset()
+            BackupStopwatch.Start()
+        End If
+
         My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0))
         Dim PercentComplete As Double = 0
 
@@ -614,19 +617,20 @@ Partial Class MainWindow
 
         Do Until Int(PercentComplete) = 100
             PercentComplete = Int(GetFolderSize(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0)) / GetFolderSize(BackupInfo(2)) * 100)
-            StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), Math.Round(PercentComplete, 2))
+
+            Dim Copied As Double = GetFolderSize(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0))
+            Dim Speed As Double = Copied / (BackupStopwatch.ElapsedMilliseconds / 1000 * 1024)
+            StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), Math.Round(PercentComplete, 2), Speed / 1024)
             Dispatcher.Invoke(UpdateProgressBarDelegate, System.Windows.Threading.DispatcherPriority.Background, New Object() {ProgressBar.ValueProperty, PercentComplete})
             If Environment.OSVersion.Version.Major > 5 Then
                 TaskbarManager.Instance.SetProgressValue(PercentComplete, 100)
             End If
         Loop
-    End Sub
 
-    Private Sub BackupBackgroundWorker_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
-        ProgressBar.Value = 100
         If Environment.OSVersion.Version.Major > 5 Then
             TaskbarManager.Instance.SetProgressValue(100, 100)
         End If
+
         If BackupInfo(3) = "save" And My.Settings.CreateThumbOnWorld Then
             StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), "0")
             Log.Print("Creating thumbnail")
@@ -635,10 +639,16 @@ Partial Class MainWindow
             RefreshBackupsList()
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupComplete"), MCBackup.Language.Dictionary("BalloonTip.BackupComplete"), System.Windows.Forms.ToolTipIcon.Info)
             StatusLabel.Content = MCBackup.Language.Dictionary("Status.BackupComplete")
+            StatusLabel.Refresh()
             Log.Print("Backup Complete")
             ListView.IsEnabled = True
             BackupButton.IsEnabled = True
         End If
+    End Sub
+
+    Private Sub BackupBackgroundWorker_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
+        BackupStopwatch.Stop()
+        ProgressBar.Value = 100
     End Sub
 
     Private WorldPath As String = ""
@@ -705,6 +715,7 @@ Partial Class MainWindow
         UpdateProgress(100)
         RefreshBackupsList()
         StatusLabel.Content = MCBackup.Language.Dictionary("Status.BackupComplete")
+        StatusLabel.Refresh()
         If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupComplete"), MCBackup.Language.Dictionary("BalloonTip.BackupComplete"), System.Windows.Forms.ToolTipIcon.Info)
         Log.Print("Backup Complete")
         ListView.IsEnabled = True
@@ -713,6 +724,8 @@ Partial Class MainWindow
 #End Region
 
 #Region "Restore"
+    Private RestoreStopWatch As New Stopwatch
+
     Private Sub RestoreButton_Click(sender As Object, e As EventArgs) Handles RestoreButton.Click, ListViewRestoreItem.Click
         If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.RestoreAreYouSure"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = Forms.DialogResult.Yes Then
             Log.Print("Starting Restore")
@@ -789,6 +802,11 @@ Partial Class MainWindow
     End Sub
 
     Private Sub UpdateRestoreProgress()
+        If Not RestoreStopWatch.IsRunning Then
+            RestoreStopWatch.Reset()
+            RestoreStopWatch.Start()
+        End If
+
         Dim PercentComplete As Integer = 0
 
         Dim UpdateRestoreProgressBarDelegate As New UpdateProgressBarDelegate(AddressOf ProgressBar.SetValue)
@@ -796,20 +814,25 @@ Partial Class MainWindow
         Do Until PercentComplete = 100
             If My.Computer.FileSystem.DirectoryExists(RestoreInfo(1)) Then
                 PercentComplete = GetFolderSize(RestoreInfo(1)) / GetFolderSize(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0)) * 100
-                StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete)
+                Dim Copied As Double = GetFolderSize(RestoreInfo(1))
+                Dim Speed As Double = Copied / (RestoreStopWatch.ElapsedMilliseconds / 1000 * 1024)
+                StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), Math.Round(PercentComplete, 2), Speed / 1024)
                 Dispatcher.Invoke(UpdateRestoreProgressBarDelegate, System.Windows.Threading.DispatcherPriority.Background, New Object() {ProgressBar.ValueProperty, Convert.ToDouble(PercentComplete)})
                 If Environment.OSVersion.Version.Major > 5 Then
                     TaskbarManager.Instance.SetProgressValue(PercentComplete, 100)
                 End If
             End If
         Loop
-    End Sub
 
-    Private Sub RestoreBackgroundWorker_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
         StatusLabel.Content = MCBackup.Language.Dictionary("Status.RestoreComplete")
         If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RestoreComplete"), MCBackup.Language.Dictionary("BalloonTip.RestoreComplete"), System.Windows.Forms.ToolTipIcon.Info)
         Log.Print("Restore Complete")
         RefreshBackupsList()
+    End Sub
+
+    Private Sub RestoreBackgroundWorker_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
+        RestoreStopWatch.Stop()
+        ProgressBar.Value = 100
     End Sub
 #End Region
 

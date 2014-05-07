@@ -46,11 +46,11 @@ MainWindow.Search=Search...
 
 # Statuses
 Status.Ready=Ready
-Status.BackingUp=Backing up... ({0}% Complete)
+Status.BackingUp=Backing up... ({0}% Complete at {1:0.00} MB/s)
 Status.BackupComplete=Backup Complete; Ready.
 Status.CreatingThumb=Creating thumbnail ({0}% Complete)... This can take a while, you can disable this in the options.
 Status.RemovingOldContent=Removing old content, please wait...
-Status.Restoring=Restoring... ({0}% Complete)
+Status.Restoring=Restoring... ({0}% Complete at {1:0.00} MB/s)
 Status.RestoreComplete=Restore Complete; Ready
 Status.Deleting=Deleting...
 Status.DeleteComplete=Delete Complete; Ready

@@ -47,11 +47,11 @@ MainWindow.ListView.ContextMenu.GroupBy.Nothing=Rien
 
 # Statuses
 Status.Ready=Prêt.
-Status.BackingUp=Sauvegarde... ({0}% complétée)
+Status.BackingUp=Sauvegarde... ({0}% complétée à {1:0.00} Mo/s)
 Status.BackupComplete=Sauvegarde terminée; Prêt.
 Status.CreatingThumb=Création d'un aperçu ({0}% complété)... Ceci peut prendre un certain temps, vous pouvez la désactiver dans vos préférences.
 Status.RemovingOldContent=Suppression de l'ancien contenu, veuillez patienter...
-Status.Restoring=Restauration... ({0}% complétée)
+Status.Restoring=Restauration... ({0}% complétée à {1:0.00} Mo/s)
 Status.RestoreComplete=Restauration terminée; Prêt.
 Status.Deleting=Suppression...
 Status.DeleteComplete=Suppression terminée; Prêt.
