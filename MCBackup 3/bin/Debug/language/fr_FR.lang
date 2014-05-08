@@ -223,3 +223,5 @@ Exception.Backup=Une erreur est survenue lors de la sauvegarde.
 Exception.Restore=Une erreur est survenue lors de la restauration.
 Exception.Delete=Une erreur est survenue lors de la suppression.
 Exception.Rename=Une erreur est survenue lors du renommage.
+
+TimeLeft.LessThanFive=moins de 5

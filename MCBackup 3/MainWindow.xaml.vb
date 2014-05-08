@@ -626,7 +626,11 @@ Partial Class MainWindow
             If PercentComplete < 1 Then
                 StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed / 1024, "?")
             Else
-                StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed / 1024, TimeLeft)
+                If TimeLeft < 5 Then
+                    StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed / 1024, MCBackup.Language.Dictionary("TimeLeft.LessThanFive"))
+                Else
+                    StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed / 1024, Math.Round(TimeLeft / 5) * 5)
+                End If
             End If
 
             Dispatcher.Invoke(UpdateProgressBarDelegate, System.Windows.Threading.DispatcherPriority.Background, New Object() {ProgressBar.ValueProperty, PercentComplete})
@@ -830,7 +834,11 @@ Partial Class MainWindow
                 If PercentComplete < 1 Then
                     StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed / 1024, "?")
                 Else
-                    StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed / 1024, TimeLeft)
+                    If TimeLeft < 5 Then
+                        StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed / 1024, MCBackup.Language.Dictionary("TimeLeft.LessThanFive"))
+                    Else
+                        StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed / 1024, Math.Round(TimeLeft / 5) * 5)
+                    End If
                 End If
 
                 Dispatcher.Invoke(UpdateRestoreProgressBarDelegate, System.Windows.Threading.DispatcherPriority.Background, New Object() {ProgressBar.ValueProperty, Convert.ToDouble(PercentComplete)})

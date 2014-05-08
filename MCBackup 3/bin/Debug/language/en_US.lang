@@ -220,3 +220,5 @@ Exception.Backup=An error occured during the backup.
 Exception.Restore=An error occured during the restore.
 Exception.Delete=An error occured during the removal.
 Exception.Rename=An error occured while trying to rename the backup.
+
+TimeLeft.LessThanFive=less than 5
