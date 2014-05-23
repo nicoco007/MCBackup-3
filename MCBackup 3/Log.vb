@@ -17,7 +17,8 @@
 Imports System.IO
 
 Public Class Log
-    Public Structure Type
+    Public Structure Prefix
+        Const None = Nothing
         Const Info = "[INFO]"
         Const Warning = "[WARNING]"
         Const Severe = "[SEVERE]"
@@ -28,67 +29,30 @@ Public Class Log
     ''' <summary>
     ''' Starts new logging session
     ''' </summary>
-    ''' <remarks></remarks>
+
     Public Shared Sub StartNew()
-        DPrint("")
-        DPrint("---------- Starting MCBackup v" & Main.ApplicationVersion & " @ " & DebugTimeStamp() & " ----------")
-        Print("OS Name: " & GetWindowsVersion())
-        Print("OS Version: " & Environment.OSVersion.Version.Major & "." & Environment.OSVersion.Version.Minor)
-        Print("Architecture: " & GetWindowsArch())
-        Print(".NET Framework Version: " & Environment.Version.Major & "." & Environment.Version.Minor)
+        
     End Sub
 
     ''' <summary>
-    ''' Prints a plain message in the log, whithout timestamp.
+    ''' Prints a message in the log file and the debug.
     ''' </summary>
-    ''' <param name="Message">Message to print in log</param>
+    ''' <param name="Message">Message to display</param>
+    ''' <param name="Prefix">Message Prefix ([INFO], [WARNING], [SEVERE])</param>
+    ''' <param name="HasTimeStamp"></param>
     ''' <remarks></remarks>
-    Public Shared Sub DPrint(Message As String)
+    Public Shared Sub Print(Message As String, Optional Prefix As String = Log.Prefix.Info, Optional HasTimeStamp As Boolean = True)
         Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
-            Debug.Print(Message)
-            SW.WriteLine(Message)
+            Debug.Print(IIf(HasTimeStamp, DebugTimeStamp(), "") & " " & Prefix & " " & Message)
+            SW.WriteLine(IIf(HasTimeStamp, DebugTimeStamp(), "") & " " & Prefix & " " & Message)
         End Using
-    End Sub
-
-    ''' <summary>
-    ''' Prints a message in the log, with a timestamp and INFO tag.
-    ''' </summary>
-    ''' <param name="Message">Message to print in log</param>
-    ''' <remarks></remarks>
-    Public Shared Sub Print(Message As String)
-        Print(Message, Type.Info)
-    End Sub
-
-    ''' <summary>
-    ''' Prints a message in the log, with a timestamp and specified tag.
-    ''' </summary>
-    ''' <param name="Message">Message to print in log</param>
-    ''' <param name="LogType">Tag to show ([INFO], [WARNING], [SEVERE])</param>
-    ''' <remarks></remarks>
-    Public Shared Sub Print(Message As String, LogType As String)
-        Try
-            Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
-                Debug.Print(DebugTimeStamp() & " " & LogType & " " & Message)
-                SW.WriteLine(DebugTimeStamp() & " " & LogType & " " & Message)
-            End Using
-        Catch ex As Exception
-
-        End Try
     End Sub
 
     ''' <summary>
     ''' Returns a log timestamp
     ''' </summary>
     ''' <returns>A timestamp in the form YYYY-MM-DD hh:mm:ss</returns>
-    ''' <remarks></remarks>
     Public Shared Function DebugTimeStamp()
-        Dim Day As String = Format(Now(), "dd")
-        Dim Month As String = Format(Now(), "MM")
-        Dim Year As String = Format(Now(), "yyyy")
-        Dim Hours As String = Format(Now(), "hh")
-        Dim Minutes As String = Format(Now(), "mm")
-        Dim Seconds As String = Format(Now(), "ss")
-
         Return DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")
     End Function
 
@@ -96,7 +60,6 @@ Public Class Log
     ''' Converts Windows NT version to 'human-readable' name
     ''' </summary>
     ''' <returns>Windows OS Version name</returns>
-    ''' <remarks></remarks>
     Public Shared Function GetWindowsVersion()
         Select Case Environment.OSVersion.Version.Major
             Case 5
@@ -125,7 +88,7 @@ Public Class Log
     ''' Gets windows architecture
     ''' </summary>
     ''' <returns>Windows architecture (32/64bit)</returns>
-    ''' <remarks></remarks>
+
     Public Shared Function GetWindowsArch()
         If Environment.Is64BitOperatingSystem Then
             Return "amd64"

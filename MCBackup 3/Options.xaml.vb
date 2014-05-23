@@ -111,7 +111,7 @@ Partial Public Class Options
                 My.Computer.FileSystem.DeleteFile(FolderBrowserDialog.FileName & "\.tmp")
                 BackupsFolderTextBox.Text = FolderBrowserDialog.FileName
             Catch ex As Exception
-                Log.Print(ex.Message, Log.Type.Severe)
+                Log.Print(ex.Message, Log.Prefix.Severe)
                 MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.SetBackupsFolderError"), FolderBrowserDialog.FileName), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             End Try
         End If
@@ -177,7 +177,7 @@ Partial Public Class Options
             My.Settings.BackgroundImageStretch = Int(Brush.Stretch)
             Main.Background = Brush
         Catch ex As Exception
-            Log.Print(ex.Message, Log.Type.Severe)
+            Log.Print(ex.Message, Log.Prefix.Severe)
         End Try
     End Sub
 
@@ -472,7 +472,7 @@ Partial Public Class Options
                 My.Computer.FileSystem.DeleteFile(BackupsFolderTextBox.Text & "\.tmp")
                 My.Settings.BackupsFolderLocation = BackupsFolderTextBox.Text
             Catch ex As Exception
-                Log.Print(ex.Message, Log.Type.Severe)
+                Log.Print(ex.Message, Log.Prefix.Severe)
                 MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.SetBackupsFolderError"), BackupsFolderTextBox.Text), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
                 BackupsFolderTextBox.Text = My.Settings.BackupsFolderLocation
             End Try

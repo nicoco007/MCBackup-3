@@ -1,6 +1,5 @@
 ﻿fullname=Français
 
-# Main Window
 MainWindow.BackupButton.Content=Sauvegarde...
 MainWindow.RestoreButton.Content=Restaurer
 MainWindow.DeleteButton.Content=Supprimer
@@ -45,7 +44,6 @@ MainWindow.ListView.ContextMenu.GroupBy.OriginalName=Nom original
 MainWindow.ListView.ContextMenu.GroupBy.Type=Type
 MainWindow.ListView.ContextMenu.GroupBy.Nothing=Rien
 
-# Statuses
 Status.Ready=Prêt.
 Status.BackingUp=Sauvegarde... ({0:0.00}% complétée à {1:0.00} Mo/s, {2})
 Status.BackupComplete=Sauvegarde terminée; Prêt.
@@ -57,7 +55,6 @@ Status.Deleting=Suppression...
 Status.DeleteComplete=Suppression terminée; Prêt.
 Status.RefreshingBackupsList=Rafraîchissement de la liste des sauvegardes, veuillez patienter...
 
-# Messages
 Message.Caption.Information=Information
 Message.Caption.Error=Erreur!
 Message.Caption.AreYouSure=Êtes-vous sûr?
@@ -207,7 +204,6 @@ NotifyIcon.ContextMenu.ExitItem.Text=Quitter
 OptionsWindow.CloseButton.Content=Fermer
 OptionsWindow.ResetButton.Content=Réinitialiser
 OptionsWindow.AppearancePanel.ThemeLabel.Content=Thème
-OptionsWindow.AppearancePanel.ThemeLabel.Content=Thème
 
 BackupTypes.Save=Monde
 BackupTypes.Version=Version
@@ -217,7 +213,6 @@ MetroMsgBox.Button.OK=OK
 MetroMsgBox.Button.Yes=Oui
 MetroMsgBox.Button.No=Non
 MetroMsgBox.Button.Cancel=Annuler
-Message.NoMinecraftInstallError=
 
 Exception.Backup=Une erreur est survenue lors de la sauvegarde.
 Exception.Restore=Une erreur est survenue lors de la restauration.

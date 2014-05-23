@@ -55,18 +55,21 @@ Partial Class MainWindow
 
 #Region "Load"
     Public Sub New()
+        InitializeComponent()
         Splash.Show()
 
         Splash.ShowStatus("Splash.Status.Starting", "Starting...")
 
-        Log.StartNew()
-        Log.Print("Starting MCBackup")
+        Log.Print("", Log.Prefix.None, False)
+        Log.Print("---------- Starting MCBackup v" & Main.ApplicationVersion & " @ " & Log.DebugTimeStamp() & " ----------", Log.Prefix.None, False)
+        Log.Print("OS Name: " & Log.GetWindowsVersion())
+        Log.Print("OS Version: " & Environment.OSVersion.Version.Major & "." & Environment.OSVersion.Version.Minor)
+        Log.Print("Architecture: " & Log.GetWindowsArch())
+        Log.Print(".NET Framework Version: " & Environment.Version.Major & "." & Environment.Version.Minor)
 
         ThemeManager.ChangeTheme(My.Application, New Accent(My.Settings.Theme, New Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/" & My.Settings.Theme & ".xaml")), Theme.Light)
 
         Splash.StepProgress()
-
-        InitializeComponent()
 
         AddHandler BackupBackgroundWorker.DoWork, New DoWorkEventHandler(AddressOf BackupBackgroundWorker_DoWork)
         AddHandler BackupBackgroundWorker.RunWorkerCompleted, New RunWorkerCompletedEventHandler(AddressOf BackupBackgroundWorker_RunWorkerCompleted)
@@ -186,7 +189,7 @@ Partial Class MainWindow
                 My.Computer.Network.Ping("content.nicoco007.com", 1000)
                 Log.Print("Successfully connected.")
             Catch ex As Exception
-                Log.Print("Could not connect to content.nicoco007.com, skipping update check...", Log.Type.Warning)
+                Log.Print("Could not connect to content.nicoco007.com, skipping update check...", Log.Prefix.Warning)
                 Load2()
                 Exit Sub
             End Try
@@ -237,7 +240,7 @@ Partial Class MainWindow
                 My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
             Else
                 MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.NoMinecraftInstallError"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
-                Log.Print("Minecraft folder not found", Log.Type.Warning)
+                Log.Print("Minecraft folder not found", Log.Prefix.Warning)
                 MinecraftFolderSearch()
                 Exit Sub
             End If
@@ -314,7 +317,7 @@ Partial Class MainWindow
 
                 Try
                     If Not My.Computer.FileSystem.FileExists(Folder.FullName & "\info.mcb") Then
-                        Log.Print(String.Format("'info.mcb' does not exist in folder '{0}'. This folder will not be considered as a backup.", Folder.Name), Log.Type.Warning)
+                        Log.Print(String.Format("'info.mcb' does not exist in folder '{0}'. This folder will not be considered as a backup.", Folder.Name), Log.Prefix.Warning)
                         Exit Try
                     End If
 
@@ -356,7 +359,7 @@ Partial Class MainWindow
                         End If
                     End If
                 Catch ex As Exception
-                    Log.Print(ex.Message, Log.Type.Severe)
+                    Log.Print(ex.Message, Log.Prefix.Severe)
                 End Try
             Next
 
@@ -474,7 +477,7 @@ Partial Class MainWindow
                         Loop
                     End Using
                 Catch ex As Exception
-                    Log.Print(ex.Message, Log.Type.Severe)
+                    Log.Print(ex.Message, Log.Prefix.Severe)
                 End Try
 
                 SidebarOriginalNameContent.Text = OriginalFolderName
@@ -674,7 +677,7 @@ Partial Class MainWindow
 
     Private Sub StatcounterWebClient_DownloadDataCompleted(sender As Object, e As DownloadDataCompletedEventArgs) Handles StatcounterWebClient.DownloadDataCompleted
         If e.Error IsNot Nothing Then
-            Log.Print("Could not connect to http://c.statcounter.com: " & e.Error.Message, Log.Type.Warning)
+            Log.Print("Could not connect to http://c.statcounter.com: " & e.Error.Message, Log.Prefix.Warning)
         End If
     End Sub
 

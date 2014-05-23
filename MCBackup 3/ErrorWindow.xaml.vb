@@ -36,7 +36,7 @@ Public Class ErrorWindow
                         newMessageBox.ErrorTextBlock.Text = String.Format(MCBackup.Language.Dictionary("ErrorWindow.ErrorAtLine"), StackTrace.GetFrame(0).GetFileLineNumber, IO.Path.GetFileName(StackTrace.GetFrame(0).GetFileName), Exception.Message)
                     End If
                     
-                    Log.Print(st.ToString, Log.Type.Severe)
+                    Log.Print(st.ToString, Log.Prefix.Severe)
                 Next
                 newMessageBox.Title = MCBackup.Language.Dictionary("Message.Caption.Error")
                 newMessageBox.ContinueButton.Content = MCBackup.Language.Dictionary("ErrorWindow.ContinueButton.Content")

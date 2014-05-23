@@ -1,6 +1,5 @@
 ﻿fullname=English
 
-# Main Window
 MainWindow.BackupButton.Content=Backup...
 MainWindow.RestoreButton.Content=Restore
 MainWindow.DeleteButton.Content=Delete
@@ -22,17 +21,6 @@ MainWindow.Toolbar.HelpContextMenu.Items(0).Header=Report a bug
 MainWindow.Toolbar.HelpContextMenu.Items(2).Header=Website
 MainWindow.Toolbar.HelpContextMenu.Items(3).Header=About
 
-MainWindow.ListView.ContextMenu.SortBy=Sort by
-MainWindow.ListView.ContextMenu.SortBy.Name=Name
-MainWindow.ListView.ContextMenu.SortBy.DateCreated=Date Created
-MainWindow.ListView.ContextMenu.SortBy.Type=Type
-MainWindow.ListView.ContextMenu.SortBy.Ascending=Ascending
-MainWindow.ListView.ContextMenu.SortBy.Descending=Descending
-MainWindow.ListView.ContextMenu.GroupBy=Group by
-MainWindow.ListView.ContextMenu.GroupBy.OriginalName=Original Name
-MainWindow.ListView.ContextMenu.GroupBy.Type=Type
-MainWindow.ListView.ContextMenu.GroupBy.Nothing=Nothing
-
 MainWindow.Sidebar.NoBackupSelected=No backup selected.
 MainWindow.Sidebar.NumberElementsSelected={0} elements selected
 MainWindow.Sidebar.NumberElements={0} elements
@@ -44,7 +32,18 @@ MainWindow.Sidebar.Description.NoItem=No item selected.
 
 MainWindow.Search=Search...
 
-# Statuses
+MainWindow.ListView.ContextMenu.SortBy=Sort by
+MainWindow.ListView.ContextMenu.SortBy.Name=Name
+MainWindow.ListView.ContextMenu.SortBy.DateCreated=Date Created
+MainWindow.ListView.ContextMenu.SortBy.Type=Type
+MainWindow.ListView.ContextMenu.SortBy.Ascending=Ascending
+MainWindow.ListView.ContextMenu.SortBy.Descending=Descending
+
+MainWindow.ListView.ContextMenu.GroupBy=Group by
+MainWindow.ListView.ContextMenu.GroupBy.OriginalName=Original Name
+MainWindow.ListView.ContextMenu.GroupBy.Type=Type
+MainWindow.ListView.ContextMenu.GroupBy.Nothing=Nothing
+
 Status.Ready=Ready
 Status.BackingUp=Backing up... ({0:0.00}% Complete at {1:0.00} MB/s, {2})
 Status.BackupComplete=Backup Complete; Ready.
@@ -56,7 +55,6 @@ Status.Deleting=Deleting...
 Status.DeleteComplete=Delete Complete; Ready
 Status.RefreshingBackupsList=Refreshing backups list, please wait...
 
-# Messages
 Message.Caption.Information=Information
 Message.Caption.Error=Error!
 Message.Caption.AreYouSure=Are you sure?
@@ -79,6 +77,7 @@ Message.BackupsFolderNotFound=Your backups folder cannot be found. This either m
 Message.MinecraftNotIn=Minecraft is not installed in '{0}'!
 Message.FolderDoesNotExist=The folder '{0}' does not exist!
 Message.AreYouSureDeleteGroup=Are you sure you want to delete this group? It will be lost forever (a long time)!
+Message.BackupAlreadyExists=That backup already exists! Please enter another name.
 
 BalloonTip.Title.BackupError=Backup Error!
 BalloonTip.BackupError=An error occured during the backup.
@@ -146,6 +145,7 @@ OptionsWindow.AppearancePanel.SizeModeComboBox.Items(2).Content=Auto Size
 OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content=Zoom
 OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content=Browse...
 OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content=Remove
+OptionsWindow.AppearancePanel.SampleText=Sample Text
 
 ## ONLY MODIFY THE ORDER OF 'ThemeTags', OR THE PROGRAM *WILL* CRASH ##
 OptionsWindow.AppearancePanel.Themes=Amber;Blue;Brown;Cobalt;Crimson;Cyan;Emerald;Green;Indigo;Lime;Magenta;Mauve;Olive;Orange;Pink;Purple;Red;Sienna;Steel;Teal;Violet;Yellow
@@ -162,7 +162,6 @@ OptionsWindow.Tabs.Appearance=Appearance
 OptionsWindow.Tabs.Folders=Folders
 OptionsWindow.Tabs.Groups=Groups
 
-OptionsWindow.AppearancePanel.SampleText=Sample Text
 OptionsWindow.GroupsTab.AddNewGroupGroupBox.Header=Add new group
 OptionsWindow.GroupsTab.OtherOptionsGroupBox.Header=Other options
 OptionsWindow.GroupsTab.DeleteGroupButton.Text=Delete
@@ -215,7 +214,6 @@ MetroMsgBox.Button.Yes=Yes
 MetroMsgBox.Button.No=No
 MetroMsgBox.Button.Cancel=Cancel
 
-Message.BackupAlreadyExists=That backup already exists! Please enter another name.
 Exception.Backup=An error occured during the backup.
 Exception.Restore=An error occured during the restore.
 Exception.Delete=An error occured during the removal.
