@@ -25,7 +25,7 @@
         <TabControl Margin="0,0,0,42" x:Name="TabControl">
             <TabItem x:Name="GeneralTabItem" Header="General">
                 <Grid>
-                    <GroupBox x:Name="LanguageGroupBox" Header="Language" Margin="10,146,0,0" Canvas.Left="10" Canvas.Top="146" Height="86" HorizontalAlignment="Left" Width="320" VerticalAlignment="Top">
+                    <GroupBox x:Name="LanguageGroupBox" Header="Language" Margin="335,162,0,0" Canvas.Left="10" Canvas.Top="146" Height="86" HorizontalAlignment="Left" Width="320" VerticalAlignment="Top">
                         <Grid>
                             <ComboBox x:Name="LanguagesComboBox" Margin="10,10,10,0" Height="26" VerticalAlignment="Top">
                                 <ComboBox.ItemTemplate>
@@ -45,12 +45,13 @@
 
                         </Grid>
                     </GroupBox>
-                    <GroupBox x:Name="GeneralOptionsGroupBox" Header="General Options" Margin="10,10,0,0" Canvas.Left="10" Canvas.Top="10" Height="131" HorizontalAlignment="Left" Width="320" VerticalAlignment="Top">
+                    <GroupBox x:Name="GeneralOptionsGroupBox" Header="General Options" Margin="10,10,0,0" Canvas.Left="10" Canvas.Top="10" Height="159" HorizontalAlignment="Left" Width="320" VerticalAlignment="Top">
                         <Grid>
                             <CheckBox x:Name="ShowBalloonTipsCheckBox" Content="Show balloon tips" HorizontalAlignment="Left" VerticalAlignment="Top" ToolTipService.ShowOnDisabled="True" IsChecked="True" ToolTip="Show a ballon tip when a backup/restore finishes or fails" Margin="0,2,0,0" Width="308"/>
                             <CheckBox x:Name="ShowDeleteConfirmationCheckBox" Content="Show delete confirmation" HorizontalAlignment="Left" VerticalAlignment="Top" ToolTip="Not Implemented" ToolTipService.ShowOnDisabled="True" IsEnabled="False" IsChecked="True" Margin="0,25,0,0" Width="308"/>
-                            <CheckBox x:Name="CheckForUpdatesCheckBox" Content="Check for updates" ToolTip="Automatically check for updates on startup" IsChecked="True" Margin="0,48,0,26" HorizontalAlignment="Left" Width="308"/>
+                            <CheckBox x:Name="CheckForUpdatesCheckBox" Content="Check for updates" ToolTip="Automatically check for updates on startup" IsChecked="True" Margin="0,48,0,0" HorizontalAlignment="Left" Width="308" Height="18" VerticalAlignment="Top"/>
                             <CheckBox x:Name="CreateThumbOnWorldCheckBox" Content="Create thumbnail on world backup" IsChecked="True" Margin="0,71,0,0" Height="18" VerticalAlignment="Top" HorizontalAlignment="Left" Width="308"/>
+                            <CheckBox x:Name="SendAnonymousDataCheckBox" Content="Send anonymous statistics" IsChecked="True" Margin="0,94,0,0" Height="18" VerticalAlignment="Top" HorizontalAlignment="Left" Width="308"/>
 
                         </Grid>
                     </GroupBox>

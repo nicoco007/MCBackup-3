@@ -52,6 +52,8 @@ Partial Public Class Options
         RedColorLabel.ContextMenu = Nothing
         GreenColorLabel.ContextMenu = Nothing
         BlueColorLabel.ContextMenu = Nothing
+
+        SendAnonymousDataCheckBox.IsChecked = My.Settings.SendAnonymousData
     End Sub
 
     Public Overloads Sub ShowDialog(Tab As Integer)
@@ -478,5 +480,14 @@ Partial Public Class Options
             MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.FolderDoesNotExist"), BackupsFolderTextBox.Text), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             BackupsFolderTextBox.Text = My.Settings.BackupsFolderLocation
         End If
+    End Sub
+
+    Private Sub SendAnonymousDataCheckBox_Checked(sender As Object, e As RoutedEventArgs) Handles SendAnonymousDataCheckBox.Checked
+        If Not SendAnonymousDataCheckBox.IsChecked Then
+            If MetroMessageBox.Show("Are you sure you want to disable anonymous statistics collection? They are only used for global statistics!", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.No Then
+                SendAnonymousDataCheckBox.IsChecked = True
+            End If
+        End If
+        My.Settings.SendAnonymousData = SendAnonymousDataCheckBox.IsChecked
     End Sub
 End Class

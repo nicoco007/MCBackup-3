@@ -81,5 +81,8 @@
     <Setting Name="ListViewWidth" Type="System.Windows.GridLength" Scope="User">
       <Value Profile="(Default)">3*</Value>
     </Setting>
+    <Setting Name="SendAnonymousData" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -364,6 +364,18 @@ Partial Friend NotInheritable Class MySettings
             Me("ListViewWidth") = value
         End Set
     End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+    Public Property SendAnonymousData() As Boolean
+        Get
+            Return CType(Me("SendAnonymousData"),Boolean)
+        End Get
+        Set
+            Me("SendAnonymousData") = value
+        End Set
+    End Property
 End Class
 
 Namespace My

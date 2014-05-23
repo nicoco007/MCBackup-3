@@ -658,9 +658,20 @@ Partial Class MainWindow
         End If
     End Sub
 
+    Private WithEvents StatcounterWebClient As New WebClient
+
     Private Sub BackupBackgroundWorker_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
         BackupStopwatch.Stop()
         ProgressBar.Value = 100
+        If My.Settings.SendAnonymousData Then
+            StatcounterWebClient.DownloadDataAsync(New Uri("http://c.statcounter.com/9820848/0/90ee98bc/1/"))
+        End If
+    End Sub
+
+    Private Sub StatcounterWebClient_DownloadDataCompleted(sender As Object, e As DownloadDataCompletedEventArgs) Handles StatcounterWebClient.DownloadDataCompleted
+        If e.Error IsNot Nothing Then
+            Log.Print("Could not connect to http://c.statcounter.com: " & e.Error.Message, Log.Type.Warning)
+        End If
     End Sub
 
     Private WorldPath As String = ""
