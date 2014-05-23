@@ -46,11 +46,11 @@ MainWindow.Search=Search...
 
 # Statuses
 Status.Ready=Ready
-Status.BackingUp=Backing up... ({0:0.00}% Complete at {1:0.00} MB/s, {2:0} seconds remaining)
+Status.BackingUp=Backing up... ({0:0.00}% Complete at {1:0.00} MB/s, {2})
 Status.BackupComplete=Backup Complete; Ready.
 Status.CreatingThumb=Creating thumbnail ({0}% Complete)... This can take a while, you can disable this in the options.
 Status.RemovingOldContent=Removing old content, please wait...
-Status.Restoring=Restoring... ({0}% Complete at {1:0.00} MB/s, {2:0} seconds remaining)
+Status.Restoring=Restoring... ({0}% Complete at {1:0.00} MB/s, {2})
 Status.RestoreComplete=Restore Complete; Ready
 Status.Deleting=Deleting...
 Status.DeleteComplete=Delete Complete; Ready
@@ -221,4 +221,6 @@ Exception.Restore=An error occured during the restore.
 Exception.Delete=An error occured during the removal.
 Exception.Rename=An error occured while trying to rename the backup.
 
-TimeLeft.LessThanFive=less than 5
+TimeLeft.LessThanFive=less than 5 seconds remaining
+TimeLeft.Seconds={0} seconds remaining
+TimeLeft.MinutesAndSeconds={0} minutes and {1} seconds remaining

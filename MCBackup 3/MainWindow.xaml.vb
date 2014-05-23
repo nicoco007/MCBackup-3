@@ -104,7 +104,6 @@ Partial Class MainWindow
                 MCBackup.Language.Load(My.Settings.Language & ".lang")
             End If
         Catch ex As Exception
-            Log.Print("Could not load language file '" & My.Settings.Language & "': " & ex.Message, Log.Type.Severe)
             ErrorWindow.Show("Error: Could not load language file (" & My.Settings.Language & ")! MCBackup will now exit.", ex)
             My.Settings.Language = DefaultLanguage
             My.Settings.Save()
@@ -600,7 +599,6 @@ Partial Class MainWindow
         Catch ex As Exception
             ErrorWindow.Show(MCBackup.Language.Dictionary("Exception.Backup"), ex)
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupError"), MCBackup.Language.Dictionary("BalloonTip.BackupError"), System.Windows.Forms.ToolTipIcon.Error)
-            Log.Print(ex.Message, Log.Type.Severe)
         End Try
     End Sub
 
@@ -611,7 +609,9 @@ Partial Class MainWindow
         End If
 
         My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0))
+
         Dim PercentComplete As Double = 0
+        Dim TimeLeft As TimeSpan = Nothing
 
         Dim UpdateProgressBarDelegate As New UpdateProgressBarDelegate(AddressOf ProgressBar.SetValue)
 
@@ -619,17 +619,21 @@ Partial Class MainWindow
             PercentComplete = GetFolderSize(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0)) / GetFolderSize(BackupInfo(2)) * 100
 
             Dim Copied As Double = GetFolderSize(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0))
-            Dim ToCopy As Double = GetFolderSize(BackupInfo(2))
             Dim Speed As Double = Copied / (BackupStopwatch.ElapsedMilliseconds / 1000 * 1024)
-            Dim TimeLeft As Double = (100 - PercentComplete) * BackupStopwatch.ElapsedMilliseconds / PercentComplete / 1000
 
             If PercentComplete < 1 Then
-                StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed / 1024, "?")
+                StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed / 1024, "estimating time left...")
             Else
-                If TimeLeft < 5 Then
+                If Math.Round(BackupStopwatch.Elapsed.TotalSeconds, 1) Mod 2 < 0.25 Then
+                    TimeLeft = TimeSpan.FromSeconds(Math.Round((100 - PercentComplete) * BackupStopwatch.ElapsedMilliseconds / PercentComplete / 1000 / 5) * 5)
+                End If
+
+                If TimeLeft.TotalSeconds < 5 And TimeLeft <> Nothing Then
                     StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed / 1024, MCBackup.Language.Dictionary("TimeLeft.LessThanFive"))
+                ElseIf TimeLeft.TotalSeconds < 60 Then
+                    StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed / 1024, String.Format(MCBackup.Language.Dictionary("TimeLeft.Seconds"), TimeLeft.Seconds))
                 Else
-                    StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed / 1024, Math.Round(TimeLeft / 5) * 5)
+                    StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed / 1024, String.Format(MCBackup.Language.Dictionary("TimeLeft.MinutesAndSeconds"), TimeLeft.Minutes, TimeLeft.Seconds))
                 End If
             End If
 
@@ -793,9 +797,9 @@ Partial Class MainWindow
     Private Sub DeleteForRestoreBackgroundWorker_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs)
         If My.Computer.FileSystem.DirectoryExists(RestoreInfo(1)) Then
             Try
-                My.Computer.FileSystem.DeleteDirectory(RestoreInfo(1), FileIO.DeleteDirectoryOption.DeleteAllContents, FileIO.RecycleOption.SendToRecycleBin)
+                My.Computer.FileSystem.DeleteDirectory(RestoreInfo(1), FileIO.DeleteDirectoryOption.DeleteAllContents)
             Catch ex As Exception
-                Log.Print(ex.Message, Log.Type.Severe)
+                ErrorWindow.Show("Could not delete folder:", ex)
             End Try
         End If
     End Sub
@@ -805,9 +809,9 @@ Partial Class MainWindow
         If Environment.OSVersion.Version.Major > 5 Then
             TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal)
         End If
+        Log.Print("Removed old content, restoring...")
         RestoreBackgroundWorker.RunWorkerAsync()
         UpdateRestoreProgress()
-        Log.Print("Removed old content, restoring...")
     End Sub
 
     Private Sub RestoreBackgroundWorker_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs)
@@ -820,7 +824,6 @@ Partial Class MainWindow
         Catch ex As Exception
             ErrorWindow.Show(MCBackup.Language.Dictionary("Exception.Restore"), ex)
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RestoreError"), MCBackup.Language.Dictionary("BalloonTip.RestoreError"), System.Windows.Forms.ToolTipIcon.Error)
-            Log.Print(ex.Message, Log.Type.Severe)
         End Try
     End Sub
 
@@ -831,6 +834,7 @@ Partial Class MainWindow
         End If
 
         Dim PercentComplete As Integer = 0
+        Dim TimeLeft As TimeSpan
 
         Dim UpdateRestoreProgressBarDelegate As New UpdateProgressBarDelegate(AddressOf ProgressBar.SetValue)
 
@@ -840,15 +844,20 @@ Partial Class MainWindow
 
                 Dim Copied As Double = GetFolderSize(RestoreInfo(1))
                 Dim Speed As Double = Copied / (RestoreStopWatch.ElapsedMilliseconds / 1000 * 1024)
-                Dim TimeLeft As Double = (100 - PercentComplete) * RestoreStopWatch.ElapsedMilliseconds / PercentComplete / 1000
 
                 If PercentComplete < 1 Then
-                    StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed / 1024, "?")
+                    StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed / 1024, "estimating time left...")
                 Else
-                    If TimeLeft < 5 Then
+                    If Math.Round(BackupStopwatch.Elapsed.TotalSeconds, 1) Mod 2 < 0.25 Then
+                        TimeLeft = TimeSpan.FromSeconds(Math.Round((100 - PercentComplete) * BackupStopwatch.ElapsedMilliseconds / PercentComplete / 1000 / 5) * 5)
+                    End If
+
+                    If TimeLeft.TotalSeconds < 5 Then
                         StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed / 1024, MCBackup.Language.Dictionary("TimeLeft.LessThanFive"))
+                    ElseIf TimeLeft.TotalSeconds < 60 Then
+                        StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed / 1024, String.Format(MCBackup.Language.Dictionary("TimeLeft.Seconds"), TimeLeft.Seconds))
                     Else
-                        StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed / 1024, Math.Round(TimeLeft / 5) * 5)
+                        StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed / 1024, String.Format(MCBackup.Language.Dictionary("TimeLeft.MinutesAndSeconds"), TimeLeft.Minutes, TimeLeft.Seconds))
                     End If
                 End If
 
@@ -877,7 +886,7 @@ Partial Class MainWindow
             Dim FSO As FileSystemObject = New FileSystemObject
             Return FSO.GetFolder(FolderPath).Size ' Get FolderPath's size
         Catch ex As Exception
-            Log.Print("Could not find " & FolderPath & "'s size: " & ex.Message, Log.Type.Severe)
+            ErrorWindow.Show(String.Format("Could not find {0}'s size:", FolderPath), ex)
         End Try
         Return 0
     End Function
@@ -887,7 +896,7 @@ Partial Class MainWindow
             Dim FSO As FileSystemObject = New FileSystemObject
             Return FSO.GetFolder(FolderPath).DateCreated ' Get FolderPath's date of creation
         Catch ex As Exception
-            Log.Print("Could not find " & FolderPath & "'s creation date: " & ex.Message, Log.Type.Severe)
+            ErrorWindow.Show(String.Format("Could not find {0}'s creation date:", FolderPath), ex)
         End Try
         Return 0
     End Function
@@ -905,7 +914,7 @@ Partial Class MainWindow
             Bitmap.EndInit()
             Return Bitmap
         Catch ex As Exception
-            Log.Print(ex.Message)
+            ErrorWindow.Show(String.Format("Could not convert source {0} to bitmap:", Source), ex)
         End Try
         Return Nothing
     End Function
@@ -1320,6 +1329,7 @@ Partial Class MainWindow
     End Sub
 #End Region
 
+#Region "ListView"
     Private Sub ListView_ContextMenuOpening(sender As Object, e As ContextMenuEventArgs) Handles ListView.ContextMenuOpening
         Select Case ListView.SelectedItems.Count
             Case Is > 1
@@ -1351,6 +1361,7 @@ Partial Class MainWindow
             DeleteButton_Click(sender, Nothing)
         End If
     End Sub
+#End Region
 End Class
 
 Public Class CloseAction

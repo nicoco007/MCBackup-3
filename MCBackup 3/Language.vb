@@ -257,6 +257,8 @@ Public Class Language
         Dictionary.Add("Exception.Rename", FindString("Exception.Rename", FileName))
 
         Dictionary.Add("TimeLeft.LessThanFive", FindString("TimeLeft.LessThanFive", FileName))
+        Dictionary.Add("TimeLeft.Seconds", FindString("TimeLeft.Seconds", FileName))
+        Dictionary.Add("TimeLeft.MinutesAndSeconds", FindString("TimeLeft.MinutesAndSeconds", FileName))
 
         If ErrorOccured Then
             Log.Print("Language loaded with errors. Please try solving the error(s) above.", Log.Type.Warning)

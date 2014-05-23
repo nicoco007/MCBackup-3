@@ -47,11 +47,11 @@ MainWindow.ListView.ContextMenu.GroupBy.Nothing=Rien
 
 # Statuses
 Status.Ready=Prêt.
-Status.BackingUp=Sauvegarde... ({0:0.00}% complétée à {1:0.00} Mo/s, {2:0} secondes restantes)
+Status.BackingUp=Sauvegarde... ({0:0.00}% complétée à {1:0.00} Mo/s, {2})
 Status.BackupComplete=Sauvegarde terminée; Prêt.
 Status.CreatingThumb=Création d'un aperçu ({0}% complété)... Ceci peut prendre un certain temps, vous pouvez la désactiver dans vos préférences.
 Status.RemovingOldContent=Suppression de l'ancien contenu, veuillez patienter...
-Status.Restoring=Restauration... ({0}% complétée à {1:0.00} Mo/s, {2:0} secondes restantes)
+Status.Restoring=Restauration... ({0}% complétée à {1:0.00} Mo/s, {2})
 Status.RestoreComplete=Restauration terminée; Prêt.
 Status.Deleting=Suppression...
 Status.DeleteComplete=Suppression terminée; Prêt.
@@ -224,4 +224,6 @@ Exception.Restore=Une erreur est survenue lors de la restauration.
 Exception.Delete=Une erreur est survenue lors de la suppression.
 Exception.Rename=Une erreur est survenue lors du renommage.
 
-TimeLeft.LessThanFive=moins de 5
+TimeLeft.LessThanFive=moins de 5 secondes restantes
+TimeLeft.Seconds={0} secondes restantes
+TimeLeft.MinutesAndSeconds={0} minutes et {1} secondes restantes
