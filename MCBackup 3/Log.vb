@@ -89,7 +89,7 @@ Public Class Log
         Dim Minutes As String = Format(Now(), "mm")
         Dim Seconds As String = Format(Now(), "ss")
 
-        Return Year & "-" & Month & "-" & Day & " " & Hours & ":" & Minutes & ":" & Seconds
+        Return DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")
     End Function
 
     ''' <summary>

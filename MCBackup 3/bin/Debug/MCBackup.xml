@@ -114,13 +114,6 @@ InitializeComponent
 	<summary>
 UpdateDialog
 </summary>
-</member><member name="M:MCBackup.sha1.GetSHA1(System.String)">
-	<summary>
- Converts a string to a SHA1 hash
- </summary>
-	<param name="StringToHash">String to hash using SHA1</param>
-	<returns>SHA1 hash</returns>
-	<remarks></remarks>
 </member><member name="P:MCBackup.My.Resources.Resources.ResourceManager">
 	<summary>
   Retourne l'instance ResourceManager mise en cache utilisée par cette classe.
