@@ -89,6 +89,8 @@ BalloonTip.Title.RestoreComplete=Restauration terminée!
 BalloonTip.RestoreComplete=La restauration s'est terminée avec succès.
 BalloonTip.Title.RunningBackground=Je suis ici!
 BalloonTip.RunningBackground=MCBackup fonctionne en arrière-plan.
+BalloonTip.Title.AutoBackup=Début d'une sauvegarde automatique
+BalloonTip.AutoBackup=Une sauvegarde automatique du monde '{0}' a démarré.
 
 BackupWindow.Title=Sauvegarde
 BackupWindow.BackupDetailsGroupBox.Header=Détails de la sauvegarde
@@ -116,6 +118,7 @@ AutoBackupWindow.PrefixLabel.Content=Préfixe
 AutoBackupWindow.SuffixLabel.Content=Suffixe
 AutoBackupWindow.StartButton.Content.Start=Démarrer
 AutoBackupWindow.StartButton.Content.Stop=Arrêter
+AutoBackupWindow.BackupDescription=Sauvegarde automatique de '{0}'.
 
 OptionsWindow.Title=Préférences
 
@@ -222,3 +225,9 @@ Exception.Rename=Une erreur est survenue lors du renommage.
 TimeLeft.LessThanFive=moins de 5 secondes restantes
 TimeLeft.Seconds={0} secondes restantes
 TimeLeft.MinutesAndSeconds={0} minutes et {1} secondes restantes
+
+UpdateDialog.Title=Nouvelle version disponible!
+UpdateDialog.Label1.Text=Une nouvelle version de MCBackup est disponible!
+UpdateDialog.CurrentVersionLabel.Text=Version actuelle: {0}
+UpdateDialog.LatestVersionLabel.Text=Dernière version: {0}
+UpdateDialog.Label2.Text=Souhaitez-vous mettre à jour MCBackup?

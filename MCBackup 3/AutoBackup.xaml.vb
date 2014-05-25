@@ -100,7 +100,7 @@ Public Class AutoBackup
 
             Minutes = MinutesNumUpDown.Value
             Seconds = 0
-            TimeLabel.Content = IntToText(MinutesNumUpDown.Value) & ":00"
+            TimeLabel.Content = String.Format("{0:00}:00", MinutesNumUpDown.Value)
             Timer.Start()
             StartButton.Content = MCBackup.Language.Dictionary("AutoBackupWindow.StartButton.Content.Stop")
             TimerStarted = True
@@ -123,21 +123,21 @@ Public Class AutoBackup
             Minutes -= 1
         End If
 
-        TimeLabel.Content = IntToText(Minutes) & ":" & IntToText(Seconds)
+        TimeLabel.Content = String.Format("{0:00}:{1:00}", Minutes, Seconds)
 
         If Minutes = 0 And Seconds = 0 Then
-            Log.Print("Starting automated backup...", Log.Prefix.Info)
-            Main.BackupInfo(0) = PrefixTextBox.Text & GetTimeAndDate() & SuffixTextBox.Text
-            Main.BackupInfo(1) = "Automated backup of " & WorldName
+            Log.Print("Starting automated backup...")
+            Main.BackupInfo(0) = PrefixTextBox.Text & Backup.GetBackupTimeStamp() & SuffixTextBox.Text
+            Main.BackupInfo(1) = String.Format(MCBackup.Language.Dictionary("AutoBackupWindow.BackupDescription"), WorldName)
             Main.BackupInfo(2) = My.Settings.SavesFolderLocation & "\" & WorldName
             Main.BackupInfo(3) = "save"
             Main.StartBackup()
 
-            If My.Settings.ShowBalloonTips Then Main.NotifyIcon.ShowBalloonTip(2000, "Automated Backup Started", "An automated backup started for """ & WorldName & """", Forms.ToolTipIcon.Info)
+            If My.Settings.ShowBalloonTips Then Main.NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.AutoBackup"), String.Format(MCBackup.Language.Dictionary("BalloonTip.AutoBackup"), WorldName), Forms.ToolTipIcon.Info)
 
             Minutes = MinutesNumUpDown.Value
             Seconds = 0
-            TimeLabel.Content = IntToText(MinutesNumUpDown.Value) & ":00"
+            TimeLabel.Content = String.Format("{0:00}:00", MinutesNumUpDown.Value)
         End If
     End Sub
 #End Region
@@ -153,27 +153,7 @@ Public Class AutoBackup
             SaveListBox.Items.Add(SavesFolder.ToString)
         Next
     End Sub
-
-    Private Function IntToText(Int As Integer)
-        If Int >= 10 Then
-            Return Int.ToString
-        Else
-            Return "0" & Int.ToString
-        End If
-    End Function
-
-    Private Function GetTimeAndDate()
-        Dim Day As String = Format(Now(), "dd")
-        Dim Month As String = Format(Now(), "MM")
-        Dim Year As String = Format(Now(), "yyyy")
-        Dim Hours As String = Format(Now(), "hh")
-        Dim Minutes As String = Format(Now(), "mm")
-        Dim Seconds As String = Format(Now(), "ss")
-
-        Return Year & "-" & Month & "-" & Day & " (" & Hours & "h" & Minutes & "m" & Seconds & "s)"
-    End Function
 #End Region
-
 
     Private Sub RefreshButton_Click(sender As Object, e As RoutedEventArgs) Handles RefreshButton.Click
         ReloadSaves()

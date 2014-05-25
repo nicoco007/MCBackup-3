@@ -89,6 +89,8 @@ BalloonTip.Title.RestoreComplete=Restore Complete!
 BalloonTip.RestoreComplete=Restore completed.
 BalloonTip.Title.RunningBackground=I'm Here!
 BalloonTip.RunningBackground=MCBackup is running in background.
+BalloonTip.Title.AutoBackup=Automated Backup Started
+BalloonTip.AutoBackup=An automated backup has started for '{0}'.
 
 BackupWindow.Title=Backup
 BackupWindow.BackupDetailsGroupBox.Header=Backup Details
@@ -116,6 +118,7 @@ AutoBackupWindow.PrefixLabel.Content=Prefix
 AutoBackupWindow.SuffixLabel.Content=Suffix
 AutoBackupWindow.StartButton.Content.Start=Start
 AutoBackupWindow.StartButton.Content.Stop=Stop
+AutoBackupWindow.BackupDescription=Automated backup of '{0}'.
 
 OptionsWindow.Title=Preferences
 
@@ -222,3 +225,9 @@ Exception.Rename=An error occured while trying to rename the backup.
 TimeLeft.LessThanFive=less than 5 seconds remaining
 TimeLeft.Seconds={0} seconds remaining
 TimeLeft.MinutesAndSeconds={0} minutes and {1} seconds remaining
+
+UpdateDialog.Title=New Version Available!
+UpdateDialog.Label1.Text=A new version of MCBackup is available!
+UpdateDialog.CurrentVersionLabel.Text=Current Version: {0}
+UpdateDialog.LatestVersionLabel.Text=Latest Version: {0}
+UpdateDialog.Label2.Text=Would you like to update?

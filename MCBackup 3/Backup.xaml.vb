@@ -79,11 +79,11 @@ Public Class Backup
     Private Sub StartButton_Click(sender As Object, e As EventArgs) Handles StartButton.Click
         If DateAndTimeRadioButton.IsChecked Then
             If SaveRadioButton.IsChecked Then
-                Main.BackupInfo(0) = SavesListView.SelectedItem & " " & GetTimeAndDate()
+                Main.BackupInfo(0) = SavesListView.SelectedItem & " " & GetBackupTimeStamp()
             ElseIf VersionRadioButton.IsChecked Then
-                Main.BackupInfo(0) = "Version " & VersionsListView.SelectedItem & " " & GetTimeAndDate()
+                Main.BackupInfo(0) = "Version " & VersionsListView.SelectedItem & " " & GetBackupTimeStamp()
             Else
-                Main.BackupInfo(0) = "Minecraft " & GetTimeAndDate()
+                Main.BackupInfo(0) = "Minecraft " & GetBackupTimeStamp()
             End If
         ElseIf Not CustomNameTextBox.Text = "" Then
             Main.BackupInfo(0) = CustomNameTextBox.Text
@@ -121,15 +121,8 @@ Public Class Backup
         Main.StartBackup()
     End Sub
 
-    Private Function GetTimeAndDate()
-        Dim Day As String = Format(Now(), "dd")
-        Dim Month As String = Format(Now(), "MM")
-        Dim Year As String = Format(Now(), "yyyy")
-        Dim Hours As String = Format(Now(), "hh")
-        Dim Minutes As String = Format(Now(), "mm")
-        Dim Seconds As String = Format(Now(), "ss")
-
-        Return "(" & Year & "-" & Month & "-" & Day & " " & Hours & "h" & Minutes & "m" & Seconds & "s)"
+    Public Shared Function GetBackupTimeStamp()
+        Return DateTime.Now.ToString("yyyy-MM-dd (hh\hmm\mss\s)")
     End Function
 
     Private Sub LoadLanguage()

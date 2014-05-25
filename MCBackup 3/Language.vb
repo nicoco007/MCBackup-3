@@ -120,7 +120,8 @@ Public Class Language
         Dictionary.Add("BalloonTip.RestoreComplete", FindString("BalloonTip.RestoreComplete", FileName))
         Dictionary.Add("BalloonTip.Title.RunningBackground", FindString("BalloonTip.Title.RunningBackground", FileName))
         Dictionary.Add("BalloonTip.RunningBackground", FindString("BalloonTip.RunningBackground", FileName))
-
+        Dictionary.Add("BalloonTip.Title.AutoBackup", FindString("BalloonTip.Title.AutoBackup", FileName))
+        Dictionary.Add("BalloonTip.AutoBackup", FindString("BalloonTip.AutoBackup", FileName))
 
         ' = Backup Window =
         Dictionary.Add("BackupWindow.Title", FindString("BackupWindow.Title", FileName))
@@ -150,6 +151,7 @@ Public Class Language
         Dictionary.Add("AutoBackupWindow.SuffixLabel.Content", FindString("AutoBackupWindow.SuffixLabel.Content", FileName))
         Dictionary.Add("AutoBackupWindow.StartButton.Content.Start", FindString("AutoBackupWindow.StartButton.Content.Start", FileName))
         Dictionary.Add("AutoBackupWindow.StartButton.Content.Stop", FindString("AutoBackupWindow.StartButton.Content.Stop", FileName))
+        Dictionary.Add("AutoBackupWindow.BackupDescription", FindString("AutoBackupWindow.BackupDescription", FileName))
 
         ' = Options Window =
         Dictionary.Add("OptionsWindow.Title", FindString("OptionsWindow.Title", FileName))
@@ -256,9 +258,17 @@ Public Class Language
         Dictionary.Add("Exception.Delete", FindString("Exception.Delete", FileName))
         Dictionary.Add("Exception.Rename", FindString("Exception.Rename", FileName))
 
+        ' = Time Left Strings =
         Dictionary.Add("TimeLeft.LessThanFive", FindString("TimeLeft.LessThanFive", FileName))
         Dictionary.Add("TimeLeft.Seconds", FindString("TimeLeft.Seconds", FileName))
         Dictionary.Add("TimeLeft.MinutesAndSeconds", FindString("TimeLeft.MinutesAndSeconds", FileName))
+
+        ' = Update Dialog =
+        Dictionary.Add("UpdateDialog.Title", FindString("UpdateDialog.Title", FileName))
+        Dictionary.Add("UpdateDialog.Label1.Text", FindString("UpdateDialog.Label1.Text", FileName))
+        Dictionary.Add("UpdateDialog.CurrentVersionLabel.Text", FindString("UpdateDialog.CurrentVersionLabel.Text", FileName))
+        Dictionary.Add("UpdateDialog.LatestVersionLabel.Text", FindString("UpdateDialog.LatestVersionLabel.Text", FileName))
+        Dictionary.Add("UpdateDialog.Label2.Text", FindString("UpdateDialog.Label2.Text", FileName))
 
         If ErrorOccured Then
             Log.Print("Language loaded with errors. Please try solving the error(s) above.", Log.Prefix.Warning)

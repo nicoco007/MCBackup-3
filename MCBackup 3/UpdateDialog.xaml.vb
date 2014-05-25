@@ -18,7 +18,7 @@ Public Class UpdateDialog
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
 
     Private Sub YesButton_Click(sender As Object, e As RoutedEventArgs) Handles YesButton.Click
-        Process.Start("http://www.nicoco007.com/minecraft/applications/mcbackup-3/downloads/?fromApp=true")
+        Process.Start("http://www.nicoco007.com/minecraft/applications/mcbackup-3/downloads/")
         Me.Close()
     End Sub
 
@@ -27,9 +27,10 @@ Public Class UpdateDialog
     End Sub
 
     Private Sub UpdateDialog_Loaded(sender As Object, e As RoutedEventArgs)
-        If Main.IsLoaded Then
-            CurrentVersionLabel.Content = "Current version: " & Main.ApplicationVersion
-            LatestVersionLabel.Content = "Latest version: " & Main.LatestVersion
-        End If
+        Me.Title = MCBackup.Language.Dictionary("UpdateDialog.Title")
+        Label1.Content = MCBackup.Language.Dictionary("UpdateDialog.Label1.Text")
+        CurrentVersionLabel.Content = String.Format(MCBackup.Language.Dictionary("UpdateDialog.CurrentVersionLabel.Text"), Main.ApplicationVersion)
+        LatestVersionLabel.Content = String.Format(MCBackup.Language.Dictionary("UpdateDialog.LatestVersionLabel.Text"), Main.LatestVersion)
+        Label2.Content = MCBackup.Language.Dictionary("UpdateDialog.Label2.Text")
     End Sub
 End Class
