@@ -242,6 +242,7 @@ Partial Public Class Options
         CloseToTrayRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.CloseToTrayRadioButton.Content")
         CloseCompletelyRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.CloseCompletelyRadioButton.Content")
         AlwaysCloseNoteTextBlock.Text = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text")
+        SendAnonymousDataCheckBox.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.SendAnonymousDataCheckBox.Content")
 
         ' Appearance 
         GeneralAppearanceGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.GeneralAppearanceGroupBox.Header")

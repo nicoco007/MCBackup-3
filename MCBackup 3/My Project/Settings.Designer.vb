@@ -210,7 +210,7 @@ Partial Friend NotInheritable Class MySettings
     
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-     Global.System.Configuration.DefaultSettingValueAttribute("[AUTO]")>  _
+     Global.System.Configuration.DefaultSettingValueAttribute("[AUTO] ")>  _
     Public Property AutoBkpPrefix() As String
         Get
             Return CType(Me("AutoBkpPrefix"),String)

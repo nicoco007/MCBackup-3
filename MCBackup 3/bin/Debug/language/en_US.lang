@@ -135,6 +135,7 @@ OptionsWindow.GeneralPanel.AlwaysCloseCheckBox.Content=Always...
 OptionsWindow.GeneralPanel.CloseToTrayRadioButton.Content=Close to tray
 OptionsWindow.GeneralPanel.CloseCompletelyRadioButton.Content=Close completely
 OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text=Note: You can close MCBackup from the tray by right-clicking on it's icon.
+OptionsWindow.GeneralPanel.SendAnonymousDataCheckBox.Content=Send anonymous statistics
 
 OptionsWindow.AppearancePanel.GeneralAppearanceGroupBox.Header=General Appearance
 OptionsWindow.AppearancePanel.StatusTextColorGroupBox.Header=Status text color

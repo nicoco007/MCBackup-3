@@ -52,7 +52,6 @@
                             <CheckBox x:Name="CheckForUpdatesCheckBox" Content="Check for updates" ToolTip="Automatically check for updates on startup" IsChecked="True" Margin="0,48,0,0" HorizontalAlignment="Left" Width="308" Height="18" VerticalAlignment="Top"/>
                             <CheckBox x:Name="CreateThumbOnWorldCheckBox" Content="Create thumbnail on world backup" IsChecked="True" Margin="0,71,0,0" Height="18" VerticalAlignment="Top" HorizontalAlignment="Left" Width="308"/>
                             <CheckBox x:Name="SendAnonymousDataCheckBox" Content="Send anonymous statistics" IsChecked="True" Margin="0,94,0,0" Height="18" VerticalAlignment="Top" HorizontalAlignment="Left" Width="308"/>
-
                         </Grid>
                     </GroupBox>
                 </Grid>

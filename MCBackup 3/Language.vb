@@ -173,6 +173,7 @@ Public Class Language
         Dictionary.Add("OptionsWindow.GeneralPanel.CloseToTrayRadioButton.Content", FindString("OptionsWindow.GeneralPanel.CloseToTrayRadioButton.Content", FileName))
         Dictionary.Add("OptionsWindow.GeneralPanel.CloseCompletelyRadioButton.Content", FindString("OptionsWindow.GeneralPanel.CloseCompletelyRadioButton.Content", FileName))
         Dictionary.Add("OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text", FindString("OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text", FileName))
+        Dictionary.Add("OptionsWindow.GeneralPanel.SendAnonymousDataCheckBox.Content", FindString("OptionsWindow.GeneralPanel.SendAnonymousDataCheckBox.Content", FileName))
 
         Dictionary.Add("OptionsWindow.AppearancePanel.GeneralAppearanceGroupBox.Header", FindString("OptionsWindow.AppearancePanel.GeneralAppearanceGroupBox.Header", FileName))
         Dictionary.Add("OptionsWindow.AppearancePanel.StatusTextColorGroupBox.Header", FindString("OptionsWindow.AppearancePanel.StatusTextColorGroupBox.Header", FileName))

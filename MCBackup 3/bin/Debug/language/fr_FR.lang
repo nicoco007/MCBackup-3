@@ -135,6 +135,7 @@ OptionsWindow.GeneralPanel.AlwaysCloseCheckBox.Content=Toujours...
 OptionsWindow.GeneralPanel.CloseToTrayRadioButton.Content=Fermer dans la barre de tâches
 OptionsWindow.GeneralPanel.CloseCompletelyRadioButton.Content=Fermer complètement
 OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text=Note: Vous pouvez fermer MCBackup de la barre de tâches en faisant un clic-droit sur son icône.
+OptionsWindow.GeneralPanel.SendAnonymousDataCheckBox.Content=Envoyer des statistiques anonymes
 
 OptionsWindow.AppearancePanel.GeneralAppearanceGroupBox.Header=Apparence de base
 OptionsWindow.AppearancePanel.StatusTextColorGroupBox.Header=Couleur du texte de statut
