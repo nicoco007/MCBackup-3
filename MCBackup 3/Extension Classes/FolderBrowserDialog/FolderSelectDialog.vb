@@ -1,4 +1,5 @@
 Imports System.Windows.Forms
+Imports System.Windows.Threading
 
 ' ------------------------------------------------------------------
 ' Wraps System.Windows.Forms.OpenFileDialog to make it present
@@ -36,7 +37,7 @@ Public Class FolderSelectDialog
             Return ofd.InitialDirectory
         End Get
         Set(value As String)
-            ofd.InitialDirectory = If(Value Is Nothing OrElse Value.Length = 0, Environment.CurrentDirectory, Value)
+            ofd.InitialDirectory = If(value Is Nothing OrElse value.Length = 0, Environment.CurrentDirectory, value)
         End Set
     End Property
 
@@ -48,7 +49,7 @@ Public Class FolderSelectDialog
             Return ofd.Title
         End Get
         Set(value As String)
-            ofd.Title = If(Value Is Nothing, "Select a folder", Value)
+            ofd.Title = If(value Is Nothing, "Select a folder", value)
         End Set
     End Property
 
@@ -79,6 +80,7 @@ Public Class FolderSelectDialog
     ''' <param name="hWndOwner">Handle of the control to be parent</param>
     ''' <returns>True if the user presses OK else false</returns>
     Public Function ShowDialog(hWndOwner As IntPtr) As DialogResult
+
         If Environment.OSVersion.Version.Major >= 6 Then
             Dim r = New Reflector("System.Windows.Forms")
 
@@ -93,7 +95,11 @@ Public Class FolderSelectDialog
 
             Dim pfde As Object = r.[New]("FileDialog.VistaDialogEvents", ofd)
             Dim parameters As Object() = New Object() {pfde, num}
-            r.CallAs2(typeIFileDialog, dialog, "Advise", parameters)
+            Try
+                r.CallAs2(typeIFileDialog, dialog, "Advise", parameters)
+            Catch ex As Exception
+                ErrorWindow.Show("Uh oh.", ex)
+            End Try
             num = CUInt(parameters(1))
             Try
                 Dim result As Integer = CInt(r.CallAs(typeIFileDialog, dialog, "Show", hWndOwner))

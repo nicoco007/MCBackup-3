@@ -78,6 +78,136 @@ ShutdownMode="OnMainWindowClose">
                     </Setter.Value>
                 </Setter>
             </Style>
+
+            <Style TargetType="RadioButton"
+           x:Key="MetroToggleButton">
+                <Setter Property="Background"
+                Value="{DynamicResource FlatButtonBackgroundBrush}" />
+                <Setter Property="Foreground"
+                Value="{DynamicResource FlatButtonForegroundBrush}" />
+                <Setter Property="FontSize"
+                Value="{DynamicResource FlatButtonFontSize}" />
+                <Setter Property="Padding"
+                Value="10,5,10,5" />
+                <Setter Property="BorderThickness"
+                Value="0" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type RadioButton}">
+                            <Border x:Name="Border"
+                            Margin="0"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          RecognizesAccessKey="True" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsPressed"
+                                 Value="True">
+                                    <Setter Property="Background"
+                                    Value="{DynamicResource FlatButtonPressedBackgroundBrush}"
+                                    TargetName="Border" />
+                                    <Setter Property="Foreground"
+                                    Value="{DynamicResource FlatButtonPressedForegroundBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled"
+                                 Value="False">
+                                    <Setter Property="Foreground"
+                                    Value="{DynamicResource GrayBrush2}" />
+                                </Trigger>
+                                <Trigger Property="IsMouseOver"
+                                 Value="True">
+                                    <Setter Property="Background"
+                                    Value="DarkGray" />
+                                </Trigger>
+                                <Trigger Property="IsChecked"
+                                 Value="True">
+                                    <Setter Property="Background"
+                                    Value="{DynamicResource GrayBrush3}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="TabItem"
+           x:Key="SmallTabItem">
+                <Setter Property="FocusVisualStyle"
+                Value="{x:Null}" />
+                <Setter Property="IsTabStop"
+                Value="False" />
+                <Setter Property="Padding"
+                Value="6,2,6,2" />
+                <Setter Property="HorizontalContentAlignment"
+                Value="Stretch" />
+                <Setter Property="VerticalContentAlignment"
+                Value="Stretch" />
+                <Setter Property="MinWidth"
+                Value="5" />
+                <Setter Property="MinHeight"
+                Value="5" />
+                <Setter Property="BorderThickness"
+                Value="0" />
+                <Setter Property="BorderBrush"
+                Value="{DynamicResource AccentColorBrush}" />
+                <Setter Property="Background"
+                Value="Transparent" />
+                <Setter Property="Foreground"
+                Value="{DynamicResource BlackBrush}" />
+                <Setter Property="SnapsToDevicePixels"
+                Value="True" />
+                <!-- special property for header font size -->
+                <Setter Property="Controls:ControlsHelper.HeaderFontSize"
+                Value="12" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TabItem">
+                            <Border x:Name="Border"
+                            Margin="{TemplateBinding Padding}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            Background="{TemplateBinding Background}"
+                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                                <ContentPresenter x:Name="ContentSite"
+                                          Margin="2,1,2,1"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          TextElement.FontSize="12"
+                                          TextElement.FontStretch="{TemplateBinding Controls:ControlsHelper.HeaderFontStretch}"
+                                          TextElement.FontWeight="{TemplateBinding Controls:ControlsHelper.HeaderFontWeight}"
+                                          TextElement.Foreground="{TemplateBinding Foreground}"
+                                          ContentSource="Header"
+                                          RecognizesAccessKey="True" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected"
+                                 Value="true">
+                                    <Setter Property="TextElement.Foreground"
+                                    TargetName="ContentSite"
+                                    Value="{DynamicResource AccentColorBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsSelected"
+                                 Value="false">
+                                    <Setter Property="TextElement.Foreground"
+                                    TargetName="ContentSite"
+                                    Value="{DynamicResource GrayNormalBrush}" />
+                                </Trigger>
+                                <Trigger SourceName="ContentSite"
+                                 Property="IsMouseOver"
+                                 Value="True">
+                                    <Setter Property="TextElement.Foreground"
+                                    TargetName="ContentSite"
+                                    Value="{DynamicResource GrayHoverBrush}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

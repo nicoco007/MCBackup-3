@@ -54,6 +54,14 @@ InitializeComponent
 	<summary>
 Backup
 </summary>
+</member><member name="M:MCBackup.SetMinecraftFolderWindow.InitializeComponent">
+	<summary>
+InitializeComponent
+</summary>
+</member><member name="T:MCBackup.SetMinecraftFolderWindow">
+	<summary>
+SetMinecraftFolderWindow
+</summary>
 </member><member name="M:MCBackup.Splash.InitializeComponent">
 	<summary>
 InitializeComponent

@@ -84,5 +84,8 @@
     <Setting Name="SendAnonymousData" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="Launcher" Type="System.String" Scope="User">
+      <Value Profile="(Default)">minecraft</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

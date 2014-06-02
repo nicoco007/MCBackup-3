@@ -27,11 +27,20 @@ Imports MCBackup.CloseAction
 Imports System.Globalization
 Imports MahApps.Metro
 Imports System.Threading
+Imports System.Windows.Interop
 
 Partial Class MainWindow
 #Region "Variables"
     Private AppData As String = Environ("APPDATA")
-    Public BackupInfo(4) As String
+
+    ' BackupInfo(0) = Backup name
+    ' BackupInfo(1) = Backup description
+    ' BackupInfo(2) = Location
+    ' BackupInfo(3) = Backup type
+    ' BackupInfo(4) = Backup group
+    ' BackupInfo(5) = Launcher
+    ' BackupInfo(6) = Modpack
+    Public BackupInfo(6) As String
     Public RestoreInfo(2) As String
 
     Private FolderBrowserDialog As New System.Windows.Forms.FolderBrowserDialog
@@ -56,6 +65,9 @@ Partial Class MainWindow
 #Region "Load"
     Public Sub New()
         InitializeComponent()
+
+        ThemeManager.ChangeAppStyle(My.Application, ThemeManager.GetAccent(My.Settings.Theme), ThemeManager.GetAppTheme("BaseLight"))
+
         Splash.Show()
 
         Splash.ShowStatus("Splash.Status.Starting", "Starting...")
@@ -66,8 +78,6 @@ Partial Class MainWindow
         Log.Print("OS Version: " & Environment.OSVersion.Version.Major & "." & Environment.OSVersion.Version.Minor)
         Log.Print("Architecture: " & Log.GetWindowsArch())
         Log.Print(".NET Framework Version: " & Environment.Version.Major & "." & Environment.Version.Minor)
-
-        ThemeManager.ChangeTheme(My.Application, New Accent(My.Settings.Theme, New Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/" & My.Settings.Theme & ".xaml")), Theme.Light)
 
         Splash.StepProgress()
 
@@ -174,6 +184,31 @@ Partial Class MainWindow
         GridListViewColumn.Width = New GridLength(My.Settings.ListViewWidth.Value, GridUnitType.Star)
 
         Splash.StepProgress()
+
+        Splash.ShowStatus("Splash.Status.FindingMinecraft", "Finding Minecraft...")
+        Splash.StepProgress()
+
+        If My.Settings.MinecraftFolderLocation = "" Then
+            My.Settings.MinecraftFolderLocation = AppData & "\.minecraft"
+        End If
+
+        If Not My.Computer.FileSystem.DirectoryExists(My.Settings.MinecraftFolderLocation) Then
+            MetroMessageBox.Show("Could not find your Minecraft installation! Please select it using the next dialog.", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            Dim SetMinecraftFolderWindow As New SetMinecraftFolderWindow
+            SetMinecraftFolderWindow.ShowDialog()
+        End If
+
+        Splash.StepProgress()
+
+        If Not My.Settings.SavesFolderLocation = "" Then
+            My.Computer.FileSystem.CreateDirectory(My.Settings.SavesFolderLocation)
+        End If
+
+        Log.Print("Minecraft folder set to '" & My.Settings.MinecraftFolderLocation & "'")
+        Log.Print("Saves folder set to '" & My.Settings.SavesFolderLocation & "'")
+
+        RefreshBackupsList()
+        ReloadBackupGroups()
     End Sub
 
     Private Sub Main_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
@@ -231,31 +266,6 @@ Partial Class MainWindow
     End Sub
 
     Private Sub Load2()
-        Splash.ShowStatus("Splash.Status.FindingMinecraft", "Finding Minecraft...")
-        Splash.StepProgress()
-
-        If Not My.Computer.FileSystem.FileExists(My.Settings.MinecraftFolderLocation & "\launcher.jar") Then ' Check if saved directory exists AND still has Minecraft installed in it
-            If My.Computer.FileSystem.FileExists(AppData & "\.minecraft\launcher.jar") Then ' If not, check for the usual Minecraft folder location
-                My.Settings.MinecraftFolderLocation = AppData & "\.minecraft" ' Set folder location to default Minecraft folder location
-                My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
-            Else
-                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.NoMinecraftInstallError"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
-                Log.Print("Minecraft folder not found", Log.Prefix.Warning)
-                MinecraftFolderSearch()
-                Exit Sub
-            End If
-        End If
-
-        Splash.StepProgress()
-
-        My.Computer.FileSystem.CreateDirectory(My.Settings.SavesFolderLocation)
-
-        Log.Print("Minecraft folder set to '" & My.Settings.MinecraftFolderLocation & "'")
-        Log.Print("Saves folder set to '" & My.Settings.SavesFolderLocation & "'")
-
-        RefreshBackupsList()
-        ReloadBackupGroups()
-
         Splash.ShowStatus("Splash.Status.Done", "Done.")
         Splash.StepProgress()
 
@@ -266,26 +276,7 @@ Partial Class MainWindow
     End Sub
 
     Private Sub MinecraftFolderSearch()
-        If FolderBrowserDialog.ShowDialog = Windows.Forms.DialogResult.OK Then
-            If My.Computer.FileSystem.FileExists(FolderBrowserDialog.SelectedPath & "\launcher.jar") Then ' Check if Minecraft exists in that folder
-                MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.Info.MinecraftFolderSetTo"), FolderBrowserDialog.SelectedPath), MCBackup.Language.Dictionary("Message.Caption.Information"), MessageBoxButton.OK, MessageBoxImage.Error) ' Tell user that folder has been selected successfully
-                My.Settings.MinecraftFolderLocation = FolderBrowserDialog.SelectedPath
-                My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
-                Log.Print("Minecraft folder set to '" & My.Settings.MinecraftFolderLocation & "'")
-                Log.Print("Saves folder set to '" & My.Settings.SavesFolderLocation & "'")
-                Exit Sub
-            Else
-                If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.NotInstalledInFolder"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = Windows.Forms.DialogResult.Yes Then ' Ask if user wants to try finding folder again
-                    MinecraftFolderSearch() ' Restart from beginning if "Yes"
-                Else
-                    Me.ClsType = CloseType.ForceClose
-                    Me.Close() ' Close program if "No"
-                End If
-            End If
-        Else
-            Me.ClsType = CloseType.ForceClose
-            Me.Close() ' Close program if "Cancel" or "X" buttons are pressed
-        End If
+        
     End Sub
 
     Public Sub RefreshBackupsList()
@@ -597,7 +588,9 @@ Partial Class MainWindow
                 SW.WriteLine("baseFolderName=" & BackupInfo(2).Split("\").Last) ' Write save/version folder name
                 SW.WriteLine("type=" & BackupInfo(3)) ' Write type in file
                 SW.WriteLine("desc=" & BackupInfo(1)) ' Write description if file
-                SW.Write("groupName=" & BackupInfo(4))
+                SW.WriteLine("groupName=" & BackupInfo(4))
+                SW.WriteLine("launcher=" & BackupInfo(5))
+                SW.WriteLine("modpack=" & BackupInfo(6))
             End Using
         Catch ex As Exception
             ErrorWindow.Show(MCBackup.Language.Dictionary("Exception.Backup"), ex)
@@ -761,7 +754,7 @@ Partial Class MainWindow
             Log.Print("Starting Restore")
             RestoreInfo(0) = ListView.SelectedItems(0).Name ' Set place 0 of RestoreInfo array to the backup name
 
-            Dim BaseFolderName As String = ""
+            Dim BaseFolderName, Launcher, Modpack As String
 
             Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0) & "\info.mcb")
                 Do While SR.Peek <> -1
@@ -771,14 +764,34 @@ Partial Class MainWindow
                             BaseFolderName = Line.Substring(15)
                         ElseIf Line.StartsWith("type=") Then
                             RestoreInfo(2) = Line.Substring(5)
+                        ElseIf Line.StartsWith("launcher=") Then
+                            Launcher = Line.Substring(9)
+                        ElseIf Line.StartsWith("modpack=") Then
+                            Modpack = Line.Substring(8)
                         End If
                     End If
                 Loop
             End Using
 
+            If Launcher = "" Then Launcher = "minecraft"
+
+            If Launcher <> My.Settings.Launcher Then
+                MetroMessageBox.Show(String.Format("This backup is not compatible with your current configuration! It is designed for '{0}' installations.", Launcher), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                Exit Sub
+            End If
+
             Select Case RestoreInfo(2)
                 Case "save"
-                    RestoreInfo(1) = My.Settings.SavesFolderLocation & "\" & BaseFolderName
+                    Select Case My.Settings.Launcher
+                        Case "minecraft"
+                            RestoreInfo(1) = My.Settings.SavesFolderLocation & "\" & BaseFolderName
+                        Case "technic"
+                            RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\modpacks\" & Modpack & "\saves\" & BaseFolderName
+                        Case "ftb"
+                            RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\" & Modpack & "\minecraft\saves\" & BaseFolderName
+                        Case "atlauncher"
+                            RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\Instances\" & Modpack & "\saves\" & BaseFolderName
+                    End Select
                 Case "version"
                     RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\versions\" & BaseFolderName
                 Case "everything"
@@ -1034,9 +1047,11 @@ Partial Class MainWindow
             Me.Left = Me.Left + (AutoBackupWindow.Width / 2)
             AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " >>"
         Else
-            AutoBackupWindow.Show()
             Me.Left = Me.Left - (AutoBackupWindow.Width / 2)
             AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " <<"
+            AutoBackupWindow.Top = Me.Top
+            AutoBackupWindow.Left = Me.Left + Me.Width + 5
+            AutoBackupWindow.Show()
         End If
     End Sub
 
@@ -1234,7 +1249,7 @@ Partial Class MainWindow
 #End Region
 
 #Region "Close to Tray"
-    Public ClsType As CloseType
+    Public ClsType As CloseType = CloseType.ForceClose
 
     Private Sub Main_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
         Me.Focus()
@@ -1375,4 +1390,3 @@ Public Class CloseAction
         ForceClose
     End Enum
 End Class
-

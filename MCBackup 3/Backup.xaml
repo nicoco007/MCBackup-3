@@ -30,26 +30,124 @@
         <TextBox x:Name="CustomNameTextBox" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Margin="0,84,33,0" MaxLines="1" HorizontalAlignment="Right" Width="349"/>
         <Label x:Name="ShortDescriptionLabel" Content="Short Description (Max. 128 characters, optional)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,132,0,0" Width="602"/>
         <TextBox x:Name="DescriptionTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="602" Margin="20,158,0,0" MaxLines="1" MaxLength="128"/>
-        <RadioButton x:Name="SaveRadioButton" Content="Save" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,207,0,0" Style="{StaticResource {x:Type ToggleButton}}" Width="204" IsChecked="True" GroupName="BackupType"/>
-        <RadioButton x:Name="VersionRadioButton" Content="Version" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="430,207,0,0" Style="{StaticResource {x:Type ToggleButton}}" Width="204" GroupName="BackupType"/>
-        <RadioButton x:Name="EverythingRadioButton" Content="Whole .minecraft Folder" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="219,207,0,0" Style="{StaticResource {x:Type ToggleButton}}" Width="206" GroupName="BackupType"/>
-        <ListView x:Name="SavesListView" HorizontalAlignment="Left" Height="195" VerticalAlignment="Top" Width="204" Margin="10,237,0,0" SelectionMode="Single" BorderThickness="1">
-            <ListView.View>
-                <GridView x:Name="SavesListViewGridView">
-                    <GridViewColumn Header="Name" Width="200" />
-                </GridView>
-            </ListView.View>
-        </ListView>
-        <ListView x:Name="VersionsListView" HorizontalAlignment="Left" Height="195" VerticalAlignment="Top" Width="204" Margin="430,237,0,0" SelectionMode="Single" BorderThickness="1">
-            <ListView.View>
-                <GridView x:Name="VersionsListViewGridView">
-                    <GridViewColumn Header="Name" Width="200"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
-        <Button x:Name="StartButton" Content="Start" VerticalAlignment="Top" Margin="247,343,247,0" Width="150" Height="40" FontSize="24" IsDefault="True"/>
-        <Button x:Name="CancelButton" Content="Cancel" VerticalAlignment="Top" Margin="284,396,0,0" HorizontalAlignment="Left" Width="75"/>
-        <ComboBox x:Name="GroupsComboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Margin="247,291,0,0"/>
-        <Label x:Name="GroupLabel" Content="Group:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="247,265,0,0" Width="150"/>
+        <Button x:Name="StartButton" Content="Start" VerticalAlignment="Top" Margin="237,359,257,0" Width="150" Height="40" FontSize="24" IsDefault="True"/>
+        <Button x:Name="CancelButton" Content="Cancel" VerticalAlignment="Top" Margin="274,412,0,0" HorizontalAlignment="Left" Width="75"/>
+        <ComboBox x:Name="GroupsComboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Margin="32,393,0,0"/>
+        <Label x:Name="GroupLabel" Content="Group:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="32,367,0,0" Width="150"/>
+        <TabControl x:Name="BackupTypeTabControl" Margin="10,202,12,124">
+            <TabControl.Resources>
+                <Style TargetType="TabItem">
+                    <Setter Property="FocusVisualStyle"
+                Value="{x:Null}" />
+                    <Setter Property="IsTabStop"
+                Value="False" />
+                    <Setter Property="Padding"
+                Value="6,2,6,2" />
+                    <Setter Property="HorizontalContentAlignment"
+                Value="Stretch" />
+                    <Setter Property="VerticalContentAlignment"
+                Value="Stretch" />
+                    <Setter Property="MinWidth"
+                Value="5" />
+                    <Setter Property="MinHeight"
+                Value="5" />
+                    <Setter Property="BorderThickness"
+                Value="0" />
+                    <Setter Property="BorderBrush"
+                Value="{DynamicResource AccentColorBrush}" />
+                    <Setter Property="Background"
+                Value="Transparent" />
+                    <Setter Property="Foreground"
+                Value="{DynamicResource BlackBrush}" />
+                    <Setter Property="SnapsToDevicePixels"
+                Value="True" />
+                    <!-- special property for header font size -->
+                    <Setter Property="Controls:ControlsHelper.HeaderFontSize"
+                Value="24" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabItem">
+                                <Border x:Name="Border"
+                            Margin="{TemplateBinding Padding}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            Background="{TemplateBinding Background}"
+                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                                    <ContentPresenter x:Name="ContentSite"
+                                          Margin="2,1,2,1"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          TextElement.FontSize="20"
+                                          TextElement.FontStretch="{TemplateBinding Controls:ControlsHelper.HeaderFontStretch}"
+                                          TextElement.FontWeight="{TemplateBinding Controls:ControlsHelper.HeaderFontWeight}"
+                                          TextElement.Foreground="{TemplateBinding Foreground}"
+                                          ContentSource="Header"
+                                          RecognizesAccessKey="True" />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected"
+                                 Value="true">
+                                        <Setter Property="TextElement.Foreground"
+                                    TargetName="ContentSite"
+                                    Value="{DynamicResource AccentColorBrush}" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected"
+                                 Value="false">
+                                        <Setter Property="TextElement.Foreground"
+                                    TargetName="ContentSite"
+                                    Value="{DynamicResource GrayNormalBrush}" />
+                                    </Trigger>
+                                    <Trigger SourceName="ContentSite"
+                                 Property="IsMouseOver"
+                                 Value="True">
+                                        <Setter Property="TextElement.Foreground"
+                                    TargetName="ContentSite"
+                                    Value="{DynamicResource GrayHoverBrush}" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.Resources>
+            <TabItem Header="World">
+                <Grid Background="#FFE5E5E5">
+                    <ListView x:Name="SavesListView" HorizontalAlignment="Left" Height="97" VerticalAlignment="Top" Width="616" SelectionMode="Single" BorderThickness="1">
+                        <ListView.View>
+                            <GridView x:Name="SavesListViewGridView">
+                                <GridViewColumn Header="Name" Width="200">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Location" Width="200">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Location}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Version">
+                <Grid Background="#FFE5E5E5">
+                    <ListView x:Name="VersionsListView" HorizontalAlignment="Left" Height="97" VerticalAlignment="Top" Width="616" SelectionMode="Single" BorderThickness="1">
+                        <ListView.View>
+                            <GridView x:Name="VersionsListViewGridView">
+                                <GridViewColumn Header="Name" Width="200"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Everything">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Controls:MetroWindow>

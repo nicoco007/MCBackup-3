@@ -1,4 +1,6 @@
-﻿'   ╔═══════════════════════════════════════════════════════════════════════════╗
+﻿Imports System.IO
+
+'   ╔═══════════════════════════════════════════════════════════════════════════╗
 '   ║                        Copyright © 2014 nicoco007                         ║
 '   ║                                                                           ║
 '   ║      Licensed under the Apache License, Version 2.0 (the "License");      ║
@@ -29,28 +31,58 @@ Public Class Backup
         CustomNameTextBox.Text = ""
         DescriptionTextBox.Text = ""
         DateAndTimeRadioButton.IsChecked = True
-        SaveRadioButton.IsChecked = True
 
-        SavesListView.Items.Clear()
-        Dim SavesDirectory As New IO.DirectoryInfo(My.Settings.SavesFolderLocation)
-        Dim SavesFolders As IO.DirectoryInfo() = SavesDirectory.GetDirectories()
-        Dim SavesFolder As IO.DirectoryInfo
-
-        For Each SavesFolder In SavesFolders
-            SavesListView.Items.Add(SavesFolder.ToString)
-        Next
-
-        VersionsListView.Items.Clear()
-        Dim VersionsDirectory As New IO.DirectoryInfo(My.Settings.MinecraftFolderLocation & "\versions")
-        Dim VersionsFolders As IO.DirectoryInfo() = VersionsDirectory.GetDirectories()
-        Dim VersionsFolder As IO.DirectoryInfo
-
-        For Each VersionsFolder In VersionsFolders
-            VersionsListView.Items.Add(VersionsFolder.ToString)
-        Next
+        Select Case My.Settings.Launcher
+            Case "minecraft"
+                SavesListView.Items.Clear()
+                My.Computer.FileSystem.CreateDirectory(My.Settings.SavesFolderLocation)
+                Dim SavesDirectory As New DirectoryInfo(My.Settings.SavesFolderLocation)
+                For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
+                    If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
+                        SavesListView.Items.Add(New SavesListViewItem(Folder.Name, Nothing))
+                    End If
+                Next
+            Case "technic"
+                Dim Modpacks As New DirectoryInfo(My.Settings.MinecraftFolderLocation & "\modpacks")
+                For Each Modpack As DirectoryInfo In Modpacks.GetDirectories
+                    My.Computer.FileSystem.CreateDirectory(Modpack.FullName & "\saves")
+                    Dim SavesDirectory As New DirectoryInfo(Modpack.FullName & "\saves")
+                    Log.Print("Searching {0} for saves...", SavesDirectory.FullName)
+                    For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
+                        If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
+                            SavesListView.Items.Add(New SavesListViewItem(Folder.Name, Modpack.Name))
+                        End If
+                    Next
+                Next
+            Case "ftb"
+                Dim BaseDirectory As New DirectoryInfo(My.Settings.MinecraftFolderLocation)
+                For Each Directory As DirectoryInfo In BaseDirectory.GetDirectories
+                    If My.Computer.FileSystem.DirectoryExists(Directory.FullName & "\natives") And My.Computer.FileSystem.DirectoryExists(Directory.FullName & "\minecraft") Then
+                        My.Computer.FileSystem.CreateDirectory(Directory.FullName & "\minecraft\saves")
+                        Dim SavesDirectory As New DirectoryInfo(Directory.FullName & "\minecraft\saves")
+                        Log.Print("Searching {0} for saves...", SavesDirectory.FullName)
+                        For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
+                            If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
+                                SavesListView.Items.Add(New SavesListViewItem(Folder.Name, Directory.Name))
+                            End If
+                        Next
+                    End If
+                Next
+            Case "atlauncher"
+                Dim Instances As New DirectoryInfo(My.Settings.MinecraftFolderLocation & "\Instances")
+                For Each Instance As DirectoryInfo In Instances.GetDirectories
+                    My.Computer.FileSystem.CreateDirectory(Instance.FullName & "\saves")
+                    Dim SavesDirectory As New DirectoryInfo(Instance.FullName & "\saves")
+                    Log.Print("Searching {0} for saves...", SavesDirectory.FullName)
+                    For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
+                        If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
+                            SavesListView.Items.Add(New SavesListViewItem(Folder.Name, Instance.Name))
+                        End If
+                    Next
+                Next
+        End Select
 
         Name_CheckChanged(sender, e)
-        BackupType_CheckChanged(sender, e)
 
         CustomNameTextBox.Width = 449 - CustomNameRadioButton.ActualWidth
 
@@ -69,22 +101,16 @@ Public Class Backup
         End If
     End Sub
 
-    Private Sub BackupType_CheckChanged(sender As Object, e As RoutedEventArgs) Handles SaveRadioButton.Checked, EverythingRadioButton.Checked, VersionRadioButton.Checked
-        If Me.IsLoaded Then ' This is called before the form loads, so check if form is loaded to avoid errors
-            SavesListView.IsEnabled = SaveRadioButton.IsChecked
-            VersionsListView.IsEnabled = VersionRadioButton.IsChecked
-        End If
-    End Sub
-
     Private Sub StartButton_Click(sender As Object, e As EventArgs) Handles StartButton.Click
         If DateAndTimeRadioButton.IsChecked Then
-            If SaveRadioButton.IsChecked Then
-                Main.BackupInfo(0) = SavesListView.SelectedItem & " " & GetBackupTimeStamp()
-            ElseIf VersionRadioButton.IsChecked Then
-                Main.BackupInfo(0) = "Version " & VersionsListView.SelectedItem & " " & GetBackupTimeStamp()
-            Else
-                Main.BackupInfo(0) = "Minecraft " & GetBackupTimeStamp()
-            End If
+            Select Case BackupTypeTabControl.SelectedIndex
+                Case 0
+                    Main.BackupInfo(0) = CType(SavesListView.SelectedItem, SavesListViewItem).Name & " " & GetBackupTimeStamp()
+                Case 1
+                    Main.BackupInfo(0) = "Version " & VersionsListView.SelectedItem & " " & GetBackupTimeStamp()
+                Case 2
+                    Main.BackupInfo(0) = "Minecraft " & GetBackupTimeStamp()
+            End Select
         ElseIf Not CustomNameTextBox.Text = "" Then
             Main.BackupInfo(0) = CustomNameTextBox.Text
         Else
@@ -92,30 +118,46 @@ Public Class Backup
             Exit Sub
         End If
 
-        If SavesListView.SelectedItems.Count = 0 And SaveRadioButton.IsChecked Then
+        If SavesListView.SelectedItems.Count = 0 And BackupTypeTabControl.SelectedIndex = 0 Then
             MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.ChooseSave"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             Exit Sub
         End If
 
-        If VersionsListView.SelectedItems.Count = 0 And VersionRadioButton.IsChecked Then
+        If VersionsListView.SelectedItems.Count = 0 And BackupTypeTabControl.SelectedIndex = 1 Then
             MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.ChooseVersion"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             Exit Sub
         End If
 
         Main.BackupInfo(1) = DescriptionTextBox.Text
 
-        If SaveRadioButton.IsChecked Then
-            Main.BackupInfo(2) = My.Settings.SavesFolderLocation & "\" & SavesListView.SelectedItem
-            Main.BackupInfo(3) = "save"
-        ElseIf VersionRadioButton.IsChecked Then
-            Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\versions\" & VersionsListView.SelectedItem
-            Main.BackupInfo(3) = "version"
-        Else
-            Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation
-            Main.BackupInfo(3) = "everything"
-        End If
+        Select Case BackupTypeTabControl.SelectedIndex
+            Case 0
 
-        Main.BackupInfo(4) = GroupsComboBox.SelectedItem
+                Select Case My.Settings.Launcher
+                    Case "minecraft"
+                        Main.BackupInfo(2) = My.Settings.SavesFolderLocation & "\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
+                    Case "technic"
+                        Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\modpacks\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
+                    Case "ftb"
+                        Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\minecraft\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
+                    Case "atlauncher"
+                        Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\Instances\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
+                End Select
+                Main.BackupInfo(3) = "save"
+            Case 1
+                Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\versions\" & VersionsListView.SelectedItem
+                Main.BackupInfo(3) = "version"
+            Case 2
+                Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation
+                Main.BackupInfo(3) = "everything"
+        End Select
+
+        Main.BackupInfo(4) = IIf(GroupsComboBox.SelectedIndex = 0, Nothing, GroupsComboBox.SelectedItem)
+        Main.BackupInfo(5) = My.Settings.Launcher
+
+        If My.Settings.Launcher <> "minecraft" Then
+            Main.BackupInfo(6) = CType(SavesListView.SelectedItem, SavesListViewItem).Location
+        End If
 
         Me.Close()
         Main.StartBackup()
@@ -132,9 +174,6 @@ Public Class Backup
         DateAndTimeRadioButton.Content = MCBackup.Language.Dictionary("BackupWindow.DateAndTimeRadioButton.Content")
         CustomNameRadioButton.Content = MCBackup.Language.Dictionary("BackupWindow.CustomNameRadioButton.Content")
         ShortDescriptionLabel.Content = MCBackup.Language.Dictionary("BackupWindow.ShortDescriptionLabel.Content")
-        SaveRadioButton.Content = MCBackup.Language.Dictionary("BackupWindow.Save")
-        EverythingRadioButton.Content = MCBackup.Language.Dictionary("BackupWindow.WholeMinecraftFolder")
-        VersionRadioButton.Content = MCBackup.Language.Dictionary("BackupWindow.Version")
         SavesListViewGridView.Columns(0).Header = MCBackup.Language.Dictionary("BackupWindow.ListBox.Columns(0).Header")
         StartButton.Content = MCBackup.Language.Dictionary("BackupWindow.StartButton.Content")
         CancelButton.Content = MCBackup.Language.Dictionary("BackupWindow.CancelButton.Content")
@@ -145,22 +184,40 @@ Public Class Backup
         Me.Close()
     End Sub
 
-
     Private Sub GroupsComboBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles GroupsComboBox.SelectionChanged
         If GroupsComboBox.SelectedIndex = GroupsComboBox.Items.Count - 1 And GroupsComboBox.Items.Count > 1 Then
             GroupsComboBox.SelectedIndex = 0
             Me.Close()
-            Main.OptionsMenuItem_Click(sender, Nothing)
-
-
-            'GroupsComboBox.Items.Clear()
-            'GroupsComboBox.Items.Add(MCBackup.Language.Dictionary("BackupWindow.Groups.None"))
-            'For Each Group As String In My.Settings.BackupGroups
-            '    GroupsComboBox.Items.Add(Group)
-            'Next
-            'GroupsComboBox.Items.Add(MCBackup.Language.Dictionary("BackupWindow.Groups.EditGroups"))
-
-            'GroupsComboBox.SelectedIndex = 0
+            Dim OptionsWindow As New Options
+            OptionsWindow.Owner = Main
+            OptionsWindow.ShowDialog(3)
         End If
+    End Sub
+End Class
+
+Public Class SavesListViewItem
+    Private _Name As String
+    Public Property Name() As String
+        Get
+            Return _Name
+        End Get
+        Set(value As String)
+            _Name = value
+        End Set
+    End Property
+
+    Private _Location As String
+    Public Property Location() As String
+        Get
+            Return _Location
+        End Get
+        Set(value As String)
+            _Location = value
+        End Set
+    End Property
+
+    Public Sub New(Name As String, Location As String)
+        Me.Name = Name
+        Me.Location = Location
     End Sub
 End Class

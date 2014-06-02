@@ -1,0 +1,16 @@
+﻿<Controls:MetroWindow x:Class="SetMinecraftFolderWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Set Minecraft Folder" Height="150" Width="650" WindowTransitionsEnabled="False" ResizeMode="NoResize">
+    <Grid>
+        <RadioButton x:Name="MinecraftInstallationRadioButton" IsChecked="True" Content="Minecraft" Tag="minecraft" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Style="{StaticResource MetroToggleButton}" Width="150" HorizontalContentAlignment="Center"/>
+        <RadioButton x:Name="TechnicInstallationRadioButton" Content="Technic Launcher" Tag="technic" HorizontalAlignment="Left" Margin="165,10,0,0" VerticalAlignment="Top" Style="{StaticResource MetroToggleButton}" Width="150" HorizontalContentAlignment="Center"/>
+        <RadioButton x:Name="FTBInstallationRadioButton" Content="Feed the Beast" Tag="ftb" HorizontalAlignment="Left" Margin="320,10,0,0" VerticalAlignment="Top" Style="{StaticResource MetroToggleButton}" Width="150" HorizontalContentAlignment="Center"/>
+        <RadioButton x:Name="ATLauncherInstallationRadioButton" Content="ATLauncher" Tag="atlauncher" HorizontalAlignment="Left" Margin="475,10,0,0" VerticalAlignment="Top" Style="{StaticResource MetroToggleButton}" Width="150" HorizontalContentAlignment="Center"/>
+        <Label x:Name="BaseFolderLabel" Content="Base Folder" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,50,0,0" Padding="0,5" Width="105"/>
+        <TextBox x:Name="BaseFolderTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="414" Margin="120,50,0,0"/>
+        <Button x:Name="BaseFolderBrowseButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85" Margin="539,49,0,0" Height="28"/>
+        <Button x:Name="SaveButton" Content="Save" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85" Margin="276,83,0,0" Height="28"/>
+    </Grid>
+</Controls:MetroWindow>

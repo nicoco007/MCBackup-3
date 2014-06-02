@@ -18,19 +18,17 @@ Imports System.Linq
 Imports System.Security.Permissions
 Imports System.Security
 Imports MahApps.Metro
+Imports System.Windows.Interop
+Imports System.Windows.Threading
 
 Partial Public Class Options
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
-    Private FolderBrowserDialog As New FolderSelectDialog
     Private OpenFileDialog As New System.Windows.Forms.OpenFileDialog
 
     Public Sub New()
         InitializeComponent()
         OpenFileDialog.Filter = MCBackup.Language.Dictionary("OptionsWindow.AllSupportedImages") & " (*bmp, *.jpg, *.jpeg, *.png)|*bmp;*.gif;*.png;*.jpg;*.jpeg|BMP (*.bmp)|*.bmp|JPEG (*.jpg, *.jpeg)|*.jpg;*.jpeg|PNG (*.png)|*.png"
 
-        MinecraftFolderTextBox.Text = My.Settings.MinecraftFolderLocation
-        BackupsFolderTextBox.Text = My.Settings.BackupsFolderLocation
-        SavesFolderTextBox.Text = My.Settings.SavesFolderLocation
         ListViewOpacitySlider.Value = My.Settings.InterfaceOpacity
         OpacityPercentLabel.Content = Int(ListViewOpacitySlider.Value).ToString & "%"
         SizeModeComboBox.SelectedIndex = My.Settings.BackgroundImageStretch
@@ -54,6 +52,19 @@ Partial Public Class Options
         BlueColorLabel.ContextMenu = Nothing
 
         SendAnonymousDataCheckBox.IsChecked = My.Settings.SendAnonymousData
+
+        Select Case My.Settings.Launcher
+            Case "minecraft"
+                MinecraftInstallationRadioButton.IsChecked = True
+            Case "technic"
+                TechnicInstallationRadioButton.IsChecked = True
+            Case "ftb"
+                FTBInstallationRadioButton.IsChecked = True
+            Case "atlauncher"
+                ATLauncherInstallationRadioButton.IsChecked = True
+        End Select
+
+        BaseFolderTextBox.Text = My.Settings.MinecraftFolderLocation
     End Sub
 
     Public Overloads Sub ShowDialog(Tab As Integer)
@@ -86,53 +97,6 @@ Partial Public Class Options
     Private Sub AlwaysCloseCheckBox_Checked(sender As Object, e As RoutedEventArgs) Handles AlwaysCloseCheckBox.Click
         CloseToTrayRadioButton.IsEnabled = AlwaysCloseCheckBox.IsChecked
         CloseCompletelyRadioButton.IsEnabled = AlwaysCloseCheckBox.IsChecked
-    End Sub
-
-    Private Sub BrowseMinecraftFolderButton_Click(sender As Object, e As RoutedEventArgs) Handles BrowseMinecraftFolderButton.Click
-        FolderBrowserDialog.InitialDirectory = My.Settings.MinecraftFolderLocation
-        If FolderBrowserDialog.ShowDialog() = Forms.DialogResult.OK Then
-            If My.Computer.FileSystem.FileExists(FolderBrowserDialog.FileName & "\launcher.jar") Then ' Check if Minecraft exists in that folder
-                MinecraftFolderTextBox.Text = FolderBrowserDialog.FileName
-                SavesFolderTextBox.Text = FolderBrowserDialog.FileName & "\saves"
-                Exit Sub
-            Else
-                If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.NotInstalledInFolder"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = Windows.Forms.DialogResult.Yes Then ' Ask if user wants to try finding folder again
-                    BrowseMinecraftFolderButton_Click(sender, e) ' Restart from beginning if "Yes"
-                End If
-            End If
-        End If
-    End Sub
-
-    Private Sub BrowseBackupsFolderButton_Click(sender As Object, e As RoutedEventArgs) Handles BrowseBackupsFolderButton.Click
-        FolderBrowserDialog.InitialDirectory = My.Settings.BackupsFolderLocation
-        If FolderBrowserDialog.ShowDialog() = Forms.DialogResult.OK Then
-            Try
-                IO.File.Create(FolderBrowserDialog.FileName & "\.tmp").Dispose()
-                My.Computer.FileSystem.DeleteFile(FolderBrowserDialog.FileName & "\.tmp")
-                BackupsFolderTextBox.Text = FolderBrowserDialog.FileName
-            Catch ex As Exception
-                Log.Print(ex.Message, Log.Prefix.Severe)
-                MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.SetBackupsFolderError"), FolderBrowserDialog.FileName), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
-            End Try
-        End If
-    End Sub
-
-    Private Sub BrowseSavesFolderButton_Click(sender As Object, e As RoutedEventArgs) Handles BrowseSavesFolderButton.Click
-        FolderBrowserDialog.InitialDirectory = My.Settings.SavesFolderLocation
-        If FolderBrowserDialog.ShowDialog = Forms.DialogResult.OK Then
-            If Not IO.Path.GetFileName(FolderBrowserDialog.FileName) = "saves" Then
-                Select Case MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.SetSavesFolderWarning"), FolderBrowserDialog.FileName), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNoCancel, MessageBoxImage.Question)
-                    Case MessageBoxResult.Yes
-                        SavesFolderTextBox.Text = FolderBrowserDialog.FileName
-                    Case MessageBoxResult.No
-                        BrowseSavesFolderButton_Click(sender, e)
-                    Case Else
-                        Exit Sub
-                End Select
-            Else
-                SavesFolderTextBox.Text = FolderBrowserDialog.FileName
-            End If
-        End If
     End Sub
 
     Private Sub ListViewOpacitySlider_ValueChanged(sender As Object, e As RoutedPropertyChangedEventArgs(Of Double))
@@ -186,11 +150,11 @@ Partial Public Class Options
     End Sub
 
     Private Sub Window_Unloaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Unloaded
-        My.Settings.MinecraftFolderLocation = MinecraftFolderTextBox.Text
+        'My.Settings.MinecraftFolderLocation = MinecraftFolderTextBox.Text
         Log.Print("Minecraft folder location set to " & My.Settings.MinecraftFolderLocation)
-        My.Settings.SavesFolderLocation = SavesFolderTextBox.Text
+        'My.Settings.SavesFolderLocation = SavesFolderTextBox.Text
         Log.Print("Saves folder location set to " & My.Settings.SavesFolderLocation)
-        My.Settings.BackupsFolderLocation = BackupsFolderTextBox.Text
+        'My.Settings.BackupsFolderLocation = BackupsFolderTextBox.Text
         Log.Print("Backups folder location set to " & My.Settings.BackupsFolderLocation)
         My.Settings.InterfaceOpacity = ListViewOpacitySlider.Value
         My.Settings.CheckForUpdates = CheckForUpdatesCheckBox.IsChecked
@@ -276,14 +240,7 @@ Partial Public Class Options
         Next
 
         ' Folders
-        GeneralFoldersGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.FoldersPanel.GeneralFoldersGroupBox.Header")
-
-        MinecraftFolderLocationLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersPanel.MinecraftFolderLocationLabel.Content")
-        SavesFolderLocationLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersPanel.SavesFolderLocationLabel.Content")
-        BackupsFolderLocationLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersPanel.BackupsFolderLocationLabel.Content")
-        BrowseMinecraftFolderButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersPanel.BrowseButton.Content")
-        BrowseSavesFolderButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersPanel.BrowseButton.Content")
-        BrowseBackupsFolderButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersPanel.BrowseButton.Content")
+        
 
         ' Groups
         AddNewGroupGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.GroupsTab.AddNewGroupGroupBox.Header")
@@ -325,8 +282,8 @@ Partial Public Class Options
     Private Sub ThemeComboBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles ThemeComboBox.SelectionChanged
         If Not ThemeComboBox.SelectedItem Is Nothing Then
             Dim SelectedTag = DirectCast(ThemeComboBox.SelectedItem, TaggedComboBoxItem).Tag
-            ThemeManager.ChangeTheme(My.Application, New Accent(SelectedTag, New Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/" & SelectedTag & ".xaml")), Theme.Light)
             My.Settings.Theme = ThemeComboBox.SelectedItem.Tag.ToString
+            ThemeManager.ChangeAppStyle(My.Application, ThemeManager.GetAccent(My.Settings.Theme), ThemeManager.GetAppTheme("BaseLight"))
         End If
     End Sub
 
@@ -437,52 +394,6 @@ Partial Public Class Options
     End Sub
 #End Region
 
-    Private Sub MinecraftFolderTextBox_LostFocus(sender As Object, e As RoutedEventArgs) Handles MinecraftFolderTextBox.LostFocus, SavesFolderTextBox.LostFocus, BackupsFolderTextBox.LostFocus
-        If My.Computer.FileSystem.DirectoryExists(MinecraftFolderTextBox.Text) Then
-            If My.Computer.FileSystem.FileExists(MinecraftFolderTextBox.Text & "\launcher.jar") Then ' Check if Minecraft exists in that folder
-                MinecraftFolderTextBox.Text = MinecraftFolderTextBox.Text
-                SavesFolderTextBox.Text = MinecraftFolderTextBox.Text & "\saves"
-                Exit Sub
-            Else
-                MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.MinecraftNotIn"), MinecraftFolderTextBox.Text), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
-                MinecraftFolderTextBox.Text = My.Settings.MinecraftFolderLocation
-            End If
-        Else
-            MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.FolderDoesNotExist"), MinecraftFolderTextBox.Text), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
-            MinecraftFolderTextBox.Text = My.Settings.MinecraftFolderLocation
-        End If
-    End Sub
-
-    Private Sub SavesFolderTextBox_LostFocus(sender As Object, e As RoutedEventArgs) Handles SavesFolderTextBox.LostFocus
-        If My.Computer.FileSystem.DirectoryExists(SavesFolderTextBox.Text) Then
-            If Not IO.Path.GetFileName(SavesFolderTextBox.Text) = "saves" Then
-                If MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.SetSavesFolderWarning"), SavesFolderTextBox.Text)) = MessageBoxResult.Yes Then
-                    My.Settings.SavesFolderLocation = SavesFolderTextBox.Text
-                End If
-            End If
-        Else
-            MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.FolderDoesNotExist"), SavesFolderTextBox.Text), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
-            SavesFolderTextBox.Text = My.Settings.SavesFolderLocation
-        End If
-    End Sub
-
-    Private Sub BackupsFolderTextBox_LostFocus(sender As Object, e As RoutedEventArgs) Handles BackupsFolderTextBox.LostFocus
-        If My.Computer.FileSystem.DirectoryExists(BackupsFolderTextBox.Text) Then
-            Try
-                IO.File.Create(BackupsFolderTextBox.Text & "\.tmp").Dispose()
-                My.Computer.FileSystem.DeleteFile(BackupsFolderTextBox.Text & "\.tmp")
-                My.Settings.BackupsFolderLocation = BackupsFolderTextBox.Text
-            Catch ex As Exception
-                Log.Print(ex.Message, Log.Prefix.Severe)
-                MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.SetBackupsFolderError"), BackupsFolderTextBox.Text), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
-                BackupsFolderTextBox.Text = My.Settings.BackupsFolderLocation
-            End Try
-        Else
-            MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.FolderDoesNotExist"), BackupsFolderTextBox.Text), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
-            BackupsFolderTextBox.Text = My.Settings.BackupsFolderLocation
-        End If
-    End Sub
-
     Private Sub SendAnonymousDataCheckBox_Checked(sender As Object, e As RoutedEventArgs) Handles SendAnonymousDataCheckBox.Checked
         If Not SendAnonymousDataCheckBox.IsChecked Then
             If MetroMessageBox.Show("Are you sure you want to disable anonymous statistics collection? They are only used for global statistics!", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.No Then
@@ -491,4 +402,104 @@ Partial Public Class Options
         End If
         My.Settings.SendAnonymousData = SendAnonymousDataCheckBox.IsChecked
     End Sub
+
+    Private Sub SelectItemUsingTag(TabControl As TabControl, Tag As String)
+        For Each TabItem As TabItem In TabControl.Items
+            If TabItem.Tag = Tag Then
+                TabControl.SelectedItem = TabItem
+            End If
+        Next
+    End Sub
+
+    Private WithEvents timer1 As New DispatcherTimer
+
+    Private Sub timer1_Tick() Handles timer1.Tick
+        timer1.Interval = TimeSpan.FromMilliseconds(500)
+        Debug.Print(My.Settings.Launcher)
+    End Sub
+
+    Private Sub InstallationType_SelectionChanged(sender As Object, e As RoutedEventArgs)
+        If Not Me.IsLoaded Then
+            Exit Sub
+        End If
+
+        sender = CType(sender, RadioButton)
+        If sender.Tag <> My.Settings.Launcher Then
+            Dim FSD As New FolderSelectDialog
+            If FSD.ShowDialog(New WindowInteropHelper(Me).Handle) = Forms.DialogResult.OK Then
+                Select Case sender.Tag
+                    Case "minecraft"
+                        If Not My.Computer.FileSystem.FileExists(FSD.FileName & "\launcher.jar") Then
+                            If MetroMessageBox.Show("Minecraft is not installed in that folder! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
+                                InstallationType_SelectionChanged(sender, e)
+                            Else
+                                SetInstallationTypeButtons(My.Settings.Launcher)
+                            End If
+                            Exit Sub
+                        End If
+                    Case "technic"
+                        If Not My.Computer.FileSystem.FileExists(FSD.FileName & "\settings.json") Then
+                            If MetroMessageBox.Show("Technic is not installed in that foler! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
+                                InstallationType_SelectionChanged(sender, e)
+                            Else
+                                SetInstallationTypeButtons(My.Settings.Launcher)
+                            End If
+                            Exit Sub
+                        End If
+                    Case "ftb"
+                        If Not My.Computer.FileSystem.DirectoryExists(FSD.FileName & "\authlib") Then
+                            If MetroMessageBox.Show("Feed the Beast is not installed in that folder! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
+                                InstallationType_SelectionChanged(sender, e)
+                            Else
+                                SetInstallationTypeButtons(My.Settings.Launcher)
+                            End If
+                            Exit Sub
+                        End If
+                    Case "atlauncher"
+                        If Not My.Computer.FileSystem.DirectoryExists(FSD.FileName & "\Configs") Then
+                            If MetroMessageBox.Show("ATLauncher is not installed in that folder! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
+                                InstallationType_SelectionChanged(sender, e)
+                            Else
+                                SetInstallationTypeButtons(My.Settings.Launcher)
+                            End If
+                            Exit Sub
+                        End If
+                End Select
+                My.Settings.Launcher = GetInstallationTypeButtons()
+                My.Settings.MinecraftFolderLocation = FSD.FileName
+                BaseFolderTextBox.Text = My.Settings.MinecraftFolderLocation
+                Log.Print(String.Format("Switched to '{0}' launcher.", My.Settings.Launcher))
+                Log.Print(String.Format("Launcher base folder set to '{0}'.", My.Settings.MinecraftFolderLocation))
+            Else
+                SetInstallationTypeButtons(My.Settings.Launcher)
+                Exit Sub
+            End If
+        End If
+    End Sub
+
+    Private Sub SetInstallationTypeButtons(Type As String)
+        Select Case Type
+            Case "minecraft"
+                MinecraftInstallationRadioButton.IsChecked = True
+            Case "technic"
+                TechnicInstallationRadioButton.IsChecked = True
+            Case "ftb"
+                FTBInstallationRadioButton.IsChecked = True
+            Case "atlauncher"
+                ATLauncherInstallationRadioButton.IsChecked = True
+        End Select
+    End Sub
+
+    Private Function GetInstallationTypeButtons() As String
+        If MinecraftInstallationRadioButton.IsChecked Then
+            Return "minecraft"
+        ElseIf TechnicInstallationRadioButton.IsChecked Then
+            Return "technic"
+        ElseIf FTBInstallationRadioButton.IsChecked Then
+            Return "ftb"
+        ElseIf ATLauncherInstallationRadioButton.IsChecked Then
+            Return "atlauncher"
+        End If
+        Return Nothing
+    End Function
 End Class
