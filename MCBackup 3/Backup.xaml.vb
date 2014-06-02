@@ -32,15 +32,23 @@ Public Class Backup
         DescriptionTextBox.Text = ""
         DateAndTimeRadioButton.IsChecked = True
 
+        SavesListView.Items.Clear()
+        VersionsListView.Items.Clear()
+
         Select Case My.Settings.Launcher
             Case "minecraft"
-                SavesListView.Items.Clear()
                 My.Computer.FileSystem.CreateDirectory(My.Settings.SavesFolderLocation)
                 Dim SavesDirectory As New DirectoryInfo(My.Settings.SavesFolderLocation)
                 For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
                     If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
                         SavesListView.Items.Add(New SavesListViewItem(Folder.Name, Nothing))
                     End If
+                Next
+
+                My.Computer.FileSystem.CreateDirectory(My.Settings.MinecraftFolderLocation & "\versions")
+                Dim VersionsDirectory As New DirectoryInfo(My.Settings.MinecraftFolderLocation & "\versions")
+                For Each Version In VersionsDirectory.GetDirectories
+                    VersionsListView.Items.Add(Version.Name)
                 Next
             Case "technic"
                 Dim Modpacks As New DirectoryInfo(My.Settings.MinecraftFolderLocation & "\modpacks")
@@ -53,6 +61,7 @@ Public Class Backup
                             SavesListView.Items.Add(New SavesListViewItem(Folder.Name, Modpack.Name))
                         End If
                     Next
+                    VersionsListView.Items.Add(Modpack.Name)
                 Next
             Case "ftb"
                 Dim BaseDirectory As New DirectoryInfo(My.Settings.MinecraftFolderLocation)
@@ -66,6 +75,7 @@ Public Class Backup
                                 SavesListView.Items.Add(New SavesListViewItem(Folder.Name, Directory.Name))
                             End If
                         Next
+                        VersionsListView.Items.Add(Directory.Name)
                     End If
                 Next
             Case "atlauncher"
@@ -79,6 +89,7 @@ Public Class Backup
                             SavesListView.Items.Add(New SavesListViewItem(Folder.Name, Instance.Name))
                         End If
                     Next
+                    VersionsListView.Items.Add(Instance.Name)
                 Next
         End Select
 
@@ -107,9 +118,22 @@ Public Class Backup
                 Case 0
                     Main.BackupInfo(0) = CType(SavesListView.SelectedItem, SavesListViewItem).Name & " " & GetBackupTimeStamp()
                 Case 1
-                    Main.BackupInfo(0) = "Version " & VersionsListView.SelectedItem & " " & GetBackupTimeStamp()
+                    If My.Settings.Launcher = "minecraft" Then
+                        Main.BackupInfo(0) = "Version " & VersionsListView.SelectedItem & " " & GetBackupTimeStamp()
+                    Else
+                        Main.BackupInfo(0) = VersionsListView.SelectedItem & " " & GetBackupTimeStamp()
+                    End If
                 Case 2
-                    Main.BackupInfo(0) = "Minecraft " & GetBackupTimeStamp()
+                    Select Case My.Settings.Launcher
+                        Case "minecraft"
+                            Main.BackupInfo(0) = "Minecraft " & GetBackupTimeStamp()
+                        Case "technic"
+                            Main.BackupInfo(0) = "Technic " & GetBackupTimeStamp()
+                        Case "ftb"
+                            Main.BackupInfo(0) = "Feed the Beast " & GetBackupTimeStamp()
+                        Case "atlauncher"
+                            Main.BackupInfo(0) = "ATLauncher " & GetBackupTimeStamp()
+                    End Select
             End Select
         ElseIf Not CustomNameTextBox.Text = "" Then
             Main.BackupInfo(0) = CustomNameTextBox.Text
@@ -132,7 +156,6 @@ Public Class Backup
 
         Select Case BackupTypeTabControl.SelectedIndex
             Case 0
-
                 Select Case My.Settings.Launcher
                     Case "minecraft"
                         Main.BackupInfo(2) = My.Settings.SavesFolderLocation & "\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
@@ -145,7 +168,16 @@ Public Class Backup
                 End Select
                 Main.BackupInfo(3) = "save"
             Case 1
-                Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\versions\" & VersionsListView.SelectedItem
+                Select Case My.Settings.Launcher
+                    Case "minecraft"
+                        Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\versions\" & VersionsListView.SelectedItem
+                    Case "technic"
+                        Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\modpacks\" & VersionsListView.SelectedItem
+                    Case "ftb"
+                        Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\" & VersionsListView.SelectedItem
+                    Case "atlauncher"
+                        Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\Instances\" & VersionsListView.SelectedItem
+                End Select
                 Main.BackupInfo(3) = "version"
             Case 2
                 Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation
@@ -155,7 +187,7 @@ Public Class Backup
         Main.BackupInfo(4) = IIf(GroupsComboBox.SelectedIndex = 0, Nothing, GroupsComboBox.SelectedItem)
         Main.BackupInfo(5) = My.Settings.Launcher
 
-        If My.Settings.Launcher <> "minecraft" Then
+        If My.Settings.Launcher <> "minecraft" And SavesListView.SelectedItems.Count > 0 Then
             Main.BackupInfo(6) = CType(SavesListView.SelectedItem, SavesListViewItem).Location
         End If
 
@@ -178,6 +210,16 @@ Public Class Backup
         StartButton.Content = MCBackup.Language.Dictionary("BackupWindow.StartButton.Content")
         CancelButton.Content = MCBackup.Language.Dictionary("BackupWindow.CancelButton.Content")
         GroupLabel.Content = MCBackup.Language.Dictionary("BackupWindow.GroupLabel.Text")
+        Select Case My.Settings.Launcher
+            Case "minecraft"
+                BackupTypeTabControl.Items(1).Header = "Version"
+            Case "technic"
+                BackupTypeTabControl.Items(1).Header = "Modpack"
+            Case "ftb"
+                BackupTypeTabControl.Items(1).Header = "Modpack"
+            Case "atlauncher"
+                BackupTypeTabControl.Items(1).Header = "Instance"
+        End Select
     End Sub
 
     Private Sub CancelButton_Click(sender As Object, e As RoutedEventArgs) Handles CancelButton.Click

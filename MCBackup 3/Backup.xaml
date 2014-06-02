@@ -111,7 +111,7 @@
                 </Style>
             </TabControl.Resources>
             <TabItem Header="World">
-                <Grid Background="#FFE5E5E5">
+                <Grid>
                     <ListView x:Name="SavesListView" HorizontalAlignment="Left" Height="97" VerticalAlignment="Top" Width="616" SelectionMode="Single" BorderThickness="1">
                         <ListView.View>
                             <GridView x:Name="SavesListViewGridView">
@@ -122,7 +122,7 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="Location" Width="200">
+                                <GridViewColumn Header="Location" Width="400">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Location}"/>
@@ -135,18 +135,18 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Version">
-                <Grid Background="#FFE5E5E5">
+                <Grid>
                     <ListView x:Name="VersionsListView" HorizontalAlignment="Left" Height="97" VerticalAlignment="Top" Width="616" SelectionMode="Single" BorderThickness="1">
                         <ListView.View>
                             <GridView x:Name="VersionsListViewGridView">
-                                <GridViewColumn Header="Name" Width="200"/>
+                                <GridViewColumn Header="Name" Width="600"/>
                             </GridView>
                         </ListView.View>
                     </ListView>
                 </Grid>
             </TabItem>
             <TabItem Header="Everything">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid/>
             </TabItem>
         </TabControl>
     </Grid>

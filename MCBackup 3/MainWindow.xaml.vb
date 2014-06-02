@@ -707,9 +707,8 @@ Partial Class MainWindow
         End With
     End Sub
 
-    Private StepNumber As Integer
-
     Private Sub MCMap_DataReceived(sender As Object, e As DataReceivedEventArgs)
+        Dim StepNumber As Integer
         If e.Data = Nothing Then
             Exit Sub
         End If
@@ -754,7 +753,7 @@ Partial Class MainWindow
             Log.Print("Starting Restore")
             RestoreInfo(0) = ListView.SelectedItems(0).Name ' Set place 0 of RestoreInfo array to the backup name
 
-            Dim BaseFolderName, Launcher, Modpack As String
+            Dim BaseFolderName As String = "", Launcher As String = "", Modpack As String = ""
 
             Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0) & "\info.mcb")
                 Do While SR.Peek <> -1
@@ -793,7 +792,16 @@ Partial Class MainWindow
                             RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\Instances\" & Modpack & "\saves\" & BaseFolderName
                     End Select
                 Case "version"
-                    RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\versions\" & BaseFolderName
+                    Select Case My.Settings.Launcher
+                        Case "minecraft"
+                            RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\versions\" & BaseFolderName
+                        Case "technic"
+                            RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\modpacks\" & BaseFolderName
+                        Case "ftb"
+                            RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\" & BaseFolderName
+                        Case "atlauncher"
+                            RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\Instances\" & BaseFolderName
+                    End Select
                 Case "everything"
                     RestoreInfo(1) = My.Settings.MinecraftFolderLocation
             End Select
