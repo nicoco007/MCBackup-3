@@ -143,7 +143,7 @@ Partial Class MainWindow
 
         Splash.StepProgress()
 
-        Main.ListView.Opacity = My.Settings.InterfaceOpacity / 100
+        Main.ListView.Background = New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, 255, 255, 255))
         Main.Sidebar.Background = New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, 255, 255, 255))
 
         StatusLabel.Foreground = New SolidColorBrush(My.Settings.StatusLabelColor)
@@ -1388,6 +1388,12 @@ Partial Class MainWindow
         End If
     End Sub
 #End Region
+
+    Private Sub EditBackupGroupsButton_Click(sender As Object, e As RoutedEventArgs) Handles EditBackupGroupsButton.Click
+        Dim OptionsWindow As New Options
+        OptionsWindow.Owner = Me
+        OptionsWindow.ShowDialog(3)
+    End Sub
 End Class
 
 Public Class CloseAction

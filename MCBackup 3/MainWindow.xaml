@@ -52,12 +52,16 @@
         </Controls:WindowCommands>
     </Controls:MetroWindow.WindowCommands>
 
+    <Window.Resources>
+        <ResourceDictionary Source="/Resources/Icons.xaml" />
+    </Window.Resources>
+
     <Grid Name="MainGrid" Height="Auto" VerticalAlignment="Stretch">
         <Grid Name="InternalGrid" Margin="10,60,10,132">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Name="GridListViewColumn" Width="3*" MinWidth="300"/>
                 <ColumnDefinition Width="4"/>
-                <ColumnDefinition Name="GridSidebarColumn" Width="*" MinWidth="280"/>
+                <ColumnDefinition Name="GridSidebarColumn" Width="*" MinWidth="240"/>
             </Grid.ColumnDefinitions>
 
             <ListView x:Name="ListView" BorderThickness="1" BorderBrush="#FF646464" Margin="0,0,5,0">
@@ -162,7 +166,7 @@
             </Border>
         </Grid>
 
-        <TabControl x:Name="GroupsTabControl" HorizontalAlignment="Left" Height="59" VerticalAlignment="Top" Width="972">
+        <TabControl x:Name="GroupsTabControl" HorizontalAlignment="Left" Height="59" VerticalAlignment="Top" Width="952" Margin="10,0,0,0">
             <TabControl.Template>
                 <ControlTemplate TargetType="{x:Type TabControl}">
                     <StackPanel>
@@ -181,6 +185,11 @@
         <Button x:Name="CullButton" Content="Selective Cull" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="160" Margin="505,0,0,107" Height="20" Padding="0"/>
         <ProgressBar x:Name="ProgressBar" VerticalAlignment="Bottom" Height="23" Margin="10,0,10,10"/>
         <Label x:Name="StatusLabel" Content="Status" VerticalAlignment="Bottom" Margin="10,0,10,38"/>
-        <Button x:Name="AutomaticBackupButton" Content="Automatic Backup &gt;&gt;" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="200" Margin="0,0,10,107" Height="20" Padding="0"/>
+        <Button x:Name="AutomaticBackupButton" Content="Automatic Backup &gt;&gt;" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="200" Margin="0,0,10,107" Height="20" Padding="1"/>
+        <Button x:Name="EditBackupGroupsButton" HorizontalAlignment="Right" Width="16" Height="59" VerticalAlignment="Top" Style="{StaticResource MetroFlatButton2}" Margin="0,0,2,0" ToolTip="Edit Backup Groups">
+            <Button.OpacityMask>
+                <VisualBrush Visual="{StaticResource appbar_edit_add}" Stretch="Uniform"/>
+            </Button.OpacityMask>
+        </Button>
     </Grid>
 </Controls:MetroWindow>
