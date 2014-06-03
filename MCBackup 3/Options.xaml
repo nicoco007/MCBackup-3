@@ -137,17 +137,17 @@
                             <RadioButton x:Name="FTBInstallationRadioButton" Content="Feed the Beast" Tag="ftb" HorizontalAlignment="Left" Margin="320,10,0,0" VerticalAlignment="Top" Style="{StaticResource MetroToggleButton}" Width="150" HorizontalContentAlignment="Center" Checked="InstallationType_SelectionChanged"/>
                             <RadioButton x:Name="ATLauncherInstallationRadioButton" Content="ATLauncher" Tag="atlauncher" HorizontalAlignment="Left" Margin="475,10,0,0" VerticalAlignment="Top" Style="{StaticResource MetroToggleButton}" Width="150" HorizontalContentAlignment="Center" Checked="InstallationType_SelectionChanged"/>
                             <Label x:Name="BaseFolderLabel" Content="Base Folder" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,50,0,0" Padding="0,5" Width="105"/>
-                            <TextBox x:Name="BaseFolderTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="414" Margin="120,50,0,0"/>
+                            <TextBox x:Name="BaseFolderTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="414" Margin="120,50,0,0" IsReadOnly="True"/>
                             <Button x:Name="BaseFolderBrowseButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85" Margin="539,49,0,0" Height="28"/>
                         </Grid>
                     </GroupBox>
                     <GroupBox Header="General Folders" HorizontalAlignment="Left" Margin="10,140,0,0" VerticalAlignment="Top" Width="646" Height="138">
                         <Grid>
                             <Label x:Name="SavesFolderLabel" Content="Saves Folder" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,11,0,0" Padding="0,5" Width="105"/>
-                            <TextBox x:Name="SavesFolderTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="414" Margin="120,11,0,0"/>
+                            <TextBox x:Name="SavesFolderTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="414" Margin="120,11,0,0" IsReadOnly="True"/>
                             <Button x:Name="SavesFolderBrowseButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85" Margin="539,10,0,0" Height="28"/>
                             <Label x:Name="BackupsFolderLabel" Content="Backups Folder" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,44,0,0" Padding="0,5" Width="105"/>
-                            <TextBox x:Name="BackupsFolderTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="414" Margin="120,44,0,0"/>
+                            <TextBox x:Name="BackupsFolderTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="414" Margin="120,44,0,0" IsReadOnly="True"/>
                             <Button x:Name="BackupsFolderBrowseButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85" Margin="539,43,0,0" Height="28"/>
                         </Grid>
                     </GroupBox>

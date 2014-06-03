@@ -658,13 +658,13 @@ Partial Class MainWindow
         End If
     End Sub
 
-    Private WithEvents StatcounterWebClient As New WebClient
+    Private WithEvents StatCounterWebClient As New WebClient
 
     Private Sub BackupBackgroundWorker_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
         BackupStopwatch.Stop()
         ProgressBar.Value = 100
         If My.Settings.SendAnonymousData Then
-            StatcounterWebClient.DownloadDataAsync(New Uri("http://c.statcounter.com/9820848/0/90ee98bc/1/"))
+            StatCounterWebClient.DownloadDataAsync(New Uri("http://c.statcounter.com/9820848/0/90ee98bc/1/"))
         End If
     End Sub
 
@@ -674,16 +674,13 @@ Partial Class MainWindow
         End If
     End Sub
 
-    Private WorldPath As String = ""
-
     Private Sub CreateThumb(Path As String)
         StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), 0)
-        Dim Thread As New Thread(AddressOf ThumbnailBackgroundWorker_DoWork)
+        Dim Thread As New Thread(Sub() ThumbnailBackgroundWorker_DoWork(Path))
         Thread.Start()
-        WorldPath = Path
     End Sub
 
-    Private Sub ThumbnailBackgroundWorker_DoWork()
+    Private Sub ThumbnailBackgroundWorker_DoWork(WorldPath As String)
         Dim MCMap As New Process
 
         With MCMap.StartInfo
