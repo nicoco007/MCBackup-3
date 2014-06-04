@@ -22,14 +22,6 @@ InitializeComponent
 	<summary>
 ErrorWindow
 </summary>
-</member><member name="M:MCBackup.resources_icons_xaml.InitializeComponent">
-	<summary>
-InitializeComponent
-</summary>
-</member><member name="T:MCBackup.resources_icons_xaml">
-	<summary>
-resources_icons_xaml
-</summary>
 </member><member name="M:MCBackup.About.InitializeComponent">
 	<summary>
 InitializeComponent

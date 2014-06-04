@@ -423,84 +423,8 @@ Partial Class MainWindow
 
                 DescriptionTextBox.Text = MCBackup.Language.Dictionary("MainWindow.Sidebar.Description.NoItem")
             Case 1
-                RestoreButton.IsEnabled = True
-                RenameButton.IsEnabled = True ' Allow anything if only 1 item is selected
-                DeleteButton.IsEnabled = True
-
-                SidebarTitle.Text = ListView.SelectedItem.Name      'Set sidebar title to backup name
-                SidebarTitle.ToolTip = ListView.SelectedItem.Name
-
-                ListViewRestoreItem.IsEnabled = True
-                ListViewDeleteItem.IsEnabled = True     'Enable ContextMenu items
-                ListViewRenameItem.IsEnabled = True
-
-                If My.Computer.FileSystem.FileExists(My.Settings.BackupsFolderLocation & "\" & ListView.SelectedItem.Name & "\thumb.png") Then
-                    Try
-                        ThumbnailImage.Source = BitmapFromUri(New Uri(My.Settings.BackupsFolderLocation & "\" & ListView.SelectedItem.Name & "\thumb.png"))
-                    Catch ex As Exception
-                        ErrorWindow.Show("An error occured while trying to load the backup's thumbnail", ex)
-                    End Try
-                Else
-                    ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/nothumb.png"))
-                End If
-
-                Dim Type As String = "-"
-                Dim OriginalFolderName As String = "-"
-
-                Try
-                    Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & ListView.SelectedItem.Name.ToString & "\info.mcb")
-                        Do While SR.Peek <> -1
-                            Dim Line As String = SR.ReadLine
-                            If Not Line.StartsWith("#") Then
-                                If Line.StartsWith("type=") Then
-                                    Select Case Line.Substring(5)
-                                        Case "save"
-                                            Type = MCBackup.Language.Dictionary("BackupTypes.Save")
-                                        Case "version"
-                                            Type = MCBackup.Language.Dictionary("BackupTypes.Version")
-                                        Case "everything"
-                                            Type = MCBackup.Language.Dictionary("BackupTypes.Everything")
-                                    End Select
-                                ElseIf Line.StartsWith("baseFolderName=") Then
-                                    OriginalFolderName = Line.Substring(15) ' Set original folder name to "baseFolderName=" line
-                                ElseIf Line.StartsWith("desc=") Then
-                                    DescriptionTextBox.Text = IIf(String.IsNullOrEmpty(Line.Substring(5)), MCBackup.Language.Dictionary("MainWindow.Sidebar.Description.NoDesc"), Line.Substring(5))
-                                End If
-                            End If
-                        Loop
-                    End Using
-                Catch ex As Exception
-                    Log.Print(ex.Message, Log.Prefix.Severe)
-                End Try
-
-                SidebarOriginalNameContent.Text = OriginalFolderName
-                SidebarOriginalNameContent.ToolTip = OriginalFolderName
-                SidebarTypeContent.Text = Type
-                SidebarTypeContent.ToolTip = Type
-
-                Dim World As NbtWorld = AnvilWorld.Open(My.Settings.BackupsFolderLocation & "\" & ListView.SelectedItem.Name)
-
-                SidebarPlayerHealthGrid.Children.Clear()
-                For i As Integer = 0 To World.Level.Player.Health \ 2 - 1
-                    SidebarPlayerHealthGrid.Children.Add(New PlayerHeartImage(New Thickness(SidebarPlayerHealthGrid.Children.Count * 10, 0, 0, 0), PlayerHeartImage.State.Full))
-                Next
-                If World.Level.Player.Health Mod 2 <> 0 Then
-                    SidebarPlayerHealthGrid.Children.Add(New PlayerHeartImage(New Thickness(SidebarPlayerHealthGrid.Children.Count * 10, 0, 0, 0), PlayerHeartImage.State.Half))
-                End If
-                For i As Integer = 0 To (20 - World.Level.Player.Health) \ 2 - 1
-                    SidebarPlayerHealthGrid.Children.Add(New PlayerHeartImage(New Thickness(SidebarPlayerHealthGrid.Children.Count * 10, 0, 0, 0), PlayerHeartImage.State.Empty))
-                Next
-
-                SidebarPlayerHungerGrid.Children.Clear()
-                For i As Integer = 0 To World.Level.Player.HungerLevel \ 2 - 1
-                    SidebarPlayerHungerGrid.Children.Add(New PlayerHungerImage(New Thickness(SidebarPlayerHungerGrid.Children.Count * 10, 0, 0, 0), PlayerHungerImage.State.Full))
-                Next
-                If World.Level.Player.HungerLevel Mod 2 <> 0 Then
-                    SidebarPlayerHungerGrid.Children.Add(New PlayerHungerImage(New Thickness(SidebarPlayerHungerGrid.Children.Count * 10, 0, 0, 0), PlayerHungerImage.State.Half))
-                End If
-                For i As Integer = 0 To (20 - World.Level.Player.HungerLevel) \ 2 - 1
-                    SidebarPlayerHungerGrid.Children.Add(New PlayerHungerImage(New Thickness(SidebarPlayerHungerGrid.Children.Count * 10, 0, 0, 0), PlayerHungerImage.State.Empty))
-                Next
+                Dim Thread As New Thread(AddressOf LoadBackupInfo)
+                Thread.Start()
             Case Else
                 RestoreButton.IsEnabled = False
                 RenameButton.IsEnabled = False ' Only allow deletion if more than 1 item is selected
@@ -515,6 +439,113 @@ Partial Class MainWindow
 
                 DescriptionTextBox.Text = MCBackup.Language.Dictionary("MainWindow.Sidebar.Description.NoItem")
         End Select
+    End Sub
+
+    Private Sub LoadBackupInfo()
+        Dim SelectedItem As ListViewBackupItem = Nothing
+        Dispatcher.Invoke(Sub()
+                              SelectedItem = ListView.SelectedItem
+                              RestoreButton.IsEnabled = True
+                              RenameButton.IsEnabled = True ' Allow anything if only 1 item is selected
+                              DeleteButton.IsEnabled = True
+
+                              SidebarTitle.Text = SelectedItem.Name     'Set sidebar title to backup name
+                              SidebarTitle.ToolTip = SelectedItem
+
+                              ListViewRestoreItem.IsEnabled = True
+                              ListViewDeleteItem.IsEnabled = True     'Enable ContextMenu items
+                              ListViewRenameItem.IsEnabled = True
+
+                              If My.Computer.FileSystem.FileExists(My.Settings.BackupsFolderLocation & "\" & SelectedItem.Name & "\thumb.png") Then
+                                  Try
+                                      ThumbnailImage.Source = BitmapFromUri(New Uri(My.Settings.BackupsFolderLocation & "\" & SelectedItem.Name & "\thumb.png"))
+                                  Catch ex As Exception
+                                      ErrorWindow.Show("An error occured while trying to load the backup's thumbnail", ex)
+                                  End Try
+                              Else
+                                  ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/nothumb.png"))
+                              End If
+                          End Sub)
+
+        Dim Type As String = "-", OriginalFolderName As String = "-", Description As String = ""
+
+        Try
+            Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & SelectedItem.Name & "\info.mcb")
+                Do While SR.Peek <> -1
+                    Dim Line As String = SR.ReadLine
+                    If Not Line.StartsWith("#") Then
+                        If Line.StartsWith("type=") Then
+                            Type = Line.Substring(5)
+                        ElseIf Line.StartsWith("baseFolderName=") Then
+                            OriginalFolderName = Line.Substring(15) ' Set original folder name to "baseFolderName=" line
+                        ElseIf Line.StartsWith("desc=") Then
+                            Description = Line.Substring(5)
+                        End If
+                    End If
+                Loop
+            End Using
+        Catch ex As Exception
+            Log.Print(ex.Message, Log.Prefix.Severe)
+        End Try
+        Dispatcher.Invoke(Sub()
+                              SidebarOriginalNameContent.Text = OriginalFolderName
+                              SidebarOriginalNameContent.ToolTip = OriginalFolderName
+
+                              Select Case Type
+                                  Case "save"
+                                      SidebarTypeContent.Text = MCBackup.Language.Dictionary("BackupTypes.Save")
+                                      SidebarTypeContent.ToolTip = MCBackup.Language.Dictionary("BackupTypes.Save")
+                                  Case "version"
+                                      SidebarTypeContent.Text = MCBackup.Language.Dictionary("BackupTypes.Version")
+                                      SidebarTypeContent.ToolTip = MCBackup.Language.Dictionary("BackupTypes.Version")
+                                  Case "everything"
+                                      SidebarTypeContent.Text = MCBackup.Language.Dictionary("BackupTypes.Everything")
+                                      SidebarTypeContent.ToolTip = MCBackup.Language.Dictionary("BackupTypes.Everything")
+                              End Select
+
+                              DescriptionTextBox.Text = IIf(String.IsNullOrEmpty(Description), MCBackup.Language.Dictionary("MainWindow.Sidebar.Description.NoDesc"), Description)
+                          End Sub)
+
+        If Type = "save" Then
+            Dispatcher.Invoke(Sub()
+                                  SidebarPlayerHealth.Visibility = Windows.Visibility.Visible
+                                  SidebarPlayerHunger.Visibility = Windows.Visibility.Visible
+                                  SidebarPlayerHealthGrid.Children.Clear()
+                                  SidebarPlayerHungerGrid.Children.Clear()
+                              End Sub)
+            Try
+                Dim World As NbtWorld = AnvilWorld.Open(My.Settings.BackupsFolderLocation & "\" & SelectedItem.Name)
+
+                Dispatcher.Invoke(Sub()
+                                      For i As Integer = 0 To World.Level.Player.Health \ 2 - 1
+                                          SidebarPlayerHealthGrid.Children.Add(New MinecraftIcons.PlayerStats.Heart(New Thickness(SidebarPlayerHealthGrid.Children.Count * 10, 0, 0, 0), MinecraftIcons.PlayerStats.State.Full))
+                                      Next
+                                      If World.Level.Player.Health Mod 2 <> 0 Then
+                                          SidebarPlayerHealthGrid.Children.Add(New MinecraftIcons.PlayerStats.Heart(New Thickness(SidebarPlayerHealthGrid.Children.Count * 10, 0, 0, 0), MinecraftIcons.PlayerStats.State.Half))
+                                      End If
+                                      For i As Integer = 0 To (20 - World.Level.Player.Health) \ 2 - 1
+                                          SidebarPlayerHealthGrid.Children.Add(New MinecraftIcons.PlayerStats.Heart(New Thickness(SidebarPlayerHealthGrid.Children.Count * 10, 0, 0, 0), MinecraftIcons.PlayerStats.State.Empty))
+                                      Next
+
+                                      For i As Integer = 0 To World.Level.Player.HungerLevel \ 2 - 1
+                                          SidebarPlayerHungerGrid.Children.Add(New MinecraftIcons.PlayerStats.Hunger(New Thickness(90 - SidebarPlayerHungerGrid.Children.Count * 10, 0, 0, 0), MinecraftIcons.PlayerStats.State.Full))
+                                      Next
+                                      If World.Level.Player.HungerLevel Mod 2 <> 0 Then
+                                          SidebarPlayerHungerGrid.Children.Add(New MinecraftIcons.PlayerStats.Hunger(New Thickness(90 - SidebarPlayerHungerGrid.Children.Count * 10, 0, 0, 0), MinecraftIcons.PlayerStats.State.Half))
+                                      End If
+                                      For i As Integer = 0 To (20 - World.Level.Player.HungerLevel) \ 2 - 1
+                                          SidebarPlayerHungerGrid.Children.Add(New MinecraftIcons.PlayerStats.Hunger(New Thickness(90 - SidebarPlayerHungerGrid.Children.Count * 10, 0, 0, 0), MinecraftIcons.PlayerStats.State.Empty))
+                                      Next
+                                  End Sub)
+            Catch ex As Exception
+                ErrorWindow.Show("An error occured while trying to load world info.", ex)
+            End Try
+        Else
+            Dispatcher.Invoke(Sub()
+                                  SidebarPlayerHealth.Visibility = Windows.Visibility.Collapsed
+                                  SidebarPlayerHunger.Visibility = Windows.Visibility.Collapsed
+                              End Sub)
+        End If
     End Sub
 
     Public Sub LoadLanguage()
@@ -1428,56 +1459,54 @@ Public Class CloseAction
     End Enum
 End Class
 
-Public Class PlayerHeartImage
-    Inherits Image
-    Public Enum State
-        Full
-        Half
-        Empty
-    End Enum
+Public Class MinecraftIcons
+    Public Class PlayerStats
+        Public Class Heart
+            Inherits Image
+            Public Sub New(Margin As Thickness, State As State)
+                Select Case State
+                    Case PlayerStats.State.Full
+                        Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/heart_full.png"))
+                    Case PlayerStats.State.Half
+                        Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/heart_half.png"))
+                    Case PlayerStats.State.Empty
+                        Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/heart_empty.png"))
+                End Select
 
-    Public Sub New(Margin As Thickness, State As State)
-        Select Case State
-            Case PlayerHeartImage.State.Full
-                Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/heart_full.png"))
-            Case PlayerHeartImage.State.Half
-                Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/heart_half.png"))
-            Case PlayerHeartImage.State.Empty
-                Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/heart_empty.png"))
-        End Select
+                Me.Width = 9
+                Me.Height = 9
+                Me.HorizontalAlignment = Windows.HorizontalAlignment.Left
+                Me.VerticalAlignment = Windows.VerticalAlignment.Stretch
+                Me.Stretch = Windows.Media.Stretch.None
+                Me.Margin = Margin
+            End Sub
+        End Class
 
-        Me.Width = 9
-        Me.Height = 9
-        Me.HorizontalAlignment = Windows.HorizontalAlignment.Left
-        Me.VerticalAlignment = Windows.VerticalAlignment.Stretch
-        Me.Stretch = Windows.Media.Stretch.None
-        Me.Margin = Margin
-    End Sub
-End Class
+        Public Class Hunger
+            Inherits Image
+            Public Sub New(Margin As Thickness, State As State)
+                Select Case State
+                    Case PlayerStats.State.Full
+                        Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/hunger_full.png"))
+                    Case PlayerStats.State.Half
+                        Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/hunger_half.png"))
+                    Case PlayerStats.State.Empty
+                        Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/hunger_empty.png"))
+                End Select
 
-Public Class PlayerHungerImage
-    Inherits Image
-    Public Enum State
-        Full
-        Half
-        Empty
-    End Enum
+                Me.Width = 9
+                Me.Height = 9
+                Me.HorizontalAlignment = Windows.HorizontalAlignment.Left
+                Me.VerticalAlignment = Windows.VerticalAlignment.Stretch
+                Me.Stretch = Windows.Media.Stretch.None
+                Me.Margin = Margin
+            End Sub
+        End Class
 
-    Public Sub New(Margin As Thickness, State As State)
-        Select Case State
-            Case PlayerHungerImage.State.Full
-                Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/hunger_full.png"))
-            Case PlayerHungerImage.State.Half
-                Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/hunger_half.png"))
-            Case PlayerHungerImage.State.Empty
-                Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/hunger_empty.png"))
-        End Select
-
-        Me.Width = 9
-        Me.Height = 9
-        Me.HorizontalAlignment = Windows.HorizontalAlignment.Left
-        Me.VerticalAlignment = Windows.VerticalAlignment.Stretch
-        Me.Stretch = Windows.Media.Stretch.None
-        Me.Margin = Margin
-    End Sub
+        Public Enum State
+            Full
+            Half
+            Empty
+        End Enum
+    End Class
 End Class
