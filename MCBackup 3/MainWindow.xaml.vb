@@ -277,32 +277,20 @@ Partial Class MainWindow
         Me.Show()
     End Sub
 
-    Private Sub MinecraftFolderSearch()
-        
-    End Sub
-
     Public Sub RefreshBackupsList()
         If Me.IsLoaded Then
             ListView.IsEnabled = False
             GroupsTabControl.IsEnabled = False
             ProgressBar.IsIndeterminate = True
             StatusLabel.Content = MCBackup.Language.Dictionary("Status.RefreshingBackupsList")
-            Dim Thread = New Thread(AddressOf RefreshBackupsList_Thread)
-            Thread.Start()
-        End If
-    End Sub
-
-    Private Sub RefreshBackupsList_Thread()
-        If ListView.Dispatcher.CheckAccess() Then
-            Dim Group As String = GroupsTabControl.SelectedItem
-            Dim Search As String = ""
+            Dim Group As String = "", Search As String = ""
+            Dim Items As New List(Of ListViewBackupItem)
+            Group = GroupsTabControl.SelectedItem
             If SearchTextBox.Text <> MCBackup.Language.Dictionary("MainWindow.Search") Then
                 Search = SearchTextBox.Text
             End If
 
             Dim Directory As New IO.DirectoryInfo(My.Settings.BackupsFolderLocation) ' Create a DirectoryInfo variable for the backups folder
-
-            Dim Items As New List(Of ListViewBackupItem)()
 
             For Each Folder As DirectoryInfo In Directory.GetDirectories ' For each folder in the backups folder
                 Dim Type As String = "[ERROR]"                  ' Create variables with default value [ERROR], in case one of the values doesn't exist
@@ -355,7 +343,6 @@ Partial Class MainWindow
                     Log.Print(ex.Message, Log.Prefix.Severe)
                 End Try
             Next
-
             ListView.ItemsSource = Items
             ListView.SelectedIndex = -1
             SidebarTitle.Text = String.Format(MCBackup.Language.Dictionary("MainWindow.Sidebar.NumberElements"), Items.Count)
@@ -396,8 +383,6 @@ Partial Class MainWindow
             StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
             ListView.IsEnabled = True
             GroupsTabControl.IsEnabled = True
-        Else
-            ListView.Dispatcher.Invoke(Sub() RefreshBackupsList_Thread())
         End If
     End Sub
 
@@ -725,7 +710,7 @@ Partial Class MainWindow
         End If
     End Sub
 
-    Private Sub StatcounterWebClient_DownloadDataCompleted(sender As Object, e As DownloadDataCompletedEventArgs) Handles StatcounterWebClient.DownloadDataCompleted
+    Private Sub StatcounterWebClient_DownloadDataCompleted(sender As Object, e As DownloadDataCompletedEventArgs) Handles StatCounterWebClient.DownloadDataCompleted
         If e.Error IsNot Nothing Then
             Log.Print("Could not connect to http://c.statcounter.com: " & e.Error.Message, Log.Prefix.Warning)
         End If
@@ -1182,6 +1167,7 @@ Partial Class MainWindow
             ListViewSortByTypeItem.IsChecked = True
         End If
     End Sub
+#End Region
 
 #Region "-- Group By --"
     Private Sub ListViewGroupByNameItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewGroupByNameItem.Click
@@ -1212,7 +1198,6 @@ Partial Class MainWindow
         View.GroupDescriptions.Clear()
         My.Settings.ListViewGroupBy = "Nothing"
     End Sub
-#End Region
 
     Private Sub ListViewSortByNameItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewSortByNameItem.Click
         If CurrentColumn IsNot Nothing Then
