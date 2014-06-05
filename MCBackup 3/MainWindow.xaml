@@ -154,15 +154,18 @@
 
             <Border x:Name="Sidebar" Grid.Column="2" BorderBrush="#FF646464" BorderThickness="1" Margin="5,0,0,0">
                 <Grid>
-                    <TextBlock Name="SidebarTitle" Text="XXX element(s)" Foreground="#FF1F3995" FontSize="20" FontFamily="Segoe UI" Padding="5" TextTrimming="CharacterEllipsis" Height="38" VerticalAlignment="Top"/>
-                    <Image x:Name="ThumbnailImage" Source="Resources/nothumb.png"  Margin="10,37,10,138"/>
-                    <TextBlock x:Name="SidebarTypeLabel" Text="Type: " Foreground="#FF5A6779" Padding="5" Height="Auto" VerticalAlignment="Bottom" Margin="0,0,0,107" HorizontalAlignment="Left" Width="99"/>
-                    <TextBlock x:Name="SidebarTypeContent" Padding="5" Margin="100,0,0,107" VerticalAlignment="Bottom" Text="&lt;Type&gt;"/>
-                    <TextBlock x:Name="SidebarOriginalNameLabel" Text="Original Name: " Foreground="#FF5A6779" Padding="5" Height="Auto" VerticalAlignment="Bottom" Margin="1,0,0,81" HorizontalAlignment="Left" Width="99"/>
-                    <TextBlock x:Name="SidebarOriginalNameContent" Padding="5" Margin="100,0,0,81" VerticalAlignment="Bottom" Text="&lt;Original Name&gt;"/>
+                    <TextBlock Name="SidebarTitle" Text="XXX element(s)" Foreground="#FF1F3995" FontSize="20" FontFamily="Segoe UI" Padding="0,5,0,5"  TextTrimming="CharacterEllipsis" Height="38" VerticalAlignment="Top"/>
+                    <Image x:Name="ThumbnailImage" Source="Resources/nothumb.png"  Margin="10,37,10,190"/>
+                    <TextBlock x:Name="SidebarTypeLabel" Text="Type: " Foreground="#FF5A6779" Padding="0,5,0,5"  Height="Auto" VerticalAlignment="Bottom" Margin="0,0,0,159" HorizontalAlignment="Left" Width="99"/>
+                    <TextBlock x:Name="SidebarTypeContent" Padding="0,5,0,5"  Margin="100,0,0,159" VerticalAlignment="Bottom" Text="&lt;Type&gt;"/>
+                    <TextBlock x:Name="SidebarOriginalNameLabel" Text="Original Name: " Foreground="#FF5A6779" Padding="0,5,0,5"  Height="Auto" VerticalAlignment="Bottom" Margin="1,0,0,133" HorizontalAlignment="Left" Width="99"/>
+                    <TextBlock x:Name="SidebarOriginalNameContent" Padding="0,5,0,5" Margin="100,0,0,133" VerticalAlignment="Bottom" Text="&lt;Original Name&gt;"/>
                     <TextBlock x:Name="DescriptionTextBox" TextWrapping="Wrap" Text="&lt;Description&gt;" Margin="1,0,0,0" Padding="5,0" TextTrimming="WordEllipsis" Height="55" VerticalAlignment="Bottom"/>
-                    <TextBlock x:Name="SidebarDescriptionLabel" Text="Description :" Foreground="#FF5A6779" Padding="5" Height="Auto" VerticalAlignment="Bottom" Margin="1,0,0,55" HorizontalAlignment="Left" Width="99"/>
-                </Grid>
+                    <TextBlock x:Name="SidebarDescriptionLabel" Text="Description :" Foreground="#FF5A6779" Padding="0,5,0,5"  Height="Auto" VerticalAlignment="Bottom" Margin="1,0,0,55" HorizontalAlignment="Left" Width="99"/>
+                    <TextBlock x:Name="SidebarPlayerHealthLabel" Text="Player Health:" Foreground="#FF5A6779" Padding="0,5,0,5"  Height="Auto" VerticalAlignment="Bottom" Margin="1,0,0,107" HorizontalAlignment="Left" Width="99"/>
+                    <TextBlock x:Name="SidebarPlayerHungerLabel" Text="Player Hunger:" Foreground="#FF5A6779" Padding="0,5,0,5"  Height="Auto" VerticalAlignment="Bottom" Margin="1,0,0,81" HorizontalAlignment="Left" Width="99"/>
+                    <Grid x:Name="SidebarPlayerHealthGrid" Margin="100,0,0,107" VerticalAlignment="Bottom" Height="26"/>
+                    <Grid x:Name="SidebarPlayerHungerGrid" Margin="100,0,0,81" VerticalAlignment="Bottom" Height="26"/></Grid>
             </Border>
         </Grid>
 

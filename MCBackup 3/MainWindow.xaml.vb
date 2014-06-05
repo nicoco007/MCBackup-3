@@ -29,6 +29,8 @@ Imports MahApps.Metro
 Imports System.Threading
 Imports System.Windows.Interop
 
+Imports Substrate
+
 Partial Class MainWindow
 #Region "Variables"
     Private AppData As String = Environ("APPDATA")
@@ -475,6 +477,30 @@ Partial Class MainWindow
                 SidebarOriginalNameContent.ToolTip = OriginalFolderName
                 SidebarTypeContent.Text = Type
                 SidebarTypeContent.ToolTip = Type
+
+                Dim World As NbtWorld = AnvilWorld.Open(My.Settings.BackupsFolderLocation & "\" & ListView.SelectedItem.Name)
+
+                SidebarPlayerHealthGrid.Children.Clear()
+                For i As Integer = 0 To World.Level.Player.Health \ 2 - 1
+                    SidebarPlayerHealthGrid.Children.Add(New PlayerHeartImage(New Thickness(SidebarPlayerHealthGrid.Children.Count * 10, 0, 0, 0), PlayerHeartImage.State.Full))
+                Next
+                If World.Level.Player.Health Mod 2 <> 0 Then
+                    SidebarPlayerHealthGrid.Children.Add(New PlayerHeartImage(New Thickness(SidebarPlayerHealthGrid.Children.Count * 10, 0, 0, 0), PlayerHeartImage.State.Half))
+                End If
+                For i As Integer = 0 To (20 - World.Level.Player.Health) \ 2 - 1
+                    SidebarPlayerHealthGrid.Children.Add(New PlayerHeartImage(New Thickness(SidebarPlayerHealthGrid.Children.Count * 10, 0, 0, 0), PlayerHeartImage.State.Empty))
+                Next
+
+                SidebarPlayerHungerGrid.Children.Clear()
+                For i As Integer = 0 To World.Level.Player.HungerLevel \ 2 - 1
+                    SidebarPlayerHungerGrid.Children.Add(New PlayerHungerImage(New Thickness(SidebarPlayerHungerGrid.Children.Count * 10, 0, 0, 0), PlayerHungerImage.State.Full))
+                Next
+                If World.Level.Player.HungerLevel Mod 2 <> 0 Then
+                    SidebarPlayerHungerGrid.Children.Add(New PlayerHungerImage(New Thickness(SidebarPlayerHungerGrid.Children.Count * 10, 0, 0, 0), PlayerHungerImage.State.Half))
+                End If
+                For i As Integer = 0 To (20 - World.Level.Player.HungerLevel) \ 2 - 1
+                    SidebarPlayerHungerGrid.Children.Add(New PlayerHungerImage(New Thickness(SidebarPlayerHungerGrid.Children.Count * 10, 0, 0, 0), PlayerHungerImage.State.Empty))
+                Next
             Case Else
                 RestoreButton.IsEnabled = False
                 RenameButton.IsEnabled = False ' Only allow deletion if more than 1 item is selected
@@ -1400,4 +1426,58 @@ Public Class CloseAction
         Cancel
         ForceClose
     End Enum
+End Class
+
+Public Class PlayerHeartImage
+    Inherits Image
+    Public Enum State
+        Full
+        Half
+        Empty
+    End Enum
+
+    Public Sub New(Margin As Thickness, State As State)
+        Select Case State
+            Case PlayerHeartImage.State.Full
+                Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/heart_full.png"))
+            Case PlayerHeartImage.State.Half
+                Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/heart_half.png"))
+            Case PlayerHeartImage.State.Empty
+                Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/heart_empty.png"))
+        End Select
+
+        Me.Width = 9
+        Me.Height = 9
+        Me.HorizontalAlignment = Windows.HorizontalAlignment.Left
+        Me.VerticalAlignment = Windows.VerticalAlignment.Stretch
+        Me.Stretch = Windows.Media.Stretch.None
+        Me.Margin = Margin
+    End Sub
+End Class
+
+Public Class PlayerHungerImage
+    Inherits Image
+    Public Enum State
+        Full
+        Half
+        Empty
+    End Enum
+
+    Public Sub New(Margin As Thickness, State As State)
+        Select Case State
+            Case PlayerHungerImage.State.Full
+                Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/hunger_full.png"))
+            Case PlayerHungerImage.State.Half
+                Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/hunger_half.png"))
+            Case PlayerHungerImage.State.Empty
+                Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/hunger_empty.png"))
+        End Select
+
+        Me.Width = 9
+        Me.Height = 9
+        Me.HorizontalAlignment = Windows.HorizontalAlignment.Left
+        Me.VerticalAlignment = Windows.VerticalAlignment.Stretch
+        Me.Stretch = Windows.Media.Stretch.None
+        Me.Margin = Margin
+    End Sub
 End Class

@@ -68,6 +68,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Debug\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
     </Reference>
+    <Reference Include="Substrate, Version=1.3.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\Substrate.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -293,6 +297,14 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Entypo-license.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\NBTInfo\heart_empty.png" />
+    <Resource Include="Resources\NBTInfo\heart_full.png" />
+    <Resource Include="Resources\NBTInfo\heart_half.png" />
+    <Resource Include="Resources\NBTInfo\hunger_empty.png" />
+    <Resource Include="Resources\NBTInfo\hunger_full.png" />
+    <Resource Include="Resources\NBTInfo\hunger_half.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>
