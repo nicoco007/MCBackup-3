@@ -196,14 +196,6 @@ UpdateDialog
 	<summary>
  Starts new logging session
  </summary>
-</member><member name="M:MCBackup.Log.Print(System.String,System.String,System.Boolean)">
-	<summary>
- Prints a message in the log file and the debug.
- </summary>
-	<param name="Message">Message to display</param>
-	<param name="Prefix">Message Prefix ([INFO], [WARNING], [SEVERE])</param>
-	<param name="HasTimeStamp"></param>
-	<remarks></remarks>
 </member><member name="M:MCBackup.Log.DebugTimeStamp">
 	<summary>
  Returns a log timestamp

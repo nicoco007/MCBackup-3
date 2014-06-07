@@ -19,7 +19,7 @@ Imports System.Threading
 
 Public Class ErrorWindow
     Shared newMessageBox As ErrorWindow
-    Private Main = DirectCast(Application.Current.MainWindow, MainWindow)
+    Private Shared Main = DirectCast(Application.Current.MainWindow, MainWindow)
 
     Public Overloads Shared Sub Show(Message As String, Exception As Exception)
         If Application.Current.Dispatcher.CheckAccess() Then
@@ -35,7 +35,7 @@ Public Class ErrorWindow
                     Else
                         newMessageBox.ErrorTextBlock.Text = String.Format(MCBackup.Language.Dictionary("ErrorWindow.ErrorAtLine"), StackTrace.GetFrame(0).GetFileLineNumber, IO.Path.GetFileName(StackTrace.GetFrame(0).GetFileName), Exception.Message)
                     End If
-                    
+
                     Log.Print(st.ToString, Log.Prefix.Severe)
                 Next
                 newMessageBox.Title = MCBackup.Language.Dictionary("Message.Caption.Error")
@@ -60,6 +60,11 @@ Public Class ErrorWindow
                 System.Media.SystemSounds.Hand.Play()
                 newMessageBox.ShowDialog()
             End Try
+            If Not DirectCast(Application.Current.MainWindow, MainWindow) IsNot Nothing Then
+                If Not DirectCast(Application.Current.MainWindow, MainWindow).IsLoaded Then
+                    DirectCast(Application.Current.MainWindow, MainWindow).CloseType = CloseAction.CloseType.ForceClose
+                End If
+            End If
         Else
             Application.Current.Dispatcher.Invoke(Sub() Show(Message, Exception))
         End If

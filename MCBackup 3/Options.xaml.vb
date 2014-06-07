@@ -353,7 +353,7 @@ Partial Public Class Options
             My.Settings.Reset()
 
             Process.Start(Application.ResourceAssembly.Location)
-            Main.ClsType = CloseAction.CloseType.ForceClose
+            Main.CloseType = CloseAction.CloseType.ForceClose
             Main.Close()
         End If
     End Sub

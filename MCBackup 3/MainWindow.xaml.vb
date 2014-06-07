@@ -30,8 +30,21 @@ Imports System.Threading
 Imports System.Windows.Interop
 
 Imports Substrate
+Imports System.Windows.Media.Animation
 
 Partial Class MainWindow
+
+    Private _CloseType As CloseType
+    Public Property CloseType() As CloseType
+        Get
+            Return _CloseType
+        End Get
+        Set(value As CloseType)
+            _CloseType = value
+        End Set
+    End Property
+
+
 #Region "Variables"
     Private AppData As String = Environ("APPDATA")
 
@@ -75,11 +88,12 @@ Partial Class MainWindow
         Splash.ShowStatus("Splash.Status.Starting", "Starting...")
 
         Log.Print("", Log.Prefix.None, False)
-        Log.Print("---------- Starting MCBackup v" & Main.ApplicationVersion & " @ " & Log.DebugTimeStamp() & " ----------", Log.Prefix.None, False)
+        Log.Print(String.Format("---------- Starting MCBackup v{0} @ {1} ----------", Main.ApplicationVersion, Log.DebugTimeStamp()), Log.Prefix.None, False)
         Log.Print("OS Name: " & Log.GetWindowsVersion())
         Log.Print("OS Version: " & Environment.OSVersion.Version.Major & "." & Environment.OSVersion.Version.Minor)
         Log.Print("Architecture: " & Log.GetWindowsArch())
         Log.Print(".NET Framework Version: " & Environment.Version.Major & "." & Environment.Version.Minor)
+        Log.Print(String.Format("Current Launcher: '{0}'", My.Settings.Launcher))
 
         Splash.StepProgress()
 
@@ -110,7 +124,6 @@ Partial Class MainWindow
         End Select
 
         Splash.StepProgress()
-
         Try
             If My.Settings.Language = "" Or My.Settings.Language Is Nothing Then
                 My.Settings.Language = DefaultLanguage
@@ -122,7 +135,7 @@ Partial Class MainWindow
             ErrorWindow.Show("Error: Could not load language file (" & My.Settings.Language & ")! MCBackup will now exit.", ex)
             My.Settings.Language = DefaultLanguage
             My.Settings.Save()
-            Me.ClsType = CloseType.ForceClose
+            Me.CloseType = CloseType.ForceClose
             Me.Close()
             Exit Sub
         End Try
@@ -174,7 +187,7 @@ Partial Class MainWindow
                 My.Settings.BackupsFolderLocation = StartupPath & "\backups"
                 My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation)
             Else
-                Me.ClsType = CloseType.ForceClose
+                Me.CloseType = CloseType.ForceClose
                 Me.Close()
                 Exit Sub
             End If
@@ -185,13 +198,19 @@ Partial Class MainWindow
         GridSidebarColumn.Width = New GridLength(My.Settings.SidebarWidth.Value, GridUnitType.Star)
         GridListViewColumn.Width = New GridLength(My.Settings.ListViewWidth.Value, GridUnitType.Star)
 
-        Splash.StepProgress()
-
         Splash.ShowStatus("Splash.Status.FindingMinecraft", "Finding Minecraft...")
         Splash.StepProgress()
 
-        If My.Settings.MinecraftFolderLocation = "" Then
-            My.Settings.MinecraftFolderLocation = AppData & "\.minecraft"
+        If Not IsValidInstallation() Then
+            If My.Computer.FileSystem.FileExists(AppData & "\.minecraft\launcher.jar") Then
+                My.Settings.MinecraftFolderLocation = AppData & "\.minecraft"
+                My.Settings.SavesFolderLocation = AppData & "\.minecraft\saves"
+            Else
+                Log.Print("Minecraft folder is not valid!", Log.Prefix.Warning)
+                MetroMessageBox.Show("Could not find your Minecraft installation! Please select it using the next dialog.", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                Dim SetMinecraftFolderWindow As New SetMinecraftFolderWindow
+                SetMinecraftFolderWindow.ShowDialog()
+            End If
         End If
 
         If Not My.Computer.FileSystem.DirectoryExists(My.Settings.MinecraftFolderLocation) Then
@@ -209,39 +228,39 @@ Partial Class MainWindow
         Log.Print("Minecraft folder set to '" & My.Settings.MinecraftFolderLocation & "'")
         Log.Print("Saves folder set to '" & My.Settings.SavesFolderLocation & "'")
 
-        RefreshBackupsList()
-        ReloadBackupGroups()
-    End Sub
-
-    Private Sub Main_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
-        Me.Hide()
+        Splash.StepProgress()
 
         If My.Settings.CheckForUpdates Then
             Log.Print("Searching for updates...")
             Splash.ShowStatus("Splash.Status.CheckingUpdates", "Checking for Updates...")
-            Splash.StepProgress()
 
             Log.Print("Connecting to http://content.nicoco007.com...")
             Try
                 My.Computer.Network.Ping("content.nicoco007.com", 1000)
                 Log.Print("Successfully connected.")
+
+                Dim WebClient As New WebClient
+                AddHandler WebClient.DownloadStringCompleted, AddressOf WebClient_DownloadedStringAsync
+                WebClient.DownloadStringAsync(New Uri("http://content.nicoco007.com/downloads/mcbackup-3/version"))
             Catch ex As Exception
                 Log.Print("Could not connect to content.nicoco007.com, skipping update check...", Log.Prefix.Warning)
-                Load2()
-                Exit Sub
             End Try
-
-            Splash.StepProgress()
-
-            Dim WebClient As New WebClient
-            AddHandler WebClient.DownloadStringCompleted, AddressOf WebClient_DownloadedStringAsync
-            WebClient.DownloadStringAsync(New Uri("http://content.nicoco007.com/downloads/mcbackup-3/version"))
         Else
             Log.Print("Update checking disabled, skipping...")
             Splash.StepProgress()
-            Splash.StepProgress()
-            Load2()
         End If
+
+        Splash.ShowStatus("Splash.Status.Done", "Done.")
+        Splash.StepProgress()
+
+        LoadLanguage()
+
+        Splash.Hide()
+    End Sub
+
+    Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
+        RefreshBackupsList()
+        ReloadBackupGroups()
     End Sub
 
     Private Sub WebClient_DownloadedStringAsync(sender As Object, e As DownloadStringCompletedEventArgs)
@@ -264,126 +283,138 @@ Partial Class MainWindow
             Log.Print("An error occured while trying to retrieve the latest version: " & e.Error.Message)
             LatestVersion = "Unknown"
         End If
-        Load2()
     End Sub
 
-    Private Sub Load2()
-        Splash.ShowStatus("Splash.Status.Done", "Done.")
-        Splash.StepProgress()
-
-        LoadLanguage()
-
-        Splash.Hide()
-        Me.Show()
-    End Sub
+    Private WithEvents BGW As New BackgroundWorker
+    Private Items
 
     Public Sub RefreshBackupsList()
-        If Me.IsLoaded Then
+        If Not BGW.IsBusy Then
+            Items = New List(Of ListViewBackupItem)
             ListView.IsEnabled = False
             GroupsTabControl.IsEnabled = False
             ProgressBar.IsIndeterminate = True
             StatusLabel.Content = MCBackup.Language.Dictionary("Status.RefreshingBackupsList")
             Dim Group As String = "", Search As String = ""
-            Dim Items As New List(Of ListViewBackupItem)
             Group = GroupsTabControl.SelectedItem
             If SearchTextBox.Text <> MCBackup.Language.Dictionary("MainWindow.Search") Then
                 Search = SearchTextBox.Text
             End If
 
-            Dim Directory As New IO.DirectoryInfo(My.Settings.BackupsFolderLocation) ' Create a DirectoryInfo variable for the backups folder
+            BGW.RunWorkerAsync()
+        End If
+    End Sub
 
-            For Each Folder As DirectoryInfo In Directory.GetDirectories ' For each folder in the backups folder
-                Dim Type As String = "[ERROR]"                  ' Create variables with default value [ERROR], in case one of the values doesn't exist
-                Dim OriginalFolderName As String = "[ERROR]"    ' 
+    Private Sub BGW_DoWork() Handles BGW.DoWork
+        Dim Search As String = "", Group As String = ""
+        Dim Directory As New IO.DirectoryInfo(My.Settings.BackupsFolderLocation) ' Create a DirectoryInfo variable for the backups folder
 
-                Try
-                    If Not My.Computer.FileSystem.FileExists(Folder.FullName & "\info.mcb") Then
-                        Log.Print(String.Format("'info.mcb' does not exist in folder '{0}'. This folder will not be considered as a backup.", Folder.Name), Log.Prefix.Warning)
-                        Exit Try
-                    End If
+        For Each Folder As DirectoryInfo In Directory.GetDirectories ' For each folder in the backups folder
+            Dim Type As String = "[ERROR]"                  ' Create variables with default value [ERROR], in case one of the values doesn't exist
+            Dim OriginalFolderName As String = "[ERROR]"    ' 
 
-                    Using SR As New StreamReader(Folder.FullName & "\info.mcb")
-                        Do While SR.Peek <> -1
-                            Dim Line As String = SR.ReadLine
-                            If Not Line.StartsWith("#") Then
-                                If Line.StartsWith("type=") Then
-                                    Select Case Line.Substring(5)
-                                        Case "save"
-                                            Type = MCBackup.Language.Dictionary("BackupTypes.Save")
-                                        Case "version"
-                                            Type = MCBackup.Language.Dictionary("BackupTypes.Version")
-                                        Case "everything"
-                                            Type = MCBackup.Language.Dictionary("BackupTypes.Everything")
-                                    End Select
-                                ElseIf Line.StartsWith("baseFolderName=") Then
-                                    OriginalFolderName = Line.Substring(15) ' Set original folder name to "baseFolderName=" line
-                                ElseIf Line = "groupName=" & Group And Not (Group = "All") And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
-                                    If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
-                                        Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), OriginalFolderName, Type))
-                                    ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
-                                        Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
-                                    Else
-                                        Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
-                                    End If
+            Try
+                If Not My.Computer.FileSystem.FileExists(Folder.FullName & "\info.mcb") Then
+                    Log.Print(String.Format("'info.mcb' does not exist in folder '{0}'. This folder will not be considered as a backup.", Folder.Name), Log.Prefix.Warning)
+                    Exit Try
+                End If
+
+                Using SR As New StreamReader(Folder.FullName & "\info.mcb")
+                    Do While SR.Peek <> -1
+                        Dim Line As String = SR.ReadLine
+                        If Not Line.StartsWith("#") Then
+                            If Line.StartsWith("type=") Then
+                                Select Case Line.Substring(5)
+                                    Case "save"
+                                        Type = MCBackup.Language.Dictionary("BackupTypes.Save")
+                                    Case "version"
+                                        Type = MCBackup.Language.Dictionary("BackupTypes.Version")
+                                    Case "everything"
+                                        Type = MCBackup.Language.Dictionary("BackupTypes.Everything")
+                                End Select
+                            ElseIf Line.StartsWith("baseFolderName=") Then
+                                OriginalFolderName = Line.Substring(15) ' Set original folder name to "baseFolderName=" line
+                            ElseIf Line = "groupName=" & Group And Not (Group = "All") And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
+                                If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
+                                    Dispatcher.Invoke(Sub()
+                                                          Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), OriginalFolderName, Type))
+                                                      End Sub)
+                                ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
+                                    Dispatcher.Invoke(Sub()
+                                                          Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
+                                                      End Sub)
+                                Else
+                                    Dispatcher.Invoke(Sub()
+                                                          Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
+                                                      End Sub)
                                 End If
                             End If
-                        Loop
-                    End Using
-
-                    If Group = "All" And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
-                        If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
-                            Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), OriginalFolderName, Type))
-                        ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
-                            Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
-                        Else
-                            Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
                         End If
+                    Loop
+                End Using
+
+                If Group = "" And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
+                    If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
+                        Dispatcher.Invoke(Sub()
+                                              Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), OriginalFolderName, Type))
+                                          End Sub)
+                    ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
+                        Dispatcher.Invoke(Sub()
+                                              Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
+                                          End Sub)
+                    Else
+                        Dispatcher.Invoke(Sub()
+                                              Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
+                                          End Sub)
                     End If
-                Catch ex As Exception
-                    Log.Print(ex.Message, Log.Prefix.Severe)
-                End Try
-            Next
-            ListView.ItemsSource = Items
-            ListView.SelectedIndex = -1
-            SidebarTitle.Text = String.Format(MCBackup.Language.Dictionary("MainWindow.Sidebar.NumberElements"), Items.Count)
+                End If
+            Catch ex As Exception
+                Log.Print(ex.Message, Log.Prefix.Severe)
+            End Try
+        Next
+    End Sub
 
-            Select Case My.Settings.ListViewGroupBy
-                Case "OriginalName"
-                    ListViewGroupByNameItem_Click(Nothing, Nothing)
-                Case "Type"
-                    ListViewGroupByTypeItem_Click(Nothing, Nothing)
-                Case "Nothing"
-                    ListViewGroupByNothingItem_Click(Nothing, Nothing)
-                Case Else
-                    ListViewGroupByNothingItem_Click(Nothing, Nothing)
-            End Select
+    Private Sub BGW_RunWorkerCompleted() Handles BGW.RunWorkerCompleted
+        ListView.ItemsSource = Items
+        ListView.SelectedIndex = -1
+        SidebarTitle.Text = String.Format(MCBackup.Language.Dictionary("MainWindow.Sidebar.NumberElements"), Items.Count)
 
-            Select Case My.Settings.ListViewSortBy
-                Case "Name"
-                    ListViewSortByNameItem_Click(Nothing, Nothing)
-                Case "DateCreated"
-                    ListViewSortByDateCreatedItem_Click(Nothing, Nothing)
-                Case "Type"
-                    ListViewSortByTypeItem_Click(Nothing, Nothing)
-                Case Else
-                    ListViewSortByDateCreatedItem_Click(Nothing, Nothing)
-            End Select
+        Select Case My.Settings.ListViewGroupBy
+            Case "OriginalName"
+                ListViewGroupByNameItem_Click(Nothing, Nothing)
+            Case "Type"
+                ListViewGroupByTypeItem_Click(Nothing, Nothing)
+            Case "Nothing"
+                ListViewGroupByNothingItem_Click(Nothing, Nothing)
+            Case Else
+                ListViewGroupByNothingItem_Click(Nothing, Nothing)
+        End Select
 
-            Select Case My.Settings.ListViewSortByDirection
-                Case ListSortDirection.Ascending
-                    ListViewSortAscendingItem_Click(Nothing, Nothing)
-                Case ListSortDirection.Descending
-                    ListViewSortDescendingItem_Click(Nothing, Nothing)
-                Case Else
-                    ListViewSortAscendingItem_Click(Nothing, Nothing)
-            End Select
-            ListView_SelectionChanged(New Object, New EventArgs)
+        Select Case My.Settings.ListViewSortBy
+            Case "Name"
+                ListViewSortByNameItem_Click(Nothing, Nothing)
+            Case "DateCreated"
+                ListViewSortByDateCreatedItem_Click(Nothing, Nothing)
+            Case "Type"
+                ListViewSortByTypeItem_Click(Nothing, Nothing)
+            Case Else
+                ListViewSortByDateCreatedItem_Click(Nothing, Nothing)
+        End Select
 
-            ProgressBar.IsIndeterminate = False
-            StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
-            ListView.IsEnabled = True
-            GroupsTabControl.IsEnabled = True
-        End If
+        Select Case My.Settings.ListViewSortByDirection
+            Case ListSortDirection.Ascending
+                ListViewSortAscendingItem_Click(Nothing, Nothing)
+            Case ListSortDirection.Descending
+                ListViewSortDescendingItem_Click(Nothing, Nothing)
+            Case Else
+                ListViewSortAscendingItem_Click(Nothing, Nothing)
+        End Select
+        ListView_SelectionChanged(New Object, New EventArgs)
+
+        ProgressBar.IsIndeterminate = False
+        StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
+        ListView.IsEnabled = True
+        GroupsTabControl.IsEnabled = True
     End Sub
 
     Private Sub ListView_SelectionChanged(sender As Object, e As EventArgs) Handles ListView.SelectionChanged
@@ -1281,7 +1312,7 @@ Partial Class MainWindow
 
 #Region "Tray Icon"
     Private Sub ExitToolbarMenuItem_Click(sender As Object, e As EventArgs)
-        Me.ClsType = CloseType.ForceClose
+        Me.CloseType = CloseType.ForceClose
         Me.Close()
     End Sub
 
@@ -1296,24 +1327,22 @@ Partial Class MainWindow
 #End Region
 
 #Region "Close to Tray"
-    Public ClsType As CloseType = CloseType.ForceClose
-
     Private Sub Main_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
         Me.Focus()
-        If Not ClsType = CloseType.ForceClose Then
+        If Not CloseType = CloseType.ForceClose Then
             Dim CloseToTrayWindow As New CloseToTray
             CloseToTrayWindow.Owner = Me
             If My.Settings.SaveCloseState Then
                 If My.Settings.CloseToTray Then
-                    ClsType = CloseType.CloseToTray
+                    CloseType = CloseType.CloseToTray
                 Else
-                    ClsType = CloseType.CloseCompletely
+                    CloseType = CloseType.CloseCompletely
                 End If
             Else
                 CloseToTrayWindow.ShowDialog()
             End If
 
-            Select Case ClsType
+            Select Case CloseType
                 Case CloseType.CloseToTray
                     e.Cancel = True
                     Me.Hide()
@@ -1433,6 +1462,28 @@ Partial Class MainWindow
         OptionsWindow.Owner = Me
         OptionsWindow.ShowDialog(3)
     End Sub
+
+    Private Function IsValidInstallation()
+        Select Case My.Settings.Launcher
+            Case "minecraft"
+                If My.Computer.FileSystem.FileExists(My.Settings.MinecraftFolderLocation & "\launcher.jar") Then
+                    Return True
+                End If
+            Case "technic"
+                If My.Computer.FileSystem.FileExists(My.Settings.MinecraftFolderLocation & "\settings.json") Then
+                    Return True
+                End If
+            Case "ftb"
+                If My.Computer.FileSystem.DirectoryExists(My.Settings.MinecraftFolderLocation & "\authlib") Then
+                    Return True
+                End If
+            Case "atlauncher"
+                If My.Computer.FileSystem.DirectoryExists(My.Settings.MinecraftFolderLocation & "\Configs") Then
+                    Return True
+                End If
+        End Select
+        Return False
+    End Function
 End Class
 
 Public Class CloseAction

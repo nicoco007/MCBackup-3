@@ -210,7 +210,7 @@ Partial Friend NotInheritable Class MySettings
     
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-     Global.System.Configuration.DefaultSettingValueAttribute("[AUTO] ")>  _
+     Global.System.Configuration.DefaultSettingValueAttribute(" [AUTO] ")>  _
     Public Property AutoBkpPrefix() As String
         Get
             Return CType(Me("AutoBkpPrefix"),String)
@@ -386,6 +386,18 @@ Partial Friend NotInheritable Class MySettings
         End Get
         Set
             Me("Launcher") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+    Public Property FirstTimeRun() As Boolean
+        Get
+            Return CType(Me("FirstTimeRun"),Boolean)
+        End Get
+        Set
+            Me("FirstTimeRun") = value
         End Set
     End Property
 End Class

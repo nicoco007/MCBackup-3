@@ -17,12 +17,12 @@
 Imports System.IO
 
 Public Class Log
-    Public Structure Prefix
-        Const None = Nothing
-        Const Info = "[INFO]"
-        Const Warning = "[WARNING]"
-        Const Severe = "[SEVERE]"
-    End Structure
+    Public Enum Prefix
+        None
+        Info
+        Warning
+        Severe
+    End Enum
 
     Public Shared Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
 
@@ -31,7 +31,7 @@ Public Class Log
     ''' </summary>
 
     Public Shared Sub StartNew()
-        
+
     End Sub
 
     ''' <summary>
@@ -41,10 +41,48 @@ Public Class Log
     ''' <param name="Prefix">Message Prefix ([INFO], [WARNING], [SEVERE])</param>
     ''' <param name="HasTimeStamp"></param>
     ''' <remarks></remarks>
-    Public Shared Sub Print(Message As String, Optional Prefix As String = Log.Prefix.Info, Optional HasTimeStamp As Boolean = True)
+    Public Shared Sub Print(Message As String)
         Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
-            Debug.Print(IIf(HasTimeStamp, DebugTimeStamp(), "") & " " & Prefix & " " & Message)
-            SW.WriteLine(IIf(HasTimeStamp, DebugTimeStamp(), "") & " " & Prefix & " " & Message)
+            Debug.Print("{0} [INFO] {1}", DebugTimeStamp(), Message)
+            SW.WriteLine("{0} [INFO] {1}", DebugTimeStamp(), Message)
+        End Using
+    End Sub
+
+    Public Shared Sub Print(Message As String, Prefix As Prefix)
+        Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
+            Select Case Prefix
+                Case 0
+                    Debug.Print(Message)
+                    SW.WriteLine(Message)
+                Case 1
+                    Debug.Print("{0} [INFO] {1}", DebugTimeStamp(), Message)
+                    SW.WriteLine("{0} [INFO] {1}", DebugTimeStamp(), Message)
+                Case 2
+                    Debug.Print("{0} [WARNING] {1}", DebugTimeStamp(), Message)
+                    SW.WriteLine("{0} [WARNING] {1}", DebugTimeStamp(), Message)
+                Case 3
+                    Debug.Print("{0} [SEVERE] {1}", DebugTimeStamp(), Message)
+                    SW.WriteLine("{0} [SEVERE] {1}", DebugTimeStamp(), Message)
+            End Select
+        End Using
+    End Sub
+
+    Public Shared Sub Print(Message As String, Prefix As Prefix, HasTimeStamp As Boolean)
+        Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
+            Select Case Prefix
+                Case 0
+                    Debug.Print(Message)
+                    SW.WriteLine(Message)
+                Case 1
+                    Debug.Print("{0} [INFO] {1}", IIf(HasTimeStamp, DebugTimeStamp(), ""), Message)
+                    SW.WriteLine("{0} [INFO] {1}", IIf(HasTimeStamp, DebugTimeStamp(), ""), Message)
+                Case 2
+                    Debug.Print("{0} [WARNING] {1}", IIf(HasTimeStamp, DebugTimeStamp(), ""), Message)
+                    SW.WriteLine("{0} [WARNING] {1}", IIf(HasTimeStamp, DebugTimeStamp(), ""), Message)
+                Case 3
+                    Debug.Print("{0} [SEVERE] {1}", IIf(HasTimeStamp, DebugTimeStamp(), ""), Message)
+                    SW.WriteLine("{0} [SEVERE] {1}", IIf(HasTimeStamp, DebugTimeStamp(), ""), Message)
+            End Select
         End Using
     End Sub
 
