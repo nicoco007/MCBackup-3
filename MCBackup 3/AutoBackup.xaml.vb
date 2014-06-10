@@ -16,6 +16,7 @@
 
 Imports System.Windows.Threading
 Imports System.Text.RegularExpressions
+Imports System.IO
 
 Public Class AutoBackup
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
@@ -88,7 +89,7 @@ Public Class AutoBackup
             TimerStarted = False
 
             MinutesNumUpDown.IsEnabled = True
-            SaveListBox.IsEnabled = True
+            SavesListView.IsEnabled = True
             RefreshButton.IsEnabled = True
             PrefixTextBox.IsEnabled = True
             SuffixTextBox.IsEnabled = True
@@ -106,7 +107,7 @@ Public Class AutoBackup
             TimerStarted = True
 
             MinutesNumUpDown.IsEnabled = False
-            SaveListBox.IsEnabled = False
+            SavesListView.IsEnabled = False
             RefreshButton.IsEnabled = False
             PrefixTextBox.IsEnabled = False
             SuffixTextBox.IsEnabled = False
@@ -128,9 +129,22 @@ Public Class AutoBackup
         If Minutes = 0 And Seconds = 0 Then
             Log.Print("Starting automated backup...")
             Main.BackupInfo(0) = PrefixTextBox.Text & Backup.GetBackupTimeStamp() & SuffixTextBox.Text
-            Main.BackupInfo(1) = String.Format(MCBackup.Language.Dictionary("AutoBackupWindow.BackupDescription"), WorldName)
-            Main.BackupInfo(2) = My.Settings.SavesFolderLocation & "\" & WorldName
+            Main.BackupInfo(1) = String.Format(MCBackup.Language.Dictionary("AutoBackupWindow.BackupDescription"), SavesListView.SelectedItem.Name)
+            Select Case My.Settings.Launcher
+                Case "minecraft"
+                    Main.BackupInfo(2) = My.Settings.SavesFolderLocation & "\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
+                Case "technic"
+                    Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\modpacks\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Modpack & "\saves\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
+                Case "ftb"
+                    Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Modpack & "\minecraft\saves\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
+                Case "atlauncher"
+                    Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\Instances\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Modpack & "\saves\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
+            End Select
             Main.BackupInfo(3) = "save"
+            Main.BackupInfo(3) = "save"
+            Main.BackupInfo(5) = SavesListView.SelectedItem.Launcher
+            Main.BackupInfo(6) = SavesListView.SelectedItem.Modpack
+
             Main.StartBackup()
 
             If My.Settings.ShowBalloonTips Then Main.NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.AutoBackup"), String.Format(MCBackup.Language.Dictionary("BalloonTip.AutoBackup"), WorldName), Forms.ToolTipIcon.Info)
@@ -143,15 +157,61 @@ Public Class AutoBackup
 #End Region
 
 #Region "Functions"
-    Private Sub ReloadSaves()
-        SaveListBox.Items.Clear()
-        Dim SavesDirectory As New IO.DirectoryInfo(My.Settings.SavesFolderLocation)
-        Dim SavesFolders As IO.DirectoryInfo() = SavesDirectory.GetDirectories()
-        Dim SavesFolder As IO.DirectoryInfo
+    Public Sub ReloadSaves()
+        SavesListView.Items.Clear()
+        Select Case My.Settings.Launcher
+            Case "minecraft"
+                My.Computer.FileSystem.CreateDirectory(My.Settings.SavesFolderLocation)
+                Dim SavesDirectory As New DirectoryInfo(My.Settings.SavesFolderLocation)
+                For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
+                    If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
+                        SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, "minecraft"))
+                    End If
+                Next
+            Case "technic"
+                Dim Modpacks As New DirectoryInfo(My.Settings.MinecraftFolderLocation & "\modpacks")
+                For Each Modpack As DirectoryInfo In Modpacks.GetDirectories
+                    My.Computer.FileSystem.CreateDirectory(Modpack.FullName & "\saves")
+                    Dim SavesDirectory As New DirectoryInfo(Modpack.FullName & "\saves")
+                    For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
+                        If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
+                            SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, "technic", Modpack.Name))
+                        End If
+                    Next
+                Next
+            Case "ftb"
+                Dim BaseDirectory As New DirectoryInfo(My.Settings.MinecraftFolderLocation)
+                For Each Directory As DirectoryInfo In BaseDirectory.GetDirectories
+                    If My.Computer.FileSystem.DirectoryExists(Directory.FullName & "\natives") And My.Computer.FileSystem.DirectoryExists(Directory.FullName & "\minecraft") Then
+                        My.Computer.FileSystem.CreateDirectory(Directory.FullName & "\minecraft\saves")
+                        Dim SavesDirectory As New DirectoryInfo(Directory.FullName & "\minecraft\saves")
+                        For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
+                            If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
+                                SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, "ftb", Directory.Name))
+                            End If
+                        Next
+                    End If
+                Next
+            Case "atlauncher"
+                Dim Instances As New DirectoryInfo(My.Settings.MinecraftFolderLocation & "\Instances")
+                For Each Instance As DirectoryInfo In Instances.GetDirectories
+                    My.Computer.FileSystem.CreateDirectory(Instance.FullName & "\saves")
+                    Dim SavesDirectory As New DirectoryInfo(Instance.FullName & "\saves")
+                    For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
+                        If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
+                            SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, "atlauncher", Instance.Name))
+                        End If
+                    Next
+                Next
+        End Select
 
-        For Each SavesFolder In SavesFolders
-            SaveListBox.Items.Add(SavesFolder.ToString)
-        Next
+        If My.Settings.Launcher = "minecraft" Then
+            SaveNameColumn.Width = 320
+            SaveLocationColumn.Width = 0
+        Else
+            SaveNameColumn.Width = 180
+            SaveLocationColumn.Width = 140
+        End If
     End Sub
 #End Region
 
@@ -159,16 +219,59 @@ Public Class AutoBackup
         ReloadSaves()
     End Sub
 
-    Private Sub SaveListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles SaveListBox.SelectionChanged
-        WorldName = SaveListBox.SelectedItem
-        If SaveListBox.SelectedItems.Count = 1 Then StartButton.IsEnabled = True Else StartButton.IsEnabled = False
+    Private Sub SaveListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles SavesListView.SelectionChanged
+        If SavesListView.SelectedItems.Count = 1 Then StartButton.IsEnabled = True Else StartButton.IsEnabled = False
     End Sub
 
     Private Sub AutoBackupWindow_Activated(sender As Object, e As EventArgs) Handles AutoBackupWindow.Activated
         Main.Focus()
     End Sub
 
-    Private Sub SaveListBox_PreviewMouseDown(sender As Object, e As MouseButtonEventArgs) Handles SaveListBox.PreviewMouseDown
-        SaveListBox.SelectedIndex = -1
+    Private Sub SaveListBox_PreviewMouseDown(sender As Object, e As MouseButtonEventArgs) Handles SavesListView.PreviewMouseDown
+        SavesListView.SelectedIndex = -1
+    End Sub
+End Class
+
+Public Class SaveInfoListViewItem
+    Private _Name As String
+    Public Property Name As String
+        Get
+            Return _Name
+        End Get
+        Set(value As String)
+            _Name = value
+        End Set
+    End Property
+
+    Private _Launcher As String
+    Public Property Launcher As String
+        Get
+            Return _Launcher
+        End Get
+        Set(value As String)
+            _Launcher = value
+        End Set
+    End Property
+
+    Private _Modpack As String
+    Public Property Modpack As String
+        Get
+            Return _Modpack
+        End Get
+        Set(value As String)
+            _Modpack = value
+        End Set
+    End Property
+
+    Sub New(Name As String, Launcher As String)
+        Me.Name = Name
+        Me.Launcher = Launcher
+        Me.Modpack = Modpack
+    End Sub
+
+    Sub New(Name As String, Launcher As String, Modpack As String)
+        Me.Name = Name
+        Me.Launcher = Launcher
+        Me.Modpack = Modpack
     End Sub
 End Class

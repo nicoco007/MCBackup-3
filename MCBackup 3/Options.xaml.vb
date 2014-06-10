@@ -163,11 +163,8 @@ Partial Public Class Options
     End Sub
 
     Private Sub Window_Unloaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Unloaded
-        'My.Settings.MinecraftFolderLocation = MinecraftFolderTextBox.Text
         Log.Print("Minecraft folder location set to " & My.Settings.MinecraftFolderLocation)
-        'My.Settings.SavesFolderLocation = SavesFolderTextBox.Text
         Log.Print("Saves folder location set to " & My.Settings.SavesFolderLocation)
-        'My.Settings.BackupsFolderLocation = BackupsFolderTextBox.Text
         Log.Print("Backups folder location set to " & My.Settings.BackupsFolderLocation)
         My.Settings.InterfaceOpacity = ListViewOpacitySlider.Value
         My.Settings.CheckForUpdates = CheckForUpdatesCheckBox.IsChecked
@@ -439,6 +436,7 @@ Partial Public Class Options
         sender = CType(sender, RadioButton)
         If sender.Tag <> My.Settings.Launcher Then
             Dim FSD As New FolderSelectDialog
+            FSD.InitialDirectory = New DirectoryInfo(My.Settings.MinecraftFolderLocation).Parent.FullName
             If FSD.ShowDialog(New WindowInteropHelper(Me).Handle) = Forms.DialogResult.OK Then
                 Select Case sender.Tag
                     Case "minecraft"
@@ -498,6 +496,8 @@ Partial Public Class Options
             SavesFolderTextBox.IsEnabled = False
             SavesFolderTextBox.Text = ""
         End If
+
+        Main.AutoBackupWindow.ReloadSaves()
     End Sub
 
     Private Sub SetInstallationTypeButtons(Type As String)

@@ -192,10 +192,22 @@ UpdateDialog
 	<summary>
  Creates IWin32Window around an IntPtr
  </summary>
-</member><member name="M:MCBackup.Log.StartNew">
+</member><member name="M:MCBackup.Log.Print(System.String,System.Object[])">
 	<summary>
- Starts new logging session
+ Prints a message in the log file and the debug.
  </summary>
+	<param name="Message">Message to display</param>
+</member><member name="M:MCBackup.Log.Print(System.String,MCBackup.Log.Prefix,System.Object[])">
+	<summary>
+ Prints a message in the log file and the debug with the specified prefix.
+ </summary>
+	<param name="Message">Message to be printed</param>
+	<param name="Prefix">Prefix, either [INFO], [WARNING], or [SEVERE]</param>
+</member><member name="M:MCBackup.Log.SPrint(System.String,System.Object[])">
+	<summary>
+ Silently prints a message in the log file and the debug without a prefix/time stamp.
+ </summary>
+	<param name="Message">Message to be printed</param>
 </member><member name="M:MCBackup.Log.DebugTimeStamp">
 	<summary>
  Returns a log timestamp
@@ -208,7 +220,7 @@ UpdateDialog
 	<returns>Windows OS Version name</returns>
 </member><member name="M:MCBackup.Log.GetWindowsArch">
 	<summary>
- Gets windows architecture
+ Gets Windows architecture
  </summary>
 	<returns>Windows architecture (32/64bit)</returns>
 </member><member name="M:MCBackup.Reflector.#ctor(System.String)">

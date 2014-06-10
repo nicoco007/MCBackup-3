@@ -87,8 +87,8 @@ Partial Class MainWindow
 
         Splash.ShowStatus("Splash.Status.Starting", "Starting...")
 
-        Log.Print("", Log.Prefix.None, False)
-        Log.Print(String.Format("---------- Starting MCBackup v{0} @ {1} ----------", Main.ApplicationVersion, Log.DebugTimeStamp()), Log.Prefix.None, False)
+        Log.SPrint("")
+        Log.SPrint("---------- Starting MCBackup v{0} @ {1} ----------", Main.ApplicationVersion, Log.DebugTimeStamp())
         Log.Print("OS Name: " & Log.GetWindowsVersion())
         Log.Print("OS Version: " & Environment.OSVersion.Version.Major & "." & Environment.OSVersion.Version.Minor)
         Log.Print("Architecture: " & Log.GetWindowsArch())
@@ -666,7 +666,7 @@ Partial Class MainWindow
                 SW.WriteLine("modpack=" & BackupInfo(6))
             End Using
         Catch ex As Exception
-            ErrorWindow.Show(MCBackup.Language.Dictionary("Exception.Backup"), ex)
+            'ErrorWindow.Show(MCBackup.Language.Dictionary("Exception.Backup"), ex)
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupError"), MCBackup.Language.Dictionary("BalloonTip.BackupError"), System.Windows.Forms.ToolTipIcon.Error)
         End Try
     End Sub

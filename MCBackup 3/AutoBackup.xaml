@@ -30,10 +30,29 @@
         <Label x:Name="PrefixLabel" Content="Prefix" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="42,0,178,72" Width="89" HorizontalContentAlignment="Center" FontSize="10"/>
         <Label x:Name="SuffixLabel" Content="Suffix" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="185,0,36,72" Width="88" HorizontalContentAlignment="Center" FontSize="10"/>
         <Button x:Name="StartButton" Content="Start" Margin="82,0,81,24" FontSize="24" Height="40" VerticalAlignment="Bottom" IsEnabled="False"/>
-        <ListBox x:Name="SaveListBox" Margin="10,191,11,178" BorderBrush="#FF727171" BorderThickness="1"/>
+        <ListView Name="SavesListView" Margin="10,196,10,178" BorderThickness="1">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn x:Name="SaveNameColumn" Width="200" Header="Name">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn x:Name="SaveLocationColumn" Width="120" Header="Location">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Modpack}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
         <TextBlock x:Name="WorldToBackUpLabel" Text="World to back up:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,171,0,0" Height="20"/>
         <Button x:Name="RefreshButton" Content="Refresh" Margin="0,0,17,146" Height="27" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="85"/>
-        <Controls:NumericUpDown x:Name="MinutesNumUpDown" Margin="128,118,127,0" Height="23" VerticalAlignment="Top" Minimum="5" Maximum="60" Value="15" HorizontalAlignment="Center" Width="85"/>
+        <Controls:NumericUpDown x:Name="MinutesNumUpDown" Margin="128,118,127,0" Height="23" VerticalAlignment="Top" Minimum="1" Maximum="60" Value="15" HorizontalAlignment="Center" Width="85"/>
         <Label x:Name="BackupEveryLabel" Content="Backup every" VerticalAlignment="Top" Margin="10,88,10,0" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Width="322"/>
         <Label x:Name="MinutesLabel" Content="minutes" VerticalAlignment="Top" Margin="10,146,10,0" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Width="322"/>
     </Grid>
