@@ -76,10 +76,10 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="SidebarWidth" Type="System.Windows.GridLength" Scope="User">
-      <Value Profile="(Default)">*</Value>
+      <Value Profile="(Default)">240*</Value>
     </Setting>
     <Setting Name="ListViewWidth" Type="System.Windows.GridLength" Scope="User">
-      <Value Profile="(Default)">3*</Value>
+      <Value Profile="(Default)">716*</Value>
     </Setting>
     <Setting Name="SendAnonymousData" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

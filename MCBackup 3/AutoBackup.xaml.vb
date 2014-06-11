@@ -206,11 +206,11 @@ Public Class AutoBackup
         End Select
 
         If My.Settings.Launcher = "minecraft" Then
-            SaveNameColumn.Width = 320
+            SaveNameColumn.Width = 310
             SaveLocationColumn.Width = 0
         Else
             SaveNameColumn.Width = 180
-            SaveLocationColumn.Width = 140
+            SaveLocationColumn.Width = 130
         End If
     End Sub
 #End Region

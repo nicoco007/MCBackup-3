@@ -1140,7 +1140,7 @@ Partial Class MainWindow
 
     Private Sub Main_SizeChanged(sender As Object, e As SizeChangedEventArgs) Handles Main.SizeChanged
         Main_LocationChanged(sender, Nothing)
-        InternalGrid.MaxWidth = Me.ActualWidth - 20
+        AutoBackupWindow.Height = Me.Height
     End Sub
 
     Private Sub Main_LocationChanged(sender As Object, e As EventArgs) Handles MyBase.LocationChanged

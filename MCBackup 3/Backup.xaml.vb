@@ -93,6 +93,14 @@ Public Class Backup
                 Next
         End Select
 
+        If My.Settings.Launcher = "minecraft" Then
+            SaveNameColumn.Width = 597
+            SaveLocationColumn.Width = 0
+        Else
+            SaveNameColumn.Width = 375
+            SaveLocationColumn.Width = 222
+        End If
+
         Name_CheckChanged(sender, e)
 
         CustomNameTextBox.Width = 449 - CustomNameRadioButton.ActualWidth

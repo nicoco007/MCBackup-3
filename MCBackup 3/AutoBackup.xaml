@@ -19,7 +19,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Automatic Backup" Height="600" Width="350" MinWidth="350" MinHeight="600" WindowTransitionsEnabled="False" BorderBrush="{DynamicResource AccentColorBrush}" BorderThickness="1">
+    Title="Automatic Backup" Height="600" Width="350" MinWidth="350" MinHeight="600" WindowTransitionsEnabled="False" BorderBrush="{DynamicResource AccentColorBrush}" BorderThickness="1" ResizeMode="CanMinimize">
 
     <Grid>
         <Label x:Name="TimeLabel" Content="00:00" Margin="10,0,15,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="64" Height="100" VerticalAlignment="Top"/>

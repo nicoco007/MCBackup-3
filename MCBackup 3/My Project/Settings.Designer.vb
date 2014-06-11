@@ -343,7 +343,7 @@ Partial Friend NotInheritable Class MySettings
     
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-     Global.System.Configuration.DefaultSettingValueAttribute("*")>  _
+     Global.System.Configuration.DefaultSettingValueAttribute("240*")>  _
     Public Property SidebarWidth() As Global.System.Windows.GridLength
         Get
             Return CType(Me("SidebarWidth"),Global.System.Windows.GridLength)
@@ -355,7 +355,7 @@ Partial Friend NotInheritable Class MySettings
     
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-     Global.System.Configuration.DefaultSettingValueAttribute("3*")>  _
+     Global.System.Configuration.DefaultSettingValueAttribute("716*")>  _
     Public Property ListViewWidth() As Global.System.Windows.GridLength
         Get
             Return CType(Me("ListViewWidth"),Global.System.Windows.GridLength)

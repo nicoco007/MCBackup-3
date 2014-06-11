@@ -34,7 +34,7 @@
         <Button x:Name="CancelButton" Content="Cancel" VerticalAlignment="Top" Margin="274,412,0,0" HorizontalAlignment="Left" Width="75"/>
         <ComboBox x:Name="GroupsComboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Margin="32,393,0,0"/>
         <Label x:Name="GroupLabel" Content="Group:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="32,367,0,0" Width="150"/>
-        <TabControl x:Name="BackupTypeTabControl" Margin="10,202,12,124">
+        <TabControl x:Name="BackupTypeTabControl" Margin="10,202,12,108">
             <TabControl.Resources>
                 <Style TargetType="TabItem">
                     <Setter Property="FocusVisualStyle"
@@ -112,17 +112,17 @@
             </TabControl.Resources>
             <TabItem Header="World">
                 <Grid>
-                    <ListView x:Name="SavesListView" HorizontalAlignment="Left" Height="97" VerticalAlignment="Top" Width="616" SelectionMode="Single" BorderThickness="1">
+                    <ListView x:Name="SavesListView" SelectionMode="Single" BorderThickness="1">
                         <ListView.View>
                             <GridView x:Name="SavesListViewGridView">
-                                <GridViewColumn Header="Name" Width="200">
+                                <GridViewColumn x:Name="SaveNameColumn" Header="Name" Width="220">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Name}"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="Location" Width="400">
+                                <GridViewColumn x:Name="SaveLocationColumn" Header="Location" Width="390">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Location}"/>
@@ -136,7 +136,7 @@
             </TabItem>
             <TabItem Header="Version">
                 <Grid>
-                    <ListView x:Name="VersionsListView" HorizontalAlignment="Left" Height="97" VerticalAlignment="Top" Width="616" SelectionMode="Single" BorderThickness="1">
+                    <ListView x:Name="VersionsListView" SelectionMode="Single" BorderThickness="1">
                         <ListView.View>
                             <GridView x:Name="VersionsListViewGridView">
                                 <GridViewColumn Header="Name" Width="600"/>
