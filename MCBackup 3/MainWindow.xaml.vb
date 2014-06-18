@@ -307,6 +307,11 @@ Partial Class MainWindow
 
     Private Sub BGW_DoWork() Handles BGW.DoWork
         Dim Search As String = "", Group As String = ""
+        Dispatcher.Invoke(Sub()
+                              If GroupsTabControl.SelectedIndex > 0 Then
+                                  Group = GroupsTabControl.SelectedItem
+                              End If
+                          End Sub)
         Dim Directory As New IO.DirectoryInfo(My.Settings.BackupsFolderLocation) ' Create a DirectoryInfo variable for the backups folder
 
         For Each Folder As DirectoryInfo In Directory.GetDirectories ' For each folder in the backups folder
@@ -334,7 +339,7 @@ Partial Class MainWindow
                                 End Select
                             ElseIf Line.StartsWith("baseFolderName=") Then
                                 OriginalFolderName = Line.Substring(15) ' Set original folder name to "baseFolderName=" line
-                            ElseIf Line = "groupName=" & Group And Not (Group = "All") And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
+                            ElseIf Line = "groupName=" & Group And Not (Group = "") And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
                                 If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
                                     Dispatcher.Invoke(Sub()
                                                           Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), OriginalFolderName, Type))

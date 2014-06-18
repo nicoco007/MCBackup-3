@@ -1,4 +1,5 @@
 ﻿Imports System.IO
+Imports System.Text.RegularExpressions
 
 '   ╔═══════════════════════════════════════════════════════════════════════════╗
 '   ║                        Copyright © 2014 nicoco007                         ║
@@ -55,7 +56,7 @@ Public Class Backup
                 For Each Modpack As DirectoryInfo In Modpacks.GetDirectories
                     My.Computer.FileSystem.CreateDirectory(Modpack.FullName & "\saves")
                     Dim SavesDirectory As New DirectoryInfo(Modpack.FullName & "\saves")
-                    Log.Print("Searching {0} for saves...", SavesDirectory.FullName)
+                    Log.Print("Searching '{0}' for saves...", SavesDirectory.FullName.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>"))
                     For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
                         If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
                             SavesListView.Items.Add(New SavesListViewItem(Folder.Name, Modpack.Name))
@@ -69,7 +70,7 @@ Public Class Backup
                     If My.Computer.FileSystem.DirectoryExists(Directory.FullName & "\natives") And My.Computer.FileSystem.DirectoryExists(Directory.FullName & "\minecraft") Then
                         My.Computer.FileSystem.CreateDirectory(Directory.FullName & "\minecraft\saves")
                         Dim SavesDirectory As New DirectoryInfo(Directory.FullName & "\minecraft\saves")
-                        Log.Print("Searching {0} for saves...", SavesDirectory.FullName)
+                        Log.Print("Searching '{0}' for saves...", SavesDirectory.FullName.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>"))
                         For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
                             If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
                                 SavesListView.Items.Add(New SavesListViewItem(Folder.Name, Directory.Name))
@@ -83,7 +84,7 @@ Public Class Backup
                 For Each Instance As DirectoryInfo In Instances.GetDirectories
                     My.Computer.FileSystem.CreateDirectory(Instance.FullName & "\saves")
                     Dim SavesDirectory As New DirectoryInfo(Instance.FullName & "\saves")
-                    Log.Print("Searching {0} for saves...", SavesDirectory.FullName)
+                    Log.Print("Searching '{0}' for saves...", SavesDirectory.FullName.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>"))
                     For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
                         If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
                             SavesListView.Items.Add(New SavesListViewItem(Folder.Name, Instance.Name))
@@ -144,7 +145,15 @@ Public Class Backup
                     End Select
             End Select
         ElseIf Not CustomNameTextBox.Text = "" Then
-            Main.BackupInfo(0) = CustomNameTextBox.Text
+            If Regex.IsMatch(CustomNameTextBox.Text, "[\/:*?""<>|]") Then
+                MetroMessageBox.Show("You cannot use the following characters in a backup name" & vbNewLine & "\ / : * ? "" < > |" & vbNewLine)
+                Exit Sub
+            End If
+            If BackupTypeTabControl.SelectedIndex = 0 Then
+                Main.BackupInfo(0) = CustomNameTextBox.Text.Replace("<foldername>", CType(SavesListView.SelectedItem, SavesListViewItem).Name).Replace("<time>", GetBackupTimeStamp())
+            Else
+                Main.BackupInfo(0) = CustomNameTextBox.Text.Replace("<foldername>", VersionsListView.SelectedItem).Replace("<time>", GetBackupTimeStamp())
+            End If
         Else
             MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.EnterValidName"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             Exit Sub
