@@ -122,6 +122,16 @@ Public Class Backup
     End Sub
 
     Private Sub StartButton_Click(sender As Object, e As EventArgs) Handles StartButton.Click
+        If SavesListView.SelectedItems.Count = 0 And BackupTypeTabControl.SelectedIndex = 0 Then
+            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.ChooseSave"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            Exit Sub
+        End If
+
+        If VersionsListView.SelectedItems.Count = 0 And BackupTypeTabControl.SelectedIndex = 1 Then
+            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.ChooseVersion"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            Exit Sub
+        End If
+
         If DateAndTimeRadioButton.IsChecked Then
             Select Case BackupTypeTabControl.SelectedIndex
                 Case 0
@@ -150,22 +160,12 @@ Public Class Backup
                 Exit Sub
             End If
             If BackupTypeTabControl.SelectedIndex = 0 Then
-                Main.BackupInfo(0) = CustomNameTextBox.Text.Replace("<foldername>", CType(SavesListView.SelectedItem, SavesListViewItem).Name).Replace("<time>", GetBackupTimeStamp())
+                Main.BackupInfo(0) = CustomNameTextBox.Text.Replace("!foldername", CType(SavesListView.SelectedItem, SavesListViewItem).Name).Replace("!time", GetBackupTimeStamp()).Replace("!hh", DateTime.Now.Hour.ToString("00")).Replace("!mm", DateTime.Now.Minute.ToString("00")).Replace("!ss", DateTime.Now.Second.ToString("00")).Replace("!dd", DateTime.Now.Day.ToString("00")).Replace("!MM", DateTime.Now.Month.ToString("00")).Replace("!yyyy", DateTime.Now.Year.ToString("0000"))
             Else
-                Main.BackupInfo(0) = CustomNameTextBox.Text.Replace("<foldername>", VersionsListView.SelectedItem).Replace("<time>", GetBackupTimeStamp())
+                Main.BackupInfo(0) = CustomNameTextBox.Text.Replace("!foldername", VersionsListView.SelectedItem).Replace("!time", GetBackupTimeStamp()).Replace("!hh", DateTime.Now.Hour.ToString("00")).Replace("!mm", DateTime.Now.Minute.ToString("00")).Replace("!ss", DateTime.Now.Second.ToString("00")).Replace("!dd", DateTime.Now.Day.ToString("00")).Replace("!MM", DateTime.Now.Month.ToString("00")).Replace("!yyyy", DateTime.Now.Year.ToString("0000"))
             End If
         Else
             MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.EnterValidName"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
-            Exit Sub
-        End If
-
-        If SavesListView.SelectedItems.Count = 0 And BackupTypeTabControl.SelectedIndex = 0 Then
-            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.ChooseSave"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
-            Exit Sub
-        End If
-
-        If VersionsListView.SelectedItems.Count = 0 And BackupTypeTabControl.SelectedIndex = 1 Then
-            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.ChooseVersion"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             Exit Sub
         End If
 
