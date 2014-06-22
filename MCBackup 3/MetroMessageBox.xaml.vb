@@ -140,4 +140,10 @@ Public Class MetroMessageBox
         Result = Button3.Tag
         Me.Close()
     End Sub
+
+    Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
+        ' MahApps.Metro Black Border Fix
+        Me.Width = Me.ActualWidth
+        Me.SizeToContent = Windows.SizeToContent.Manual
+    End Sub
 End Class

@@ -35,13 +35,17 @@ Public Class CullWindow
         CullButton.Content = MCBackup.Language.Dictionary("CullWindow.CullButton.Content")
     End Sub
 
-    Private Sub Cull_Loaded(sender As Object, e As RoutedEventArgs) Handles Cull.Loaded
+    Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
         Dim DaysNumUpDownMargin As Thickness = DaysNumUpDown.Margin
         Dim Label2Margin As Thickness = Label2.Margin
         DaysNumUpDownMargin.Left = Label1.ActualWidth + 10
         Label2Margin.Left = Label1.ActualWidth + 95
         DaysNumUpDown.Margin = DaysNumUpDownMargin
         Label2.Margin = Label2Margin
+
+        ' MahApps.Metro Black Border Fix
+        Me.Width = Me.ActualWidth
+        Me.SizeToContent = Windows.SizeToContent.Manual
     End Sub
 
     Private Sub CullButton_Click(sender As Object, e As RoutedEventArgs) Handles CullButton.Click

@@ -156,7 +156,7 @@ Public Class Backup
             End Select
         ElseIf Not CustomNameTextBox.Text = "" Then
             If Regex.IsMatch(CustomNameTextBox.Text, "[\/:*?""<>|]") Then
-                MetroMessageBox.Show("You cannot use the following characters in a backup name" & vbNewLine & "\ / : * ? "" < > |" & vbNewLine)
+                MetroMessageBox.Show("You cannot use the following characters in a backup name" & vbNewLine & "\ / : * ? "" < > |" & vbNewLine, MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
                 Exit Sub
             End If
             If BackupTypeTabControl.SelectedIndex = 0 Then
