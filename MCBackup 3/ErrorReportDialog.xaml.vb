@@ -17,14 +17,14 @@
 Imports System.Windows
 Imports System.Threading
 
-Public Class ErrorWindow
-    Shared newMessageBox As ErrorWindow
+Public Class ErrorReportDialog
+    Shared newMessageBox As ErrorReportDialog
     Private Shared Main = DirectCast(Application.Current.MainWindow, MainWindow)
 
     Public Overloads Shared Sub Show(Message As String, Exception As Exception)
         If Application.Current.Dispatcher.CheckAccess() Then
             Try
-                newMessageBox = New ErrorWindow
+                newMessageBox = New ErrorReportDialog
                 newMessageBox.MessageLabel.Content = Message
                 Dim StackTrace As New StackTrace(Exception, True)
                 For Each st As StackFrame In StackTrace.GetFrames
@@ -45,7 +45,7 @@ Public Class ErrorWindow
                 System.Media.SystemSounds.Hand.Play()
                 newMessageBox.ShowDialog()
             Catch ex As Exception
-                newMessageBox = New ErrorWindow
+                newMessageBox = New ErrorReportDialog
                 newMessageBox.MessageLabel.Content = Message
                 Dim StackTrace As New StackTrace(Exception, True)
                 For Each st As StackFrame In StackTrace.GetFrames

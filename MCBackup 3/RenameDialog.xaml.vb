@@ -14,7 +14,7 @@
 '   ║                      limitations under the License.                       ║
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
 
-Public Class Rename
+Public Class RenameDialog
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
 
     Public Sub New()
@@ -41,7 +41,7 @@ Public Class Rename
                 Exit Sub
             End If
         Catch ex As Exception
-            ErrorWindow.Show(MCBackup.Language.Dictionary("Exception.Rename"), ex)
+            ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Rename"), ex)
         End Try
         Main.RefreshBackupsList()
         Me.Close()

@@ -15,7 +15,7 @@
 ║                      limitations under the License.                       ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 -->
-<Window x:Name="AboutWindow" x:Class="About"
+<Window x:Name="Window" x:Class="AboutDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="About" Height="375" Width="475" ResizeMode="NoResize" WindowStyle="ToolWindow" WindowStartupLocation="CenterOwner" SizeToContent="WidthAndHeight">

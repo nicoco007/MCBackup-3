@@ -16,7 +16,7 @@
 ╚═══════════════════════════════════════════════════════════════════════════╝
 -->
 
-<Controls:MetroWindow x:Class="UpdateDialog"
+<Controls:MetroWindow x:Class="UpdateDialog" x:Name="Window"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"

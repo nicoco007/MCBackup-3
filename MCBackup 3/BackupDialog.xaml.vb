@@ -17,10 +17,9 @@ Imports System.Text.RegularExpressions
 '   ║                      limitations under the License.                       ║
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
 
-Public Class Backup
+Public Class BackupDialog
 
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
-    Private Backup As Backup = DirectCast(Application.Current.Windows.OfType(Of Backup).First, Backup)
 
     Public Sub New()
         InitializeComponent()

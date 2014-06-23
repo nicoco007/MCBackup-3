@@ -71,7 +71,7 @@ Partial Class MainWindow
 
     Public WithEvents NotifyIcon As New System.Windows.Forms.NotifyIcon
 
-    Public AutoBackupWindow As New AutoBackup
+    Public AutoBackupWindow As New AutoBackupWindow
     Private Splash As New Splash
 
     Public Shared ListViewItems As New ArrayList
@@ -88,7 +88,7 @@ Partial Class MainWindow
         Splash.ShowStatus("Splash.Status.Starting", "Starting...")
 
         Log.SPrint("")
-        Log.SPrint("---------- Starting MCBackup v{0} @ {1} ----------", Main.ApplicationVersion, Log.DebugTimeStamp())
+        Log.SPrint("---------- Starting MCBackup v{0} @ {1} ----------", Me.ApplicationVersion, Log.DebugTimeStamp())
         Log.Print("OS Name: " & Log.GetWindowsVersion())
         Log.Print("OS Version: " & Environment.OSVersion.Version.Major & "." & Environment.OSVersion.Version.Minor)
         Log.Print("Architecture: " & Log.GetWindowsArch())
@@ -132,7 +132,7 @@ Partial Class MainWindow
                 MCBackup.Language.Load(My.Settings.Language & ".lang")
             End If
         Catch ex As Exception
-            ErrorWindow.Show("Error: Could not load language file (" & My.Settings.Language & ")! MCBackup will now exit.", ex)
+            ErrorReportDialog.Show("Error: Could not load language file (" & My.Settings.Language & ")! MCBackup will now exit.", ex)
             My.Settings.Language = DefaultLanguage
             My.Settings.Save()
             Me.CloseType = CloseType.ForceClose
@@ -158,8 +158,8 @@ Partial Class MainWindow
 
         Splash.StepProgress()
 
-        Main.ListView.Background = New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, 255, 255, 255))
-        Main.Sidebar.Background = New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, 255, 255, 255))
+        Me.ListView.Background = New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, 255, 255, 255))
+        Me.Sidebar.Background = New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, 255, 255, 255))
 
         StatusLabel.Foreground = New SolidColorBrush(My.Settings.StatusLabelColor)
 
@@ -481,7 +481,7 @@ Partial Class MainWindow
                                   Try
                                       ThumbnailImage.Source = BitmapFromUri(New Uri(My.Settings.BackupsFolderLocation & "\" & SelectedItem.Name & "\thumb.png"))
                                   Catch ex As Exception
-                                      ErrorWindow.Show("An error occured while trying to load the backup's thumbnail", ex)
+                                      ErrorReportDialog.Show("An error occured while trying to load the backup's thumbnail", ex)
                                   End Try
                               Else
                                   ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/nothumb.png"))
@@ -559,7 +559,7 @@ Partial Class MainWindow
                                       Next
                                   End Sub)
             Catch ex As Exception
-                ErrorWindow.Show("An error occured while trying to load world info.", ex)
+                ErrorReportDialog.Show("An error occured while trying to load world info.", ex)
             End Try
         Else
             Dispatcher.Invoke(Sub()
@@ -618,7 +618,7 @@ Partial Class MainWindow
             ListViewDeleteItem.Header = MCBackup.Language.Dictionary("MainWindow.DeleteButton.Content")
             ListViewRenameItem.Header = MCBackup.Language.Dictionary("MainWindow.RenameButton.Content")
         Catch ex As Exception
-            ErrorWindow.Show("", ex)
+            ErrorReportDialog.Show("", ex)
         End Try
     End Sub
 
@@ -637,9 +637,9 @@ Partial Class MainWindow
     Private BackupStopwatch As New Stopwatch
 
     Private Sub BackupButton_Click(sender As Object, e As EventArgs) Handles BackupButton.Click
-        Dim BackupWindow As New Backup
-        BackupWindow.Owner = Me
-        BackupWindow.ShowDialog()
+        Dim BackupDialog As New BackupDialog
+        BackupDialog.Owner = Me
+        BackupDialog.ShowDialog()
     End Sub
 
     Public Sub StartBackup()
@@ -671,7 +671,7 @@ Partial Class MainWindow
                 SW.WriteLine("modpack=" & BackupInfo(6))
             End Using
         Catch ex As Exception
-            'ErrorWindow.Show(MCBackup.Language.Dictionary("Exception.Backup"), ex)
+            'ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Backup"), ex)
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupError"), MCBackup.Language.Dictionary("BalloonTip.BackupError"), System.Windows.Forms.ToolTipIcon.Error)
         End Try
     End Sub
@@ -898,7 +898,7 @@ Partial Class MainWindow
             Try
                 My.Computer.FileSystem.DeleteDirectory(RestoreInfo(1), FileIO.DeleteDirectoryOption.DeleteAllContents)
             Catch ex As Exception
-                ErrorWindow.Show("Could not delete folder:", ex)
+                ErrorReportDialog.Show("Could not delete folder:", ex)
             End Try
         End If
     End Sub
@@ -921,7 +921,7 @@ Partial Class MainWindow
                 My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\thumb.png")
             End If
         Catch ex As Exception
-            ErrorWindow.Show(MCBackup.Language.Dictionary("Exception.Restore"), ex)
+            ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Restore"), ex)
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RestoreError"), MCBackup.Language.Dictionary("BalloonTip.RestoreError"), System.Windows.Forms.ToolTipIcon.Error)
         End Try
     End Sub
@@ -985,7 +985,7 @@ Partial Class MainWindow
             Dim FSO As FileSystemObject = New FileSystemObject
             Return FSO.GetFolder(FolderPath).Size ' Get FolderPath's size
         Catch ex As Exception
-            ErrorWindow.Show(String.Format("Could not find {0}'s size:", FolderPath), ex)
+            ErrorReportDialog.Show(String.Format("Could not find {0}'s size:", FolderPath), ex)
         End Try
         Return 0
     End Function
@@ -995,7 +995,7 @@ Partial Class MainWindow
             Dim FSO As FileSystemObject = New FileSystemObject
             Return FSO.GetFolder(FolderPath).DateCreated ' Get FolderPath's date of creation
         Catch ex As Exception
-            ErrorWindow.Show(String.Format("Could not find {0}'s creation date:", FolderPath), ex)
+            ErrorReportDialog.Show(String.Format("Could not find {0}'s creation date:", FolderPath), ex)
         End Try
         Return 0
     End Function
@@ -1013,7 +1013,7 @@ Partial Class MainWindow
             Bitmap.EndInit()
             Return Bitmap
         Catch ex As Exception
-            ErrorWindow.Show(String.Format("Could not convert source {0} to bitmap:", Source), ex)
+            ErrorReportDialog.Show(String.Format("Could not convert source {0} to bitmap:", Source), ex)
         End Try
         Return Nothing
     End Function
@@ -1055,9 +1055,9 @@ Partial Class MainWindow
     End Sub
 
     Private Sub AboutMenuItem_Click(sender As Object, e As RoutedEventArgs)
-        Dim AboutWindow As New About
-        AboutWindow.Owner = Me
-        AboutWindow.ShowDialog()
+        Dim AboutDialog As New AboutDialog
+        AboutDialog.Owner = Me
+        AboutDialog.ShowDialog()
     End Sub
 
     Private Sub ReportBugMenuItem_Click(sender As Object, e As RoutedEventArgs)
@@ -1091,7 +1091,7 @@ Partial Class MainWindow
             Try
                 My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & Item, FileIO.DeleteDirectoryOption.DeleteAllContents)
             Catch ex As Exception
-                ErrorWindow.Show(MCBackup.Language.Dictionary("Exception.Delete"), ex)
+                ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Delete"), ex)
             End Try
         Next
     End Sub
@@ -1114,9 +1114,9 @@ Partial Class MainWindow
     End Sub
 
     Private Sub CullButton_Click(sender As Object, e As RoutedEventArgs) Handles CullButton.Click
-        Dim CullWindow As New CullWindow
-        CullWindow.Owner = Me
-        CullWindow.Show()
+        Dim CullDialog As New CullDialog
+        CullDialog.Owner = Me
+        CullDialog.Show()
     End Sub
 #End Region
 
@@ -1143,7 +1143,7 @@ Partial Class MainWindow
         Me.Focus()
     End Sub
 
-    Private Sub Main_SizeChanged(sender As Object, e As SizeChangedEventArgs) Handles Main.SizeChanged
+    Private Sub Main_SizeChanged(sender As Object, e As SizeChangedEventArgs) Handles MyBase.SizeChanged
         Main_LocationChanged(sender, Nothing)
         AutoBackupWindow.Height = Me.Height
     End Sub
@@ -1335,8 +1335,8 @@ Partial Class MainWindow
     Private Sub Main_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
         Me.Focus()
         If Not CloseType = CloseType.ForceClose Then
-            Dim CloseToTrayWindow As New CloseToTray
-            CloseToTrayWindow.Owner = Me
+            Dim CloseToTrayDialog As New CloseToTrayDialog
+            CloseToTrayDialog.Owner = Me
             If My.Settings.SaveCloseState Then
                 If My.Settings.CloseToTray Then
                     CloseType = CloseType.CloseToTray
@@ -1344,7 +1344,7 @@ Partial Class MainWindow
                     CloseType = CloseType.CloseCompletely
                 End If
             Else
-                CloseToTrayWindow.ShowDialog()
+                CloseToTrayDialog.ShowDialog()
             End If
 
             Select Case CloseType

@@ -141,9 +141,11 @@ Public Class MetroMessageBox
         Me.Close()
     End Sub
 
-    Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
-        ' MahApps.Metro Black Border Fix
-        Me.Width = Me.ActualWidth
-        Me.SizeToContent = Windows.SizeToContent.Manual
+    Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
+        ' MahApps.Metro Black Border Fix © nicoco007
+        Dim s As New Size(Me.Width, Me.Height)
+        Me.SizeToContent = SizeToContent.Manual
+        Me.Width = s.Width
+        Me.Height = s.Height
     End Sub
 End Class

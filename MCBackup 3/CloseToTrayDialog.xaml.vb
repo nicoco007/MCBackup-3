@@ -16,7 +16,7 @@
 
 Imports MCBackup.CloseAction
 
-Public Class CloseToTray
+Public Class CloseToTrayDialog
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
 
     Sub New()
@@ -68,7 +68,7 @@ Public Class CloseToTray
         RevertLabel.Content = MCBackup.Language.Dictionary("CloseToTrayWindow.RevertLabel.Content")
     End Sub
 
-    Private Sub CloseToTrayWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles CloseToTrayWindow.Loaded
+    Private Sub CloseToTrayWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
         Dim Margin = SaveCheckBox.Margin
         Margin.Left = (Grid.Width / 2) - (SaveCheckBox.ActualWidth / 2)
         SaveCheckBox.Margin = Margin

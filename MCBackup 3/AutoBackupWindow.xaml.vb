@@ -18,7 +18,7 @@ Imports System.Windows.Threading
 Imports System.Text.RegularExpressions
 Imports System.IO
 
-Public Class AutoBackup
+Public Class AutoBackupWindow
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
     Public IsMoving As Boolean
 
@@ -50,14 +50,14 @@ Public Class AutoBackup
     End Sub
 
 #Region "Window Handles"
-    Private Sub AutoBackupWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles AutoBackupWindow.Loaded
+    Private Sub AutoBackupWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
         ReloadSaves()
         LoadLanguage()
         PrefixTextBox.Text = My.Settings.AutoBkpPrefix
         SuffixTextBox.Text = My.Settings.AutoBkpSuffix
     End Sub
 
-    Private Sub AutoBackupWindow_Closing(sender As Object, e As ComponentModel.CancelEventArgs) Handles AutoBackupWindow.Closing
+    Private Sub AutoBackupWindow_Closing(sender As Object, e As ComponentModel.CancelEventArgs) Handles MyBase.Closing
         e.Cancel = True
         Me.Hide()
         Main.Left = Main.Left + (Me.Width / 2)
@@ -68,7 +68,7 @@ Public Class AutoBackup
         Main.Focus()
     End Sub
 
-    Private Sub AutoBackupWindow_LocationChanged(sender As Object, e As EventArgs) Handles AutoBackupWindow.LocationChanged
+    Private Sub AutoBackupWindow_LocationChanged(sender As Object, e As EventArgs) Handles MyBase.LocationChanged
         If Not Main.IsMoving Then
             IsMoving = True
             Main.Left = Me.Left - (Main.Width + 5)
@@ -128,7 +128,7 @@ Public Class AutoBackup
 
         If Minutes = 0 And Seconds = 0 Then
             Log.Print("Starting automated backup...")
-            Main.BackupInfo(0) = PrefixTextBox.Text & Backup.GetBackupTimeStamp() & SuffixTextBox.Text
+            Main.BackupInfo(0) = PrefixTextBox.Text & BackupDialog.GetBackupTimeStamp() & SuffixTextBox.Text
             Main.BackupInfo(1) = String.Format(MCBackup.Language.Dictionary("AutoBackupWindow.BackupDescription"), SavesListView.SelectedItem.Name)
             Select Case My.Settings.Launcher
                 Case "minecraft"
@@ -223,7 +223,7 @@ Public Class AutoBackup
         If SavesListView.SelectedItems.Count = 1 Then StartButton.IsEnabled = True Else StartButton.IsEnabled = False
     End Sub
 
-    Private Sub AutoBackupWindow_Activated(sender As Object, e As EventArgs) Handles AutoBackupWindow.Activated
+    Private Sub AutoBackupWindow_Activated(sender As Object, e As EventArgs) Handles MyBase.Activated
         Main.Focus()
     End Sub
 

@@ -17,7 +17,7 @@
 Imports Scripting
 Imports System.ComponentModel
 
-Public Class CullWindow
+Public Class CullDialog
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
 
     Private DeleteBackgroundWorker As New BackgroundWorker()
@@ -43,9 +43,11 @@ Public Class CullWindow
         DaysNumUpDown.Margin = DaysNumUpDownMargin
         Label2.Margin = Label2Margin
 
-        ' MahApps.Metro Black Border Fix
-        Me.Width = Me.ActualWidth
-        Me.SizeToContent = Windows.SizeToContent.Manual
+        ' MahApps.Metro Black Border Fix © nicoco007
+        Dim s As New Size(Me.Width, Me.Height)
+        Me.SizeToContent = SizeToContent.Manual
+        Me.Width = s.Width
+        Me.Height = s.Height
     End Sub
 
     Private Sub CullButton_Click(sender As Object, e As RoutedEventArgs) Handles CullButton.Click
@@ -72,7 +74,7 @@ Public Class CullWindow
             Try
                 My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & Item, FileIO.DeleteDirectoryOption.DeleteAllContents)
             Catch ex As Exception
-                ErrorWindow.Show(MCBackup.Language.Dictionary("Exception.Delete"), ex)
+                ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Delete"), ex)
             End Try
         Next
     End Sub

@@ -98,7 +98,7 @@ Public Class FolderSelectDialog
             Try
                 r.CallAs2(typeIFileDialog, dialog, "Advise", parameters)
             Catch ex As Exception
-                ErrorWindow.Show("Uh oh.", ex)
+                ErrorReportDialog.Show("Could not render FolderBrowserDialog.", ex)
             End Try
             num = CUInt(parameters(1))
             Try
