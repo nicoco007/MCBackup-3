@@ -60,6 +60,8 @@
                 <ColumnDefinition Name="GridSidebarColumn" Width="*" MinWidth="240"/>
             </Grid.ColumnDefinitions>
 
+            <TextBlock Name="NoBackupsOverlay" Width="{Binding ElementName=ListView, Path=Width}" Height="{Binding ElementName=ListView, Path=Height}" Margin="{Binding ElementName=ListView, Path=Margin}" Text="There are no backups here. Press 'Backup' to create one!" VerticalAlignment="Center" TextAlignment="Center" Panel.ZIndex="9999" FontSize="20" Visibility="Collapsed"/>
+            
             <ListView x:Name="ListView" BorderThickness="1" BorderBrush="#FF646464" Margin="0,0,5,0" Width="Auto">
                 <ListView.ContextMenu>
                     <ContextMenu>
@@ -189,6 +191,11 @@
                     </StackPanel>
                 </ControlTemplate>
             </TabControl.Template>
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Text}" Tag="{Binding Tag}"/>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
         </TabControl>
         <Button x:Name="BackupButton" Content="Backup" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="160" Margin="10,0,0,82" Height="45" FontSize="24"/>
         <Button x:Name="RestoreButton" Content="Restore" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="160" Margin="175,0,0,82" Height="45" FontSize="24" RenderTransformOrigin="0.737,1.211"/>

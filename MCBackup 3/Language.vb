@@ -38,10 +38,10 @@ Public Class Language
         Dictionary.Add("MainWindow.ListView.Columns(0).Header", FindString("MainWindow.ListView.Columns(0).Header", FileName))
         Dictionary.Add("MainWindow.ListView.Columns(1).Header", FindString("MainWindow.ListView.Columns(1).Header", FileName))
         Dictionary.Add("MainWindow.ListView.Columns(2).Header", FindString("MainWindow.ListView.Columns(2).Header", FileName))
+
         Dictionary.Add("MainWindow.Sidebar.OriginalNameLabel.Text", FindString("MainWindow.Sidebar.OriginalNameLabel.Text", FileName))
         Dictionary.Add("MainWindow.Sidebar.TypeLabel.Text", FindString("MainWindow.Sidebar.TypeLabel.Text", FileName))
         Dictionary.Add("MainWindow.Sidebar.DescriptionLabel.Text", FindString("MainWindow.Sidebar.DescriptionLabel.Text", FileName))
-
         Dictionary.Add("MainWindow.Sidebar.NoBackupSelected", FindString("MainWindow.Sidebar.NoBackupSelected", FileName))
         Dictionary.Add("MainWindow.Sidebar.NumberElementsSelected", FindString("MainWindow.Sidebar.NumberElementsSelected", FileName))
         Dictionary.Add("MainWindow.Sidebar.NumberElements", FindString("MainWindow.Sidebar.NumberElements", FileName))
@@ -61,6 +61,8 @@ Public Class Language
         Dictionary.Add("MainWindow.ListView.ContextMenu.GroupBy.OriginalName", FindString("MainWindow.ListView.ContextMenu.GroupBy.OriginalName", FileName))
         Dictionary.Add("MainWindow.ListView.ContextMenu.GroupBy.Type", FindString("MainWindow.ListView.ContextMenu.GroupBy.Type", FileName))
         Dictionary.Add("MainWindow.ListView.ContextMenu.GroupBy.Nothing", FindString("MainWindow.ListView.ContextMenu.GroupBy.Nothing", FileName))
+
+        Dictionary.Add("MainWindow.Groups.All", FindString("MainWindow.Groups.All", FileName))
 
         Dictionary.Add("MainWindow.Toolbar.EditButton.Text", FindString("MainWindow.Toolbar.EditButton.Text", FileName))
         Dictionary.Add("MainWindow.Toolbar.EditContextMenu.Items(0).Header", FindString("MainWindow.Toolbar.EditContextMenu.Items(0).Header", FileName))

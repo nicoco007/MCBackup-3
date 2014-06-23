@@ -44,6 +44,8 @@ MainWindow.ListView.ContextMenu.GroupBy.OriginalName=Nom original
 MainWindow.ListView.ContextMenu.GroupBy.Type=Type
 MainWindow.ListView.ContextMenu.GroupBy.Nothing=Rien
 
+MainWindow.Groups.All=Tout
+
 Status.Ready=Prêt.
 Status.BackingUp=Sauvegarde... ({0:0.00}% complétée à {1:0.00} Mo/s, {2})
 Status.BackupComplete=Sauvegarde terminée; Prêt.

@@ -104,7 +104,7 @@ Partial Public Class Options
 
         ListViewTextColorIntensitySlider.Value = My.Settings.ListViewTextColorIntensity
 
-        ReloadBackupGroups()
+        Main.ReloadBackupGroups()
     End Sub
 
     Private Sub AlwaysCloseCheckBox_Checked(sender As Object, e As RoutedEventArgs) Handles AlwaysCloseCheckBox.Click
@@ -356,21 +356,21 @@ Partial Public Class Options
     End Sub
 
 #Region "Backup Groups Tab"
-    Private Sub ReloadBackupGroups()
-        Main.GroupsTabControl.Items.Clear()
-        BackupGroupsListBox.Items.Clear()
+    'Private Sub ReloadBackupGroups()
+    '    Main.GroupsTabControl.Items.Clear()
+    '    BackupGroupsListBox.Items.Clear()
 
-        Main.GroupsTabControl.Items.Clear()
-        Main.GroupsTabControl.Items.Add("All")
+    '    Main.GroupsTabControl.Items.Clear()
+    '    Main.GroupsTabControl.Items.Add("All")
 
-        For Each Group As String In My.Settings.BackupGroups
-            BackupGroupsListBox.Items.Add(Group)
-            Main.GroupsTabControl.Items.Add(Group)
-        Next
+    '    For Each Group As String In My.Settings.BackupGroups
+    '        BackupGroupsListBox.Items.Add(Group)
+    '        Main.GroupsTabControl.Items.Add(Group)
+    '    Next
 
-        BackupGroupsListBox.SelectedIndex = 0
-        Main.GroupsTabControl.SelectedIndex = 0
-    End Sub
+    '    BackupGroupsListBox.SelectedIndex = 0
+    '    Main.GroupsTabControl.SelectedIndex = 0
+    'End Sub
 
     Private Sub CreateNewGroupTextBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles CreateNewGroupTextBox.TextChanged
         If CreateNewGroupButton IsNot Nothing Then
@@ -393,13 +393,13 @@ Partial Public Class Options
     Private Sub CreateNewGroupButton_Click(sender As Object, e As RoutedEventArgs) Handles CreateNewGroupButton.Click
         My.Settings.BackupGroups.Add(CreateNewGroupTextBox.Text)
         CreateNewGroupTextBox.Text = ""
-        ReloadBackupGroups()
+        Main.ReloadBackupGroups()
     End Sub
 
     Private Sub DeleteGroupButton_Click(sender As Object, e As RoutedEventArgs) Handles DeleteGroupButton.Click
         If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.AreYouSureDeleteGroup"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.Yes Then
             My.Settings.BackupGroups.RemoveAt(BackupGroupsListBox.SelectedIndex)
-            ReloadBackupGroups()
+            Main.ReloadBackupGroups()
         End If
     End Sub
 #End Region

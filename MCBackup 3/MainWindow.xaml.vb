@@ -295,12 +295,6 @@ Partial Class MainWindow
             GroupsTabControl.IsEnabled = False
             ProgressBar.IsIndeterminate = True
             StatusLabel.Content = MCBackup.Language.Dictionary("Status.RefreshingBackupsList")
-            Dim Group As String = "", Search As String = ""
-            Group = GroupsTabControl.SelectedItem
-            If SearchTextBox.Text <> MCBackup.Language.Dictionary("MainWindow.Search") Then
-                Search = SearchTextBox.Text
-            End If
-
             BGW.RunWorkerAsync()
         End If
     End Sub
@@ -308,9 +302,10 @@ Partial Class MainWindow
     Private Sub BGW_DoWork() Handles BGW.DoWork
         Dim Search As String = "", Group As String = ""
         Dispatcher.Invoke(Sub()
-                              If GroupsTabControl.SelectedIndex > 0 Then
-                                  Group = GroupsTabControl.SelectedItem
+                              If Not SearchTextBox.Text = MCBackup.Language.Dictionary("MainWindow.Search") Then
+                                  Search = SearchTextBox.Text
                               End If
+                              Group = DirectCast(GroupsTabControl.SelectedItem, TaggedTabItem).Tag
                           End Sub)
         Dim Directory As New IO.DirectoryInfo(My.Settings.BackupsFolderLocation) ' Create a DirectoryInfo variable for the backups folder
 
@@ -383,6 +378,12 @@ Partial Class MainWindow
         ListView.ItemsSource = Items
         ListView.SelectedIndex = -1
         SidebarTitle.Text = String.Format(MCBackup.Language.Dictionary("MainWindow.Sidebar.NumberElements"), Items.Count)
+
+        If ListView.Items.Count = 0 Then
+            NoBackupsOverlay.Visibility = Visibility.Visible
+        Else
+            NoBackupsOverlay.Visibility = Visibility.Collapsed
+        End If
 
         Select Case My.Settings.ListViewGroupBy
             Case "OriginalName"
@@ -624,9 +625,9 @@ Partial Class MainWindow
 
     Public Sub ReloadBackupGroups()
         GroupsTabControl.Items.Clear()
-        GroupsTabControl.Items.Add("All")
+        GroupsTabControl.Items.Add(New TaggedTabItem(MCBackup.Language.Dictionary("MainWindow.Groups.All"), ""))
         For Each Group As String In My.Settings.BackupGroups
-            GroupsTabControl.Items.Add(Group)
+            GroupsTabControl.Items.Add(New TaggedTabItem(Group, Group))
         Next
         GroupsTabControl.SelectedIndex = 0
     End Sub
@@ -1550,4 +1551,31 @@ Public Class MinecraftIcons
             Empty
         End Enum
     End Class
+End Class
+
+Public Class TaggedTabItem
+    Private _Text As String
+    Public Property Text() As String
+        Get
+            Return _Text
+        End Get
+        Set(value As String)
+            _Text = value
+        End Set
+    End Property
+
+    Private _Tag As Object
+    Public Property Tag() As Object
+        Get
+            Return _Tag
+        End Get
+        Set(value As Object)
+            _Tag = value
+        End Set
+    End Property
+
+    Sub New(Text As String, Tag As Object)
+        Me.Text = Text
+        Me.Tag = Tag
+    End Sub
 End Class
