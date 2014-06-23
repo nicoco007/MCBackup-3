@@ -478,6 +478,9 @@ Partial Class MainWindow
                               ListViewDeleteItem.IsEnabled = True     'Enable ContextMenu items
                               ListViewRenameItem.IsEnabled = True
 
+                              SidebarPlayerHealth.Visibility = Windows.Visibility.Collapsed
+                              SidebarPlayerHunger.Visibility = Windows.Visibility.Collapsed
+
                               If My.Computer.FileSystem.FileExists(My.Settings.BackupsFolderLocation & "\" & SelectedItem.Name & "\thumb.png") Then
                                   Try
                                       ThumbnailImage.Source = BitmapFromUri(New Uri(My.Settings.BackupsFolderLocation & "\" & SelectedItem.Name & "\thumb.png"))
