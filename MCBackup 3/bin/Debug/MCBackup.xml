@@ -259,12 +259,12 @@ Options
 InitializeComponent
 </summary>
 </member>
-<member name="T:MCBackup.Rename">
+<member name="T:MCBackup.RenameDialog">
 <summary>
-Rename
+RenameDialog
 </summary>
 </member>
-<member name="M:MCBackup.Rename.InitializeComponent">
+<member name="M:MCBackup.RenameDialog.InitializeComponent">
 <summary>
 InitializeComponent
 </summary>

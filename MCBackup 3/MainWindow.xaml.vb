@@ -1108,9 +1108,9 @@ Partial Class MainWindow
 
 #Region "Buttons"
     Private Sub RenameButton_Click(sender As Object, e As EventArgs) Handles RenameButton.Click, ListViewRenameItem.Click
-        Dim RenameWindow As New Rename
-        RenameWindow.Owner = Me
-        RenameWindow.ShowDialog()
+        Dim RenameDialog As New RenameDialog
+        RenameDialog.Owner = Me
+        RenameDialog.ShowDialog()
     End Sub
 
     Private Sub CullButton_Click(sender As Object, e As RoutedEventArgs) Handles CullButton.Click
