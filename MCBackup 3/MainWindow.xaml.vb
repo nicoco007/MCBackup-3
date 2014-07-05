@@ -282,8 +282,7 @@ Partial Class MainWindow
     Public Sub RefreshBackupsList()
         If Not BGW.IsBusy Then
             Items = New List(Of ListViewBackupItem)
-            ListView.IsEnabled = False
-            GroupsTabControl.IsEnabled = False
+            EnableUI(False)
             ProgressBar.IsIndeterminate = True
             StatusLabel.Content = MCBackup.Language.Dictionary("Status.RefreshingBackupsList")
             BGW.RunWorkerAsync()
@@ -410,8 +409,7 @@ Partial Class MainWindow
 
         ProgressBar.IsIndeterminate = False
         StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
-        ListView.IsEnabled = True
-        GroupsTabControl.IsEnabled = True
+        EnableUI(True)
     End Sub
 
     Private Sub ListView_SelectionChanged(sender As Object, e As EventArgs) Handles ListView.SelectionChanged
@@ -645,11 +643,7 @@ Partial Class MainWindow
             End If
         End If
         Log.Print("Starting new backup (Name: '{0}'; Description: '{1}'; Path: '{2}'; Type: '{3}'", BackupInfo(0), BackupInfo(1), BackupInfo(2), BackupInfo(3))
-        ListView.IsEnabled = False
-        BackupButton.IsEnabled = False
-        RestoreButton.IsEnabled = False
-        DeleteButton.IsEnabled = False
-        RenameButton.IsEnabled = False
+        EnableUI(False)
         BackupThread = New Thread(AddressOf BackupBackgroundWorker_DoWork)
         BackupThread.Start()
         Dim UpdateProgress As New Thread(AddressOf UpdateBackupProgress)
@@ -750,13 +744,12 @@ Partial Class MainWindow
                                      Log.Print("Creating thumbnail")
                                      CreateThumb(BackupInfo(2))
                                  Else
+                                     EnableUI(True)
                                      RefreshBackupsList()
                                      If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupComplete"), MCBackup.Language.Dictionary("BalloonTip.BackupComplete"), System.Windows.Forms.ToolTipIcon.Info)
                                      StatusLabel.Content = MCBackup.Language.Dictionary("Status.BackupComplete")
                                      StatusLabel.Refresh()
                                      Log.Print("Backup Complete")
-                                     ListView.IsEnabled = True
-                                     BackupButton.IsEnabled = True
                                  End If
                              End Sub)
     End Sub
@@ -844,14 +837,13 @@ Partial Class MainWindow
     End Sub
 
     Private Sub ThumbnailGenerationComplete()
+        EnableUI(True)
         UpdateThumbProgress(100)
         RefreshBackupsList()
         StatusLabel.Content = MCBackup.Language.Dictionary("Status.BackupComplete")
         StatusLabel.Refresh()
         If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupComplete"), MCBackup.Language.Dictionary("BalloonTip.BackupComplete"), System.Windows.Forms.ToolTipIcon.Info)
         Log.Print("Backup Complete")
-        ListView.IsEnabled = True
-        BackupButton.IsEnabled = True
     End Sub
 #End Region
 
@@ -860,6 +852,7 @@ Partial Class MainWindow
 
     Private Sub RestoreButton_Click(sender As Object, e As EventArgs) Handles RestoreButton.Click, ListViewRestoreItem.Click
         If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.RestoreAreYouSure"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = Forms.DialogResult.Yes Then
+            EnableUI(False)
             Log.Print("Starting Restore")
             RestoreInfo(0) = ListView.SelectedItems(0).Name ' Set place 0 of RestoreInfo array to the backup name
 
@@ -1038,6 +1031,7 @@ Partial Class MainWindow
 
     Private Sub RestoreBackgroundWorker_RunWorkerCompleted()
         RestoreStopWatch.Stop()
+        EnableUI(True)
         ProgressBar.Value = 100
     End Sub
 #End Region
@@ -1135,6 +1129,7 @@ Partial Class MainWindow
 #Region "Delete"
     Private Sub DeleteButton_Click(sender As Object, e As EventArgs) Handles DeleteButton.Click, ListViewDeleteItem.Click
         If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.DeleteAreYouSure"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = Windows.Forms.DialogResult.Yes Then
+            EnableUI(False)
             ListViewItems.Clear()
             For Each Item In ListView.SelectedItems
                 ListViewItems.Add(Item.Name)
@@ -1174,6 +1169,7 @@ Partial Class MainWindow
     End Sub
 
     Private Sub DeleteBackgroundWorker_RunWorkerCompleted()
+        EnableUI(True)
         StatusLabel.Content = MCBackup.Language.Dictionary("Status.DeleteComplete")
         ProgressBar.IsIndeterminate = False
         If Environment.OSVersion.Version.Major > 5 Then
@@ -1596,6 +1592,17 @@ Partial Class MainWindow
         End If
         ProgressBar.Value = 0
         ProgressBar.IsIndeterminate = False
+        EnableUI(True)
+    End Sub
+
+    Private Sub EnableUI(IsEnabled As Boolean)
+        BackupButton.IsEnabled = IsEnabled
+        RestoreButton.IsEnabled = IsEnabled
+        DeleteButton.IsEnabled = IsEnabled
+        RenameButton.IsEnabled = IsEnabled
+        CancelButton.IsEnabled = Not IsEnabled
+        GroupsTabControl.IsEnabled = IsEnabled
+        ListView.IsEnabled = IsEnabled
     End Sub
 End Class
 
