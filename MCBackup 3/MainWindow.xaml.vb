@@ -22,15 +22,14 @@ Imports System.ComponentModel
 Imports System.Windows.Interop.Imaging
 Imports Microsoft.WindowsAPICodePack
 Imports Microsoft.WindowsAPICodePack.Taskbar
-
-Imports MCBackup.CloseAction
 Imports System.Globalization
-Imports MahApps.Metro
 Imports System.Threading
 Imports System.Windows.Interop
-
 Imports Substrate
-Imports System.Windows.Media.Animation
+
+Imports MCBackup.CloseAction
+
+Imports MahApps.Metro
 
 Partial Class MainWindow
 
@@ -60,10 +59,11 @@ Partial Class MainWindow
 
     Private FolderBrowserDialog As New System.Windows.Forms.FolderBrowserDialog
 
-    Private BackupBackgroundWorker As New BackgroundWorker()
-    Private DeleteForRestoreBackgroundWorker As New BackgroundWorker()
-    Private RestoreBackgroundWorker As New BackgroundWorker()
-    Private DeleteBackgroundWorker As New BackgroundWorker()
+    Private BackupThread As New Thread(AddressOf BackupBackgroundWorker_DoWork)
+    Private DeleteForRestoreThread As New Thread(AddressOf DeleteForRestoreBackgroundWorker_DoWork)
+    Private RestoreThread As New Thread(AddressOf RestoreBackgroundWorker_DoWork)
+    Private DeleteThread As New Thread(AddressOf DeleteBackgroundWorker_DoWork)
+    Private UpdateProgress As Thread
 
     Public StartupPath As String = Directory.GetCurrentDirectory()
     Public ApplicationVersion As String = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()
@@ -96,15 +96,6 @@ Partial Class MainWindow
         Log.Print(String.Format("Current Launcher: '{0}'", My.Settings.Launcher))
 
         Splash.StepProgress()
-
-        AddHandler BackupBackgroundWorker.DoWork, New DoWorkEventHandler(AddressOf BackupBackgroundWorker_DoWork)
-        AddHandler BackupBackgroundWorker.RunWorkerCompleted, New RunWorkerCompletedEventHandler(AddressOf BackupBackgroundWorker_RunWorkerCompleted)
-        AddHandler DeleteForRestoreBackgroundWorker.DoWork, New DoWorkEventHandler(AddressOf DeleteForRestoreBackgroundWorker_DoWork)
-        AddHandler DeleteForRestoreBackgroundWorker.RunWorkerCompleted, New RunWorkerCompletedEventHandler(AddressOf DeleteForRestoreBackgroundWorker_RunWorkerCompleted)
-        AddHandler RestoreBackgroundWorker.DoWork, New DoWorkEventHandler(AddressOf RestoreBackgroundWorker_DoWork)
-        AddHandler RestoreBackgroundWorker.RunWorkerCompleted, New RunWorkerCompletedEventHandler(AddressOf RestoreBackgroundWorker_RunWorkerCompleted)
-        AddHandler DeleteBackgroundWorker.DoWork, New DoWorkEventHandler(AddressOf DeleteBackgroundWorker_DoWork)
-        AddHandler DeleteBackgroundWorker.RunWorkerCompleted, New RunWorkerCompletedEventHandler(AddressOf DeleteBackgroundWorker_RunWorkerCompleted)
 
         Splash.Progress.Value += 1
         Splash.Progress.Refresh()
@@ -206,7 +197,7 @@ Partial Class MainWindow
                 My.Settings.MinecraftFolderLocation = AppData & "\.minecraft"
                 My.Settings.SavesFolderLocation = AppData & "\.minecraft\saves"
             Else
-                Log.Print("Minecraft folder is not valid!", Log.Prefix.Warning)
+                Log.Print("Minecraft folder is not valid!", Log.Level.Warning)
                 MetroMessageBox.Show("Could not find your Minecraft installation! Please select it using the next dialog.", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
                 Dim SetMinecraftFolderWindow As New SetMinecraftFolderWindow
                 SetMinecraftFolderWindow.ShowDialog()
@@ -243,7 +234,7 @@ Partial Class MainWindow
                 AddHandler WebClient.DownloadStringCompleted, AddressOf WebClient_DownloadedStringAsync
                 WebClient.DownloadStringAsync(New Uri("http://content.nicoco007.com/downloads/mcbackup-3/version"))
             Catch ex As Exception
-                Log.Print("Could not connect to content.nicoco007.com, skipping update check...", Log.Prefix.Warning)
+                Log.Print("Could not connect to content.nicoco007.com, skipping update check...", Log.Level.Warning)
             End Try
         Else
             Log.Print("Update checking disabled, skipping...")
@@ -315,7 +306,7 @@ Partial Class MainWindow
 
             Try
                 If Not My.Computer.FileSystem.FileExists(Folder.FullName & "\info.mcb") Then
-                    Log.Print(String.Format("'info.mcb' does not exist in folder '{0}'. This folder will not be considered as a backup.", Folder.Name), Log.Prefix.Warning)
+                    Log.Print(String.Format("'info.mcb' does not exist in folder '{0}'. This folder will not be considered as a backup.", Folder.Name), Log.Level.Warning)
                     Exit Try
                 End If
 
@@ -369,7 +360,7 @@ Partial Class MainWindow
                     End If
                 End If
             Catch ex As Exception
-                Log.Print(ex.Message, Log.Prefix.Severe)
+                Log.Print("An error occured during the backup: " & ex.Message, Log.Level.Severe)
             End Try
         Next
     End Sub
@@ -485,7 +476,7 @@ Partial Class MainWindow
                                   Try
                                       ThumbnailImage.Source = BitmapFromUri(New Uri(My.Settings.BackupsFolderLocation & "\" & SelectedItem.Name & "\thumb.png"))
                                   Catch ex As Exception
-                                      ErrorReportDialog.Show("An error occured while trying to load the backup's thumbnail", ex)
+                                      Dispatcher.Invoke(Sub() ErrorReportDialog.Show("An error occured while trying to load the backup's thumbnail", ex))
                                   End Try
                               Else
                                   ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/nothumb.png"))
@@ -510,7 +501,7 @@ Partial Class MainWindow
                 Loop
             End Using
         Catch ex As Exception
-            Log.Print(ex.Message, Log.Prefix.Severe)
+            Log.Print(ex.Message, Log.Level.Severe)
         End Try
         Dispatcher.Invoke(Sub()
                               SidebarOriginalNameContent.Text = OriginalFolderName
@@ -563,7 +554,7 @@ Partial Class MainWindow
                                       Next
                                   End Sub)
             Catch ex As Exception
-                ErrorReportDialog.Show("An error occured while trying to load world info.", ex)
+                Dispatcher.Invoke(Sub() ErrorReportDialog.Show("An error occured while trying to load world info.", ex))
             End Try
         Else
             Dispatcher.Invoke(Sub()
@@ -622,7 +613,7 @@ Partial Class MainWindow
             ListViewDeleteItem.Header = MCBackup.Language.Dictionary("MainWindow.DeleteButton.Content")
             ListViewRenameItem.Header = MCBackup.Language.Dictionary("MainWindow.RenameButton.Content")
         Catch ex As Exception
-            ErrorReportDialog.Show("", ex)
+            ErrorReportDialog.Show("Could not load language.", ex)
         End Try
     End Sub
 
@@ -647,24 +638,28 @@ Partial Class MainWindow
     End Sub
 
     Public Sub StartBackup()
-        If BackupBackgroundWorker.IsBusy Then
-            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.BackupInProgress"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
-            Exit Sub
+        If Not BackupThread Is Nothing Then
+            If BackupThread.IsAlive Then
+                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.BackupInProgress"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                Exit Sub
+            End If
         End If
-        Log.Print("Starting new backup (Name: '" & BackupInfo(0) & "'; Description: '" & BackupInfo(1) & "'; Path: '" & BackupInfo(2) & "'; Type: '" & BackupInfo(3) & "')")
+        Log.Print("Starting new backup (Name: '{0}'; Description: '{1}'; Path: '{2}'; Type: '{3}'", BackupInfo(0), BackupInfo(1), BackupInfo(2), BackupInfo(3))
         ListView.IsEnabled = False
         BackupButton.IsEnabled = False
         RestoreButton.IsEnabled = False
         DeleteButton.IsEnabled = False
         RenameButton.IsEnabled = False
-        BackupBackgroundWorker.RunWorkerAsync()
-        UpdateBackupProgress()
+        BackupThread = New Thread(AddressOf BackupBackgroundWorker_DoWork)
+        BackupThread.Start()
+        Dim UpdateProgress As New Thread(AddressOf UpdateBackupProgress)
+        UpdateProgress.Start()
     End Sub
 
-    Private Sub BackupBackgroundWorker_DoWork(sender As Object, e As DoWorkEventArgs)
+    Private Sub BackupBackgroundWorker_DoWork()
         Try
             My.Computer.FileSystem.CopyDirectory(BackupInfo(2), My.Settings.BackupsFolderLocation & "\" & BackupInfo(0), True) ' Copy selected save/version/everything to backups folder
-            Using SW As New StreamWriter(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0) & "\info.mcb") ' Create information fie (stores description and type)
+            Using SW As New StreamWriter(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0) & "\info.mcb") ' Create information file (stores description, type, folder name, group name, launcher and modpack)
                 SW.WriteLine("######## WARNING!  DO NOT EDIT THIS FILE! ########")
                 SW.WriteLine("## YOU COULD DAMAGE YOUR MINECRAFT INSTALLATION ##")
                 SW.WriteLine("baseFolderName=" & BackupInfo(2).Split("\").Last) ' Write save/version folder name
@@ -674,9 +669,21 @@ Partial Class MainWindow
                 SW.WriteLine("launcher=" & BackupInfo(5))
                 SW.WriteLine("modpack=" & BackupInfo(6))
             End Using
+            Me.Dispatcher.Invoke(Sub()
+                                     BackupBackgroundWorker_RunWorkerCompleted()
+                                 End Sub)
         Catch ex As Exception
-            'ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Backup"), ex)
-            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupError"), MCBackup.Language.Dictionary("BalloonTip.BackupError"), System.Windows.Forms.ToolTipIcon.Error)
+            If TypeOf ex Is ThreadAbortException Then
+                Log.Print("Backup thread aborted!", Log.Level.Severe)
+                Me.Dispatcher.Invoke(Sub()
+                                         BackupStopwatch.Stop()
+                                         ProgressBar.Value = 0
+                                         StatusLabel.Content = "Backup cancelled."
+                                     End Sub)
+            Else
+                If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupError"), MCBackup.Language.Dictionary("BalloonTip.BackupError"), System.Windows.Forms.ToolTipIcon.Error)
+                ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Backup"), ex)
+            End If
         End Try
     End Sub
 
@@ -700,22 +707,34 @@ Partial Class MainWindow
             Dim Speed As Double = Copied / (BackupStopwatch.ElapsedMilliseconds / 1000 * 1024)
 
             If PercentComplete < 1 Then
-                StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed / 1024, "estimating time left...")
+                Me.Dispatcher.Invoke(Sub()
+                                         StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed / 1024, "estimating time remaining...")
+                                     End Sub)
             Else
                 If Math.Round(BackupStopwatch.Elapsed.TotalSeconds, 1) Mod 2 < 0.25 Then
-                    TimeLeft = TimeSpan.FromSeconds(Math.Round((100 - PercentComplete) * BackupStopwatch.ElapsedMilliseconds / PercentComplete / 1000 / 5) * 5)
+                    Me.Dispatcher.Invoke(Sub()
+                                             TimeLeft = TimeSpan.FromSeconds(Math.Round((100 - PercentComplete) * BackupStopwatch.ElapsedMilliseconds / PercentComplete / 1000 / 5) * 5)
+                                         End Sub)
                 End If
 
                 If TimeLeft.TotalSeconds < 5 And TimeLeft <> Nothing Then
-                    StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed / 1024, MCBackup.Language.Dictionary("TimeLeft.LessThanFive"))
+                    Me.Dispatcher.Invoke(Sub()
+                                             StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed / 1024, MCBackup.Language.Dictionary("TimeLeft.LessThanFive"))
+                                         End Sub)
                 ElseIf TimeLeft.TotalSeconds < 60 Then
-                    StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed / 1024, String.Format(MCBackup.Language.Dictionary("TimeLeft.Seconds"), TimeLeft.Seconds))
+                    Me.Dispatcher.Invoke(Sub()
+                                             StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed / 1024, String.Format(MCBackup.Language.Dictionary("TimeLeft.Seconds"), TimeLeft.Seconds))
+                                         End Sub)
                 Else
-                    StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed / 1024, String.Format(MCBackup.Language.Dictionary("TimeLeft.MinutesAndSeconds"), TimeLeft.Minutes, TimeLeft.Seconds))
+                    Me.Dispatcher.Invoke(Sub()
+                                             StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed / 1024, String.Format(MCBackup.Language.Dictionary("TimeLeft.MinutesAndSeconds"), TimeLeft.Minutes, TimeLeft.Seconds))
+                                         End Sub)
                 End If
             End If
-
-            Dispatcher.Invoke(UpdateProgressBarDelegate, System.Windows.Threading.DispatcherPriority.Background, New Object() {ProgressBar.ValueProperty, PercentComplete})
+            Me.Dispatcher.Invoke(Sub()
+                                     ProgressBar.Value = PercentComplete
+                                     ProgressBar.Refresh()
+                                 End Sub)
             If Environment.OSVersion.Version.Major > 5 Then
                 TaskbarManager.Instance.SetProgressValue(PercentComplete, 100)
             End If
@@ -725,24 +744,26 @@ Partial Class MainWindow
             TaskbarManager.Instance.SetProgressValue(100, 100)
         End If
 
-        If BackupInfo(3) = "save" And My.Settings.CreateThumbOnWorld Then
-            StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), "0")
-            Log.Print("Creating thumbnail")
-            CreateThumb(BackupInfo(2))
-        Else
-            RefreshBackupsList()
-            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupComplete"), MCBackup.Language.Dictionary("BalloonTip.BackupComplete"), System.Windows.Forms.ToolTipIcon.Info)
-            StatusLabel.Content = MCBackup.Language.Dictionary("Status.BackupComplete")
-            StatusLabel.Refresh()
-            Log.Print("Backup Complete")
-            ListView.IsEnabled = True
-            BackupButton.IsEnabled = True
-        End If
+        Me.Dispatcher.Invoke(Sub()
+                                 If BackupInfo(3) = "save" And My.Settings.CreateThumbOnWorld Then
+                                     StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), "0")
+                                     Log.Print("Creating thumbnail")
+                                     CreateThumb(BackupInfo(2))
+                                 Else
+                                     RefreshBackupsList()
+                                     If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupComplete"), MCBackup.Language.Dictionary("BalloonTip.BackupComplete"), System.Windows.Forms.ToolTipIcon.Info)
+                                     StatusLabel.Content = MCBackup.Language.Dictionary("Status.BackupComplete")
+                                     StatusLabel.Refresh()
+                                     Log.Print("Backup Complete")
+                                     ListView.IsEnabled = True
+                                     BackupButton.IsEnabled = True
+                                 End If
+                             End Sub)
     End Sub
 
     Private WithEvents StatCounterWebClient As New WebClient
 
-    Private Sub BackupBackgroundWorker_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
+    Private Sub BackupBackgroundWorker_RunWorkerCompleted()
         BackupStopwatch.Stop()
         ProgressBar.Value = 100
         If My.Settings.SendAnonymousData Then
@@ -752,38 +773,48 @@ Partial Class MainWindow
 
     Private Sub StatcounterWebClient_DownloadDataCompleted(sender As Object, e As DownloadDataCompletedEventArgs) Handles StatCounterWebClient.DownloadDataCompleted
         If e.Error IsNot Nothing Then
-            Log.Print("Could not connect to http://c.statcounter.com: " & e.Error.Message, Log.Prefix.Warning)
+            Log.Print("Could not connect to http://c.statcounter.com: " & e.Error.Message, Log.Level.Warning)
         End If
     End Sub
 
+    Private ThumbnailThread As New Thread(Sub() ThumbnailBackgroundWorker_DoWork(Nothing))
+
     Private Sub CreateThumb(Path As String)
         StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), 0)
-        Dim Thread As New Thread(Sub() ThumbnailBackgroundWorker_DoWork(Path))
-        Thread.Start()
+        ThumbnailThread = New Thread(Sub() ThumbnailBackgroundWorker_DoWork(Path))
+        ThumbnailThread.Start()
     End Sub
 
     Private Sub ThumbnailBackgroundWorker_DoWork(WorldPath As String)
-        Dim MCMap As New Process
+        Try
+            Dim MCMap As New Process
 
-        With MCMap.StartInfo
-            .FileName = Chr(34) & StartupPath & "\mcmap\mcmap.exe" & Chr(34)
-            .WorkingDirectory = StartupPath & "\mcmap\"
-            .Arguments = String.Format(" -from -15 -15 -to 15 15 -file ""{0}\{1}\thumb.png"" ""{2}""", My.Settings.BackupsFolderLocation, BackupInfo(0), WorldPath)
-            .CreateNoWindow = True
-            .UseShellExecute = False
-            .RedirectStandardError = True
-            .RedirectStandardOutput = True
-        End With
+            With MCMap.StartInfo
+                .FileName = Chr(34) & StartupPath & "\mcmap\mcmap.exe" & Chr(34)
+                .WorkingDirectory = StartupPath & "\mcmap\"
+                .Arguments = String.Format(" -from -15 -15 -to 15 15 -file ""{0}\{1}\thumb.png"" ""{2}""", My.Settings.BackupsFolderLocation, BackupInfo(0), WorldPath)
+                .CreateNoWindow = True
+                .UseShellExecute = False
+                .RedirectStandardError = True
+                .RedirectStandardOutput = True
+            End With
 
-        AddHandler MCMap.OutputDataReceived, AddressOf MCMap_DataReceived
-        AddHandler MCMap.ErrorDataReceived, AddressOf MCMap_DataReceived
+            AddHandler MCMap.OutputDataReceived, AddressOf MCMap_DataReceived
+            AddHandler MCMap.ErrorDataReceived, AddressOf MCMap_DataReceived
 
-        With MCMap
-            .Start()
-            .BeginOutputReadLine()
-            .BeginErrorReadLine()
-            .WaitForExit()
-        End With
+            With MCMap
+                .Start()
+                .BeginOutputReadLine()
+                .BeginErrorReadLine()
+                .WaitForExit()
+            End With
+        Catch ex As Exception
+            If TypeOf ex Is ThreadAbortException Then
+                Log.Print("Thread aborted!")
+            Else
+                Dispatcher.Invoke(Sub() ErrorReportDialog.Show("An error occured while trying to create the thumbnail.", ex))
+            End If
+        End Try
     End Sub
 
     Private Sub MCMap_DataReceived(sender As Object, e As DataReceivedEventArgs)
@@ -805,7 +836,7 @@ Partial Class MainWindow
 
         If e.Data.Contains("[") And e.Data.Contains("]") Then
             Dim PercentComplete As Double = (Val(e.Data.Substring(2).Remove(1)) / 4) + (StepNumber * 25)
-            UpdateProgress(PercentComplete)
+            UpdateThumbProgress(PercentComplete)
             StatusLabel_Content(String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), Int(PercentComplete)))
         ElseIf e.Data = "Job complete." Then
             Dispatcher.Invoke(Sub() ThumbnailGenerationComplete())
@@ -813,7 +844,7 @@ Partial Class MainWindow
     End Sub
 
     Private Sub ThumbnailGenerationComplete()
-        UpdateProgress(100)
+        UpdateThumbProgress(100)
         RefreshBackupsList()
         StatusLabel.Content = MCBackup.Language.Dictionary("Status.BackupComplete")
         StatusLabel.Refresh()
@@ -885,7 +916,8 @@ Partial Class MainWindow
                     RestoreInfo(1) = My.Settings.MinecraftFolderLocation
             End Select
 
-            DeleteForRestoreBackgroundWorker.RunWorkerAsync()
+            DeleteForRestoreThread = New Thread(AddressOf DeleteForRestoreBackgroundWorker_DoWork)
+            DeleteForRestoreThread.Start()
             ProgressBar.IsIndeterminate = True
             If Environment.OSVersion.Version.Major > 5 Then
                 TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate)
@@ -897,36 +929,63 @@ Partial Class MainWindow
         End If
     End Sub
 
-    Private Sub DeleteForRestoreBackgroundWorker_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs)
-        If My.Computer.FileSystem.DirectoryExists(RestoreInfo(1)) Then
-            Try
+    Private Sub DeleteForRestoreBackgroundWorker_DoWork()
+        Try
+            If My.Computer.FileSystem.DirectoryExists(RestoreInfo(1)) Then
                 My.Computer.FileSystem.DeleteDirectory(RestoreInfo(1), FileIO.DeleteDirectoryOption.DeleteAllContents)
-            Catch ex As Exception
-                ErrorReportDialog.Show("Could not delete folder:", ex)
-            End Try
-        End If
+            End If
+
+            Me.Dispatcher.Invoke(Sub()
+                                     DeleteForRestoreBackgroundWorker_RunWorkerCompleted()
+                                 End Sub)
+        Catch ex As Exception
+            If TypeOf ex Is ThreadAbortException Then
+                Log.Print("Restore thread aborted!", Log.Level.Severe)
+                Me.Dispatcher.Invoke(Sub()
+                                         BackupStopwatch.Stop()
+                                         ProgressBar.Value = 0
+                                         StatusLabel.Content = "Restore cancelled."
+                                     End Sub)
+            Else
+                If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RestoreError"), MCBackup.Language.Dictionary("BalloonTip.RestoreError"), System.Windows.Forms.ToolTipIcon.Error)
+                ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Restore"), ex)
+            End If
+        End Try
     End Sub
 
-    Private Sub DeleteForRestoreBackgroundWorker_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs)
+    Private Sub DeleteForRestoreBackgroundWorker_RunWorkerCompleted()
         ProgressBar.IsIndeterminate = False
         If Environment.OSVersion.Version.Major > 5 Then
             TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal)
         End If
         Log.Print("Removed old content, restoring...")
-        RestoreBackgroundWorker.RunWorkerAsync()
+        RestoreThread = New Thread(AddressOf RestoreBackgroundWorker_DoWork)
+        RestoreThread.Start()
         UpdateRestoreProgress()
     End Sub
 
-    Private Sub RestoreBackgroundWorker_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs)
+    Private Sub RestoreBackgroundWorker_DoWork()
         Try
             My.Computer.FileSystem.CopyDirectory(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0), RestoreInfo(1), True)
             My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\info.mcb")
             If My.Computer.FileSystem.FileExists(RestoreInfo(1) & "\thumb.png") Then
                 My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\thumb.png")
             End If
+            Me.Dispatcher.Invoke(Sub()
+                                     RestoreBackgroundWorker_RunWorkerCompleted()
+                                 End Sub)
         Catch ex As Exception
-            ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Restore"), ex)
-            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RestoreError"), MCBackup.Language.Dictionary("BalloonTip.RestoreError"), System.Windows.Forms.ToolTipIcon.Error)
+            If TypeOf ex Is ThreadAbortException Then
+                Log.Print("Restore thread aborted!", Log.Level.Severe)
+                Me.Dispatcher.Invoke(Sub()
+                                         BackupStopwatch.Stop()
+                                         ProgressBar.Value = 0
+                                         StatusLabel.Content = "Restore cancelled."
+                                     End Sub)
+            Else
+                If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RestoreError"), MCBackup.Language.Dictionary("BalloonTip.RestoreError"), System.Windows.Forms.ToolTipIcon.Error)
+                ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Restore"), ex)
+            End If
         End Try
     End Sub
 
@@ -952,7 +1011,7 @@ Partial Class MainWindow
                     StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed / 1024, "estimating time left...")
                 Else
                     If Math.Round(BackupStopwatch.Elapsed.TotalSeconds, 1) Mod 2 < 0.25 Then
-                        TimeLeft = TimeSpan.FromSeconds(Math.Round((100 - PercentComplete) * BackupStopwatch.ElapsedMilliseconds / PercentComplete / 1000 / 5) * 5)
+                        TimeLeft = TimeSpan.FromSeconds(Math.Round((100 - PercentComplete) * RestoreStopWatch.ElapsedMilliseconds / PercentComplete / 1000 / 5) * 5)
                     End If
 
                     If TimeLeft.TotalSeconds < 5 Then
@@ -977,7 +1036,7 @@ Partial Class MainWindow
         RefreshBackupsList()
     End Sub
 
-    Private Sub RestoreBackgroundWorker_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
+    Private Sub RestoreBackgroundWorker_RunWorkerCompleted()
         RestoreStopWatch.Stop()
         ProgressBar.Value = 100
     End Sub
@@ -1022,7 +1081,7 @@ Partial Class MainWindow
         Return Nothing
     End Function
 
-    Private Sub UpdateProgress(Value As Double)
+    Private Sub UpdateThumbProgress(Value As Double)
         Dim UpdateProgressBarDelegate As New UpdateProgressBarDelegate(AddressOf ProgressBar.SetValue)
         Dispatcher.Invoke(UpdateProgressBarDelegate, System.Windows.Threading.DispatcherPriority.Background, New Object() {ProgressBar.ValueProperty, Value})
         If Environment.OSVersion.Version.Major > 5 Then
@@ -1081,7 +1140,8 @@ Partial Class MainWindow
                 ListViewItems.Add(Item.Name)
             Next
             ListView.SelectedIndex = -1
-            DeleteBackgroundWorker.RunWorkerAsync()
+            DeleteThread = New Thread(AddressOf DeleteBackgroundWorker_DoWork)
+            DeleteThread.Start()
             StatusLabel.Content = MCBackup.Language.Dictionary("Status.Deleting")
             ProgressBar.IsIndeterminate = True
             If Environment.OSVersion.Version.Major > 5 Then
@@ -1090,17 +1150,30 @@ Partial Class MainWindow
         End If
     End Sub
 
-    Private Sub DeleteBackgroundWorker_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs)
-        For Each Item As String In ListViewItems
-            Try
+    Private Sub DeleteBackgroundWorker_DoWork()
+        Try
+            For Each Item As String In ListViewItems
                 My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & Item, FileIO.DeleteDirectoryOption.DeleteAllContents)
-            Catch ex As Exception
+            Next
+            Me.Dispatcher.Invoke(Sub()
+                                     DeleteBackgroundWorker_RunWorkerCompleted()
+                                 End Sub)
+        Catch ex As Exception
+            If TypeOf ex Is ThreadAbortException Then
+                Log.Print("Delete thread aborted!", Log.Level.Severe)
+                Me.Dispatcher.Invoke(Sub()
+                                         BackupStopwatch.Stop()
+                                         ProgressBar.Value = 0
+                                         StatusLabel.Content = "Delete cancelled."
+                                     End Sub)
+            Else
+                If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.DeleteError"), MCBackup.Language.Dictionary("BalloonTip.DeleteError"), System.Windows.Forms.ToolTipIcon.Error)
                 ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Delete"), ex)
-            End Try
-        Next
+            End If
+        End Try
     End Sub
 
-    Private Sub DeleteBackgroundWorker_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs)
+    Private Sub DeleteBackgroundWorker_RunWorkerCompleted()
         StatusLabel.Content = MCBackup.Language.Dictionary("Status.DeleteComplete")
         ProgressBar.IsIndeterminate = False
         If Environment.OSVersion.Version.Major > 5 Then
@@ -1207,9 +1280,7 @@ Partial Class MainWindow
             ListViewSortByTypeItem.IsChecked = True
         End If
     End Sub
-#End Region
 
-#Region "-- Group By --"
     Private Sub ListViewGroupByNameItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewGroupByNameItem.Click
         ListViewGroupByNameItem.IsChecked = True
         ListViewGroupByTypeItem.IsChecked = False
@@ -1287,7 +1358,6 @@ Partial Class MainWindow
         ListViewSortByTypeItem.IsChecked = True
     End Sub
 
-    'asc/desc
     Private Sub ListViewSortAscendingItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewSortAscendingItem.Click
         Dim field As String = TryCast(CurrentColumn.Tag, String)
         If CurrentColumn IsNot Nothing Then
@@ -1493,6 +1563,40 @@ Partial Class MainWindow
         End Select
         Return False
     End Function
+
+    Private Sub CancelButton_Click(sender As Object, e As RoutedEventArgs) Handles CancelButton.Click
+        If BackupThread.IsAlive Then
+            If MetroMessageBox.Show("Are you sure you want to cancel the backup?", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
+                BackupThread.Abort()
+            End If
+        End If
+
+        If ThumbnailThread.IsAlive Then
+            If MetroMessageBox.Show("Are you sure you want to cancel the thumbnail creation? You can disable this feature in the settings.", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
+                ThumbnailThread.Abort()
+            End If
+        End If
+
+        If DeleteForRestoreThread.IsAlive Then
+            If MetroMessageBox.Show("WARNING!" & vbNewLine & "Cancelling a restore operation can seriously damage your Minecraft installlation!" & vbNewLine & vbNewLine & "Are you sure you want to cancel the restore?", "WARNING!", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
+                DeleteForRestoreThread.Abort()
+            End If
+        End If
+
+        If RestoreThread.IsAlive Then
+            If MetroMessageBox.Show("WARNING!" & vbNewLine & "Cancelling a restore operation can seriously damage your Minecraft installlation!" & vbNewLine & vbNewLine & "Are you sure you want to cancel the restore?", "WARNING!", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
+                RestoreThread.Abort()
+            End If
+        End If
+
+        If DeleteThread.IsAlive Then
+            If MetroMessageBox.Show("Are you sure you want to cancel the delete?", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
+                DeleteThread.Abort()
+            End If
+        End If
+        ProgressBar.Value = 0
+        ProgressBar.IsIndeterminate = False
+    End Sub
 End Class
 
 Public Class CloseAction

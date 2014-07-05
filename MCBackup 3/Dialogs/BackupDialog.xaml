@@ -19,7 +19,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Backup" Height="500" Width="660" Icon="icon.ico" WindowStyle="ToolWindow" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Loaded="Window_Loaded" WindowTransitionsEnabled="False">
+    Title="Backup" Height="500" Width="660" WindowStyle="ToolWindow" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Loaded="Window_Loaded" WindowTransitionsEnabled="False" BorderBrush="{DynamicResource AccentColorBrush}" BorderThickness="1">
 
     <Grid HorizontalAlignment="Left" Width="644" Height="462" VerticalAlignment="Top">
         <GroupBox x:Name="BackupDetailsGroupBox" Header="Backup Details" HorizontalAlignment="Left" VerticalAlignment="Top" Height="187" Width="622" Margin="10,10,0,0">

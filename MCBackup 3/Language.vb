@@ -274,7 +274,7 @@ Public Class Language
         Dictionary.Add("UpdateDialog.Label2.Text", FindString("UpdateDialog.Label2.Text", FileName))
 
         If ErrorOccured Then
-            Log.Print("Language loaded with errors. Please try solving the error(s) above.", Log.Prefix.Warning)
+            Log.Print("Language loaded with errors. Please try solving the error(s) above.", Log.Level.Warning)
         Else
             Log.Print("Language loaded. No errors occured.")
         End If
@@ -291,7 +291,7 @@ Public Class Language
                     Dim ReturnString = Line.Substring(Identifier.Length + 1)
 
                     If String.IsNullOrEmpty(ReturnString) Then
-                        Log.Print("[Language] Error at line " & LineNumber & ": Entry is empty!", Log.Prefix.Warning)
+                        Log.Print("[Language] Error at line " & LineNumber & ": Entry is empty!", Log.Level.Warning)
                         ErrorOccured = True
                         Return Identifier.Split(".")(Identifier.Split(".").Count - 2) & "." & Identifier.Split(".").Last
                     End If
@@ -300,7 +300,7 @@ Public Class Language
                 End If
             End While
         End Using
-        Log.Print("[Language] Error: '" & Identifier & "' identifier not found, added automatically.", Log.Prefix.Warning)
+        Log.Print("[Language] Error: '" & Identifier & "' identifier not found, added automatically.", Log.Level.Warning)
         Using SW As New StreamWriter(Directory.GetCurrentDirectory() & "\language\" & FileName, True)
             SW.Write(vbNewLine & Identifier & "=")
         End Using

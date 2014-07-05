@@ -36,18 +36,15 @@ Public Class CullDialog
     End Sub
 
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
-        Dim DaysNumUpDownMargin As Thickness = DaysNumUpDown.Margin
-        Dim Label2Margin As Thickness = Label2.Margin
-        DaysNumUpDownMargin.Left = Label1.ActualWidth + 10
-        Label2Margin.Left = Label1.ActualWidth + 95
-        DaysNumUpDown.Margin = DaysNumUpDownMargin
-        Label2.Margin = Label2Margin
+        Dim m1 As Thickness = DaysNumUpDown.Margin
+        Dim m2 As Thickness = Label2.Margin
+        m1.Left = Label1.ActualWidth + 15
+        m2.Left = Label1.ActualWidth + DaysNumUpDown.ActualWidth + 20
+        DaysNumUpDown.Margin = m1
+        Label2.Margin = m2
 
-        ' MahApps.Metro Black Border Fix © nicoco007
-        Dim s As New Size(Me.Width, Me.Height)
-        Me.SizeToContent = SizeToContent.Manual
-        Me.Width = s.Width
-        Me.Height = s.Height
+        ' Using this because "black border fix" doesn't work here
+        Me.Width = Label1.ActualWidth + DaysNumUpDown.ActualWidth + Label2.ActualWidth + 30
     End Sub
 
     Private Sub CullButton_Click(sender As Object, e As RoutedEventArgs) Handles CullButton.Click

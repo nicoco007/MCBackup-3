@@ -19,7 +19,7 @@ Imports System.IO
 Public Class Log
     Public Shared Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
 
-    Public Enum Prefix
+    Public Enum Level
         Info
         Warning
         Severe
@@ -30,42 +30,52 @@ Public Class Log
     ''' </summary>
     ''' <param name="Message">Message to display</param>
     Public Shared Sub Print(Message As String, ParamArray args As Object())
-        Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
-            Debug.Print(DebugTimeStamp() & " [INFO] " & Message, args)
-            SW.WriteLine(DebugTimeStamp() & " [INFO] " & Message, args)
-        End Using
+        Try
+            Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
+                Debug.Print(DebugTimeStamp() & " [INFO] " & Message, args)
+                SW.WriteLine(DebugTimeStamp() & " [INFO] " & Message, args)
+            End Using
+        Catch
+        End Try
     End Sub
 
+
     ''' <summary>
-    ''' Prints a message in the log file and the debug with the specified prefix.
+    ''' Prints a message in the log file and the debug with the specified Level.
     ''' </summary>
     ''' <param name="Message">Message to be printed</param>
-    ''' <param name="Prefix">Prefix, either [INFO], [WARNING], or [SEVERE]</param>
-    Public Shared Sub Print(Message As String, Prefix As Prefix, ParamArray args As Object())
-        Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
-            Select Case Prefix
-                Case Log.Prefix.Info
-                    Debug.Print(DebugTimeStamp() & " [INFO] " & Message, args)
-                    SW.WriteLine(DebugTimeStamp() & " [INFO] " & Message, args)
-                Case Log.Prefix.Warning
-                    Debug.Print(DebugTimeStamp() & " [INFO] " & Message, args)
-                    SW.WriteLine(DebugTimeStamp() & " [INFO] " & Message, args)
-                Case Log.Prefix.Severe
-                    Debug.Print(DebugTimeStamp() & " [INFO] " & Message, args)
-                    SW.WriteLine(DebugTimeStamp() & " [INFO] " & Message, args)
-            End Select
-        End Using
+    ''' <param name="Level">Level, either [INFO], [WARNING], or [SEVERE]</param>
+    Public Shared Sub Print(Message As String, Level As Level, ParamArray args As Object())
+        Try
+            Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
+                Select Case Level
+                    Case Log.Level.Info
+                        Debug.Print(DebugTimeStamp() & " [INFO] " & Message, args)
+                        SW.WriteLine(DebugTimeStamp() & " [INFO] " & Message, args)
+                    Case Log.Level.Warning
+                        Debug.Print(DebugTimeStamp() & " [WARNING] " & Message, args)
+                        SW.WriteLine(DebugTimeStamp() & " [WARNING] " & Message, args)
+                    Case Log.Level.Severe
+                        Debug.Print(DebugTimeStamp() & " [SEVERE] " & Message, args)
+                        SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & Message, args)
+                End Select
+            End Using
+        Catch
+        End Try
     End Sub
 
     ''' <summary>
-    ''' Silently prints a message in the log file and the debug without a prefix/time stamp.
+    ''' Silently prints a message in the log file and the debug without a Level/time stamp.
     ''' </summary>
     ''' <param name="Message">Message to be printed</param>
     Public Shared Sub SPrint(Message As String, ParamArray args As Object())
-        Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
-            Debug.Print(Message, args)
-            SW.WriteLine(Message, args)
-        End Using
+        Try
+            Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
+                Debug.Print(Message, args)
+                SW.WriteLine(Message, args)
+            End Using
+        Catch
+        End Try
     End Sub
 
     ''' <summary>

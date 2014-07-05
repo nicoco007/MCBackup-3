@@ -154,7 +154,7 @@ Partial Public Class Options
             My.Settings.BackgroundImageStretch = Int(Brush.Stretch)
             Main.Background = Brush
         Catch ex As Exception
-            Log.Print(ex.Message, Log.Prefix.Severe)
+            Log.Print(ex.Message, Log.Level.Severe)
         End Try
     End Sub
 
@@ -180,6 +180,7 @@ Partial Public Class Options
         Log.Print("Saving settings...")
         My.Settings.Save()
         Main.RefreshBackupsList()
+        Main.ReloadBackupGroups()
     End Sub
 
     Private Sub LanguagesListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles LanguagesComboBox.SelectionChanged
@@ -188,6 +189,7 @@ Partial Public Class Options
             My.Settings.Language = IO.Path.GetFileNameWithoutExtension(LanguagesComboBox.SelectedItem.Tag)
             LoadLanguage()
             Main.LoadLanguage()
+            Main.ReloadBackupGroups()
             Main.AutoBackupWindow.LoadLanguage()
         End If
     End Sub

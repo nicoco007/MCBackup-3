@@ -76,7 +76,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MahApps.Metro.0.13.1.0\lib\net40\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
@@ -99,13 +98,13 @@
     <Compile Include="AutoBackupWindow.xaml.vb">
       <DependentUpon>AutoBackupWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CloseToTrayDialog.xaml.vb">
+    <Compile Include="Dialogs\CloseToTrayDialog.xaml.vb">
       <DependentUpon>CloseToTrayDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CullDialog.xaml.vb">
+    <Compile Include="Dialogs\CullDialog.xaml.vb">
       <DependentUpon>CullDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ErrorReportDialog.xaml.vb">
+    <Compile Include="Dialogs\ErrorReportDialog.xaml.vb">
       <DependentUpon>ErrorReportDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Extension Classes\FolderBrowserDialog\FolderSelectDialog.vb" />
@@ -118,10 +117,10 @@
       <DependentUpon>MetroMessageBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Extension Classes\ControlRefresh.vb" />
-    <Compile Include="OptionsDialog.xaml.vb">
+    <Compile Include="Dialogs\OptionsDialog.xaml.vb">
       <DependentUpon>OptionsDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="RenameDialog.xaml.vb">
+    <Compile Include="Dialogs\RenameDialog.xaml.vb">
       <DependentUpon>RenameDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="SetMinecraftFolderWindow.xaml.vb">
@@ -132,10 +131,10 @@
     <Compile Include="Splash.xaml.vb">
       <DependentUpon>Splash.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UpdateDialog.xaml.vb">
+    <Compile Include="Dialogs\UpdateDialog.xaml.vb">
       <DependentUpon>UpdateDialog.xaml</DependentUpon>
     </Compile>
-    <Page Include="AboutDialog.xaml">
+    <Page Include="Dialogs\AboutDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -143,19 +142,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="BackupDialog.xaml">
+    <Page Include="Dialogs\BackupDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CloseToTrayDialog.xaml">
+    <Page Include="Dialogs\CloseToTrayDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CullDialog.xaml">
+    <Page Include="Dialogs\CullDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ErrorReportDialog.xaml">
+    <Page Include="Dialogs\ErrorReportDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -163,14 +162,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="AboutDialog.xaml.vb">
+    <Compile Include="Dialogs\AboutDialog.xaml.vb">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Application.xaml.vb">
       <DependentUpon>Application.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BackupDialog.xaml.vb">
+    <Compile Include="Dialogs\BackupDialog.xaml.vb">
       <DependentUpon>BackupDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.vb">
@@ -181,11 +180,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="OptionsDialog.xaml">
+    <Page Include="Dialogs\OptionsDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="RenameDialog.xaml">
+    <Page Include="Dialogs\RenameDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -197,7 +196,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UpdateDialog.xaml">
+    <Page Include="Dialogs\UpdateDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
