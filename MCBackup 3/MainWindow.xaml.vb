@@ -30,6 +30,7 @@ Imports Substrate
 Imports MCBackup.CloseAction
 
 Imports MahApps.Metro
+Imports System.Text
 
 Partial Class MainWindow
 
@@ -73,8 +74,6 @@ Partial Class MainWindow
 
     Public AutoBackupWindow As New AutoBackupWindow
     Private Splash As New Splash
-
-    Public Shared ListViewItems As New ArrayList
 #End Region
 
 #Region "Load"
@@ -299,13 +298,16 @@ Partial Class MainWindow
                           End Sub)
         Dim Directory As New IO.DirectoryInfo(My.Settings.BackupsFolderLocation) ' Create a DirectoryInfo variable for the backups folder
 
+        Dim DirectoriesToDelete As New ArrayList
+
         For Each Folder As DirectoryInfo In Directory.GetDirectories ' For each folder in the backups folder
             Dim Type As String = "[ERROR]"                  ' Create variables with default value [ERROR], in case one of the values doesn't exist
             Dim OriginalFolderName As String = "[ERROR]"    ' 
 
             Try
                 If Not My.Computer.FileSystem.FileExists(Folder.FullName & "\info.mcb") Then
-                    Log.Print(String.Format("'info.mcb' does not exist in folder '{0}'. This folder will not be considered as a backup.", Folder.Name), Log.Level.Warning)
+                    Log.Print("'info.mcb' does not exist in folder '{0}'. This folder will not be considered as a backup.", Log.Level.Warning, Folder.Name)
+                    DirectoriesToDelete.Add(Folder.Name)
                     Exit Try
                 End If
 
@@ -362,6 +364,24 @@ Partial Class MainWindow
                 Log.Print("An error occured during the backup: " & ex.Message, Log.Level.Severe)
             End Try
         Next
+
+        If DirectoriesToDelete.Count > 0 Then
+            Dim SB As New StringBuilder
+            SB.AppendLine("The following directories do not seem to be backups:")
+            For Each Folder As String In DirectoriesToDelete
+                SB.AppendLine("  " & Folder)
+            Next
+            SB.AppendLine("Would you like to delete them?")
+            Dim Result As MessageBoxResult
+            Dispatcher.Invoke(Sub()
+                                  Result = MetroMessageBox.Show(SB.ToString, "Invalid backups", MessageBoxButton.YesNo, MessageBoxImage.Question)
+                              End Sub)
+            If Result = MessageBoxResult.Yes Then
+                Dispatcher.Invoke(Sub()
+                                      Delete(DirectoriesToDelete)
+                                  End Sub)
+            End If
+        End If
     End Sub
 
     Private Sub BGW_RunWorkerCompleted() Handles BGW.RunWorkerCompleted
@@ -1129,25 +1149,29 @@ Partial Class MainWindow
 #Region "Delete"
     Private Sub DeleteButton_Click(sender As Object, e As EventArgs) Handles DeleteButton.Click, ListViewDeleteItem.Click
         If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.DeleteAreYouSure"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = Windows.Forms.DialogResult.Yes Then
-            EnableUI(False)
-            ListViewItems.Clear()
+            Dim ListViewItems As New ArrayList
             For Each Item In ListView.SelectedItems
                 ListViewItems.Add(Item.Name)
             Next
-            ListView.SelectedIndex = -1
-            DeleteThread = New Thread(AddressOf DeleteBackgroundWorker_DoWork)
-            DeleteThread.Start()
-            StatusLabel.Content = MCBackup.Language.Dictionary("Status.Deleting")
-            ProgressBar.IsIndeterminate = True
-            If Environment.OSVersion.Version.Major > 5 Then
-                TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate)
-            End If
+            Delete(ListViewItems)
         End If
     End Sub
 
-    Private Sub DeleteBackgroundWorker_DoWork()
+    Private Sub Delete(ItemsToDelete As ArrayList)
+        EnableUI(False)
+        ListView.SelectedIndex = -1
+        DeleteThread = New Thread(Sub() DeleteBackgroundWorker_DoWork(ItemsToDelete))
+        DeleteThread.Start()
+        StatusLabel.Content = MCBackup.Language.Dictionary("Status.Deleting")
+        ProgressBar.IsIndeterminate = True
+        If Environment.OSVersion.Version.Major > 5 Then
+            TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate)
+        End If
+    End Sub
+
+    Private Sub DeleteBackgroundWorker_DoWork(ItemsToDelete As ArrayList)
         Try
-            For Each Item As String In ListViewItems
+            For Each Item As String In ItemsToDelete
                 My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & Item, FileIO.DeleteDirectoryOption.DeleteAllContents)
             Next
             Me.Dispatcher.Invoke(Sub()
@@ -1590,8 +1614,10 @@ Partial Class MainWindow
                 DeleteThread.Abort()
             End If
         End If
+
         ProgressBar.Value = 0
         ProgressBar.IsIndeterminate = False
+        StatusLabel.Content = "Operation cancelled - Ready"
         EnableUI(True)
     End Sub
 

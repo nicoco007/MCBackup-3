@@ -197,6 +197,11 @@ UpdateDialog
  Prints a message in the log file and the debug.
  </summary>
 	<param name="Message">Message to display</param>
+</member><member name="M:MCBackup.Log.Print(System.String,MCBackup.Log.Level)">
+	<summary>
+ Prints a message in the log file and the debug.
+ </summary>
+	<param name="Message">Message to display</param>
 </member><member name="M:MCBackup.Log.Print(System.String,MCBackup.Log.Level,System.Object[])">
 	<summary>
  Prints a message in the log file and the debug with the specified Level.

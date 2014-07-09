@@ -39,6 +39,28 @@ Public Class Log
         End Try
     End Sub
 
+    ''' <summary>
+    ''' Prints a message in the log file and the debug.
+    ''' </summary>
+    ''' <param name="Message">Message to display</param>
+    Public Shared Sub Print(Message As String, Level As Level)
+        Try
+            Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
+                Select Case Level
+                    Case Log.Level.Info
+                        Debug.Print(DebugTimeStamp() & " [INFO] " & Message)
+                        SW.WriteLine(DebugTimeStamp() & " [INFO] " & Message)
+                    Case Log.Level.Warning
+                        Debug.Print(DebugTimeStamp() & " [WARNING] " & Message)
+                        SW.WriteLine(DebugTimeStamp() & " [WARNING] " & Message)
+                    Case Log.Level.Severe
+                        Debug.Print(DebugTimeStamp() & " [SEVERE] " & Message)
+                        SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & Message)
+                End Select
+            End Using
+        Catch
+        End Try
+    End Sub
 
     ''' <summary>
     ''' Prints a message in the log file and the debug with the specified Level.
