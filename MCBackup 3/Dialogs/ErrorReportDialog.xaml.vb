@@ -22,7 +22,7 @@ Public Class ErrorReportDialog
     Private Shared Main = DirectCast(Application.Current.MainWindow, MainWindow)
 
     Public Overloads Shared Sub Show(Message As String, Exception As Exception)
-        Try
+        If MCBackup.Language.IsLoaded Then
             newMessageBox = New ErrorReportDialog
             newMessageBox.MessageLabel.Content = Message
             Dim StackTrace As New StackTrace(Exception, True)
@@ -45,7 +45,7 @@ Public Class ErrorReportDialog
             newMessageBox.ContactMessage.Content = MCBackup.Language.Dictionary("ErrorWindow.ContactMessage")
             System.Media.SystemSounds.Hand.Play()
             newMessageBox.ShowDialog()
-        Catch ex As Exception
+        Else
             newMessageBox = New ErrorReportDialog
             newMessageBox.MessageLabel.Content = Message
             Dim StackTrace As New StackTrace(Exception, True)
@@ -60,7 +60,7 @@ Public Class ErrorReportDialog
             Next
             System.Media.SystemSounds.Hand.Play()
             newMessageBox.ShowDialog()
-        End Try
+        End If
         TryCast(Application.Current.MainWindow, MainWindow).CloseType = CloseAction.CloseType.ForceClose
     End Sub
 

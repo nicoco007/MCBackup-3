@@ -107,6 +107,7 @@
     <Compile Include="Dialogs\ErrorReportDialog.xaml.vb">
       <DependentUpon>ErrorReportDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FileSystemOperations.vb" />
     <Compile Include="Extension Classes\FolderBrowserDialog\FolderSelectDialog.vb" />
     <Compile Include="Extension Classes\FolderBrowserDialog\Reflector.vb" />
     <Compile Include="Extension Classes\ListViewBackupItem.vb" />

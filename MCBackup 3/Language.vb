@@ -20,6 +20,16 @@ Public Class Language
     Private Shared Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
     Private Shared ErrorOccured As Boolean
 
+    Private Shared _IsLoaded As Boolean = False
+    Public Shared Property IsLoaded() As Boolean
+        Get
+            Return _IsLoaded
+        End Get
+        Set(value As Boolean)
+            _IsLoaded = value
+        End Set
+    End Property
+
     Public Shared Dictionary As New Dictionary(Of String, String)
 
     Public Shared Sub Load(FileName As String)
@@ -278,6 +288,8 @@ Public Class Language
         Else
             Log.Print("Language loaded. No errors occured.")
         End If
+
+        IsLoaded = True
     End Sub
 
     Public Shared Function FindString(Identifier As String, FileName As String)
