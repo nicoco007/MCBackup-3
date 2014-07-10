@@ -22,46 +22,49 @@ Public Class ErrorReportDialog
     Private Shared Main = DirectCast(Application.Current.MainWindow, MainWindow)
 
     Public Overloads Shared Sub Show(Message As String, Exception As Exception)
-        If MCBackup.Language.IsLoaded Then
-            newMessageBox = New ErrorReportDialog
-            newMessageBox.MessageLabel.Content = Message
-            Dim StackTrace As New StackTrace(Exception, True)
-            For Each st As StackFrame In StackTrace.GetFrames
-                If String.IsNullOrEmpty(StackTrace.GetFrame(0).GetFileName) Then
-                    If st.GetFileLineNumber > 0 Then
-                        newMessageBox.ErrorTextBlock.Text = String.Format(MCBackup.Language.Dictionary("ErrorWindow.ErrorAtLine"), st.GetFileLineNumber, IO.Path.GetFileName(st.GetFileName), Exception.Message)
+        Try
+            If MCBackup.Language.IsLoaded Then
+                newMessageBox = New ErrorReportDialog
+                newMessageBox.MessageLabel.Content = Message
+                Dim StackTrace As New StackTrace(Exception, True)
+                For Each st As StackFrame In StackTrace.GetFrames
+                    If String.IsNullOrEmpty(StackTrace.GetFrame(0).GetFileName) Then
+                        If st.GetFileLineNumber > 0 Then
+                            newMessageBox.ErrorTextBlock.Text = String.Format(MCBackup.Language.Dictionary("ErrorWindow.ErrorAtLine"), st.GetFileLineNumber, IO.Path.GetFileName(st.GetFileName), Exception.Message)
+                        End If
+                    Else
+                        newMessageBox.ErrorTextBlock.Text = String.Format(MCBackup.Language.Dictionary("ErrorWindow.ErrorAtLine"), StackTrace.GetFrame(0).GetFileLineNumber, IO.Path.GetFileName(StackTrace.GetFrame(0).GetFileName), Exception.Message)
                     End If
-                Else
-                    newMessageBox.ErrorTextBlock.Text = String.Format(MCBackup.Language.Dictionary("ErrorWindow.ErrorAtLine"), StackTrace.GetFrame(0).GetFileLineNumber, IO.Path.GetFileName(StackTrace.GetFrame(0).GetFileName), Exception.Message)
-                End If
 
-                If st.GetFileLineNumber > 0 Then
-                    Log.Print(st.ToString, Log.Level.Severe)
-                End If
-            Next
-            newMessageBox.Title = MCBackup.Language.Dictionary("Message.Caption.Error")
-            newMessageBox.ContinueButton.Content = MCBackup.Language.Dictionary("ErrorWindow.ContinueButton.Content")
-            newMessageBox.CopyToClipboardButton.Content = MCBackup.Language.Dictionary("ErrorWindow.CopyToClipboardButton.Content")
-            newMessageBox.ContactMessage.Content = MCBackup.Language.Dictionary("ErrorWindow.ContactMessage")
-            System.Media.SystemSounds.Hand.Play()
-            newMessageBox.ShowDialog()
-        Else
-            newMessageBox = New ErrorReportDialog
-            newMessageBox.MessageLabel.Content = Message
-            Dim StackTrace As New StackTrace(Exception, True)
-            For Each st As StackFrame In StackTrace.GetFrames
-                If String.IsNullOrEmpty(StackTrace.GetFrame(0).GetFileName) Then
-                    If st.GetFileLineNumber <> 0 Then
-                        newMessageBox.ErrorTextBlock.Text = String.Format(MCBackup.Language.Dictionary("ErrorWindow.ErrorAtLine"), st.GetFileLineNumber, IO.Path.GetFileName(st.GetFileName), Exception.Message)
+                    If st.GetFileLineNumber > 0 Then
+                        Log.Print(st.ToString, Log.Level.Severe)
                     End If
-                Else
-                    newMessageBox.ErrorTextBlock.Text = String.Format(MCBackup.Language.Dictionary("ErrorWindow.ErrorAtLine"), StackTrace.GetFrame(0).GetFileLineNumber, IO.Path.GetFileName(StackTrace.GetFrame(0).GetFileName), Exception.Message)
-                End If
-            Next
-            System.Media.SystemSounds.Hand.Play()
-            newMessageBox.ShowDialog()
-        End If
-        TryCast(Application.Current.MainWindow, MainWindow).CloseType = CloseAction.CloseType.ForceClose
+                Next
+                newMessageBox.Title = MCBackup.Language.Dictionary("Message.Caption.Error")
+                newMessageBox.ContinueButton.Content = MCBackup.Language.Dictionary("ErrorWindow.ContinueButton.Content")
+                newMessageBox.CopyToClipboardButton.Content = MCBackup.Language.Dictionary("ErrorWindow.CopyToClipboardButton.Content")
+                newMessageBox.ContactMessage.Content = MCBackup.Language.Dictionary("ErrorWindow.ContactMessage")
+                System.Media.SystemSounds.Hand.Play()
+                newMessageBox.ShowDialog()
+            Else
+                newMessageBox = New ErrorReportDialog
+                newMessageBox.MessageLabel.Content = Message
+                Dim StackTrace As New StackTrace(Exception, True)
+                For Each st As StackFrame In StackTrace.GetFrames
+                    If String.IsNullOrEmpty(StackTrace.GetFrame(0).GetFileName) Then
+                        If st.GetFileLineNumber <> 0 Then
+                            newMessageBox.ErrorTextBlock.Text = String.Format(MCBackup.Language.Dictionary("ErrorWindow.ErrorAtLine"), st.GetFileLineNumber, IO.Path.GetFileName(st.GetFileName), Exception.Message)
+                        End If
+                    Else
+                        newMessageBox.ErrorTextBlock.Text = String.Format(MCBackup.Language.Dictionary("ErrorWindow.ErrorAtLine"), StackTrace.GetFrame(0).GetFileLineNumber, IO.Path.GetFileName(StackTrace.GetFrame(0).GetFileName), Exception.Message)
+                    End If
+                Next
+                System.Media.SystemSounds.Hand.Play()
+                newMessageBox.ShowDialog()
+            End If
+            TryCast(Application.Current.MainWindow, MainWindow).CloseType = CloseAction.CloseType.ForceClose
+        Catch
+        End Try
     End Sub
 
     Private Sub CopyToClipboardButton_Click(sender As Object, e As RoutedEventArgs) Handles CopyToClipboardButton.Click

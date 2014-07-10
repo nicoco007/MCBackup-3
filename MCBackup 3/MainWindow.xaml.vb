@@ -1581,12 +1581,6 @@ Partial Class MainWindow
         End If
 
         If ThumbnailThread.IsAlive Then
-            If MetroMessageBox.Show("Are you sure you want to cancel the thumbnail creation?", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
-                ThumbnailThread.Abort()
-            End If
-        End If
-
-        If ThumbnailThread.IsAlive Then
             If MetroMessageBox.Show("Are you sure you want to cancel the thumbnail creation? You can disable this feature in the settings.", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
                 ThumbnailThread.Abort()
             End If
