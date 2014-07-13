@@ -60,7 +60,7 @@ Partial Class MainWindow
 
     Private FolderBrowserDialog As New System.Windows.Forms.FolderBrowserDialog
 
-    Private BackupThread As New Thread(AddressOf Backup_NEW)
+    Private BackupThread As New Thread(AddressOf Backup)
     Private DeleteForRestoreThread As New Thread(AddressOf DeleteForRestoreBackgroundWorker_DoWork)
     Private RestoreThread As New Thread(AddressOf RestoreBackgroundWorker_DoWork)
     Private DeleteThread As New Thread(AddressOf DeleteBackgroundWorker_DoWork)
@@ -666,11 +666,13 @@ Partial Class MainWindow
         End If
         Log.Print("Starting new backup (Name: '{0}'; Description: '{1}'; Path: '{2}'; Type: '{3}'", BackupInfo(0), BackupInfo(1), BackupInfo(2), BackupInfo(3))
         EnableUI(False)
-        Dim t As New Thread(AddressOf Backup_NEW)
+        Dim t As New Thread(AddressOf Backup)
         t.Start()
     End Sub
 
-    Private Sub Backup_NEW()
+    Private MCMapProcess As Process
+
+    Private Sub Backup()
         Try
             ' Create the target directory to prevent exceptions while getting the completion percentage
             My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0))
@@ -753,7 +755,28 @@ Partial Class MainWindow
                 Log.Print("Creating thumbnail")
 
                 Dispatcher.Invoke(Sub()
-                                      CreateThumb(BackupInfo(2))
+                                      StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), 0)
+
+                                      MCMapProcess = New Process
+
+                                      With MCMapProcess.StartInfo
+                                          .FileName = Chr(34) & StartupPath & "\mcmap\mcmap.exe" & Chr(34)
+                                          .WorkingDirectory = StartupPath & "\mcmap\"
+                                          .Arguments = String.Format(" -from -15 -15 -to 15 15 -file ""{0}\{1}\thumb.png"" ""{2}""", My.Settings.BackupsFolderLocation, BackupInfo(0), BackupInfo(2))
+                                          .CreateNoWindow = True
+                                          .UseShellExecute = False
+                                          .RedirectStandardError = True
+                                          .RedirectStandardOutput = True
+                                      End With
+
+                                      AddHandler MCMapProcess.OutputDataReceived, AddressOf MCMap_DataReceived
+                                      AddHandler MCMapProcess.ErrorDataReceived, AddressOf MCMap_DataReceived
+
+                                      With MCMapProcess
+                                          .Start()
+                                          .BeginOutputReadLine()
+                                          .BeginErrorReadLine()
+                                      End With
                                   End Sub)
             Else
                 ' Refresh backups list
@@ -779,46 +802,6 @@ Partial Class MainWindow
         End Try
     End Sub
 
-    Private ThumbnailThread As New Thread(Sub() ThumbnailBackgroundWorker_DoWork(Nothing))
-
-    Private Sub CreateThumb(Path As String)
-        StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), 0)
-        ThumbnailThread = New Thread(Sub() ThumbnailBackgroundWorker_DoWork(Path))
-        ThumbnailThread.Start()
-    End Sub
-
-    Private Sub ThumbnailBackgroundWorker_DoWork(WorldPath As String)
-        Try
-            Dim MCMap As New Process
-
-            With MCMap.StartInfo
-                .FileName = Chr(34) & StartupPath & "\mcmap\mcmap.exe" & Chr(34)
-                .WorkingDirectory = StartupPath & "\mcmap\"
-                .Arguments = String.Format(" -from -15 -15 -to 15 15 -file ""{0}\{1}\thumb.png"" ""{2}""", My.Settings.BackupsFolderLocation, BackupInfo(0), WorldPath)
-                .CreateNoWindow = True
-                .UseShellExecute = False
-                .RedirectStandardError = True
-                .RedirectStandardOutput = True
-            End With
-
-            AddHandler MCMap.OutputDataReceived, AddressOf MCMap_DataReceived
-            AddHandler MCMap.ErrorDataReceived, AddressOf MCMap_DataReceived
-
-            With MCMap
-                .Start()
-                .BeginOutputReadLine()
-                .BeginErrorReadLine()
-                .WaitForExit()
-            End With
-        Catch ex As Exception
-            If TypeOf ex Is ThreadAbortException Then
-                Log.Print("Thumbnail creation aborted!")
-            Else
-                Dispatcher.Invoke(Sub() ErrorReportDialog.Show("An error occured while trying to create the thumbnail.", ex))
-            End If
-        End Try
-    End Sub
-
     Private Sub MCMap_DataReceived(sender As Object, e As DataReceivedEventArgs)
         Dim StepNumber As Integer
         If e.Data = Nothing Then
@@ -837,22 +820,24 @@ Partial Class MainWindow
         End Select
 
         If e.Data.Contains("[") And e.Data.Contains("]") Then
-            Dim PercentComplete As Double = (Val(e.Data.Substring(2).Remove(1)) / 4) + (StepNumber * 25)
-            UpdateThumbProgress(PercentComplete)
-            StatusLabel_Content(String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), Int(PercentComplete)))
+            Debug.Print(e.Data.Substring(1).Remove(e.Data.IndexOf(".") - 1))
+            Dim PercentComplete As Double = (e.Data.Substring(1).Remove(e.Data.IndexOf(".") - 1) / 4) + (StepNumber * 25)
+            Debug.Print(PercentComplete)
+            Dispatcher.Invoke(Sub()
+                                  ProgressBar.Value = PercentComplete
+                                  StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), Int(PercentComplete))
+                              End Sub)
         ElseIf e.Data = "Job complete." Then
-            Dispatcher.Invoke(Sub() ThumbnailGenerationComplete())
+            Dispatcher.Invoke(Sub()
+                                  EnableUI(True)
+                                  UpdateThumbProgress(100)
+                                  RefreshBackupsList()
+                                  StatusLabel.Content = MCBackup.Language.Dictionary("Status.BackupComplete")
+                                  StatusLabel.Refresh()
+                                  If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupComplete"), MCBackup.Language.Dictionary("BalloonTip.BackupComplete"), System.Windows.Forms.ToolTipIcon.Info)
+                                  Log.Print("Backup Complete")
+                              End Sub)
         End If
-    End Sub
-
-    Private Sub ThumbnailGenerationComplete()
-        EnableUI(True)
-        UpdateThumbProgress(100)
-        RefreshBackupsList()
-        StatusLabel.Content = MCBackup.Language.Dictionary("Status.BackupComplete")
-        StatusLabel.Refresh()
-        If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupComplete"), MCBackup.Language.Dictionary("BalloonTip.BackupComplete"), System.Windows.Forms.ToolTipIcon.Info)
-        Log.Print("Backup Complete")
     End Sub
 #End Region
 
@@ -1574,15 +1559,12 @@ Partial Class MainWindow
     End Function
 
     Private Sub CancelButton_Click(sender As Object, e As RoutedEventArgs) Handles CancelButton.Click
-        If BackupThread.IsAlive Then
+        If BackupThread.IsAlive Or Process.GetProcessesByName("mcmap").Count > 0 Then
             If MetroMessageBox.Show("Are you sure you want to cancel the backup?", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
                 BackupThread.Abort()
-            End If
-        End If
-
-        If ThumbnailThread.IsAlive Then
-            If MetroMessageBox.Show("Are you sure you want to cancel the thumbnail creation? You can disable this feature in the settings.", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
-                ThumbnailThread.Abort()
+                For Each p As Process In Process.GetProcessesByName("mcmap")
+                    p.Kill()
+                Next
             End If
         End If
 
