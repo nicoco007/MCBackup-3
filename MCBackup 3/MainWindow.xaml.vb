@@ -61,7 +61,7 @@ Partial Class MainWindow
     Private FolderBrowserDialog As New System.Windows.Forms.FolderBrowserDialog
 
     Private BackupThread As New Thread(AddressOf Backup)
-    Private DeleteForRestoreThread As New Thread(AddressOf DeleteForRestoreBackgroundWorker_DoWork)
+    Private DeleteForRestoreThread As New Thread(AddressOf Restore)
     Private RestoreThread As New Thread(AddressOf RestoreBackgroundWorker_DoWork)
     Private DeleteThread As New Thread(AddressOf DeleteBackgroundWorker_DoWork)
     Private UpdateProgress As Thread
@@ -633,7 +633,7 @@ Partial Class MainWindow
             ListViewDeleteItem.Header = MCBackup.Language.Dictionary("MainWindow.DeleteButton.Content")
             ListViewRenameItem.Header = MCBackup.Language.Dictionary("MainWindow.RenameButton.Content")
         Catch ex As Exception
-            ErrorReportDialog.Show("Could not load language.", ex)
+            Dispatcher.Invoke(Sub() ErrorReportDialog.Show("Could not load language.", ex))
         End Try
     End Sub
 
@@ -687,7 +687,7 @@ Partial Class MainWindow
             ' Set variables
             Dim PercentComplete As Double = 0
 
-            ' Do until percent complete is equal to 100
+            ' Do until percent complete is equal to or over 100
             Do Until Int(PercentComplete) = 100
                 ' Calculate percent complete by dividing target location by source location, and multiply by 100
                 PercentComplete = GetFolderSize(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0)) / GetFolderSize(BackupInfo(2)) * 100
@@ -717,14 +717,18 @@ Partial Class MainWindow
                     TaskbarManager.Instance.SetProgressValue(PercentComplete, 100)
                 End If
 
-                If Cancel And BackupThread.IsAlive = False Then
+                If Cancel = True And BackupThread.IsAlive = False Then
                     Dispatcher.Invoke(Sub()
                                           StatusLabel.Content = "Reverting changes..."
                                           ProgressBar.IsIndeterminate = True
                                       End Sub)
                     My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0), FileIO.DeleteDirectoryOption.DeleteAllContents)
                     Dispatcher.Invoke(Sub()
-                                          Cancelled()
+                                          BackupStopwatch.Stop()
+                                          ProgressBar.Value = 0
+                                          ProgressBar.IsIndeterminate = False
+                                          StatusLabel.Content = "Operation cancelled - Ready"
+                                          EnableUI(True)
                                       End Sub)
                     Exit Sub
                 End If
@@ -798,7 +802,7 @@ Partial Class MainWindow
             End If
         Catch ex As Exception
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupError"), MCBackup.Language.Dictionary("BalloonTip.BackupError"), System.Windows.Forms.ToolTipIcon.Error)
-            ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Backup"), ex)
+            Dispatcher.Invoke(Sub() ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Backup"), ex))
         End Try
     End Sub
 
@@ -903,52 +907,107 @@ Partial Class MainWindow
                     RestoreInfo(1) = My.Settings.MinecraftFolderLocation
             End Select
 
-            DeleteForRestoreThread = New Thread(AddressOf DeleteForRestoreBackgroundWorker_DoWork)
-            DeleteForRestoreThread.Start()
-            ProgressBar.IsIndeterminate = True
-            If Environment.OSVersion.Version.Major > 5 Then
-                TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate)
-            End If
-            StatusLabel.Content = MCBackup.Language.Dictionary("Status.RemovingOldContent")
-            Log.Print("Removing old content")
-        Else
-            Exit Sub
+            'DeleteForRestoreThread = New Thread(AddressOf DeleteForRestoreBackgroundWorker_DoWork)
+            'DeleteForRestoreThread.Start()
+            'ProgressBar.IsIndeterminate = True
+            'If Environment.OSVersion.Version.Major > 5 Then
+            '    TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate)
+            'End If
+            'StatusLabel.Content = MCBackup.Language.Dictionary("Status.RemovingOldContent")
+            'Log.Print("Removing old content")
+
+            Dim t As New Thread(AddressOf Restore)
+            t.Start()
         End If
     End Sub
 
-    Private Sub DeleteForRestoreBackgroundWorker_DoWork()
+    Private Sub Restore()
         Try
-            If My.Computer.FileSystem.DirectoryExists(RestoreInfo(1)) Then
-                My.Computer.FileSystem.DeleteDirectory(RestoreInfo(1), FileIO.DeleteDirectoryOption.DeleteAllContents)
-            End If
+            Dispatcher.Invoke(Sub()
+                                  ProgressBar.IsIndeterminate = True
+                              End Sub)
 
-            Me.Dispatcher.Invoke(Sub()
-                                     DeleteForRestoreBackgroundWorker_RunWorkerCompleted()
-                                 End Sub)
+            DeleteForRestoreThread = FileSystemOperations.Directory.DeleteFolderContentsAsync(RestoreInfo(1))
+
+            Do
+                Debug.Print(GetFolderSize(RestoreInfo(1)))
+            Loop Until GetFolderSize(RestoreInfo(1)) = 0 And DeleteForRestoreThread.IsAlive = False
+
+            Dispatcher.Invoke(Sub()
+                                  ProgressBar.IsIndeterminate = False
+                              End Sub)
+
+            ' Create the target directory to prevent exceptions while getting the completion percentage
+            My.Computer.FileSystem.CreateDirectory(RestoreInfo(1))
+
+            ' Start copying the source directory asynchronously to the target directory
+            RestoreThread = FileSystemOperations.Directory.CopyAsync(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0), RestoreInfo(1), True)
+
+            ' Reset & start the backup stopwatch
+            RestoreStopWatch.Reset()
+            RestoreStopWatch.Start()
+
+            ' Set variables
+            Dim PercentComplete As Double = 0
+
+            ' Do until percent complete is equal to or over 100
+            Do Until Int(PercentComplete) >= 100
+                ' Calculate percent complete by dividing target location by source location, and multiply by 100
+                PercentComplete = GetFolderSize(RestoreInfo(1)) / GetFolderSize(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0)) * 100
+
+                ' Determine speed in megabytes per second (MB/s) by dividing bytes copied by seconds elapsed (in decimal for more accuracy), and dividing by 1048576.
+                Dim Total As Double = GetFolderSize(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0))
+                Dim Copied As Double = GetFolderSize(RestoreInfo(1))
+                Dim Speed As Double = Math.Round((Copied / 1048576) / (RestoreStopWatch.ElapsedMilliseconds / 1000), 2) ' 1024 (1K bytes) × 1024 = 1048576 (1M bytes)
+
+                Dim TimeLeft As New TimeSpan(0)
+
+                ' Determine time remaining using (TimeElapsed / BytesCopied) * BytesRemaining and round to the nearest 5
+                If Copied > 0 Then
+                    TimeLeft = TimeSpan.FromSeconds(Math.Round((RestoreStopWatch.ElapsedMilliseconds / 1000) / Copied * (Total - Copied) / 5) * 5)
+                End If
+
+                Dispatcher.Invoke(Sub()
+                                      StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed, TimeLeft.TotalSeconds)
+                                      ProgressBar.Value = PercentComplete
+                                      ProgressBar.Refresh()
+                                  End Sub)
+
+                If Environment.OSVersion.Version.Major > 5 Then
+                    TaskbarManager.Instance.SetProgressValue(PercentComplete, 100)
+                End If
+
+                If Cancel And BackupThread.IsAlive = False Then
+                    Dispatcher.Invoke(Sub()
+                                          RestoreStopWatch.Stop()
+                                          ProgressBar.Value = 0
+                                          ProgressBar.IsIndeterminate = False
+                                          StatusLabel.Content = "Operation cancelled - Ready"
+                                          EnableUI(True)
+                                      End Sub)
+                    Exit Sub
+                End If
+            Loop
+
+            ' Stop backup stopwatch
+            RestoreStopWatch.Stop()
+
+            If My.Computer.FileSystem.FileExists(RestoreInfo(1) & "\info.mcb") Then My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\info.mcb")
+            If My.Computer.FileSystem.FileExists(RestoreInfo(1) & "\thumb.png") Then My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\thumb.png")
+
+            Dispatcher.Invoke(Sub()
+                                  StatusLabel.Content = MCBackup.Language.Dictionary("Status.RestoreComplete")
+                                  ProgressBar.Value = 100
+                                  EnableUI(True)
+                              End Sub)
+
+            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RestoreComplete"), MCBackup.Language.Dictionary("BalloonTip.RestoreComplete"), System.Windows.Forms.ToolTipIcon.Info)
+            Log.Print("Restore Complete")
+            RefreshBackupsList()
         Catch ex As Exception
-            If TypeOf ex Is ThreadAbortException Then
-                Log.Print("Restore thread aborted!", Log.Level.Severe)
-                Me.Dispatcher.Invoke(Sub()
-                                         BackupStopwatch.Stop()
-                                         ProgressBar.Value = 0
-                                         StatusLabel.Content = "Restore cancelled."
-                                     End Sub)
-            Else
-                If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RestoreError"), MCBackup.Language.Dictionary("BalloonTip.RestoreError"), System.Windows.Forms.ToolTipIcon.Error)
-                ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Restore"), ex)
-            End If
+            Log.Print(ex.Message, Log.Level.Severe)
+            Dispatcher.Invoke(Sub() ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Restore"), ex))
         End Try
-    End Sub
-
-    Private Sub DeleteForRestoreBackgroundWorker_RunWorkerCompleted()
-        ProgressBar.IsIndeterminate = False
-        If Environment.OSVersion.Version.Major > 5 Then
-            TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal)
-        End If
-        Log.Print("Removed old content, restoring...")
-        RestoreThread = New Thread(AddressOf RestoreBackgroundWorker_DoWork)
-        RestoreThread.Start()
-        UpdateRestoreProgress()
     End Sub
 
     Private Sub RestoreBackgroundWorker_DoWork()
@@ -971,56 +1030,9 @@ Partial Class MainWindow
                                      End Sub)
             Else
                 If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RestoreError"), MCBackup.Language.Dictionary("BalloonTip.RestoreError"), System.Windows.Forms.ToolTipIcon.Error)
-                ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Restore"), ex)
+                Dispatcher.Invoke(Sub() ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Restore"), ex))
             End If
         End Try
-    End Sub
-
-    Private Sub UpdateRestoreProgress()
-        If Not RestoreStopWatch.IsRunning Then
-            RestoreStopWatch.Reset()
-            RestoreStopWatch.Start()
-        End If
-
-        Dim PercentComplete As Integer = 0
-        Dim TimeLeft As TimeSpan
-
-        Dim UpdateRestoreProgressBarDelegate As New UpdateProgressBarDelegate(AddressOf ProgressBar.SetValue)
-
-        Do Until PercentComplete = 100
-            If My.Computer.FileSystem.DirectoryExists(RestoreInfo(1)) Then
-                PercentComplete = GetFolderSize(RestoreInfo(1)) / GetFolderSize(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0)) * 100
-
-                Dim Copied As Double = GetFolderSize(RestoreInfo(1))
-                Dim Speed As Double = Copied / (RestoreStopWatch.ElapsedMilliseconds / 1000 * 1024)
-
-                If PercentComplete < 1 Then
-                    StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed / 1024, "estimating time left...")
-                Else
-                    If Math.Round(BackupStopwatch.Elapsed.TotalSeconds, 1) Mod 2 < 0.25 Then
-                        TimeLeft = TimeSpan.FromSeconds(Math.Round((100 - PercentComplete) * RestoreStopWatch.ElapsedMilliseconds / PercentComplete / 1000 / 5) * 5)
-                    End If
-
-                    If TimeLeft.TotalSeconds < 5 Then
-                        StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed / 1024, MCBackup.Language.Dictionary("TimeLeft.LessThanFive"))
-                    ElseIf TimeLeft.TotalSeconds < 60 Then
-                        StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed / 1024, String.Format(MCBackup.Language.Dictionary("TimeLeft.Seconds"), TimeLeft.Seconds))
-                    Else
-                        StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed / 1024, String.Format(MCBackup.Language.Dictionary("TimeLeft.MinutesAndSeconds"), TimeLeft.Minutes, TimeLeft.Seconds))
-                    End If
-                End If
-
-                Dispatcher.Invoke(UpdateRestoreProgressBarDelegate, System.Windows.Threading.DispatcherPriority.Background, New Object() {ProgressBar.ValueProperty, Convert.ToDouble(PercentComplete)})
-                If Environment.OSVersion.Version.Major > 5 Then
-                    TaskbarManager.Instance.SetProgressValue(PercentComplete, 100)
-                End If
-            End If
-        Loop
-
-        StatusLabel.Content = MCBackup.Language.Dictionary("Status.RestoreComplete")
-        If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RestoreComplete"), MCBackup.Language.Dictionary("BalloonTip.RestoreComplete"), System.Windows.Forms.ToolTipIcon.Info)
-        Log.Print("Restore Complete")
-        RefreshBackupsList()
     End Sub
 
     Private Sub RestoreBackgroundWorker_RunWorkerCompleted()
@@ -1034,9 +1046,14 @@ Partial Class MainWindow
     Private Function GetFolderSize(FolderPath As String)
         Try
             Dim FSO As FileSystemObject = New FileSystemObject
-            Return FSO.GetFolder(FolderPath).Size ' Get FolderPath's size
+            Dim Size = FSO.GetFolder(FolderPath).Size ' Get FolderPath's size
+            If Size <> Nothing Then
+                Return Size
+            Else
+                Return 0
+            End If
         Catch ex As Exception
-            ErrorReportDialog.Show(String.Format("Could not find {0}'s size:", FolderPath), ex)
+            Dispatcher.Invoke(Sub() ErrorReportDialog.Show(String.Format("Could not find {0}'s size:", FolderPath), ex))
         End Try
         Return 0
     End Function
@@ -1046,7 +1063,7 @@ Partial Class MainWindow
             Dim FSO As FileSystemObject = New FileSystemObject
             Return FSO.GetFolder(FolderPath).DateCreated ' Get FolderPath's date of creation
         Catch ex As Exception
-            ErrorReportDialog.Show(String.Format("Could not find {0}'s creation date:", FolderPath), ex)
+            Dispatcher.Invoke(Sub() ErrorReportDialog.Show(String.Format("Could not find {0}'s creation date:", FolderPath), ex))
         End Try
         Return 0
     End Function
@@ -1064,7 +1081,7 @@ Partial Class MainWindow
             Bitmap.EndInit()
             Return Bitmap
         Catch ex As Exception
-            ErrorReportDialog.Show(String.Format("Could not convert source {0} to bitmap:", Source), ex)
+            Dispatcher.Invoke(Sub() ErrorReportDialog.Show(String.Format("Could not convert source {0} to bitmap:", Source), ex))
         End Try
         Return Nothing
     End Function
@@ -1161,7 +1178,7 @@ Partial Class MainWindow
                                      End Sub)
             Else
                 If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.DeleteError"), MCBackup.Language.Dictionary("BalloonTip.DeleteError"), System.Windows.Forms.ToolTipIcon.Error)
-                ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Delete"), ex)
+                Dispatcher.Invoke(Sub() ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Delete"), ex))
             End If
         End Try
     End Sub
@@ -1587,13 +1604,6 @@ Partial Class MainWindow
         End If
 
         Cancel = True
-    End Sub
-
-    Private Sub Cancelled()
-        ProgressBar.Value = 0
-        ProgressBar.IsIndeterminate = False
-        StatusLabel.Content = "Operation cancelled - Ready"
-        EnableUI(True)
     End Sub
 
     Private Sub EnableUI(IsEnabled As Boolean)
