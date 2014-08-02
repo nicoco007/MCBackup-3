@@ -19,10 +19,10 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Error!" Height="189" Width="600" Topmost="True" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" WindowTransitionsEnabled="False" BorderBrush="{DynamicResource AccentColorBrush}" BorderThickness="1">
+    Title="Error!" Height="166" Width="600" Topmost="True" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" WindowTransitionsEnabled="False" BorderBrush="{DynamicResource AccentColorBrush}" BorderThickness="1">
     <Grid Margin="0,0,0,0">
         <Label x:Name="MessageLabel" Content="Label" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" Width="572"/>
-        <TextBox x:Name="ErrorTextBlock" TextWrapping="WrapWithOverflow" Height="Auto" Margin="10,36,10,71" Background="{x:Null}" IsReadOnly="True" MaxWidth="600" BorderBrush="Black"/>
+        <TextBox x:Name="ErrorTextBlock" TextWrapping="WrapWithOverflow" Height="Auto" Margin="10,36,10,71" IsReadOnly="True" BorderBrush="Black"/>
         <Button x:Name="CopyToClipboardButton" Content="Copy to clipboard" HorizontalAlignment="Left" Margin="10,0,0,10" Height="30" VerticalAlignment="Bottom" Width="Auto" Padding="10,1"/>
         <Button x:Name="ContinueButton" Content="Continue" Margin="0,0,10,10" Height="29" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="Auto" Padding="10,1"/>
         <Label x:Name="ContactMessage" Content="If this error persists, please consider contacting me at support@nicoco007.com." HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,45" Width="572"/>

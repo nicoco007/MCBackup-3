@@ -278,11 +278,15 @@ Partial Class MainWindow
 
     Public Sub RefreshBackupsList()
         If Not BGW.IsBusy Then
-            Items = New List(Of ListViewBackupItem)
-            EnableUI(False)
-            ProgressBar.IsIndeterminate = True
-            StatusLabel.Content = MCBackup.Language.Dictionary("Status.RefreshingBackupsList")
-            BGW.RunWorkerAsync()
+            If Dispatcher.CheckAccess Then
+                Items = New List(Of ListViewBackupItem)
+                EnableUI(False)
+                ProgressBar.IsIndeterminate = True
+                StatusLabel.Content = MCBackup.Language.Dictionary("Status.RefreshingBackupsList")
+                BGW.RunWorkerAsync()
+            Else
+                Dispatcher.Invoke(Sub() RefreshBackupsList())
+            End If
         End If
     End Sub
 
@@ -873,7 +877,6 @@ Partial Class MainWindow
                             RestoreInfo(2) = Line.Substring(5)
                         ElseIf Line.StartsWith("launcher=") Then
                             Dim Temp As Object = Line.Substring(9)
-                            Debug.Print(IsNumeric(Temp))
                             If IsNumeric(Temp) Then
                                 If Temp > [Enum].GetValues(GetType(Game.Launcher)).Cast(Of Game.Launcher).Last() Or Temp < 0 Then
                                     Launcher = Game.Launcher.Minecraft
@@ -950,9 +953,12 @@ Partial Class MainWindow
                 ' Set bytes remaining to current folder size
                 Dim BytesRemaining As Double = GetFolderSize(RestoreInfo(1))
 
+                ' Determine percent removed (inverted) by dividing bytes remaining by initial size, and multiplying by 100
+                Debug.Print(InitialSize & "|" & BytesRemaining & "|" & RestoreInfo(1))
+                Dim PercentRemoved As Decimal = BytesRemaining / InitialSize * 100
+
                 Dispatcher.Invoke(Sub()
-                                      ' Determine percent removed (inverted) by dividing bytes remaining by initial size, and multiplying by 100
-                                      Dim PercentRemoved As Decimal = BytesRemaining / InitialSize * 100
+                                      ' Show percent complete and message
                                       StatusLabel.Content = String.Format("Removing old content... ({0:0.00}% Complete)", 100 - PercentRemoved)
                                       ProgressBar.Value = PercentRemoved
                                   End Sub)
@@ -1089,14 +1095,6 @@ Partial Class MainWindow
         Dispatcher.Invoke(UpdateProgressBarDelegate, System.Windows.Threading.DispatcherPriority.Background, New Object() {ProgressBar.ValueProperty, Value})
         If Environment.OSVersion.Version.Major > 5 Then
             TaskbarManager.Instance.SetProgressValue(Value, 100)
-        End If
-    End Sub
-
-    Private Sub StatusLabel_Content(Text As String)
-        If StatusLabel.Dispatcher.CheckAccess() Then
-            StatusLabel.Content = Text
-        Else
-            StatusLabel.Dispatcher.Invoke(Sub() StatusLabel_Content(Text))
         End If
     End Sub
 #End Region
