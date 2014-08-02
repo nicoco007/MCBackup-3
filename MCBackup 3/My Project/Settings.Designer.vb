@@ -377,15 +377,15 @@ Partial Friend NotInheritable Class MySettings
         End Set
     End Property
     
-    <Global.System.Configuration.UserScopedSettingAttribute(),  _
-     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-     Global.System.Configuration.DefaultSettingValueAttribute("Minecraft")>  _
-    Public Property Launcher() As Global.MCBackup.MainWindow.Launcher
+    <Global.System.Configuration.UserScopedSettingAttribute(), _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(), _
+     Global.System.Configuration.DefaultSettingValueAttribute("Minecraft")> _
+    Public Property Launcher() As Global.MCBackup.Game.Launcher
         Get
-            Return CType(Me("Launcher"),Global.MCBackup.MainWindow.Launcher)
+            Return CType(Me("Launcher"), Global.MCBackup.Game.Launcher)
         End Get
-        Set
-            Me("Launcher") = value
+        Set(value As Global.MCBackup.Game.Launcher)
+            Me("Launcher") = Value
         End Set
     End Property
 End Class

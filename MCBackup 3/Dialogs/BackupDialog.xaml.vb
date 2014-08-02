@@ -36,7 +36,7 @@ Public Class BackupDialog
         VersionsListView.Items.Clear()
 
         Select Case My.Settings.Launcher
-            Case MainWindow.Launcher.Minecraft
+            Case Game.Launcher.Minecraft
                 If Directory.Exists(My.Settings.SavesFolderLocation) Then
                     Dim SavesDirectory As New DirectoryInfo(My.Settings.SavesFolderLocation)
                     For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
@@ -56,7 +56,7 @@ Public Class BackupDialog
                 Else
                     Log.Print("Versions folder does not exist!")
                 End If
-            Case MainWindow.Launcher.Technic
+            Case Game.Launcher.Technic
                 Dim Modpacks As New DirectoryInfo(My.Settings.MinecraftFolderLocation & "\modpacks")
                 For Each Modpack As DirectoryInfo In Modpacks.GetDirectories
                     If Directory.Exists(Modpack.FullName & "\saves") Then
@@ -72,7 +72,7 @@ Public Class BackupDialog
                     End If
                     VersionsListView.Items.Add(Modpack.Name)
                 Next
-            Case MainWindow.Launcher.FeedTheBeast
+            Case Game.Launcher.FeedTheBeast
                 Dim BaseDirectory As New DirectoryInfo(My.Settings.MinecraftFolderLocation)
                 For Each Directory As DirectoryInfo In BaseDirectory.GetDirectories
                     If My.Computer.FileSystem.DirectoryExists(Directory.FullName & "\minecraft") Then
@@ -90,7 +90,7 @@ Public Class BackupDialog
                         VersionsListView.Items.Add(Directory.Name)
                     End If
                 Next
-            Case MainWindow.Launcher.ATLauncher
+            Case Game.Launcher.ATLauncher
                 Dim Instances As New DirectoryInfo(My.Settings.MinecraftFolderLocation & "\Instances")
                 For Each Instance As DirectoryInfo In Instances.GetDirectories
                     If Directory.Exists(Instance.FullName & "\saves") Then
@@ -108,7 +108,7 @@ Public Class BackupDialog
                 Next
         End Select
 
-        If My.Settings.Launcher = MainWindow.Launcher.Minecraft Then
+        If My.Settings.Launcher = Game.Launcher.Minecraft Then
             SaveNameColumn.Width = 597
             SaveLocationColumn.Width = 0
         Else
@@ -151,20 +151,20 @@ Public Class BackupDialog
                 Case 0
                     Main.BackupInfo(0) = CType(SavesListView.SelectedItem, SavesListViewItem).Name & " " & GetBackupTimeStamp()
                 Case 1
-                    If My.Settings.Launcher = MainWindow.Launcher.Minecraft Then
+                    If My.Settings.Launcher = Game.Launcher.Minecraft Then
                         Main.BackupInfo(0) = "Version " & VersionsListView.SelectedItem & " " & GetBackupTimeStamp()
                     Else
                         Main.BackupInfo(0) = VersionsListView.SelectedItem & " " & GetBackupTimeStamp()
                     End If
                 Case 2
                     Select Case My.Settings.Launcher
-                        Case MainWindow.Launcher.Minecraft
+                        Case Game.Launcher.Minecraft
                             Main.BackupInfo(0) = "Minecraft " & GetBackupTimeStamp()
-                        Case MainWindow.Launcher.Technic
+                        Case Game.Launcher.Technic
                             Main.BackupInfo(0) = "Technic " & GetBackupTimeStamp()
-                        Case MainWindow.Launcher.FeedTheBeast
+                        Case Game.Launcher.FeedTheBeast
                             Main.BackupInfo(0) = "Feed the Beast " & GetBackupTimeStamp()
-                        Case MainWindow.Launcher.ATLauncher
+                        Case Game.Launcher.ATLauncher
                             Main.BackupInfo(0) = "ATLauncher " & GetBackupTimeStamp()
                     End Select
             End Select
@@ -188,25 +188,25 @@ Public Class BackupDialog
         Select Case BackupTypeTabControl.SelectedIndex
             Case 0
                 Select Case My.Settings.Launcher
-                    Case MainWindow.Launcher.Minecraft
+                    Case Game.Launcher.Minecraft
                         Main.BackupInfo(2) = My.Settings.SavesFolderLocation & "\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
-                    Case MainWindow.Launcher.Technic
+                    Case Game.Launcher.Technic
                         Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\modpacks\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
-                    Case MainWindow.Launcher.FeedTheBeast
+                    Case Game.Launcher.FeedTheBeast
                         Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\minecraft\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
-                    Case MainWindow.Launcher.ATLauncher
+                    Case Game.Launcher.ATLauncher
                         Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\Instances\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
                 End Select
                 Main.BackupInfo(3) = "save"
             Case 1
                 Select Case My.Settings.Launcher
-                    Case MainWindow.Launcher.Minecraft
+                    Case Game.Launcher.Minecraft
                         Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\versions\" & VersionsListView.SelectedItem
-                    Case MainWindow.Launcher.Technic
+                    Case Game.Launcher.Technic
                         Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\modpacks\" & VersionsListView.SelectedItem
-                    Case MainWindow.Launcher.FeedTheBeast
+                    Case Game.Launcher.FeedTheBeast
                         Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\" & VersionsListView.SelectedItem
-                    Case MainWindow.Launcher.ATLauncher
+                    Case Game.Launcher.ATLauncher
                         Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\Instances\" & VersionsListView.SelectedItem
                 End Select
                 Main.BackupInfo(3) = "version"
@@ -218,7 +218,7 @@ Public Class BackupDialog
         Main.BackupInfo(4) = IIf(GroupsComboBox.SelectedIndex = 0, Nothing, GroupsComboBox.SelectedItem)
         Main.BackupInfo(5) = My.Settings.Launcher
 
-        If My.Settings.Launcher <> MainWindow.Launcher.Minecraft And SavesListView.SelectedItems.Count > 0 Then
+        If My.Settings.Launcher <> Game.Launcher.Minecraft And SavesListView.SelectedItems.Count > 0 Then
             Main.BackupInfo(6) = CType(SavesListView.SelectedItem, SavesListViewItem).Location
         End If
 
@@ -242,13 +242,13 @@ Public Class BackupDialog
         CancelButton.Content = MCBackup.Language.Dictionary("BackupWindow.CancelButton.Content")
         GroupLabel.Content = MCBackup.Language.Dictionary("BackupWindow.GroupLabel.Text")
         Select Case My.Settings.Launcher
-            Case MainWindow.Launcher.Minecraft
+            Case Game.Launcher.Minecraft
                 BackupTypeTabControl.Items(1).Header = "Version"
-            Case MainWindow.Launcher.Technic
+            Case Game.Launcher.Technic
                 BackupTypeTabControl.Items(1).Header = "Modpack"
-            Case MainWindow.Launcher.FeedTheBeast
+            Case Game.Launcher.FeedTheBeast
                 BackupTypeTabControl.Items(1).Header = "Modpack"
-            Case MainWindow.Launcher.ATLauncher
+            Case Game.Launcher.ATLauncher
                 BackupTypeTabControl.Items(1).Header = "Instance"
         End Select
     End Sub

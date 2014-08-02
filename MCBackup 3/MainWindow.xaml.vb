@@ -60,10 +60,10 @@ Partial Class MainWindow
 
     Private FolderBrowserDialog As New System.Windows.Forms.FolderBrowserDialog
 
-    Private BackupThread As New Thread(AddressOf Backup)
-    Private DeleteForRestoreThread As New Thread(AddressOf Restore)
-    Private RestoreThread As New Thread(AddressOf RestoreBackgroundWorker_DoWork)
-    Private DeleteThread As New Thread(AddressOf DeleteBackgroundWorker_DoWork)
+    Private BackupThread As Thread
+    Private DeleteForRestoreThread As Thread
+    Private RestoreThread As Thread
+    Private DeleteThread As Thread
     Private UpdateProgress As Thread
 
     Public StartupPath As String = Directory.GetCurrentDirectory()
@@ -77,13 +77,6 @@ Partial Class MainWindow
 
     Private Cancel As Boolean = False
 #End Region
-
-    Public Enum Launcher As Integer
-        Minecraft
-        Technic
-        FeedTheBeast
-        ATLauncher
-    End Enum
 
 #Region "Load"
     Public Sub New()
@@ -221,7 +214,7 @@ Partial Class MainWindow
         Splash.StepProgress()
 
         Log.Print("Minecraft folder set to '" & My.Settings.MinecraftFolderLocation & "'")
-        If My.Settings.Launcher = Launcher.Minecraft Then Log.Print("Saves folder set to '" & My.Settings.SavesFolderLocation & "'")
+        If My.Settings.Launcher = Game.Launcher.Minecraft Then Log.Print("Saves folder set to '" & My.Settings.SavesFolderLocation & "'")
 
         Splash.StepProgress()
 
@@ -557,23 +550,23 @@ Partial Class MainWindow
 
                 Dispatcher.Invoke(Sub()
                                       For i As Integer = 0 To World.Level.Player.Health \ 2 - 1
-                                          SidebarPlayerHealthGrid.Children.Add(New PlayerStats.Health(New Thickness(SidebarPlayerHealthGrid.Children.Count * 10, 0, 0, 0), PlayerStats.State.Full))
+                                          SidebarPlayerHealthGrid.Children.Add(New Game.Images.Health(New Thickness(SidebarPlayerHealthGrid.Children.Count * 10, 0, 0, 0), Game.Images.State.Full))
                                       Next
                                       If World.Level.Player.Health Mod 2 <> 0 Then
-                                          SidebarPlayerHealthGrid.Children.Add(New PlayerStats.Health(New Thickness(SidebarPlayerHealthGrid.Children.Count * 10, 0, 0, 0), PlayerStats.State.Half))
+                                          SidebarPlayerHealthGrid.Children.Add(New Game.Images.Health(New Thickness(SidebarPlayerHealthGrid.Children.Count * 10, 0, 0, 0), Game.Images.State.Half))
                                       End If
                                       For i As Integer = 0 To (20 - World.Level.Player.Health) \ 2 - 1
-                                          SidebarPlayerHealthGrid.Children.Add(New PlayerStats.Health(New Thickness(SidebarPlayerHealthGrid.Children.Count * 10, 0, 0, 0), PlayerStats.State.Empty))
+                                          SidebarPlayerHealthGrid.Children.Add(New Game.Images.Health(New Thickness(SidebarPlayerHealthGrid.Children.Count * 10, 0, 0, 0), Game.Images.State.Empty))
                                       Next
 
                                       For i As Integer = 0 To World.Level.Player.HungerLevel \ 2 - 1
-                                          SidebarPlayerHungerGrid.Children.Add(New PlayerStats.Hunger(New Thickness(90 - SidebarPlayerHungerGrid.Children.Count * 10, 0, 0, 0), PlayerStats.State.Full))
+                                          SidebarPlayerHungerGrid.Children.Add(New Game.Images.Hunger(New Thickness(90 - SidebarPlayerHungerGrid.Children.Count * 10, 0, 0, 0), Game.Images.State.Full))
                                       Next
                                       If World.Level.Player.HungerLevel Mod 2 <> 0 Then
-                                          SidebarPlayerHungerGrid.Children.Add(New PlayerStats.Hunger(New Thickness(90 - SidebarPlayerHungerGrid.Children.Count * 10, 0, 0, 0), PlayerStats.State.Half))
+                                          SidebarPlayerHungerGrid.Children.Add(New Game.Images.Hunger(New Thickness(90 - SidebarPlayerHungerGrid.Children.Count * 10, 0, 0, 0), Game.Images.State.Half))
                                       End If
                                       For i As Integer = 0 To (20 - World.Level.Player.HungerLevel) \ 2 - 1
-                                          SidebarPlayerHungerGrid.Children.Add(New PlayerStats.Hunger(New Thickness(90 - SidebarPlayerHungerGrid.Children.Count * 10, 0, 0, 0), PlayerStats.State.Empty))
+                                          SidebarPlayerHungerGrid.Children.Add(New Game.Images.Hunger(New Thickness(90 - SidebarPlayerHungerGrid.Children.Count * 10, 0, 0, 0), Game.Images.State.Empty))
                                       Next
                                   End Sub)
             Catch ex As Exception
@@ -868,7 +861,7 @@ Partial Class MainWindow
             Log.Print("Starting Restore")
             RestoreInfo(0) = ListView.SelectedItems(0).Name ' Set place 0 of RestoreInfo array to the backup name
 
-            Dim BaseFolderName As String = "", Launcher As Launcher = MainWindow.Launcher.Minecraft, Modpack As String = ""
+            Dim BaseFolderName As String = "", Launcher As Game.Launcher = Game.Launcher.Minecraft, Modpack As String = ""
 
             Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0) & "\info.mcb")
                 Do While SR.Peek <> -1
@@ -882,28 +875,28 @@ Partial Class MainWindow
                             Dim Temp As Object = Line.Substring(9)
                             Debug.Print(IsNumeric(Temp))
                             If IsNumeric(Temp) Then
-                                If Temp > [Enum].GetValues(GetType(MainWindow.Launcher)).Cast(Of MainWindow.Launcher).Last() Or Temp < 0 Then
-                                    Launcher = MainWindow.Launcher.Minecraft
+                                If Temp > [Enum].GetValues(GetType(Game.Launcher)).Cast(Of Game.Launcher).Last() Or Temp < 0 Then
+                                    Launcher = Game.Launcher.Minecraft
                                 Else
                                     Launcher = Temp
                                 End If
                             Else
                                 Select Case Temp
                                     Case "minecraft"
-                                        Launcher = MainWindow.Launcher.Minecraft
+                                        Launcher = Game.Launcher.Minecraft
                                     Case "technic"
-                                        Launcher = MainWindow.Launcher.Technic
+                                        Launcher = Game.Launcher.Technic
                                     Case "ftb"
-                                        Launcher = MainWindow.Launcher.FeedTheBeast
+                                        Launcher = Game.Launcher.FeedTheBeast
                                     Case "atlauncher"
-                                        Launcher = MainWindow.Launcher.ATLauncher
+                                        Launcher = Game.Launcher.ATLauncher
                                     Case Else
-                                        Launcher = MainWindow.Launcher.Minecraft
+                                        Launcher = Game.Launcher.Minecraft
                                 End Select
                             End If
-                            ElseIf Line.StartsWith("modpack=") Then
-                                Modpack = Line.Substring(8)
-                            End If
+                        ElseIf Line.StartsWith("modpack=") Then
+                            Modpack = Line.Substring(8)
+                        End If
                     End If
                 Loop
             End Using
@@ -916,24 +909,24 @@ Partial Class MainWindow
             Select Case RestoreInfo(2)
                 Case "save"
                     Select Case My.Settings.Launcher
-                        Case MainWindow.Launcher.Minecraft
+                        Case Game.Launcher.Minecraft
                             RestoreInfo(1) = My.Settings.SavesFolderLocation & "\" & BaseFolderName
-                        Case MainWindow.Launcher.Technic
+                        Case Game.Launcher.Technic
                             RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\modpacks\" & Modpack & "\saves\" & BaseFolderName
-                        Case MainWindow.Launcher.FeedTheBeast
+                        Case Game.Launcher.FeedTheBeast
                             RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\" & Modpack & "\minecraft\saves\" & BaseFolderName
-                        Case MainWindow.Launcher.ATLauncher
+                        Case Game.Launcher.ATLauncher
                             RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\Instances\" & Modpack & "\saves\" & BaseFolderName
                     End Select
                 Case "version"
                     Select Case My.Settings.Launcher
-                        Case MainWindow.Launcher.Minecraft
+                        Case Game.Launcher.Minecraft
                             RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\versions\" & BaseFolderName
-                        Case MainWindow.Launcher.Technic
+                        Case Game.Launcher.Technic
                             RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\modpacks\" & BaseFolderName
-                        Case MainWindow.Launcher.FeedTheBeast
+                        Case Game.Launcher.FeedTheBeast
                             RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\" & BaseFolderName
-                        Case MainWindow.Launcher.ATLauncher
+                        Case Game.Launcher.ATLauncher
                             RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\Instances\" & BaseFolderName
                     End Select
                 Case "everything"
@@ -1008,7 +1001,7 @@ Partial Class MainWindow
                 End If
 
                 ' Cancel if cancel variable is true and backup thread has been killed
-                If Cancel And BackupThread.IsAlive = False Then
+                If Cancel And RestoreThread.IsAlive = False Then
                     Dispatcher.Invoke(Sub()
                                           RestoreStopWatch.Stop()
                                           ProgressBar.Value = 0
@@ -1042,41 +1035,8 @@ Partial Class MainWindow
             RefreshBackupsList()
         Catch ex As Exception
             Log.Print(ex.Message, Log.Level.Severe)
-            Dispatcher.Invoke(Sub() ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Restore"), ex))
+            ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Restore"), ex)
         End Try
-    End Sub
-
-    Private Sub RestoreBackgroundWorker_DoWork()
-        Try
-            My.Computer.FileSystem.CopyDirectory(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0), RestoreInfo(1), True)
-            My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\info.mcb")
-            If My.Computer.FileSystem.FileExists(RestoreInfo(1) & "\thumb.png") Then
-                My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\thumb.png")
-            End If
-            Me.Dispatcher.Invoke(Sub()
-                                     RestoreBackgroundWorker_RunWorkerCompleted()
-                                 End Sub)
-        Catch ex As Exception
-            If TypeOf ex Is ThreadAbortException Then
-                Log.Print("Restore thread aborted!", Log.Level.Severe)
-                Me.Dispatcher.Invoke(Sub()
-                                         BackupStopwatch.Stop()
-                                         ProgressBar.Value = 0
-                                         StatusLabel.Content = "Restore cancelled."
-                                     End Sub)
-            Else
-                If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RestoreError"), MCBackup.Language.Dictionary("BalloonTip.RestoreError"), System.Windows.Forms.ToolTipIcon.Error)
-                Dispatcher.Invoke(Sub() ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Restore"), ex))
-            End If
-        End Try
-    End Sub
-
-    Private Sub RestoreBackgroundWorker_RunWorkerCompleted()
-        RestoreStopWatch.Stop()
-        EnableUI(True)
-        RefreshBackupsList()
-        ReloadBackupGroups()
-        ProgressBar.Value = 100
     End Sub
 #End Region
 
@@ -1595,19 +1555,19 @@ Partial Class MainWindow
     'TODO: remove this and add warning message instead. Not accurate enough.
     Private Function IsValidInstallation()
         Select Case My.Settings.Launcher
-            Case Launcher.Minecraft
+            Case Game.Launcher.Minecraft
                 If My.Computer.FileSystem.FileExists(My.Settings.MinecraftFolderLocation & "\launcher.jar") Then
                     Return True
                 End If
-            Case Launcher.Technic
+            Case Game.Launcher.Technic
                 If My.Computer.FileSystem.FileExists(My.Settings.MinecraftFolderLocation & "\settings.json") Then
                     Return True
                 End If
-            Case Launcher.FeedTheBeast
+            Case Game.Launcher.FeedTheBeast
                 If My.Computer.FileSystem.DirectoryExists(My.Settings.MinecraftFolderLocation & "\authlib") Then
                     Return True
                 End If
-            Case Launcher.ATLauncher
+            Case Game.Launcher.ATLauncher
                 If My.Computer.FileSystem.DirectoryExists(My.Settings.MinecraftFolderLocation & "\Configs") Then
                     Return True
                 End If
@@ -1661,56 +1621,6 @@ Public Class CloseAction
         CloseCompletely
         Cancel
         ForceClose
-    End Enum
-End Class
-
-Public Class PlayerStats
-    Public Class Health
-        Inherits Image
-        Public Sub New(Margin As Thickness, State As State)
-            Select Case State
-                Case PlayerStats.State.Full
-                    Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/heart_full.png"))
-                Case PlayerStats.State.Half
-                    Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/heart_half.png"))
-                Case PlayerStats.State.Empty
-                    Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/heart_empty.png"))
-            End Select
-
-            Me.Width = 9
-            Me.Height = 9
-            Me.HorizontalAlignment = Windows.HorizontalAlignment.Left
-            Me.VerticalAlignment = Windows.VerticalAlignment.Stretch
-            Me.Stretch = Windows.Media.Stretch.None
-            Me.Margin = Margin
-        End Sub
-    End Class
-
-    Public Class Hunger
-        Inherits Image
-        Public Sub New(Margin As Thickness, State As State)
-            Select Case State
-                Case PlayerStats.State.Full
-                    Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/hunger_full.png"))
-                Case PlayerStats.State.Half
-                    Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/hunger_half.png"))
-                Case PlayerStats.State.Empty
-                    Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/hunger_empty.png"))
-            End Select
-
-            Me.Width = 9
-            Me.Height = 9
-            Me.HorizontalAlignment = Windows.HorizontalAlignment.Left
-            Me.VerticalAlignment = Windows.VerticalAlignment.Stretch
-            Me.Stretch = Windows.Media.Stretch.None
-            Me.Margin = Margin
-        End Sub
-    End Class
-
-    Public Enum State
-        Full
-        Half
-        Empty
     End Enum
 End Class
 

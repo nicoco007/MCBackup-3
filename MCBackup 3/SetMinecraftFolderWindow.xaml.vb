@@ -5,7 +5,7 @@ Public Class SetMinecraftFolderWindow
         Dim FSD As New FolderSelectDialog
         If FSD.ShowDialog(New WindowInteropHelper(Me).Handle) = Forms.DialogResult.OK Then
             Select Case GetInstallationTypeButtons()
-                Case MainWindow.Launcher.Minecraft
+                Case Game.Launcher.Minecraft
                     If My.Computer.FileSystem.FileExists(FSD.FileName & "\launcher.jar") Then
                         If MetroMessageBox.Show("Warning! Minecraft does not seem to be installed in that folder. Are you sure you want to set this folder as your Minecraft folder location?", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.No Then
                             Exit Sub
@@ -13,27 +13,27 @@ Public Class SetMinecraftFolderWindow
                     End If
                     My.Settings.MinecraftFolderLocation = FSD.FileName
                     My.Settings.SavesFolderLocation = FSD.FileName & "\saves"
-                Case MainWindow.Launcher.Technic
-                        My.Settings.MinecraftFolderLocation = FSD.FileName
-                Case MainWindow.Launcher.FeedTheBeast
-                        My.Settings.MinecraftFolderLocation = FSD.FileName
-                Case MainWindow.Launcher.ATLauncher
-                        My.Settings.MinecraftFolderLocation = FSD.FileName
+                Case Game.Launcher.Technic
+                    My.Settings.MinecraftFolderLocation = FSD.FileName
+                Case Game.Launcher.FeedTheBeast
+                    My.Settings.MinecraftFolderLocation = FSD.FileName
+                Case Game.Launcher.ATLauncher
+                    My.Settings.MinecraftFolderLocation = FSD.FileName
             End Select
         End If
         My.Settings.Launcher = GetInstallationTypeButtons()
         BaseFolderTextBox.Text = My.Settings.MinecraftFolderLocation
     End Sub
 
-    Private Function GetInstallationTypeButtons() As MainWindow.Launcher
+    Private Function GetInstallationTypeButtons() As Game.Launcher
         If MinecraftInstallationRadioButton.IsChecked Then
-            Return MainWindow.Launcher.Minecraft
+            Return Game.Launcher.Minecraft
         ElseIf TechnicInstallationRadioButton.IsChecked Then
-            Return MainWindow.Launcher.Technic
+            Return Game.Launcher.Technic
         ElseIf FTBInstallationRadioButton.IsChecked Then
-            Return MainWindow.Launcher.FeedTheBeast
+            Return Game.Launcher.FeedTheBeast
         ElseIf ATLauncherInstallationRadioButton.IsChecked Then
-            Return MainWindow.Launcher.ATLauncher
+            Return Game.Launcher.ATLauncher
         End If
         Return Nothing
     End Function
