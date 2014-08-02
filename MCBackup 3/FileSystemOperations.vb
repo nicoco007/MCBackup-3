@@ -30,12 +30,13 @@ Public Class FileSystemOperations
         End Function
 
         Public Shared Sub DeleteFolderContents(Directory As String)
-            For Each Folder As DirectoryInfo In New DirectoryInfo(Directory).GetDirectories
-                Folder.Delete(True)
-            Next
-
             For Each File As FileInfo In New DirectoryInfo(Directory).GetFiles
                 File.Delete()
+            Next
+
+            For Each Folder As DirectoryInfo In New DirectoryInfo(Directory).GetDirectories
+                DeleteFolderContents(Folder.FullName)
+                Folder.Delete(True)
             Next
         End Sub
     End Class

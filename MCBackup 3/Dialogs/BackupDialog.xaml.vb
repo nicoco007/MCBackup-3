@@ -36,64 +36,79 @@ Public Class BackupDialog
         VersionsListView.Items.Clear()
 
         Select Case My.Settings.Launcher
-            Case "minecraft"
-                My.Computer.FileSystem.CreateDirectory(My.Settings.SavesFolderLocation)
-                Dim SavesDirectory As New DirectoryInfo(My.Settings.SavesFolderLocation)
-                For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
-                    If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
-                        SavesListView.Items.Add(New SavesListViewItem(Folder.Name, Nothing))
-                    End If
-                Next
-
-                My.Computer.FileSystem.CreateDirectory(My.Settings.MinecraftFolderLocation & "\versions")
-                Dim VersionsDirectory As New DirectoryInfo(My.Settings.MinecraftFolderLocation & "\versions")
-                For Each Version In VersionsDirectory.GetDirectories
-                    VersionsListView.Items.Add(Version.Name)
-                Next
-            Case "technic"
-                Dim Modpacks As New DirectoryInfo(My.Settings.MinecraftFolderLocation & "\modpacks")
-                For Each Modpack As DirectoryInfo In Modpacks.GetDirectories
-                    My.Computer.FileSystem.CreateDirectory(Modpack.FullName & "\saves")
-                    Dim SavesDirectory As New DirectoryInfo(Modpack.FullName & "\saves")
-                    Log.Print("Searching '{0}' for saves...", SavesDirectory.FullName.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>"))
+            Case MainWindow.Launcher.Minecraft
+                If Directory.Exists(My.Settings.SavesFolderLocation) Then
+                    Dim SavesDirectory As New DirectoryInfo(My.Settings.SavesFolderLocation)
                     For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
                         If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
-                            SavesListView.Items.Add(New SavesListViewItem(Folder.Name, Modpack.Name))
+                            SavesListView.Items.Add(New SavesListViewItem(Folder.Name, Nothing))
                         End If
                     Next
-                    VersionsListView.Items.Add(Modpack.Name)
-                Next
-            Case "ftb"
-                Dim BaseDirectory As New DirectoryInfo(My.Settings.MinecraftFolderLocation)
-                For Each Directory As DirectoryInfo In BaseDirectory.GetDirectories
-                    If My.Computer.FileSystem.DirectoryExists(Directory.FullName & "\natives") And My.Computer.FileSystem.DirectoryExists(Directory.FullName & "\minecraft") Then
-                        My.Computer.FileSystem.CreateDirectory(Directory.FullName & "\minecraft\saves")
-                        Dim SavesDirectory As New DirectoryInfo(Directory.FullName & "\minecraft\saves")
-                        Log.Print("Searching '{0}' for saves...", SavesDirectory.FullName.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>"))
+                Else
+                    Log.Print("Saves folder does not exist!", Log.Level.Warning)
+                End If
+
+                If Directory.Exists(My.Settings.MinecraftFolderLocation & "\versions") Then
+                    Dim VersionsDirectory As New DirectoryInfo(My.Settings.MinecraftFolderLocation & "\versions")
+                    For Each Version In VersionsDirectory.GetDirectories
+                        VersionsListView.Items.Add(Version.Name)
+                    Next
+                Else
+                    Log.Print("Versions folder does not exist!")
+                End If
+            Case MainWindow.Launcher.Technic
+                Dim Modpacks As New DirectoryInfo(My.Settings.MinecraftFolderLocation & "\modpacks")
+                For Each Modpack As DirectoryInfo In Modpacks.GetDirectories
+                    If Directory.Exists(Modpack.FullName & "\saves") Then
+                        Dim SavesDirectory As New DirectoryInfo(Modpack.FullName & "\saves")
+                        Log.Print("Searching '{0}' for saves...", SavesDirectory.FullName)
                         For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
                             If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
-                                SavesListView.Items.Add(New SavesListViewItem(Folder.Name, Directory.Name))
+                                SavesListView.Items.Add(New SavesListViewItem(Folder.Name, Modpack.Name))
                             End If
                         Next
+                    Else
+                        Log.Print("Modpack '{0}' does not have a saves folder!", Log.Level.Warning, Modpack.Name)
+                    End If
+                    VersionsListView.Items.Add(Modpack.Name)
+                Next
+            Case MainWindow.Launcher.FeedTheBeast
+                Dim BaseDirectory As New DirectoryInfo(My.Settings.MinecraftFolderLocation)
+                For Each Directory As DirectoryInfo In BaseDirectory.GetDirectories
+                    If My.Computer.FileSystem.DirectoryExists(Directory.FullName & "\minecraft") Then
+                        If IO.Directory.Exists(Directory.FullName & "\minecraft\saves") Then
+                            Dim SavesDirectory As New DirectoryInfo(Directory.FullName & "\minecraft\saves")
+                            Log.Print("Searching '{0}' for saves...", SavesDirectory.FullName)
+                            For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
+                                If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
+                                    SavesListView.Items.Add(New SavesListViewItem(Folder.Name, Directory.Name))
+                                End If
+                            Next
+                        Else
+                            Log.Print("Pack '{0}' does not have a saves folder!", Log.Level.Warning, Directory.Name)
+                        End If
                         VersionsListView.Items.Add(Directory.Name)
                     End If
                 Next
-            Case "atlauncher"
+            Case MainWindow.Launcher.ATLauncher
                 Dim Instances As New DirectoryInfo(My.Settings.MinecraftFolderLocation & "\Instances")
                 For Each Instance As DirectoryInfo In Instances.GetDirectories
-                    My.Computer.FileSystem.CreateDirectory(Instance.FullName & "\saves")
-                    Dim SavesDirectory As New DirectoryInfo(Instance.FullName & "\saves")
-                    Log.Print("Searching '{0}' for saves...", SavesDirectory.FullName.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>"))
-                    For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
-                        If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
-                            SavesListView.Items.Add(New SavesListViewItem(Folder.Name, Instance.Name))
-                        End If
-                    Next
+                    If Directory.Exists(Instance.FullName & "\saves") Then
+                        Dim SavesDirectory As New DirectoryInfo(Instance.FullName & "\saves")
+                        Log.Print("Searching '{0}' for saves...", SavesDirectory.FullName)
+                        For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
+                            If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
+                                SavesListView.Items.Add(New SavesListViewItem(Folder.Name, Instance.Name))
+                            End If
+                        Next
+                    Else
+                        Log.Print("Instance '{0}' does not have a saves folder")
+                    End If
                     VersionsListView.Items.Add(Instance.Name)
                 Next
         End Select
 
-        If My.Settings.Launcher = "minecraft" Then
+        If My.Settings.Launcher = MainWindow.Launcher.Minecraft Then
             SaveNameColumn.Width = 597
             SaveLocationColumn.Width = 0
         Else
@@ -136,20 +151,20 @@ Public Class BackupDialog
                 Case 0
                     Main.BackupInfo(0) = CType(SavesListView.SelectedItem, SavesListViewItem).Name & " " & GetBackupTimeStamp()
                 Case 1
-                    If My.Settings.Launcher = "minecraft" Then
+                    If My.Settings.Launcher = MainWindow.Launcher.Minecraft Then
                         Main.BackupInfo(0) = "Version " & VersionsListView.SelectedItem & " " & GetBackupTimeStamp()
                     Else
                         Main.BackupInfo(0) = VersionsListView.SelectedItem & " " & GetBackupTimeStamp()
                     End If
                 Case 2
                     Select Case My.Settings.Launcher
-                        Case "minecraft"
+                        Case MainWindow.Launcher.Minecraft
                             Main.BackupInfo(0) = "Minecraft " & GetBackupTimeStamp()
-                        Case "technic"
+                        Case MainWindow.Launcher.Technic
                             Main.BackupInfo(0) = "Technic " & GetBackupTimeStamp()
-                        Case "ftb"
+                        Case MainWindow.Launcher.FeedTheBeast
                             Main.BackupInfo(0) = "Feed the Beast " & GetBackupTimeStamp()
-                        Case "atlauncher"
+                        Case MainWindow.Launcher.ATLauncher
                             Main.BackupInfo(0) = "ATLauncher " & GetBackupTimeStamp()
                     End Select
             End Select
@@ -173,25 +188,25 @@ Public Class BackupDialog
         Select Case BackupTypeTabControl.SelectedIndex
             Case 0
                 Select Case My.Settings.Launcher
-                    Case "minecraft"
+                    Case MainWindow.Launcher.Minecraft
                         Main.BackupInfo(2) = My.Settings.SavesFolderLocation & "\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
-                    Case "technic"
+                    Case MainWindow.Launcher.Technic
                         Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\modpacks\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
-                    Case "ftb"
+                    Case MainWindow.Launcher.FeedTheBeast
                         Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\minecraft\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
-                    Case "atlauncher"
+                    Case MainWindow.Launcher.ATLauncher
                         Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\Instances\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
                 End Select
                 Main.BackupInfo(3) = "save"
             Case 1
                 Select Case My.Settings.Launcher
-                    Case "minecraft"
+                    Case MainWindow.Launcher.Minecraft
                         Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\versions\" & VersionsListView.SelectedItem
-                    Case "technic"
+                    Case MainWindow.Launcher.Technic
                         Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\modpacks\" & VersionsListView.SelectedItem
-                    Case "ftb"
+                    Case MainWindow.Launcher.FeedTheBeast
                         Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\" & VersionsListView.SelectedItem
-                    Case "atlauncher"
+                    Case MainWindow.Launcher.ATLauncher
                         Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\Instances\" & VersionsListView.SelectedItem
                 End Select
                 Main.BackupInfo(3) = "version"
@@ -203,7 +218,7 @@ Public Class BackupDialog
         Main.BackupInfo(4) = IIf(GroupsComboBox.SelectedIndex = 0, Nothing, GroupsComboBox.SelectedItem)
         Main.BackupInfo(5) = My.Settings.Launcher
 
-        If My.Settings.Launcher <> "minecraft" And SavesListView.SelectedItems.Count > 0 Then
+        If My.Settings.Launcher <> MainWindow.Launcher.Minecraft And SavesListView.SelectedItems.Count > 0 Then
             Main.BackupInfo(6) = CType(SavesListView.SelectedItem, SavesListViewItem).Location
         End If
 
@@ -227,13 +242,13 @@ Public Class BackupDialog
         CancelButton.Content = MCBackup.Language.Dictionary("BackupWindow.CancelButton.Content")
         GroupLabel.Content = MCBackup.Language.Dictionary("BackupWindow.GroupLabel.Text")
         Select Case My.Settings.Launcher
-            Case "minecraft"
+            Case MainWindow.Launcher.Minecraft
                 BackupTypeTabControl.Items(1).Header = "Version"
-            Case "technic"
+            Case MainWindow.Launcher.Technic
                 BackupTypeTabControl.Items(1).Header = "Modpack"
-            Case "ftb"
+            Case MainWindow.Launcher.FeedTheBeast
                 BackupTypeTabControl.Items(1).Header = "Modpack"
-            Case "atlauncher"
+            Case MainWindow.Launcher.ATLauncher
                 BackupTypeTabControl.Items(1).Header = "Instance"
         End Select
     End Sub

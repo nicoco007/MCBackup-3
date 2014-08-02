@@ -5,57 +5,35 @@ Public Class SetMinecraftFolderWindow
         Dim FSD As New FolderSelectDialog
         If FSD.ShowDialog(New WindowInteropHelper(Me).Handle) = Forms.DialogResult.OK Then
             Select Case GetInstallationTypeButtons()
-                Case "minecraft"
+                Case MainWindow.Launcher.Minecraft
                     If My.Computer.FileSystem.FileExists(FSD.FileName & "\launcher.jar") Then
-                        My.Settings.MinecraftFolderLocation = FSD.FileName
-                        My.Settings.SavesFolderLocation = FSD.FileName & "\saves"
-                        My.Settings.Launcher = "minecraft"
-                    Else
-                        If MetroMessageBox.Show("Minecraft is not installed in that folder! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
-                            BaseFolderBrowseButton_Click(sender, e)
+                        If MetroMessageBox.Show("Warning! Minecraft does not seem to be installed in that folder. Are you sure you want to set this folder as your Minecraft folder location?", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.No Then
+                            Exit Sub
                         End If
                     End If
-                Case "technic"
-                    If My.Computer.FileSystem.FileExists(FSD.FileName & "\settings.json") Then
+                    My.Settings.MinecraftFolderLocation = FSD.FileName
+                    My.Settings.SavesFolderLocation = FSD.FileName & "\saves"
+                Case MainWindow.Launcher.Technic
                         My.Settings.MinecraftFolderLocation = FSD.FileName
-                        My.Settings.Launcher = "technic"
-                    Else
-                        If MetroMessageBox.Show("Technic is not installed in that folder! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
-                            BaseFolderBrowseButton_Click(sender, e)
-                        End If
-                    End If
-                Case "ftb"
-                    If My.Computer.FileSystem.DirectoryExists(FSD.FileName & "\authlib") Then
+                Case MainWindow.Launcher.FeedTheBeast
                         My.Settings.MinecraftFolderLocation = FSD.FileName
-                        My.Settings.Launcher = "ftb"
-                    Else
-                        If MetroMessageBox.Show("Feed the Beast is not installed in that folder! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
-                            BaseFolderBrowseButton_Click(sender, e)
-                        End If
-                    End If
-                Case "atlauncher"
-                    If My.Computer.FileSystem.DirectoryExists(FSD.FileName & "\Configs") Then
+                Case MainWindow.Launcher.ATLauncher
                         My.Settings.MinecraftFolderLocation = FSD.FileName
-                        My.Settings.Launcher = "atlauncher"
-                    Else
-                        If MetroMessageBox.Show("ATLauncher is not installed in that folder! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
-                            BaseFolderBrowseButton_Click(sender, e)
-                        End If
-                    End If
             End Select
         End If
+        My.Settings.Launcher = GetInstallationTypeButtons()
         BaseFolderTextBox.Text = My.Settings.MinecraftFolderLocation
     End Sub
 
-    Private Function GetInstallationTypeButtons() As String
+    Private Function GetInstallationTypeButtons() As MainWindow.Launcher
         If MinecraftInstallationRadioButton.IsChecked Then
-            Return "minecraft"
+            Return MainWindow.Launcher.Minecraft
         ElseIf TechnicInstallationRadioButton.IsChecked Then
-            Return "technic"
+            Return MainWindow.Launcher.Technic
         ElseIf FTBInstallationRadioButton.IsChecked Then
-            Return "ftb"
+            Return MainWindow.Launcher.FeedTheBeast
         ElseIf ATLauncherInstallationRadioButton.IsChecked Then
-            Return "atlauncher"
+            Return MainWindow.Launcher.ATLauncher
         End If
         Return Nothing
     End Function

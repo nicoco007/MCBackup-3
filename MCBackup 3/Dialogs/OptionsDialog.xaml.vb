@@ -55,13 +55,13 @@ Partial Public Class Options
         SendAnonymousDataCheckBox.IsChecked = My.Settings.SendAnonymousData
 
         Select Case My.Settings.Launcher
-            Case "minecraft"
+            Case MainWindow.Launcher.Minecraft
                 MinecraftInstallationRadioButton.IsChecked = True
-            Case "technic"
+            Case MainWindow.Launcher.Technic
                 TechnicInstallationRadioButton.IsChecked = True
-            Case "ftb"
+            Case MainWindow.Launcher.FeedTheBeast
                 FTBInstallationRadioButton.IsChecked = True
-            Case "atlauncher"
+            Case MainWindow.Launcher.ATLauncher
                 ATLauncherInstallationRadioButton.IsChecked = True
         End Select
 
@@ -69,7 +69,7 @@ Partial Public Class Options
         SavesFolderTextBox.Text = My.Settings.SavesFolderLocation
         BackupsFolderTextBox.Text = My.Settings.BackupsFolderLocation
 
-        If My.Settings.Launcher = "minecraft" Then
+        If My.Settings.Launcher = MainWindow.Launcher.Minecraft Then
             SavesFolderBrowseButton.IsEnabled = True
             SavesFolderTextBox.IsEnabled = True
             SavesFolderTextBox.Text = My.Settings.SavesFolderLocation
@@ -436,12 +436,13 @@ Partial Public Class Options
         End If
 
         sender = CType(sender, RadioButton)
+        sender.Tag = CType(sender.Tag, MainWindow.Launcher)
         If sender.Tag <> My.Settings.Launcher Then
             Dim FSD As New FolderSelectDialog
             FSD.InitialDirectory = New DirectoryInfo(My.Settings.MinecraftFolderLocation).Parent.FullName
             If FSD.ShowDialog(New WindowInteropHelper(Me).Handle) = Forms.DialogResult.OK Then
                 Select Case sender.Tag
-                    Case "minecraft"
+                    Case MainWindow.Launcher.Minecraft
                         If Not My.Computer.FileSystem.FileExists(FSD.FileName & "\launcher.jar") Then
                             If MetroMessageBox.Show("Minecraft is not installed in that folder! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
                                 InstallationType_SelectionChanged(sender, e)
@@ -450,7 +451,7 @@ Partial Public Class Options
                             End If
                             Exit Sub
                         End If
-                    Case "technic"
+                    Case MainWindow.Launcher.Technic
                         If Not My.Computer.FileSystem.FileExists(FSD.FileName & "\settings.json") Then
                             If MetroMessageBox.Show("Technic is not installed in that foler! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
                                 InstallationType_SelectionChanged(sender, e)
@@ -459,7 +460,7 @@ Partial Public Class Options
                             End If
                             Exit Sub
                         End If
-                    Case "ftb"
+                    Case MainWindow.Launcher.Technic
                         If Not My.Computer.FileSystem.DirectoryExists(FSD.FileName & "\authlib") Then
                             If MetroMessageBox.Show("Feed the Beast is not installed in that folder! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
                                 InstallationType_SelectionChanged(sender, e)
@@ -468,7 +469,7 @@ Partial Public Class Options
                             End If
                             Exit Sub
                         End If
-                    Case "atlauncher"
+                    Case MainWindow.Launcher.Technic
                         If Not My.Computer.FileSystem.DirectoryExists(FSD.FileName & "\Configs") Then
                             If MetroMessageBox.Show("ATLauncher is not installed in that folder! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
                                 InstallationType_SelectionChanged(sender, e)
@@ -489,7 +490,7 @@ Partial Public Class Options
             End If
         End If
 
-        If My.Settings.Launcher = "minecraft" Then
+        If My.Settings.Launcher = MainWindow.Launcher.Minecraft Then
             SavesFolderBrowseButton.IsEnabled = True
             SavesFolderTextBox.IsEnabled = True
             SavesFolderTextBox.Text = My.Settings.SavesFolderLocation
@@ -502,28 +503,28 @@ Partial Public Class Options
         Main.AutoBackupWindow.ReloadSaves()
     End Sub
 
-    Private Sub SetInstallationTypeButtons(Type As String)
+    Private Sub SetInstallationTypeButtons(Type As MainWindow.Launcher)
         Select Case Type
-            Case "minecraft"
+            Case MainWindow.Launcher.Minecraft
                 MinecraftInstallationRadioButton.IsChecked = True
-            Case "technic"
+            Case MainWindow.Launcher.Technic
                 TechnicInstallationRadioButton.IsChecked = True
-            Case "ftb"
+            Case MainWindow.Launcher.FeedTheBeast
                 FTBInstallationRadioButton.IsChecked = True
-            Case "atlauncher"
+            Case MainWindow.Launcher.ATLauncher
                 ATLauncherInstallationRadioButton.IsChecked = True
         End Select
     End Sub
 
-    Private Function GetInstallationTypeButtons() As String
+    Private Function GetInstallationTypeButtons() As MainWindow.Launcher
         If MinecraftInstallationRadioButton.IsChecked Then
-            Return "minecraft"
+            Return MainWindow.Launcher.Minecraft
         ElseIf TechnicInstallationRadioButton.IsChecked Then
-            Return "technic"
+            Return MainWindow.Launcher.Technic
         ElseIf FTBInstallationRadioButton.IsChecked Then
-            Return "ftb"
+            Return MainWindow.Launcher.FeedTheBeast
         ElseIf ATLauncherInstallationRadioButton.IsChecked Then
-            Return "atlauncher"
+            Return MainWindow.Launcher.ATLauncher
         End If
         Return Nothing
     End Function
@@ -532,28 +533,28 @@ Partial Public Class Options
         Dim FSD As New FolderSelectDialog
         If FSD.ShowDialog(New WindowInteropHelper(Me).Handle) = Forms.DialogResult.OK Then
             Select Case My.Settings.Launcher
-                Case "minecraft"
+                Case MainWindow.Launcher.Minecraft
                     If Not My.Computer.FileSystem.FileExists(FSD.FileName & "\launcher.jar") Then
                         If MetroMessageBox.Show("Minecraft is not installed in that folder! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
                             BaseFolderBrowseButton_Click(sender, e)
                         End If
                         Exit Sub
                     End If
-                Case "technic"
+                Case MainWindow.Launcher.Technic
                     If Not My.Computer.FileSystem.FileExists(FSD.FileName & "\settings.json") Then
                         If MetroMessageBox.Show("Technic is not installed in that foler! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
                             BaseFolderBrowseButton_Click(sender, e)
                         End If
                         Exit Sub
                     End If
-                Case "ftb"
+                Case MainWindow.Launcher.FeedTheBeast
                     If Not My.Computer.FileSystem.DirectoryExists(FSD.FileName & "\authlib") Then
                         If MetroMessageBox.Show("Feed the Beast is not installed in that folder! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
                             BaseFolderBrowseButton_Click(sender, e)
                         End If
                         Exit Sub
                     End If
-                Case "atlauncher"
+                Case MainWindow.Launcher.ATLauncher
                     If Not My.Computer.FileSystem.DirectoryExists(FSD.FileName & "\Configs") Then
                         If MetroMessageBox.Show("ATLauncher is not installed in that folder! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
                             BaseFolderBrowseButton_Click(sender, e)

@@ -131,13 +131,13 @@ Public Class AutoBackupWindow
             Main.BackupInfo(0) = PrefixTextBox.Text & BackupDialog.GetBackupTimeStamp() & SuffixTextBox.Text
             Main.BackupInfo(1) = String.Format(MCBackup.Language.Dictionary("AutoBackupWindow.BackupDescription"), SavesListView.SelectedItem.Name)
             Select Case My.Settings.Launcher
-                Case "minecraft"
+                Case MainWindow.Launcher.Minecraft
                     Main.BackupInfo(2) = My.Settings.SavesFolderLocation & "\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
-                Case "technic"
+                Case MainWindow.Launcher.Technic
                     Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\modpacks\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Modpack & "\saves\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
-                Case "ftb"
+                Case MainWindow.Launcher.FeedTheBeast
                     Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Modpack & "\minecraft\saves\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
-                Case "atlauncher"
+                Case MainWindow.Launcher.ATLauncher
                     Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\Instances\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Modpack & "\saves\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
             End Select
             Main.BackupInfo(3) = "save"
@@ -160,7 +160,7 @@ Public Class AutoBackupWindow
     Public Sub ReloadSaves()
         SavesListView.Items.Clear()
         Select Case My.Settings.Launcher
-            Case "minecraft"
+            Case MainWindow.Launcher.Minecraft
                 My.Computer.FileSystem.CreateDirectory(My.Settings.SavesFolderLocation)
                 Dim SavesDirectory As New DirectoryInfo(My.Settings.SavesFolderLocation)
                 For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
@@ -168,7 +168,7 @@ Public Class AutoBackupWindow
                         SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, "minecraft"))
                     End If
                 Next
-            Case "technic"
+            Case MainWindow.Launcher.Technic
                 Dim Modpacks As New DirectoryInfo(My.Settings.MinecraftFolderLocation & "\modpacks")
                 For Each Modpack As DirectoryInfo In Modpacks.GetDirectories
                     My.Computer.FileSystem.CreateDirectory(Modpack.FullName & "\saves")
@@ -179,7 +179,7 @@ Public Class AutoBackupWindow
                         End If
                     Next
                 Next
-            Case "ftb"
+            Case MainWindow.Launcher.FeedTheBeast
                 Dim BaseDirectory As New DirectoryInfo(My.Settings.MinecraftFolderLocation)
                 For Each Directory As DirectoryInfo In BaseDirectory.GetDirectories
                     If My.Computer.FileSystem.DirectoryExists(Directory.FullName & "\natives") And My.Computer.FileSystem.DirectoryExists(Directory.FullName & "\minecraft") Then
@@ -205,7 +205,7 @@ Public Class AutoBackupWindow
                 Next
         End Select
 
-        If My.Settings.Launcher = "minecraft" Then
+        If My.Settings.Launcher = MainWindow.Launcher.Minecraft Then
             SaveNameColumn.Width = 310
             SaveLocationColumn.Width = 0
         Else

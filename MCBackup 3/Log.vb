@@ -30,6 +30,7 @@ Public Class Log
     ''' </summary>
     ''' <param name="Message">Message to display</param>
     Public Shared Sub Print(Message As String, ParamArray args As Object())
+        Message = Message.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>")
         Try
             Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
                 Debug.Print(DebugTimeStamp() & " [INFO] " & Message, args)
@@ -44,6 +45,7 @@ Public Class Log
     ''' </summary>
     ''' <param name="Message">Message to display</param>
     Public Shared Sub Print(Message As String, Level As Level)
+        Message = Message.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>")
         Try
             Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
                 Select Case Level
@@ -68,6 +70,7 @@ Public Class Log
     ''' <param name="Message">Message to be printed</param>
     ''' <param name="Level">Level, either [INFO], [WARNING], or [SEVERE]</param>
     Public Shared Sub Print(Message As String, Level As Level, ParamArray args As Object())
+        Message = Message.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>")
         Try
             Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
                 Select Case Level
@@ -91,6 +94,7 @@ Public Class Log
     ''' </summary>
     ''' <param name="Message">Message to be printed</param>
     Public Shared Sub SPrint(Message As String, ParamArray args As Object())
+        Message = Message.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>")
         Try
             Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
                 Debug.Print(Message, args)

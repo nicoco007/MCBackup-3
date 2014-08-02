@@ -78,6 +78,13 @@ Partial Class MainWindow
     Private Cancel As Boolean = False
 #End Region
 
+    Public Enum Launcher As Integer
+        Minecraft
+        Technic
+        FeedTheBeast
+        ATLauncher
+    End Enum
+
 #Region "Load"
     Public Sub New()
         InitializeComponent()
@@ -213,12 +220,8 @@ Partial Class MainWindow
 
         Splash.StepProgress()
 
-        If Not My.Settings.SavesFolderLocation = "" Then
-            My.Computer.FileSystem.CreateDirectory(My.Settings.SavesFolderLocation)
-        End If
-
         Log.Print("Minecraft folder set to '" & My.Settings.MinecraftFolderLocation & "'")
-        Log.Print("Saves folder set to '" & My.Settings.SavesFolderLocation & "'")
+        If My.Settings.Launcher = Launcher.Minecraft Then Log.Print("Saves folder set to '" & My.Settings.SavesFolderLocation & "'")
 
         Splash.StepProgress()
 
@@ -865,7 +868,7 @@ Partial Class MainWindow
             Log.Print("Starting Restore")
             RestoreInfo(0) = ListView.SelectedItems(0).Name ' Set place 0 of RestoreInfo array to the backup name
 
-            Dim BaseFolderName As String = "", Launcher As String = "", Modpack As String = ""
+            Dim BaseFolderName As String = "", Launcher As Launcher = MainWindow.Launcher.Minecraft, Modpack As String = ""
 
             Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0) & "\info.mcb")
                 Do While SR.Peek <> -1
@@ -876,15 +879,30 @@ Partial Class MainWindow
                         ElseIf Line.StartsWith("type=") Then
                             RestoreInfo(2) = Line.Substring(5)
                         ElseIf Line.StartsWith("launcher=") Then
-                            Launcher = Line.Substring(9)
+                            Dim Temp As Object = Line.Substring(9)
+                            If TypeOf Temp Is Integer Then
+                                'TODO: Enum.MaxValue ??
+                                Launcher = Temp
+                            Else
+                                Select Case Temp
+                                    Case "minecraft"
+                                        Launcher = MainWindow.Launcher.Minecraft
+                                    Case "technic"
+                                        Launcher = MainWindow.Launcher.Technic
+                                    Case "ftb"
+                                        Launcher = MainWindow.Launcher.FeedTheBeast
+                                    Case "atlauncher"
+                                        Launcher = MainWindow.Launcher.ATLauncher
+                                    Case Else
+                                        Launcher = MainWindow.Launcher.Minecraft
+                                End Select
+                            End If
                         ElseIf Line.StartsWith("modpack=") Then
                             Modpack = Line.Substring(8)
                         End If
                     End If
                 Loop
             End Using
-
-            If Launcher = "" Then Launcher = "minecraft"
 
             If Launcher <> My.Settings.Launcher Then
                 MetroMessageBox.Show(String.Format("This backup is not compatible with your current configuration! It is designed for '{0}' installations.", Launcher), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
@@ -894,24 +912,24 @@ Partial Class MainWindow
             Select Case RestoreInfo(2)
                 Case "save"
                     Select Case My.Settings.Launcher
-                        Case "minecraft"
+                        Case MainWindow.Launcher.Minecraft
                             RestoreInfo(1) = My.Settings.SavesFolderLocation & "\" & BaseFolderName
-                        Case "technic"
+                        Case MainWindow.Launcher.Technic
                             RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\modpacks\" & Modpack & "\saves\" & BaseFolderName
-                        Case "ftb"
+                        Case MainWindow.Launcher.FeedTheBeast
                             RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\" & Modpack & "\minecraft\saves\" & BaseFolderName
-                        Case "atlauncher"
+                        Case MainWindow.Launcher.ATLauncher
                             RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\Instances\" & Modpack & "\saves\" & BaseFolderName
                     End Select
                 Case "version"
                     Select Case My.Settings.Launcher
-                        Case "minecraft"
+                        Case MainWindow.Launcher.Minecraft
                             RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\versions\" & BaseFolderName
-                        Case "technic"
+                        Case MainWindow.Launcher.Technic
                             RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\modpacks\" & BaseFolderName
-                        Case "ftb"
+                        Case MainWindow.Launcher.FeedTheBeast
                             RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\" & BaseFolderName
-                        Case "atlauncher"
+                        Case MainWindow.Launcher.ATLauncher
                             RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\Instances\" & BaseFolderName
                     End Select
                 Case "everything"
@@ -1571,22 +1589,22 @@ Partial Class MainWindow
         OptionsWindow.ShowDialog(3)
     End Sub
 
-    'TODO: remove this and add warning message instead. This is sometimes incorrect and doesn't always work. Not accurate enough.
+    'TODO: remove this and add warning message instead. Not accurate enough.
     Private Function IsValidInstallation()
         Select Case My.Settings.Launcher
-            Case "minecraft"
+            Case Launcher.Minecraft
                 If My.Computer.FileSystem.FileExists(My.Settings.MinecraftFolderLocation & "\launcher.jar") Then
                     Return True
                 End If
-            Case "technic"
+            Case Launcher.Technic
                 If My.Computer.FileSystem.FileExists(My.Settings.MinecraftFolderLocation & "\settings.json") Then
                     Return True
                 End If
-            Case "ftb"
+            Case Launcher.FeedTheBeast
                 If My.Computer.FileSystem.DirectoryExists(My.Settings.MinecraftFolderLocation & "\authlib") Then
                     Return True
                 End If
-            Case "atlauncher"
+            Case Launcher.ATLauncher
                 If My.Computer.FileSystem.DirectoryExists(My.Settings.MinecraftFolderLocation & "\Configs") Then
                     Return True
                 End If

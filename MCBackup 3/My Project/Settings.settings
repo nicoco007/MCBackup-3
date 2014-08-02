@@ -84,11 +84,8 @@
     <Setting Name="SendAnonymousData" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="Launcher" Type="System.String" Scope="User">
-      <Value Profile="(Default)">minecraft</Value>
-    </Setting>
-    <Setting Name="FirstTimeRun" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+    <Setting Name="Launcher" Type="MCBackup.MainWindow.Launcher" Scope="User">
+      <Value Profile="(Default)">Minecraft</Value>
     </Setting>
   </Settings>
 </SettingsFile>
