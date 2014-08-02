@@ -1571,6 +1571,7 @@ Partial Class MainWindow
         OptionsWindow.ShowDialog(3)
     End Sub
 
+    'TODO: remove this and add warning message instead. This is sometimes incorrect and doesn't always work. Not accurate enough.
     Private Function IsValidInstallation()
         Select Case My.Settings.Launcher
             Case "minecraft"
@@ -1597,20 +1598,18 @@ Partial Class MainWindow
         If BackupThread.IsAlive Or MCMapProcess.HasExited = False Then
             If MetroMessageBox.Show("Are you sure you want to cancel the backup?", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
                 BackupThread.Abort()
-                For Each p As Process In Process.GetProcessesByName("mcmap")
-                    p.Kill()
-                Next
+                MCMapProcess.Kill()
             End If
         End If
 
         If DeleteForRestoreThread.IsAlive Then
-            If MetroMessageBox.Show("WARNING!" & vbNewLine & "Cancelling a restore operation can seriously damage your Minecraft installlation!" & vbNewLine & vbNewLine & "Are you sure you want to cancel the restore?", "WARNING!", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
+            If MetroMessageBox.Show("WARNING!" & vbNewLine & "Cancelling a restore operation can seriously damage your Minecraft installation!" & vbNewLine & vbNewLine & "Are you sure you want to cancel the restore?", "WARNING!", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
                 DeleteForRestoreThread.Abort()
             End If
         End If
 
         If RestoreThread.IsAlive Then
-            If MetroMessageBox.Show("WARNING!" & vbNewLine & "Cancelling a restore operation can seriously damage your Minecraft installlation!" & vbNewLine & vbNewLine & "Are you sure you want to cancel the restore?", "WARNING!", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
+            If MetroMessageBox.Show("WARNING!" & vbNewLine & "Cancelling a restore operation can seriously damage your Minecraft installation!" & vbNewLine & vbNewLine & "Are you sure you want to cancel the restore?", "WARNING!", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
                 RestoreThread.Abort()
             End If
         End If
