@@ -880,9 +880,13 @@ Partial Class MainWindow
                             RestoreInfo(2) = Line.Substring(5)
                         ElseIf Line.StartsWith("launcher=") Then
                             Dim Temp As Object = Line.Substring(9)
-                            If TypeOf Temp Is Integer Then
-                                'TODO: Enum.MaxValue ??
-                                Launcher = Temp
+                            Debug.Print(IsNumeric(Temp))
+                            If IsNumeric(Temp) Then
+                                If Temp > [Enum].GetValues(GetType(MainWindow.Launcher)).Cast(Of MainWindow.Launcher).Last() Or Temp < 0 Then
+                                    Launcher = MainWindow.Launcher.Minecraft
+                                Else
+                                    Launcher = Temp
+                                End If
                             Else
                                 Select Case Temp
                                     Case "minecraft"
@@ -897,9 +901,9 @@ Partial Class MainWindow
                                         Launcher = MainWindow.Launcher.Minecraft
                                 End Select
                             End If
-                        ElseIf Line.StartsWith("modpack=") Then
-                            Modpack = Line.Substring(8)
-                        End If
+                            ElseIf Line.StartsWith("modpack=") Then
+                                Modpack = Line.Substring(8)
+                            End If
                     End If
                 Loop
             End Using
@@ -936,15 +940,6 @@ Partial Class MainWindow
                     RestoreInfo(1) = My.Settings.MinecraftFolderLocation
             End Select
 
-            'DeleteForRestoreThread = New Thread(AddressOf DeleteForRestoreBackgroundWorker_DoWork)
-            'DeleteForRestoreThread.Start()
-            'ProgressBar.IsIndeterminate = True
-            'If Environment.OSVersion.Version.Major > 5 Then
-            '    TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate)
-            'End If
-            'StatusLabel.Content = MCBackup.Language.Dictionary("Status.RemovingOldContent")
-            'Log.Print("Removing old content")
-
             Dim t As New Thread(AddressOf Restore)
             t.Start()
         End If
@@ -953,17 +948,28 @@ Partial Class MainWindow
     Private Sub Restore()
         Try
             Dispatcher.Invoke(Sub()
-                                  ProgressBar.IsIndeterminate = True
+                                  'ProgressBar.IsIndeterminate = True
                               End Sub)
+
+            Dim InitialSize As Double = GetFolderSize(RestoreInfo(1))
 
             DeleteForRestoreThread = FileSystemOperations.Directory.DeleteFolderContentsAsync(RestoreInfo(1))
 
+
             Do
                 Debug.Print(GetFolderSize(RestoreInfo(1)))
+                Dim BytesRemaining As Double = GetFolderSize(RestoreInfo(1))
+                Dim BytesRemoved As Double = InitialSize - BytesRemaining
+
+                Dispatcher.Invoke(Sub()
+                                      Dim PercentRemoved As Decimal = BytesRemaining / InitialSize * 100
+                                      StatusLabel.Content = String.Format("Removing old content... ({0:0.00}% Complete)", 100 - PercentRemoved)
+                                      ProgressBar.Value = PercentRemoved
+                                  End Sub)
             Loop Until GetFolderSize(RestoreInfo(1)) = 0 And DeleteForRestoreThread.IsAlive = False
 
             Dispatcher.Invoke(Sub()
-                                  ProgressBar.IsIndeterminate = False
+                                  'ProgressBar.IsIndeterminate = False
                               End Sub)
 
             ' Create the target directory to prevent exceptions while getting the completion percentage
