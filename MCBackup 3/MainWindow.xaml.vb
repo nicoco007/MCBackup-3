@@ -729,6 +729,8 @@ Partial Class MainWindow
                                           ProgressBar.IsIndeterminate = False
                                           StatusLabel.Content = "Operation cancelled - Ready"
                                           EnableUI(True)
+                                          RefreshBackupsList()
+                                          ReloadBackupGroups()
                                       End Sub)
                     Exit Sub
                 End If
@@ -793,6 +795,8 @@ Partial Class MainWindow
                 ' Re-enable the UI and tell the user the backup is complete
                 Dispatcher.Invoke(Sub()
                                       EnableUI(True)
+                                      RefreshBackupsList()
+                                      ReloadBackupGroups()
                                       StatusLabel.Content = MCBackup.Language.Dictionary("Status.BackupComplete")
                                       StatusLabel.Refresh()
                                       ProgressBar.Value = 100
@@ -823,6 +827,12 @@ Partial Class MainWindow
                 StepNumber = 3
         End Select
 
+        If Me.Cancel Then
+            Me.Cancel = False
+            MCMapProcess.Kill()
+            Exit Sub
+        End If
+
         If e.Data.Contains("[") And e.Data.Contains("]") Then
             Debug.Print(e.Data.Substring(1).Remove(e.Data.IndexOf(".") - 1))
             Dim PercentComplete As Double = (e.Data.Substring(1).Remove(e.Data.IndexOf(".") - 1) / 4) + (StepNumber * 25)
@@ -834,8 +844,9 @@ Partial Class MainWindow
         ElseIf e.Data = "Job complete." Then
             Dispatcher.Invoke(Sub()
                                   EnableUI(True)
-                                  UpdateThumbProgress(100)
                                   RefreshBackupsList()
+                                  ReloadBackupGroups()
+                                  UpdateThumbProgress(100)
                                   StatusLabel.Content = MCBackup.Language.Dictionary("Status.BackupComplete")
                                   StatusLabel.Refresh()
                                   If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupComplete"), MCBackup.Language.Dictionary("BalloonTip.BackupComplete"), System.Windows.Forms.ToolTipIcon.Info)
@@ -984,6 +995,8 @@ Partial Class MainWindow
                                           ProgressBar.IsIndeterminate = False
                                           StatusLabel.Content = "Operation cancelled - Ready"
                                           EnableUI(True)
+                                          RefreshBackupsList()
+                                          ReloadBackupGroups()
                                       End Sub)
                     Exit Sub
                 End If
@@ -999,6 +1012,8 @@ Partial Class MainWindow
                                   StatusLabel.Content = MCBackup.Language.Dictionary("Status.RestoreComplete")
                                   ProgressBar.Value = 100
                                   EnableUI(True)
+                                  RefreshBackupsList()
+                                  ReloadBackupGroups()
                               End Sub)
 
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RestoreComplete"), MCBackup.Language.Dictionary("BalloonTip.RestoreComplete"), System.Windows.Forms.ToolTipIcon.Info)
@@ -1038,6 +1053,8 @@ Partial Class MainWindow
     Private Sub RestoreBackgroundWorker_RunWorkerCompleted()
         RestoreStopWatch.Stop()
         EnableUI(True)
+        RefreshBackupsList()
+        ReloadBackupGroups()
         ProgressBar.Value = 100
     End Sub
 #End Region
@@ -1185,12 +1202,13 @@ Partial Class MainWindow
 
     Private Sub DeleteBackgroundWorker_RunWorkerCompleted()
         EnableUI(True)
+        RefreshBackupsList()
+        ReloadBackupGroups()
         StatusLabel.Content = MCBackup.Language.Dictionary("Status.DeleteComplete")
         ProgressBar.IsIndeterminate = False
         If Environment.OSVersion.Version.Major > 5 Then
             TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress)
         End If
-        RefreshBackupsList()
     End Sub
 #End Region
 
@@ -1576,7 +1594,7 @@ Partial Class MainWindow
     End Function
 
     Private Sub CancelButton_Click(sender As Object, e As RoutedEventArgs) Handles CancelButton.Click
-        If BackupThread.IsAlive Or Process.GetProcessesByName("mcmap").Count > 0 Then
+        If BackupThread.IsAlive Or MCMapProcess.HasExited = False Then
             If MetroMessageBox.Show("Are you sure you want to cancel the backup?", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
                 BackupThread.Abort()
                 For Each p As Process In Process.GetProcessesByName("mcmap")
