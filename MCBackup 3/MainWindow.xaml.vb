@@ -947,30 +947,23 @@ Partial Class MainWindow
 
     Private Sub Restore()
         Try
-            Dispatcher.Invoke(Sub()
-                                  'ProgressBar.IsIndeterminate = True
-                              End Sub)
-
+            ' Set initial size variable
             Dim InitialSize As Double = GetFolderSize(RestoreInfo(1))
 
+            ' Start removal async
             DeleteForRestoreThread = FileSystemOperations.Directory.DeleteFolderContentsAsync(RestoreInfo(1))
 
-
             Do
-                Debug.Print(GetFolderSize(RestoreInfo(1)))
+                ' Set bytes remaining to current folder size
                 Dim BytesRemaining As Double = GetFolderSize(RestoreInfo(1))
-                Dim BytesRemoved As Double = InitialSize - BytesRemaining
 
                 Dispatcher.Invoke(Sub()
+                                      ' Determine percent removed (inverted) by dividing bytes remaining by initial size, and multiplying by 100
                                       Dim PercentRemoved As Decimal = BytesRemaining / InitialSize * 100
                                       StatusLabel.Content = String.Format("Removing old content... ({0:0.00}% Complete)", 100 - PercentRemoved)
                                       ProgressBar.Value = PercentRemoved
                                   End Sub)
             Loop Until GetFolderSize(RestoreInfo(1)) = 0 And DeleteForRestoreThread.IsAlive = False
-
-            Dispatcher.Invoke(Sub()
-                                  'ProgressBar.IsIndeterminate = False
-                              End Sub)
 
             ' Create the target directory to prevent exceptions while getting the completion percentage
             My.Computer.FileSystem.CreateDirectory(RestoreInfo(1))
@@ -1003,15 +996,18 @@ Partial Class MainWindow
                 End If
 
                 Dispatcher.Invoke(Sub()
+                                      ' Display percent complete on progress bar and restoring message
                                       StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed, TimeLeft.TotalSeconds)
                                       ProgressBar.Value = PercentComplete
                                       ProgressBar.Refresh()
                                   End Sub)
 
+                ' If Windows version later than Windows Vista, show progress in taskbar
                 If Environment.OSVersion.Version.Major > 5 Then
                     TaskbarManager.Instance.SetProgressValue(PercentComplete, 100)
                 End If
 
+                ' Cancel if cancel variable is true and backup thread has been killed
                 If Cancel And BackupThread.IsAlive = False Then
                     Dispatcher.Invoke(Sub()
                                           RestoreStopWatch.Stop()
@@ -1029,6 +1025,7 @@ Partial Class MainWindow
             ' Stop backup stopwatch
             RestoreStopWatch.Stop()
 
+            ' Delete info/thumb files from restored backup
             If My.Computer.FileSystem.FileExists(RestoreInfo(1) & "\info.mcb") Then My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\info.mcb")
             If My.Computer.FileSystem.FileExists(RestoreInfo(1) & "\thumb.png") Then My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\thumb.png")
 
