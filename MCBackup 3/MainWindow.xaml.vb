@@ -34,16 +34,6 @@ Imports System.Text
 
 Partial Class MainWindow
 
-    Private _CloseType As CloseType
-    Public Property CloseType() As CloseType
-        Get
-            Return _CloseType
-        End Get
-        Set(value As CloseType)
-            _CloseType = value
-        End Set
-    End Property
-
 
 #Region "Variables"
     Private AppData As String = Environ("APPDATA")
@@ -75,11 +65,15 @@ Partial Class MainWindow
     Public AutoBackupWindow As New AutoBackupWindow
     Private Splash As New Splash
 
+    Public CloseType As CloseAction.CloseType = CloseType.ForceClose
+
     Private Cancel As Boolean = False
 #End Region
 
 #Region "Load"
     Public Sub New()
+        Application.CloseAction = Application.AppCloseAction.Force
+
         InitializeComponent()
 
         ThemeManager.ChangeAppStyle(My.Application, ThemeManager.GetAccent(My.Settings.Theme), ThemeManager.GetAppTheme("BaseLight"))
@@ -127,7 +121,6 @@ Partial Class MainWindow
             ErrorReportDialog.Show("Error: Could not load language file (" & My.Settings.Language & ")! MCBackup will now exit.", ex)
             My.Settings.Language = DefaultLanguage
             My.Settings.Save()
-            Me.CloseType = CloseType.ForceClose
             Me.Close()
             Exit Sub
         End Try
@@ -179,7 +172,6 @@ Partial Class MainWindow
                 My.Settings.BackupsFolderLocation = StartupPath & "\backups"
                 My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation)
             Else
-                Me.CloseType = CloseType.ForceClose
                 Me.Close()
                 Exit Sub
             End If
@@ -193,22 +185,13 @@ Partial Class MainWindow
         Splash.ShowStatus("Splash.Status.FindingMinecraft", "Finding Minecraft...")
         Splash.StepProgress()
 
-        If Not IsValidInstallation() Then
-            If My.Computer.FileSystem.FileExists(AppData & "\.minecraft\launcher.jar") Then
-                My.Settings.MinecraftFolderLocation = AppData & "\.minecraft"
-                My.Settings.SavesFolderLocation = AppData & "\.minecraft\saves"
-            Else
-                Log.Print("Minecraft folder is not valid!", Log.Level.Warning)
-                MetroMessageBox.Show("Could not find your Minecraft installation! Please select it using the next dialog.", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+        If Not Directory.Exists(My.Settings.MinecraftFolderLocation) Then
+            If MetroMessageBox.Show("MCBackup was unable to find your Minecraft installation. Please select it in the next window.", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OKCancel, MessageBoxImage.Error) = MessageBoxResult.OK Then
                 Dim SetMinecraftFolderWindow As New SetMinecraftFolderWindow
                 SetMinecraftFolderWindow.ShowDialog()
+            Else
+                Me.Close()
             End If
-        End If
-
-        If Not My.Computer.FileSystem.DirectoryExists(My.Settings.MinecraftFolderLocation) Then
-            MetroMessageBox.Show("Could not find your Minecraft installation! Please select it using the next dialog.", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
-            Dim SetMinecraftFolderWindow As New SetMinecraftFolderWindow
-            SetMinecraftFolderWindow.ShowDialog()
         End If
 
         Splash.StepProgress()
@@ -231,7 +214,7 @@ Partial Class MainWindow
                 AddHandler WebClient.DownloadStringCompleted, AddressOf WebClient_DownloadedStringAsync
                 WebClient.DownloadStringAsync(New Uri("http://content.nicoco007.com/downloads/mcbackup-3/version"))
             Catch ex As Exception
-                Log.Print("Could not connect to content.nicoco007.com, skipping update check...", Log.Level.Warning)
+                Log.Print("Could not connect to http://content.nicoco007.com, skipping update check...", Log.Level.Warning)
             End Try
         Else
             Log.Print("Update checking disabled, skipping...")
@@ -244,6 +227,8 @@ Partial Class MainWindow
         LoadLanguage()
 
         Splash.Hide()
+
+        Application.CloseAction = Application.AppCloseAction.Ask
     End Sub
 
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
@@ -1101,6 +1086,7 @@ Partial Class MainWindow
 
 #Region "Menu Bar"
     Private Sub ExitMenuItem_Click(sender As Object, e As RoutedEventArgs)
+        Application.CloseAction = Application.AppCloseAction.Close
         Me.Close()
     End Sub
 
@@ -1399,7 +1385,7 @@ Partial Class MainWindow
 
 #Region "Tray Icon"
     Private Sub ExitToolbarMenuItem_Click(sender As Object, e As EventArgs)
-        Me.CloseType = CloseType.ForceClose
+        Application.CloseAction = Application.AppCloseAction.Close
         Me.Close()
     End Sub
 
@@ -1416,35 +1402,46 @@ Partial Class MainWindow
 #Region "Close to Tray"
     Private Sub Main_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
         Me.Focus()
-        If Not CloseType = CloseType.ForceClose Then
-            Dim CloseToTrayDialog As New CloseToTrayDialog
-            CloseToTrayDialog.Owner = Me
-            If My.Settings.SaveCloseState Then
-                If My.Settings.CloseToTray Then
-                    CloseType = CloseType.CloseToTray
+
+        If Not Application.CloseAction = Application.AppCloseAction.Force Then
+            If Application.CloseAction = Application.AppCloseAction.Ask Then
+                If Not My.Settings.SaveCloseState Then
+                    Dim CloseToTrayDialog As New CloseToTrayDialog
+                    CloseToTrayDialog.Owner = Me
+                    Select Case CloseToTrayDialog.ShowDialog()
+                        Case Forms.DialogResult.Yes
+                            Me.Hide()
+                            If My.Settings.FirstCloseToTray Then
+                                NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RunningBackground"), MCBackup.Language.Dictionary("BalloonTip.RunningBackground"), System.Windows.Forms.ToolTipIcon.Info)
+                                My.Settings.FirstCloseToTray = False
+                            End If
+
+                            Log.Print("Closing to tray")
+
+                            My.Settings.CloseToTray = True
+
+                            e.Cancel = True
+                        Case Forms.DialogResult.Cancel
+                            e.Cancel = True
+                    End Select
                 Else
-                    CloseType = CloseType.CloseCompletely
+                    If My.Settings.CloseToTray Then
+                        Me.Hide()
+                        If My.Settings.FirstCloseToTray Then
+                            NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RunningBackground"), MCBackup.Language.Dictionary("BalloonTip.RunningBackground"), System.Windows.Forms.ToolTipIcon.Info)
+                            My.Settings.FirstCloseToTray = False
+                        End If
+
+                        Log.Print("Closing to tray")
+
+                        My.Settings.CloseToTray = True
+
+                        e.Cancel = True
+                    End If
                 End If
-            Else
-                CloseToTrayDialog.ShowDialog()
             End If
 
-            Select Case CloseType
-                Case CloseType.CloseToTray
-                    e.Cancel = True
-                    Me.Hide()
-                    If My.Settings.FirstCloseToTray Then
-                        NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RunningBackground"), MCBackup.Language.Dictionary("BalloonTip.RunningBackground"), System.Windows.Forms.ToolTipIcon.Info)
-                        My.Settings.FirstCloseToTray = False
-                    End If
-                    Log.Print("Closing to tray")
-                    Exit Sub
-                Case CloseType.CloseCompletely
-                    Exit Select
-                Case CloseType.Cancel
-                    e.Cancel = True
-                    Exit Sub
-            End Select
+            If e.Cancel Then Exit Sub
 
             NotifyIcon.Visible = False
             NotifyIcon.Dispose()
@@ -1462,8 +1459,9 @@ Partial Class MainWindow
             My.Settings.WindowSize = New Size(Me.Width, Me.Height)
             My.Settings.IsWindowMaximized = IIf(Me.WindowState = WindowState.Maximized, True, False)
 
-            Log.Print("Someone is closing me!")
             My.Settings.Save()
+
+            Log.Print("Someone is closing me!")
         End If
     End Sub
 #End Region
@@ -1549,29 +1547,6 @@ Partial Class MainWindow
         OptionsWindow.Owner = Me
         OptionsWindow.ShowDialog(3)
     End Sub
-
-    'TODO: remove this and add warning message instead. Not accurate enough.
-    Private Function IsValidInstallation()
-        Select Case My.Settings.Launcher
-            Case Game.Launcher.Minecraft
-                If My.Computer.FileSystem.FileExists(My.Settings.MinecraftFolderLocation & "\launcher.jar") Then
-                    Return True
-                End If
-            Case Game.Launcher.Technic
-                If My.Computer.FileSystem.FileExists(My.Settings.MinecraftFolderLocation & "\settings.json") Then
-                    Return True
-                End If
-            Case Game.Launcher.FeedTheBeast
-                If My.Computer.FileSystem.DirectoryExists(My.Settings.MinecraftFolderLocation & "\authlib") Then
-                    Return True
-                End If
-            Case Game.Launcher.ATLauncher
-                If My.Computer.FileSystem.DirectoryExists(My.Settings.MinecraftFolderLocation & "\Configs") Then
-                    Return True
-                End If
-        End Select
-        Return False
-    End Function
 
     Private Sub CancelButton_Click(sender As Object, e As RoutedEventArgs) Handles CancelButton.Click
         If BackupThread.IsAlive Or MCMapProcess.HasExited = False Then

@@ -23,6 +23,7 @@ Public Class Log
         Info
         Warning
         Severe
+        Debug
     End Enum
 
     ''' <summary>
@@ -31,6 +32,13 @@ Public Class Log
     ''' <param name="Message">Message to display</param>
     Public Shared Sub Print(Message As String, ParamArray args As Object())
         Message = Message.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>")
+
+        For i As Integer = 0 To args.Length - 1
+            If TypeOf args(i) Is String Then
+                args(i) = DirectCast(args(i), String).Replace(Environ("USERPROFILE"), "<USERDIRECTORY>")
+            End If
+        Next
+
         Try
             Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
                 Debug.Print(DebugTimeStamp() & " [INFO] " & Message, args)
@@ -58,6 +66,11 @@ Public Class Log
                     Case Log.Level.Severe
                         Debug.Print(DebugTimeStamp() & " [SEVERE] " & Message)
                         SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & Message)
+                    Case Log.Level.Debug
+                        If Environment.GetCommandLineArgs().Contains("-debug") Then
+                            Debug.Print(DebugTimeStamp() & " [DEBUG] " & Message)
+                            SW.WriteLine(DebugTimeStamp() & " [DEBUG] " & Message)
+                        End If
                 End Select
             End Using
         Catch
@@ -71,6 +84,13 @@ Public Class Log
     ''' <param name="Level">Level, either [INFO], [WARNING], or [SEVERE]</param>
     Public Shared Sub Print(Message As String, Level As Level, ParamArray args As Object())
         Message = Message.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>")
+
+        For i As Integer = 0 To args.Length - 1
+            If TypeOf args(i) Is String Then
+                args(i) = DirectCast(args(i), String).Replace(Environ("USERPROFILE"), "<USERDIRECTORY>")
+            End If
+        Next
+
         Try
             Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
                 Select Case Level
@@ -83,6 +103,11 @@ Public Class Log
                     Case Log.Level.Severe
                         Debug.Print(DebugTimeStamp() & " [SEVERE] " & Message, args)
                         SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & Message, args)
+                    Case Log.Level.Debug
+                        If Environment.GetCommandLineArgs().Contains("-debug") Then
+                            Debug.Print(DebugTimeStamp() & " [DEBUG] " & Message, args)
+                            SW.WriteLine(DebugTimeStamp() & " [DEBUG] " & Message, args)
+                        End If
                 End Select
             End Using
         Catch

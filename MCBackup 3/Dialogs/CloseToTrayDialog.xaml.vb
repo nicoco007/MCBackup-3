@@ -18,6 +18,7 @@ Imports MCBackup.CloseAction
 
 Public Class CloseToTrayDialog
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
+    Private PressedButton As Forms.DialogResult
 
     Sub New()
         InitializeComponent()
@@ -26,26 +27,29 @@ Public Class CloseToTrayDialog
     End Sub
 
     Private Sub YesButton_Click(sender As Object, e As RoutedEventArgs) Handles YesButton.Click
-        Main.CloseType = CloseType.CloseToTray
+        'Main.CloseType = CloseType.CloseToTray
         My.Settings.SaveCloseState = SaveCheckBox.IsChecked
-        My.Settings.CloseToTray = True
-        My.Settings.Save()
+        'My.Settings.CloseToTray = True
+        'My.Settings.Save()
+        PressedButton = Forms.DialogResult.Yes
         Me.Close()
     End Sub
 
     Private Sub NoButton_Click(sender As Object, e As RoutedEventArgs) Handles NoButton.Click
-        Main.CloseType = CloseType.CloseCompletely
+        'Main.CloseType = CloseType.CloseCompletely
         My.Settings.SaveCloseState = SaveCheckBox.IsChecked
-        My.Settings.CloseToTray = False
-        My.Settings.Save()
+        'My.Settings.CloseToTray = False
+        'My.Settings.Save()
+        PressedButton = Forms.DialogResult.No
         Me.Close()
     End Sub
 
     Private Sub CancelButton_Click(sender As Object, e As RoutedEventArgs) Handles CancelButton.Click
-        Main.CloseType = CloseType.Cancel
+        'Main.CloseType = CloseType.Cancel
         My.Settings.SaveCloseState = False
-        My.Settings.CloseToTray = False
-        My.Settings.Save()
+        'My.Settings.CloseToTray = False
+        'My.Settings.Save()
+        PressedButton = Forms.DialogResult.Cancel
         Me.Close()
     End Sub
 
@@ -73,4 +77,10 @@ Public Class CloseToTrayDialog
         Margin.Left = (Grid.Width / 2) - (SaveCheckBox.ActualWidth / 2)
         SaveCheckBox.Margin = Margin
     End Sub
+
+    Public Overloads Function ShowDialog() As Forms.DialogResult
+        MyBase.ShowDialog()
+
+        Return PressedButton
+    End Function
 End Class
