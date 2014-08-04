@@ -65,7 +65,7 @@ Public Class ErrorReportDialog
                 System.Media.SystemSounds.Hand.Play()
                 ErrorReportDialog.ShowDialog()
             End If
-            TryCast(Application.Current.MainWindow, MainWindow).CloseType = CloseAction.CloseType.ForceClose
+            Application.CloseAction = Application.AppCloseAction.Force
         Catch ex As Exception
             Debug.Print("Could not show ErrorReportDialog: " & ex.Message)
             Dim StackTrace As New StackTrace(ex, True)

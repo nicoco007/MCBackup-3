@@ -26,14 +26,10 @@ Imports System.Globalization
 Imports System.Threading
 Imports System.Windows.Interop
 Imports Substrate
-
-Imports MCBackup.CloseAction
-
 Imports MahApps.Metro
 Imports System.Text
 
 Partial Class MainWindow
-
 
 #Region "Variables"
     Private AppData As String = Environ("APPDATA")
@@ -65,8 +61,6 @@ Partial Class MainWindow
     Public AutoBackupWindow As New AutoBackupWindow
     Private Splash As New Splash
 
-    Public CloseType As CloseAction.CloseType = CloseType.ForceClose
-
     Private Cancel As Boolean = False
 #End Region
 
@@ -79,15 +73,15 @@ Partial Class MainWindow
         ThemeManager.ChangeAppStyle(My.Application, ThemeManager.GetAccent(My.Settings.Theme), ThemeManager.GetAppTheme("BaseLight"))
 
         Splash.Show()
-
         Splash.ShowStatus("Splash.Status.Starting", "Starting...")
 
         Log.SPrint("")
-        Log.SPrint("---------- Starting MCBackup v{0} @ {1} ----------", Me.ApplicationVersion, Log.DebugTimeStamp())
+        Log.SPrint("---------- Starting MCBackup v{0} @ {1} ----------", ApplicationVersion, Log.DebugTimeStamp())
         Log.Print("OS Name: " & Log.GetWindowsVersion())
         Log.Print("OS Version: " & Environment.OSVersion.Version.Major & "." & Environment.OSVersion.Version.Minor)
         Log.Print("Architecture: " & Log.GetWindowsArch())
         Log.Print(".NET Framework Version: " & Environment.Version.Major & "." & Environment.Version.Minor)
+
         Log.Print(String.Format("Current Launcher: '{0}'", My.Settings.Launcher))
 
         Splash.StepProgress()
@@ -1586,15 +1580,6 @@ Partial Class MainWindow
         GroupsTabControl.IsEnabled = IsEnabled
         ListView.IsEnabled = IsEnabled
     End Sub
-End Class
-
-Public Class CloseAction
-    Public Enum CloseType As Integer
-        CloseToTray
-        CloseCompletely
-        Cancel
-        ForceClose
-    End Enum
 End Class
 
 Public Class TaggedTabItem

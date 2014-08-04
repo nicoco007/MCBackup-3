@@ -6,19 +6,19 @@ Public Class SetMinecraftFolderWindow
         If FSD.ShowDialog(New WindowInteropHelper(Me).Handle) = Forms.DialogResult.OK Then
             Select Case GetInstallationTypeButtons()
                 Case Game.Launcher.Minecraft
-                    If My.Computer.FileSystem.FileExists(FSD.FileName & "\launcher.jar") Then
+                    If My.Computer.FileSystem.FileExists(FSD.FolderName & "\launcher.jar") Then
                         If MetroMessageBox.Show("Warning! Minecraft does not seem to be installed in that folder. Are you sure you want to set this folder as your Minecraft folder location?", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.No Then
                             Exit Sub
                         End If
                     End If
-                    My.Settings.MinecraftFolderLocation = FSD.FileName
-                    My.Settings.SavesFolderLocation = FSD.FileName & "\saves"
+                    My.Settings.MinecraftFolderLocation = FSD.FolderName
+                    My.Settings.SavesFolderLocation = FSD.FolderName & "\saves"
                 Case Game.Launcher.Technic
-                    My.Settings.MinecraftFolderLocation = FSD.FileName
+                    My.Settings.MinecraftFolderLocation = FSD.FolderName
                 Case Game.Launcher.FeedTheBeast
-                    My.Settings.MinecraftFolderLocation = FSD.FileName
+                    My.Settings.MinecraftFolderLocation = FSD.FolderName
                 Case Game.Launcher.ATLauncher
-                    My.Settings.MinecraftFolderLocation = FSD.FileName
+                    My.Settings.MinecraftFolderLocation = FSD.FolderName
             End Select
         End If
         My.Settings.Launcher = GetInstallationTypeButtons()

@@ -14,8 +14,6 @@
 '   ║                      limitations under the License.                       ║
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
 
-Imports MCBackup.CloseAction
-
 Public Class CloseToTrayDialog
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
     Private PressedButton As Forms.DialogResult

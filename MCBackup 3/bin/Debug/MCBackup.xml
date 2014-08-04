@@ -159,7 +159,7 @@ UpdateDialog
 	<summary>
  Gets/Sets the title to show in the dialog
  </summary>
-</member><member name="P:MCBackup.FolderSelectDialog.FileName">
+</member><member name="P:MCBackup.FolderSelectDialog.FolderName">
 	<summary>
  Gets the selected folder
  </summary>

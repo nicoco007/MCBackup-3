@@ -56,7 +56,7 @@ Public Class FolderSelectDialog
     ''' <summary>
     ''' Gets the selected folder
     ''' </summary>
-    Public ReadOnly Property FileName() As String
+    Public ReadOnly Property FolderName() As String
         Get
             Return ofd.FileName
         End Get

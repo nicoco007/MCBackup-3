@@ -161,48 +161,71 @@ Public Class AutoBackupWindow
         SavesListView.Items.Clear()
         Select Case My.Settings.Launcher
             Case Game.Launcher.Minecraft
-                My.Computer.FileSystem.CreateDirectory(My.Settings.SavesFolderLocation)
-                Dim SavesDirectory As New DirectoryInfo(My.Settings.SavesFolderLocation)
-                For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
-                    If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
-                        SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, "minecraft"))
-                    End If
-                Next
+                If Directory.Exists(My.Settings.SavesFolderLocation) Then
+                    Dim SavesDirectory As New DirectoryInfo(My.Settings.SavesFolderLocation)
+                    For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
+                        If File.Exists(Folder.FullName & "\level.dat") Then
+                            SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, "minecraft"))
+                        End If
+                    Next
+                Else
+                    Log.Print("Saves directory does not exist!", Log.Level.Warning)
+                End If
             Case Game.Launcher.Technic
-                Dim Modpacks As New DirectoryInfo(My.Settings.MinecraftFolderLocation & "\modpacks")
-                For Each Modpack As DirectoryInfo In Modpacks.GetDirectories
-                    My.Computer.FileSystem.CreateDirectory(Modpack.FullName & "\saves")
-                    Dim SavesDirectory As New DirectoryInfo(Modpack.FullName & "\saves")
-                    For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
-                        If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
-                            SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, "technic", Modpack.Name))
+                If Directory.Exists(My.Settings.MinecraftFolderLocation & "\modpacks") Then
+                    Dim Modpacks As New DirectoryInfo(My.Settings.MinecraftFolderLocation & "\modpacks")
+                    For Each Modpack As DirectoryInfo In Modpacks.GetDirectories
+                        If Directory.Exists(Modpack.FullName & "\saves") Then
+                            Dim SavesDirectory As New DirectoryInfo(Modpack.FullName & "\saves")
+                            For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
+                                If File.Exists(Folder.FullName & "\level.dat") Then
+                                    SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, "technic", Modpack.Name))
+                                End If
+                            Next
+                        Else
+                            Log.Print("Modpack '{0}' does not contain saves.", Modpack.Name)
                         End If
                     Next
-                Next
+                Else
+                    Log.Print("Modpacks directory does not exist!", Log.Level.Warning)
+                End If
             Case Game.Launcher.FeedTheBeast
-                Dim BaseDirectory As New DirectoryInfo(My.Settings.MinecraftFolderLocation)
-                For Each Directory As DirectoryInfo In BaseDirectory.GetDirectories
-                    If My.Computer.FileSystem.DirectoryExists(Directory.FullName & "\natives") And My.Computer.FileSystem.DirectoryExists(Directory.FullName & "\minecraft") Then
-                        My.Computer.FileSystem.CreateDirectory(Directory.FullName & "\minecraft\saves")
-                        Dim SavesDirectory As New DirectoryInfo(Directory.FullName & "\minecraft\saves")
-                        For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
-                            If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
-                                SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, "ftb", Directory.Name))
+                If Directory.Exists(My.Settings.MinecraftFolderLocation) Then
+                    Dim BaseDirectory As New DirectoryInfo(My.Settings.MinecraftFolderLocation)
+                    For Each Directory As DirectoryInfo In BaseDirectory.GetDirectories
+                        If IO.Directory.Exists(Directory.FullName & "\natives") And IO.Directory.Exists(Directory.FullName & "\minecraft") Then
+                            If IO.Directory.Exists(Directory.FullName & "\minecraft\saves") Then
+                                Dim SavesDirectory As New DirectoryInfo(Directory.FullName & "\minecraft\saves")
+                                For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
+                                    If File.Exists(Folder.FullName & "\level.dat") Then
+                                        SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, "ftb", Directory.Name))
+                                    End If
+                                Next
                             End If
-                        Next
-                    End If
-                Next
-            Case "atlauncher"
-                Dim Instances As New DirectoryInfo(My.Settings.MinecraftFolderLocation & "\Instances")
-                For Each Instance As DirectoryInfo In Instances.GetDirectories
-                    My.Computer.FileSystem.CreateDirectory(Instance.FullName & "\saves")
-                    Dim SavesDirectory As New DirectoryInfo(Instance.FullName & "\saves")
-                    For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
-                        If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
-                            SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, "atlauncher", Instance.Name))
+                            Log.Print("Pack '{0}' does not contain saves.", Directory.Name)
                         End If
                     Next
-                Next
+                Else
+                    Log.Print("FeedTheBeast directory does not exist!", Log.Level.Severe)
+                End If
+            Case Game.Launcher.ATLauncher
+                If Directory.Exists(My.Settings.MinecraftFolderLocation & "\Instances") Then
+                    Dim Instances As New DirectoryInfo(My.Settings.MinecraftFolderLocation & "\Instances")
+                    For Each Instance As DirectoryInfo In Instances.GetDirectories
+                        If Directory.Exists(Instance.FullName & "\saves") Then
+                            Dim SavesDirectory As New DirectoryInfo(Instance.FullName & "\saves")
+                            For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
+                                If File.Exists(Folder.FullName & "\level.dat") Then
+                                    SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, "atlauncher", Instance.Name))
+                                End If
+                            Next
+                        Else
+                            Log.Print("Instance '{0}' does not contain saves.", Instance.Name)
+                        End If
+                    Next
+                Else
+                    Log.Print("Instances directory does not exist!", Log.Level.Warning)
+                End If
         End Select
 
         If My.Settings.Launcher = Game.Launcher.Minecraft Then

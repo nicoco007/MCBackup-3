@@ -352,7 +352,7 @@ Partial Public Class Options
             My.Settings.Reset()
 
             Process.Start(Application.ResourceAssembly.Location)
-            Main.CloseType = CloseAction.CloseType.ForceClose
+            Application.CloseAction = Application.AppCloseAction.Force
             Main.Close()
         End If
     End Sub
@@ -423,84 +423,33 @@ Partial Public Class Options
         Next
     End Sub
 
-    Private WithEvents timer1 As New DispatcherTimer
-
-    Private Sub timer1_Tick() Handles timer1.Tick
-        timer1.Interval = TimeSpan.FromMilliseconds(500)
-        Debug.Print(My.Settings.Launcher)
-    End Sub
-
     Private Sub InstallationType_SelectionChanged(sender As Object, e As RoutedEventArgs)
-        If Not Me.IsLoaded Then
-            Exit Sub
-        End If
+        If Not Me.IsLoaded Then Exit Sub
 
-        sender = CType(sender, RadioButton)
-        sender.Tag = CType(sender.Tag, Game.Launcher)
-        If sender.Tag <> My.Settings.Launcher Then
+        If Not GetInstallationTypeButtons() = My.Settings.Launcher Then
             Dim FSD As New FolderSelectDialog
-            FSD.InitialDirectory = New DirectoryInfo(My.Settings.MinecraftFolderLocation).Parent.FullName
             If FSD.ShowDialog(New WindowInteropHelper(Me).Handle) = Forms.DialogResult.OK Then
-                Select Case sender.Tag
-                    Case Game.Launcher.Minecraft
-                        If Not My.Computer.FileSystem.FileExists(FSD.FileName & "\launcher.jar") Then
-                            If MetroMessageBox.Show("Minecraft is not installed in that folder! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
-                                InstallationType_SelectionChanged(sender, e)
-                            Else
-                                SetInstallationTypeButtons(My.Settings.Launcher)
-                            End If
-                            Exit Sub
-                        End If
-                    Case Game.Launcher.Technic
-                        If Not My.Computer.FileSystem.FileExists(FSD.FileName & "\settings.json") Then
-                            If MetroMessageBox.Show("Technic is not installed in that foler! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
-                                InstallationType_SelectionChanged(sender, e)
-                            Else
-                                SetInstallationTypeButtons(My.Settings.Launcher)
-                            End If
-                            Exit Sub
-                        End If
-                    Case Game.Launcher.Technic
-                        If Not My.Computer.FileSystem.DirectoryExists(FSD.FileName & "\authlib") Then
-                            If MetroMessageBox.Show("Feed the Beast is not installed in that folder! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
-                                InstallationType_SelectionChanged(sender, e)
-                            Else
-                                SetInstallationTypeButtons(My.Settings.Launcher)
-                            End If
-                            Exit Sub
-                        End If
-                    Case Game.Launcher.Technic
-                        If Not My.Computer.FileSystem.DirectoryExists(FSD.FileName & "\Configs") Then
-                            If MetroMessageBox.Show("ATLauncher is not installed in that folder! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
-                                InstallationType_SelectionChanged(sender, e)
-                            Else
-                                SetInstallationTypeButtons(My.Settings.Launcher)
-                            End If
-                            Exit Sub
-                        End If
-                End Select
                 My.Settings.Launcher = GetInstallationTypeButtons()
-                My.Settings.MinecraftFolderLocation = FSD.FileName
+                My.Settings.MinecraftFolderLocation = FSD.FolderName
+                If My.Settings.Launcher = Game.Launcher.Minecraft Then My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
                 BaseFolderTextBox.Text = My.Settings.MinecraftFolderLocation
-                Log.Print(String.Format("Switched to '{0}' launcher.", My.Settings.Launcher))
-                Log.Print(String.Format("Launcher base folder set to '{0}'.", My.Settings.MinecraftFolderLocation))
+                SavesFolderTextBox.Text = My.Settings.SavesFolderLocation
             Else
                 SetInstallationTypeButtons(My.Settings.Launcher)
-                Exit Sub
             End If
-        End If
 
-        If My.Settings.Launcher = Game.Launcher.Minecraft Then
-            SavesFolderBrowseButton.IsEnabled = True
-            SavesFolderTextBox.IsEnabled = True
-            SavesFolderTextBox.Text = My.Settings.SavesFolderLocation
-        Else
-            SavesFolderBrowseButton.IsEnabled = False
-            SavesFolderTextBox.IsEnabled = False
-            SavesFolderTextBox.Text = ""
-        End If
+            If My.Settings.Launcher = Game.Launcher.Minecraft Then
+                SavesFolderBrowseButton.IsEnabled = True
+                SavesFolderTextBox.IsEnabled = True
+                SavesFolderTextBox.Text = My.Settings.SavesFolderLocation
+            Else
+                SavesFolderBrowseButton.IsEnabled = False
+                SavesFolderTextBox.IsEnabled = False
+                SavesFolderTextBox.Text = ""
+            End If
 
-        Main.AutoBackupWindow.ReloadSaves()
+            Main.AutoBackupWindow.ReloadSaves()
+        End If
     End Sub
 
     Private Sub SetInstallationTypeButtons(Type As Game.Launcher)
@@ -532,40 +481,22 @@ Partial Public Class Options
     Private Sub BaseFolderBrowseButton_Click(sender As Object, e As RoutedEventArgs) Handles BaseFolderBrowseButton.Click
         Dim FSD As New FolderSelectDialog
         If FSD.ShowDialog(New WindowInteropHelper(Me).Handle) = Forms.DialogResult.OK Then
-            Select Case My.Settings.Launcher
-                Case Game.Launcher.Minecraft
-                    If Not My.Computer.FileSystem.FileExists(FSD.FileName & "\launcher.jar") Then
-                        If MetroMessageBox.Show("Minecraft is not installed in that folder! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
-                            BaseFolderBrowseButton_Click(sender, e)
-                        End If
-                        Exit Sub
-                    End If
-                Case Game.Launcher.Technic
-                    If Not My.Computer.FileSystem.FileExists(FSD.FileName & "\settings.json") Then
-                        If MetroMessageBox.Show("Technic is not installed in that foler! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
-                            BaseFolderBrowseButton_Click(sender, e)
-                        End If
-                        Exit Sub
-                    End If
-                Case Game.Launcher.FeedTheBeast
-                    If Not My.Computer.FileSystem.DirectoryExists(FSD.FileName & "\authlib") Then
-                        If MetroMessageBox.Show("Feed the Beast is not installed in that folder! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
-                            BaseFolderBrowseButton_Click(sender, e)
-                        End If
-                        Exit Sub
-                    End If
-                Case Game.Launcher.ATLauncher
-                    If Not My.Computer.FileSystem.DirectoryExists(FSD.FileName & "\Configs") Then
-                        If MetroMessageBox.Show("ATLauncher is not installed in that folder! Try again?", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.YesNo, MessageBoxImage.Error) = MessageBoxResult.Yes Then
-                            BaseFolderBrowseButton_Click(sender, e)
-                        End If
-                        Exit Sub
-                    End If
-            End Select
             My.Settings.Launcher = GetInstallationTypeButtons()
-            My.Settings.MinecraftFolderLocation = FSD.FileName
+            My.Settings.MinecraftFolderLocation = FSD.FolderName
+            If My.Settings.Launcher = Game.Launcher.Minecraft Then My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
             BaseFolderTextBox.Text = My.Settings.MinecraftFolderLocation
-            Log.Print(String.Format("Launcher base folder set to '{0}'.", My.Settings.MinecraftFolderLocation))
+
+            If My.Settings.Launcher = Game.Launcher.Minecraft Then
+                SavesFolderBrowseButton.IsEnabled = True
+                SavesFolderTextBox.IsEnabled = True
+                SavesFolderTextBox.Text = My.Settings.SavesFolderLocation
+            Else
+                SavesFolderBrowseButton.IsEnabled = False
+                SavesFolderTextBox.IsEnabled = False
+                SavesFolderTextBox.Text = ""
+            End If
+
+            Main.AutoBackupWindow.ReloadSaves()
         End If
     End Sub
 
@@ -573,8 +504,8 @@ Partial Public Class Options
         Dim FSD As New FolderSelectDialog
         FSD.InitialDirectory = My.Settings.BackupsFolderLocation
         If FSD.ShowDialog(New WindowInteropHelper(Me).Handle) = Forms.DialogResult.OK Then
-            If New DirectoryInfo(FSD.FileName).Name = "saves" Then
-                My.Settings.SavesFolderLocation = FSD.FileName
+            If New DirectoryInfo(FSD.FolderName).Name = "saves" Then
+                My.Settings.SavesFolderLocation = FSD.FolderName
                 SavesFolderTextBox.Text = My.Settings.SavesFolderLocation
             Else
                 If MetroMessageBox.Show("That folder is not named 'saves'! Please select another folder", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OKCancel, MessageBoxImage.Error) = MessageBoxResult.OK Then
@@ -589,9 +520,9 @@ Partial Public Class Options
         FSD.InitialDirectory = My.Settings.BackupsFolderLocation
         If FSD.ShowDialog(New WindowInteropHelper(Me).Handle) = Forms.DialogResult.OK Then
             Try
-                IO.File.Create(FSD.FileName & "\tmp")
-                IO.File.Delete(FSD.FileName & "\tmp")
-                My.Settings.BackupsFolderLocation = FSD.FileName
+                IO.File.Create(FSD.FolderName & "\tmp")
+                IO.File.Delete(FSD.FolderName & "\tmp")
+                My.Settings.BackupsFolderLocation = FSD.FolderName
                 BackupsFolderTextBox.Text = My.Settings.BackupsFolderLocation
             Catch ex As Exception
                 MetroMessageBox.Show("This folder cannot be set as your backups folder. Please check if you have read and write permissions in this folder.", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
