@@ -114,15 +114,30 @@ Public Class MetroMessageBox
         End If
 
         Select Case Image
+            Case MessageBoxImage.Asterisk
+                MsgBox.Image.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/msgbox.asterisk.png"))
+                System.Media.SystemSounds.Asterisk.Play()
             Case MessageBoxImage.Error
                 MsgBox.Image.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/msgbox.error.png"))
                 System.Media.SystemSounds.Hand.Play()
-            Case MessageBoxImage.Question
-                MsgBox.Image.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/msgbox.question.png"))
-                System.Media.SystemSounds.Asterisk.Play()
+            Case MessageBoxImage.Exclamation
+                MsgBox.Image.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/msgbox.exclamation.png"))
+                System.Media.SystemSounds.Exclamation.Play()
+            Case MessageBoxImage.Hand
+                MsgBox.Image.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/msgbox.hand.png"))
+                System.Media.SystemSounds.Hand.Play()
             Case MessageBoxImage.Information
                 MsgBox.Image.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/msgbox.info.png"))
                 System.Media.SystemSounds.Asterisk.Play()
+            Case MessageBoxImage.Question
+                MsgBox.Image.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/msgbox.question.png"))
+                System.Media.SystemSounds.Question.Play()
+            Case MessageBoxImage.Stop
+                MsgBox.Image.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/msgbox.stop.png"))
+                System.Media.SystemSounds.Hand.Play()
+            Case MessageBoxImage.Warning
+                MsgBox.Image.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/msgbox.warning.png"))
+                System.Media.SystemSounds.Exclamation.Play()
         End Select
     End Sub
 

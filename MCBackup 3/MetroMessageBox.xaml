@@ -22,7 +22,7 @@
     Title="MetroMessageBox" Height="300" Width="300" Topmost="True" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" MinWidth="200" MaxWidth="500" MinHeight="120" WindowTransitionsEnabled="False" ResizeMode="NoResize" BorderBrush="{DynamicResource AccentColorBrush}" BorderThickness="1">
     <Grid>
         <TextBlock x:Name="Message" TextWrapping="WrapWithOverflow" Height="Auto" Padding="10" Margin="10,10,10,44"/>
-        <Image x:Name="Image" Height="32" Width="32" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+        <Image x:Name="Image" Height="32" Width="32" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top" Stretch="None"/>
         <Button x:Name="Button3" Content="Button" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="75" Margin="0,0,180,10"/>
         <Button x:Name="Button2" Content="Button" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="75" Margin="0,0,100,10"/>
         <Button x:Name="Button1" Content="Button" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="75" Margin="0,0,20,10"/>

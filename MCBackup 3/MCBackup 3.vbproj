@@ -275,7 +275,6 @@
     <Resource Include="Resources\Splash.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\msgbox.error.png" />
     <Resource Include="Resources\msgbox.info.png" />
     <Resource Include="Resources\msgbox.question.png" />
   </ItemGroup>
@@ -295,6 +294,16 @@
     <Resource Include="Resources\NBTInfo\hunger_empty.png" />
     <Resource Include="Resources\NBTInfo\hunger_full.png" />
     <Resource Include="Resources\NBTInfo\hunger_half.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\msgbox.asterisk.png" />
+    <Resource Include="Resources\msgbox.exclamation.png" />
+    <Resource Include="Resources\msgbox.hand.png" />
+    <Resource Include="Resources\msgbox.stop.png" />
+    <Resource Include="Resources\msgbox.warning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\msgbox.error.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>
