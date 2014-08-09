@@ -87,7 +87,7 @@ Partial Public Class Options
         MyBase.ShowDialog()
     End Sub
 
-    Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
+    Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
         Dim LanguageDirectory As New IO.DirectoryInfo(Main.StartupPath & "\language")
         Dim LanguageFiles As IO.FileInfo() = LanguageDirectory.GetFiles()
         Dim LanguageFile As IO.FileInfo
