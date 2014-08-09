@@ -23,6 +23,13 @@
     <Controls:MetroWindow.WindowCommands>
         <Controls:WindowCommands>
             <TextBox x:Name="SearchTextBox" Width="200" Margin="2" Foreground="Gray" Text="Search..."/>
+            <Button x:Name="FileToolbarButton" Content="File" ContextMenuService.Placement="Bottom">
+                <Button.ContextMenu>
+                    <ContextMenu x:Name="FileContextMenu">
+                        <MenuItem Header="Quit" Click="QuitToolbarMenuItem_Click"/>
+                    </ContextMenu>
+                </Button.ContextMenu>
+            </Button>
             <Button x:Name="EditToolbarButton" Content="Edit" ContextMenuService.Placement="Bottom">
                 <Button.ContextMenu>
                     <ContextMenu x:Name="EditContextMenu">

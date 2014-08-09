@@ -1413,7 +1413,11 @@ Partial Class MainWindow
                             My.Settings.CloseToTray = True
 
                             e.Cancel = True
+                        Case Forms.DialogResult.No
+                            ' Do nothing
                         Case Forms.DialogResult.Cancel
+                            e.Cancel = True
+                        Case Else
                             e.Cancel = True
                     End Select
                 Else
@@ -1459,6 +1463,12 @@ Partial Class MainWindow
 #End Region
 
 #Region "Toolbar"
+    Private Sub FileToolbarButton_Click(sender As Object, e As RoutedEventArgs) Handles FileToolbarButton.Click
+        FileContextMenu.PlacementTarget = FileToolbarButton
+        FileContextMenu.Placement = Primitives.PlacementMode.Bottom
+        FileContextMenu.IsOpen = True
+    End Sub
+
     Private Sub EditToolbarButton_Click(sender As Object, e As RoutedEventArgs) Handles EditToolbarButton.Click
         EditContextMenu.PlacementTarget = EditToolbarButton
         EditContextMenu.Placement = Primitives.PlacementMode.Bottom
@@ -1594,6 +1604,11 @@ Partial Class MainWindow
         GroupsTabControl.IsEnabled = IsEnabled
         ListView.IsEnabled = IsEnabled
         ListView_SelectionChanged(Nothing, Nothing)
+    End Sub
+
+    Private Sub QuitToolbarMenuItem_Click(sender As Object, e As RoutedEventArgs)
+        Application.CloseAction = Application.AppCloseAction.Close
+        Me.Close()
     End Sub
 End Class
 
