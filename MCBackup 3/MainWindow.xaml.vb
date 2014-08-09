@@ -876,7 +876,7 @@ Partial Class MainWindow
             End Using
 
             If Launcher <> My.Settings.Launcher Then
-                MetroMessageBox.Show(String.Format("This backup is not compatible with your current configuration! It is designed for '{0}' installations.", Launcher), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                MetroMessageBox.Show(String.Format("This backup is not compatible with your current configuration! It is designed for '{0}' installations.", Game.LauncherToString(Launcher)), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
                 EnableUI(True)
                 Exit Sub
             End If

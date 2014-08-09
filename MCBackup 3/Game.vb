@@ -6,6 +6,21 @@
         ATLauncher
     End Enum
 
+    Public Shared Function LauncherToString(Launcher As Launcher)
+        Select Case Launcher
+            Case Game.Launcher.Minecraft
+                Return "Minecraft"
+            Case Game.Launcher.Technic
+                Return "Technic"
+            Case Game.Launcher.FeedTheBeast
+                Return "Feed the Beast"
+            Case Game.Launcher.ATLauncher
+                Return "ATLauncher"
+            Case Else
+                Return "Minecraft"
+        End Select
+    End Function
+
     Public Class Images
         Public Class Health
             Inherits Image

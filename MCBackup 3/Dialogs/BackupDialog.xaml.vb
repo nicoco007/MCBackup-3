@@ -283,7 +283,7 @@ Public Class BackupDialog
 
     Private Sub Window_ContentRendered(sender As Object, e As EventArgs) Handles Window.ContentRendered
         If SavesListView.Items.Count = 0 Then
-            MetroMessageBox.Show(String.Format("Warning! There seem to be no saves in your {0} installation. This is either because you have never started the game, or because the folder you selected as base folder is incorrect. Please check your settings if you have already ran Minecraft at least once.", My.Settings.Launcher.ToString), "Warning!", MessageBoxButton.OK, MessageBoxImage.Warning)
+            MetroMessageBox.Show(String.Format("Warning! There seem to be no saves in your {0} installation. This is either because you have never started the game, or because the folder you selected as base folder is incorrect. Please check your settings if you have already ran Minecraft at least once.", Game.LauncherToString(My.Settings.Launcher)), "Warning!", MessageBoxButton.OK, MessageBoxImage.Warning)
         End If
     End Sub
 End Class
