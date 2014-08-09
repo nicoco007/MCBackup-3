@@ -465,7 +465,7 @@ Partial Class MainWindow
                               SidebarTitle.ToolTip = SelectedItem
 
                               ListViewRestoreItem.IsEnabled = True
-                              ListViewDeleteItem.IsEnabled = True     'Enable ContextMenu items
+                              ListViewDeleteItem.IsEnabled = True     'Enable reContextMenu items
                               ListViewRenameItem.IsEnabled = True
 
                               SidebarPlayerHealth.Visibility = Windows.Visibility.Collapsed
@@ -885,6 +885,7 @@ Partial Class MainWindow
 
             If Launcher <> My.Settings.Launcher Then
                 MetroMessageBox.Show(String.Format("This backup is not compatible with your current configuration! It is designed for '{0}' installations.", Launcher), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                EnableUI(True)
                 Exit Sub
             End If
 
@@ -922,26 +923,48 @@ Partial Class MainWindow
 
     Private Sub Restore()
         Try
-            ' Set initial size variable
-            Dim InitialSize As Double = GetFolderSize(RestoreInfo(1))
+            ' Only delete folder contents if folder exists AND it's size is not zero.
+            If Directory.Exists(RestoreInfo(1)) Then
+                If GetFolderSize(RestoreInfo(1)) <> 0 Then
+                    ' Set initial size variable
+                    Dim InitialSize As Double = GetFolderSize(RestoreInfo(1))
 
-            ' Start removal async
-            DeleteForRestoreThread = FileSystemOperations.Directory.DeleteFolderContentsAsync(RestoreInfo(1))
+                    ' Start removal async
+                    DeleteForRestoreThread = FileSystemOperations.Directory.DeleteFolderContentsAsync(RestoreInfo(1))
+                    Try
+                        Do
+                            ' Set bytes remaining to current folder size
+                            Dim BytesRemaining As Double = GetFolderSize(RestoreInfo(1))
 
-            Do
-                ' Set bytes remaining to current folder size
-                Dim BytesRemaining As Double = GetFolderSize(RestoreInfo(1))
+                            ' Determine percent removed (inverted) by dividing bytes remaining by initial size, and multiplying by 100
+                            Dim PercentRemoved As Decimal = BytesRemaining / InitialSize * 100
 
-                ' Determine percent removed (inverted) by dividing bytes remaining by initial size, and multiplying by 100
-                Debug.Print(InitialSize & "|" & BytesRemaining & "|" & RestoreInfo(1))
-                Dim PercentRemoved As Decimal = BytesRemaining / InitialSize * 100
+                            Dispatcher.Invoke(Sub()
+                                                  ' Show percent complete and message
+                                                  StatusLabel.Content = String.Format("Removing old content... ({0:0.00}% Complete)", 100 - PercentRemoved)
+                                                  ProgressBar.Value = PercentRemoved
+                                              End Sub)
 
-                Dispatcher.Invoke(Sub()
-                                      ' Show percent complete and message
-                                      StatusLabel.Content = String.Format("Removing old content... ({0:0.00}% Complete)", 100 - PercentRemoved)
-                                      ProgressBar.Value = PercentRemoved
-                                  End Sub)
-            Loop Until GetFolderSize(RestoreInfo(1)) = 0 And DeleteForRestoreThread.IsAlive = False
+                            If Cancel And DeleteForRestoreThread.IsAlive = False Then
+                                Dispatcher.Invoke(Sub()
+                                                      RestoreStopWatch.Stop()
+                                                      ProgressBar.Value = 0
+                                                      ProgressBar.IsIndeterminate = False
+                                                      StatusLabel.Content = "Operation cancelled - Ready"
+                                                      EnableUI(True)
+                                                      RefreshBackupsList()
+                                                      ReloadBackupGroups()
+                                                  End Sub)
+                                Exit Sub
+                            End If
+                        Loop Until GetFolderSize(RestoreInfo(1)) = 0 And DeleteForRestoreThread.IsAlive = False
+                    Catch ex As Exception
+                        If Not TypeOf ex Is DirectoryNotFoundException Then
+                            ErrorReportDialog.Show("An error occured while trying to delete the folder", ex)
+                        End If
+                    End Try
+                End If
+            End If
 
             ' Create the target directory to prevent exceptions while getting the completion percentage
             My.Computer.FileSystem.CreateDirectory(RestoreInfo(1))
@@ -1020,24 +1043,20 @@ Partial Class MainWindow
             RefreshBackupsList()
         Catch ex As Exception
             Log.Print(ex.Message, Log.Level.Severe)
-            ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Restore"), ex)
+            Me.Dispatcher.Invoke(Sub() ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Restore"), ex))
         End Try
     End Sub
 #End Region
 
 #Region "Functions"
     Private Function GetFolderSize(FolderPath As String)
-        Try
-            Dim FSO As FileSystemObject = New FileSystemObject
-            Dim Size = FSO.GetFolder(FolderPath).Size ' Get FolderPath's size
-            If Size <> Nothing Then
-                Return Size
-            Else
-                Return 0
-            End If
-        Catch ex As Exception
-            Dispatcher.Invoke(Sub() ErrorReportDialog.Show(String.Format("Could not find {0}'s size:", FolderPath), ex))
-        End Try
+        Dim FSO As FileSystemObject = New FileSystemObject
+        Dim Size = FSO.GetFolder(FolderPath).Size ' Get FolderPath's size
+        If Size <> Nothing Then
+            Return Size
+        Else
+            Return 0
+        End If
         Return 0
     End Function
 
@@ -1543,28 +1562,43 @@ Partial Class MainWindow
     End Sub
 
     Private Sub CancelButton_Click(sender As Object, e As RoutedEventArgs) Handles CancelButton.Click
-        If BackupThread.IsAlive Or MCMapProcess.HasExited = False Then
-            If MetroMessageBox.Show("Are you sure you want to cancel the backup?", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
-                BackupThread.Abort()
-                MCMapProcess.Kill()
+        If BackupThread IsNot Nothing Then
+            If BackupThread.IsAlive Then
+                If MetroMessageBox.Show("Are you sure you want to cancel the backup?", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
+                    BackupThread.Abort()
+                End If
             End If
         End If
 
-        If DeleteForRestoreThread.IsAlive Then
-            If MetroMessageBox.Show("WARNING!" & vbNewLine & "Cancelling a restore operation can seriously damage your Minecraft installation!" & vbNewLine & vbNewLine & "Are you sure you want to cancel the restore?", "WARNING!", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
-                DeleteForRestoreThread.Abort()
+        If MCMapProcess IsNot Nothing Then
+            If MCMapProcess.HasExited = False Then
+                If MetroMessageBox.Show("Are you sure you want to cancel the backup?", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
+                    MCMapProcess.Kill()
+                End If
             End If
         End If
 
-        If RestoreThread.IsAlive Then
-            If MetroMessageBox.Show("WARNING!" & vbNewLine & "Cancelling a restore operation can seriously damage your Minecraft installation!" & vbNewLine & vbNewLine & "Are you sure you want to cancel the restore?", "WARNING!", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
-                RestoreThread.Abort()
+        If DeleteForRestoreThread IsNot Nothing Then
+            If DeleteForRestoreThread.IsAlive Then
+                If MetroMessageBox.Show("WARNING!" & vbNewLine & "Cancelling a restore operation can seriously damage your Minecraft installation!" & vbNewLine & vbNewLine & "Are you sure you want to cancel the restore?", "WARNING!", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
+                    DeleteForRestoreThread.Abort()
+                End If
             End If
         End If
 
-        If DeleteThread.IsAlive Then
-            If MetroMessageBox.Show("Are you sure you want to cancel the delete?", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
-                DeleteThread.Abort()
+        If RestoreThread IsNot Nothing Then
+            If RestoreThread.IsAlive Then
+                If MetroMessageBox.Show("WARNING!" & vbNewLine & "Cancelling a restore operation can seriously damage your Minecraft installation!" & vbNewLine & vbNewLine & "Are you sure you want to cancel the restore?", "WARNING!", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
+                    RestoreThread.Abort()
+                End If
+            End If
+        End If
+
+        If DeleteThread IsNot Nothing Then
+            If DeleteThread.IsAlive Then
+                If MetroMessageBox.Show("Are you sure you want to cancel the delete?", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
+                    DeleteThread.Abort()
+                End If
             End If
         End If
 

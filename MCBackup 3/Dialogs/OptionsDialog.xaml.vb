@@ -251,9 +251,6 @@ Partial Public Class Options
             End If
         Next
 
-        ' Folders
-
-
         ' Groups
         AddNewGroupGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.GroupsTab.AddNewGroupGroupBox.Header")
         OtherOptionsGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.GroupsTab.OtherOptionsGroupBox.Header")

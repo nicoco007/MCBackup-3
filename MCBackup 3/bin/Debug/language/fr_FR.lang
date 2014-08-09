@@ -49,9 +49,9 @@ MainWindow.Groups.All=Tout
 Status.Ready=Prêt.
 Status.BackingUp=Sauvegarde... ({0:0.00}% complétée à {1:0.00} Mo/s, {2})
 Status.BackupComplete=Sauvegarde terminée; Prêt.
-Status.CreatingThumb=Création d'un aperçu ({0}% complété)... Ceci peut prendre un certain temps, vous pouvez la désactiver dans vos préférences.
+Status.CreatingThumb=Création d'un aperçu ({0:0.00}% complété)... Ceci peut prendre un certain temps, vous pouvez la désactiver dans vos préférences.
 Status.RemovingOldContent=Suppression de l'ancien contenu, veuillez patienter...
-Status.Restoring=Restauration... ({0}% complétée à {1:0.00} Mo/s, {2})
+Status.Restoring=Restauration... ({0:0.00}% complétée à {1:0.00} Mo/s, {2})
 Status.RestoreComplete=Restauration terminée; Prêt.
 Status.Deleting=Suppression...
 Status.DeleteComplete=Suppression terminée; Prêt.
@@ -71,7 +71,7 @@ Message.ChooseVersion=Veuillez choisir une version à sauvegarder.
 Message.ResetSettings=Êtes-vous sûr de vouloir réinitialiser vos préférences?\n\nCliquez 'Oui' pour tout réinitialiser et redémarrer MCBackup.
 Message.BackupInProgress=Une sauvegarde est déjà en cours! Veuillez attendre qu'elle finisse avant d'en démarrer une autre.
 Message.SetBackupsFolderError=Impossible de définir le dossier '{0}' comme dossier de sauvegardes.\n\nVérifiez si vous avez le droit d'écrire dans ce dossier.
-Message.SetSavesFolderWarning=Êtes-vous sûr que {0} est un dossier de sauvegardes? Il n'est pas nommé 'saves'!
+Message.SetSavesFolderWarning=Êtes-vous sûr que '{0}' est un dossier de sauvegardes? Il n'est pas nommé 'saves'!
 Message.BackupNameCannotContainIllegalCharacters=Le nom de sauvegarde ne peut pas contenir les caractèrs\n\ / : * ? "" < > |\nVérifiez le préfixe/suffixe.
 Message.CopiedToClipboard=Copié dans le presse-papiers
 Message.Caption.Copied=Copié
@@ -124,7 +124,7 @@ AutoBackupWindow.BackupDescription=Sauvegarde automatique de '{0}'.
 
 OptionsWindow.Title=Préférences
 
-OptionsWindow.AllSupportedImages=Tous les types d'images
+OptionsWindow.AllSupportedImages=Tous les formats d'image supportés
 
 OptionsWindow.GeneralPanel.GeneralOptionsGroupBox.Header=Options de base
 OptionsWindow.GeneralPanel.CloseToTrayOptionsGroupBox.Header=Options de fermeture dans la barre de tâches

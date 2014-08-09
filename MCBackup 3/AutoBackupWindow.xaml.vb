@@ -165,7 +165,7 @@ Public Class AutoBackupWindow
                     Dim SavesDirectory As New DirectoryInfo(My.Settings.SavesFolderLocation)
                     For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
                         If File.Exists(Folder.FullName & "\level.dat") Then
-                            SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, "minecraft"))
+                            SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, Game.Launcher.Minecraft))
                         End If
                     Next
                 Else
@@ -179,7 +179,7 @@ Public Class AutoBackupWindow
                             Dim SavesDirectory As New DirectoryInfo(Modpack.FullName & "\saves")
                             For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
                                 If File.Exists(Folder.FullName & "\level.dat") Then
-                                    SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, "technic", Modpack.Name))
+                                    SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, Game.Launcher.Technic, Modpack.Name))
                                 End If
                             Next
                         Else
@@ -198,7 +198,7 @@ Public Class AutoBackupWindow
                                 Dim SavesDirectory As New DirectoryInfo(Directory.FullName & "\minecraft\saves")
                                 For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
                                     If File.Exists(Folder.FullName & "\level.dat") Then
-                                        SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, "ftb", Directory.Name))
+                                        SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, Game.Launcher.FeedTheBeast, Directory.Name))
                                     End If
                                 Next
                             End If
@@ -216,7 +216,7 @@ Public Class AutoBackupWindow
                             Dim SavesDirectory As New DirectoryInfo(Instance.FullName & "\saves")
                             For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
                                 If File.Exists(Folder.FullName & "\level.dat") Then
-                                    SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, "atlauncher", Instance.Name))
+                                    SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, Game.Launcher.ATLauncher, Instance.Name))
                                 End If
                             Next
                         Else
@@ -266,12 +266,12 @@ Public Class SaveInfoListViewItem
         End Set
     End Property
 
-    Private _Launcher As String
-    Public Property Launcher As String
+    Private _Launcher As Game.Launcher
+    Public Property Launcher As Game.Launcher
         Get
             Return _Launcher
         End Get
-        Set(value As String)
+        Set(value As Game.Launcher)
             _Launcher = value
         End Set
     End Property
@@ -286,13 +286,13 @@ Public Class SaveInfoListViewItem
         End Set
     End Property
 
-    Sub New(Name As String, Launcher As String)
+    Sub New(Name As String, Launcher As Game.Launcher)
         Me.Name = Name
         Me.Launcher = Launcher
         Me.Modpack = Modpack
     End Sub
 
-    Sub New(Name As String, Launcher As String, Modpack As String)
+    Sub New(Name As String, Launcher As Game.Launcher, Modpack As String)
         Me.Name = Name
         Me.Launcher = Launcher
         Me.Modpack = Modpack

@@ -35,11 +35,10 @@ Public Class ErrorReportDialog
 
         Try
             If MCBackup.Language.IsLoaded Then
-                ErrorReportDialog.MessageLabel.Content = Message
+                ErrorReportDialog.MessageLabel.Content = String.Format("An exception of type {0} occured: " & Message, Exception.GetType)
 
                 Dim StackTrace As String = New StackTrace(Exception, True).ToString
-
-                Debug.Print(StackTrace)
+                Log.Print(StackTrace)
                 ErrorReportDialog.ErrorTextBlock.Text = Exception.Message & vbNewLine & StackTrace
 
                 ErrorReportDialog.Title = MCBackup.Language.Dictionary("Message.Caption.Error")
@@ -49,29 +48,23 @@ Public Class ErrorReportDialog
                 System.Media.SystemSounds.Hand.Play()
                 ErrorReportDialog.ShowDialog()
             Else
-                ErrorReportDialog.MessageLabel.Content = Message
+                ErrorReportDialog.MessageLabel.Content = String.Format("An exception of type {0} occured: " & Message, Exception.GetType)
 
-                Dim StackTrace As New StackTrace(Exception, True)
-                For Each st As StackFrame In StackTrace.GetFrames
-                    If String.IsNullOrEmpty(StackTrace.GetFrame(0).GetFileName) Then
-                        If st.GetFileLineNumber <> 0 Then
-                            ErrorReportDialog.ErrorTextBlock.Text = String.Format(MCBackup.Language.Dictionary("ErrorWindow.ErrorAtLine"), st.GetFileLineNumber, IO.Path.GetFileName(st.GetFileName), Exception.Message)
-                        End If
-                    Else
-                        ErrorReportDialog.ErrorTextBlock.Text = String.Format(MCBackup.Language.Dictionary("ErrorWindow.ErrorAtLine"), StackTrace.GetFrame(0).GetFileLineNumber, IO.Path.GetFileName(StackTrace.GetFrame(0).GetFileName), Exception.Message)
-                    End If
-                Next
+                Dim StackTrace As String = New StackTrace(Exception, True).ToString
+                Log.Print(StackTrace)
+                ErrorReportDialog.ErrorTextBlock.Text = Exception.Message & vbNewLine & StackTrace
 
                 System.Media.SystemSounds.Hand.Play()
                 ErrorReportDialog.ShowDialog()
             End If
             Application.CloseAction = Application.AppCloseAction.Force
         Catch ex As Exception
-            Debug.Print("Could not show ErrorReportDialog: " & ex.Message)
-            Dim StackTrace As New StackTrace(ex, True)
-            For Each Frame As StackFrame In StackTrace.GetFrames
-                Debug.Print(Frame.ToString)
-            Next
+            Log.Print("Could not show ErrorReportDialog: " & ex.Message, Log.Level.Warning)
+            Try
+                Log.Print(New StackTrace(ex, True).ToString)
+            Catch InnerException As Exception
+                Log.Print("Could not trace exception: " & InnerException.Message, Log.Level.Warning)
+            End Try
         End Try
     End Sub
 
