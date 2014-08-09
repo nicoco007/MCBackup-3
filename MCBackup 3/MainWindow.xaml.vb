@@ -50,7 +50,6 @@ Partial Class MainWindow
     Private DeleteForRestoreThread As Thread
     Private RestoreThread As Thread
     Private DeleteThread As Thread
-    Private UpdateProgress As Thread
 
     Public StartupPath As String = Directory.GetCurrentDirectory()
     Public ApplicationVersion As String = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()
@@ -85,9 +84,6 @@ Partial Class MainWindow
         Log.Print(String.Format("Current Launcher: '{0}'", My.Settings.Launcher))
 
         Splash.StepProgress()
-
-        Splash.Progress.Value += 1
-        Splash.Progress.Refresh()
 
         Me.Title = "MCBackup " & ApplicationVersion
 
@@ -688,13 +684,8 @@ Partial Class MainWindow
                                   End Sub)
 
                 Me.Dispatcher.Invoke(Sub()
-                                         ProgressBar.Value = PercentComplete
-                                         ProgressBar.Refresh()
+                                         Progress.Value = PercentComplete
                                      End Sub)
-
-                If Environment.OSVersion.Version.Major > 5 Then
-                    TaskbarManager.Instance.SetProgressValue(PercentComplete, 100)
-                End If
 
                 If Cancel = True And BackupThread.IsAlive = False Then
                     Dispatcher.Invoke(Sub()
@@ -704,7 +695,7 @@ Partial Class MainWindow
                     My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0), FileIO.DeleteDirectoryOption.DeleteAllContents)
                     Dispatcher.Invoke(Sub()
                                           BackupStopwatch.Stop()
-                                          ProgressBar.Value = 0
+                                          Progress.Value = 0
                                           ProgressBar.IsIndeterminate = False
                                           StatusLabel.Content = "Operation cancelled - Ready"
                                           EnableUI(True)
@@ -778,7 +769,7 @@ Partial Class MainWindow
                                       ReloadBackupGroups()
                                       StatusLabel.Content = MCBackup.Language.Dictionary("Status.BackupComplete")
                                       StatusLabel.Refresh()
-                                      ProgressBar.Value = 100
+                                      Progress.Value = 100
                                   End Sub)
 
                 If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupComplete"), MCBackup.Language.Dictionary("BalloonTip.BackupComplete"), System.Windows.Forms.ToolTipIcon.Info)
@@ -818,7 +809,7 @@ Partial Class MainWindow
             Dim PercentComplete As Double = (e.Data.Substring(1).Remove(e.Data.IndexOf(".") - 1) / 4) + (StepNumber * 25)
 
             Dispatcher.Invoke(Sub()
-                                  ProgressBar.Value = PercentComplete
+                                  Progress.Value = PercentComplete
                                   StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), Int(PercentComplete))
                               End Sub)
         ElseIf e.Data = "Job complete." Then
@@ -826,7 +817,7 @@ Partial Class MainWindow
                                   EnableUI(True)
                                   RefreshBackupsList()
                                   ReloadBackupGroups()
-                                  UpdateThumbProgress(100)
+                                  Progress.Value = 100
                                   StatusLabel.Content = MCBackup.Language.Dictionary("Status.BackupComplete")
                                   StatusLabel.Refresh()
                                   If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupComplete"), MCBackup.Language.Dictionary("BalloonTip.BackupComplete"), System.Windows.Forms.ToolTipIcon.Info)
@@ -943,13 +934,13 @@ Partial Class MainWindow
                             Dispatcher.Invoke(Sub()
                                                   ' Show percent complete and message
                                                   StatusLabel.Content = String.Format("Removing old content... ({0:0.00}% Complete)", 100 - PercentRemoved)
-                                                  ProgressBar.Value = PercentRemoved
+                                                  Progress.Value = PercentRemoved
                                               End Sub)
 
                             If Cancel And DeleteForRestoreThread.IsAlive = False Then
                                 Dispatcher.Invoke(Sub()
                                                       RestoreStopWatch.Stop()
-                                                      ProgressBar.Value = 0
+                                                      Progress.Value = 0
                                                       ProgressBar.IsIndeterminate = False
                                                       StatusLabel.Content = "Operation cancelled - Ready"
                                                       EnableUI(True)
@@ -1000,20 +991,15 @@ Partial Class MainWindow
                 Dispatcher.Invoke(Sub()
                                       ' Display percent complete on progress bar and restoring message
                                       StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed, TimeLeft.TotalSeconds)
-                                      ProgressBar.Value = PercentComplete
+                                      Progress.Value = PercentComplete
                                       ProgressBar.Refresh()
                                   End Sub)
-
-                ' If Windows version later than Windows Vista, show progress in taskbar
-                If Environment.OSVersion.Version.Major > 5 Then
-                    TaskbarManager.Instance.SetProgressValue(PercentComplete, 100)
-                End If
 
                 ' Cancel if cancel variable is true and backup thread has been killed
                 If Cancel And RestoreThread.IsAlive = False Then
                     Dispatcher.Invoke(Sub()
                                           RestoreStopWatch.Stop()
-                                          ProgressBar.Value = 0
+                                          Progress.Value = 0
                                           ProgressBar.IsIndeterminate = False
                                           StatusLabel.Content = "Operation cancelled - Ready"
                                           EnableUI(True)
@@ -1033,7 +1019,7 @@ Partial Class MainWindow
 
             Dispatcher.Invoke(Sub()
                                   StatusLabel.Content = MCBackup.Language.Dictionary("Status.RestoreComplete")
-                                  ProgressBar.Value = 100
+                                  Progress.Value = 100
                                   EnableUI(True)
                                   RefreshBackupsList()
                                   ReloadBackupGroups()
@@ -1088,14 +1074,6 @@ Partial Class MainWindow
         End Try
         Return Nothing
     End Function
-
-    Private Sub UpdateThumbProgress(Value As Double)
-        Dim UpdateProgressBarDelegate As New UpdateProgressBarDelegate(AddressOf ProgressBar.SetValue)
-        Dispatcher.Invoke(UpdateProgressBarDelegate, System.Windows.Threading.DispatcherPriority.Background, New Object() {ProgressBar.ValueProperty, Value})
-        If Environment.OSVersion.Version.Major > 5 Then
-            TaskbarManager.Instance.SetProgressValue(Value, 100)
-        End If
-    End Sub
 #End Region
 
 #Region "Menu Bar"
@@ -1169,7 +1147,7 @@ Partial Class MainWindow
                 Log.Print("Delete thread aborted!", Log.Level.Severe)
                 Me.Dispatcher.Invoke(Sub()
                                          BackupStopwatch.Stop()
-                                         ProgressBar.Value = 0
+                                         Progress.Value = 0
                                          StatusLabel.Content = "Delete cancelled."
                                      End Sub)
             Else

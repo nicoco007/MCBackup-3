@@ -125,6 +125,7 @@
       <DependentUpon>RenameDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Game.vb" />
+    <Compile Include="Progress.vb" />
     <Compile Include="SetMinecraftFolderWindow.xaml.vb">
       <DependentUpon>SetMinecraftFolderWindow.xaml</DependentUpon>
     </Compile>
