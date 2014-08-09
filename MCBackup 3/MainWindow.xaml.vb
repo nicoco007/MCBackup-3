@@ -789,22 +789,24 @@ Partial Class MainWindow
         End Try
     End Sub
 
+    Private StepNumber As Integer
+
     Private Sub MCMap_DataReceived(sender As Object, e As DataReceivedEventArgs)
-        Dim StepNumber As Integer
         If e.Data = Nothing Then
             Exit Sub
         End If
 
-        Select Case e.Data
-            Case "Loading all chunks.."
-                StepNumber = 0
-            Case "Optimizing terrain..."
-                StepNumber = 1
-            Case "Drawing map..."
-                StepNumber = 2
-            Case "Writing to file..."
-                StepNumber = 3
-        End Select
+        Log.Print("[MCMAP] " & e.Data, Log.Level.Debug)
+
+        If e.Data.Contains("Loading all chunks") Then
+            StepNumber = 0
+        ElseIf e.Data.Contains("Optimizing terrain") Then
+            StepNumber = 1
+        ElseIf e.Data.Contains("Drawing map") Then
+            StepNumber = 2
+        ElseIf e.Data.Contains("Writing to file") Then
+            StepNumber = 3
+        End If
 
         If Me.Cancel Then
             Me.Cancel = False
@@ -813,9 +815,8 @@ Partial Class MainWindow
         End If
 
         If e.Data.Contains("[") And e.Data.Contains("]") Then
-            Debug.Print(e.Data.Substring(1).Remove(e.Data.IndexOf(".") - 1))
             Dim PercentComplete As Double = (e.Data.Substring(1).Remove(e.Data.IndexOf(".") - 1) / 4) + (StepNumber * 25)
-            Debug.Print(PercentComplete)
+
             Dispatcher.Invoke(Sub()
                                   ProgressBar.Value = PercentComplete
                                   StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), Int(PercentComplete))
@@ -1610,9 +1611,11 @@ Partial Class MainWindow
         RestoreButton.IsEnabled = IsEnabled
         DeleteButton.IsEnabled = IsEnabled
         RenameButton.IsEnabled = IsEnabled
+        CullButton.IsEnabled = IsEnabled
         CancelButton.IsEnabled = Not IsEnabled
         GroupsTabControl.IsEnabled = IsEnabled
         ListView.IsEnabled = IsEnabled
+        ListView_SelectionChanged(Nothing, Nothing)
     End Sub
 End Class
 
