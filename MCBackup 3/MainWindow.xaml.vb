@@ -1438,6 +1438,11 @@ Partial Class MainWindow
                 End If
             End If
 
+            If ThreadIsNotNothingAndAlive(BackupThread) Or ProcessIsNotNothingAndRunning(MCMapProcess) Or ThreadIsNotNothingAndAlive(DeleteForRestoreThread) Or ThreadIsNotNothingAndAlive(RestoreThread) Or ThreadIsNotNothingAndAlive(DeleteThread) Then
+                MetroMessageBox.Show("MCBackup is currently working. Please wait for the operation to exit, or cancel it.", "MCBackup is working!", MessageBoxButton.OK, MessageBoxImage.Question)
+                e.Cancel = True
+            End If
+
             If e.Cancel Then Exit Sub
 
             NotifyIcon.Visible = False
@@ -1631,6 +1636,22 @@ Partial Class MainWindow
         Application.CloseAction = Application.AppCloseAction.Close
         Me.Close()
     End Sub
+
+    Private Function ThreadIsNotNothingAndAlive(Thread As Thread)
+        If Thread IsNot Nothing Then
+            Return Thread.IsAlive
+        Else
+            Return False
+        End If
+    End Function
+
+    Private Function ProcessIsNotNothingAndRunning(Process As Process)
+        If Process IsNot Nothing Then
+            Return Not Process.HasExited
+        Else
+            Return False
+        End If
+    End Function
 End Class
 
 Public Class TaggedTabItem
