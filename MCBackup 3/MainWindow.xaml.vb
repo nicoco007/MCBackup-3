@@ -641,6 +641,7 @@ Partial Class MainWindow
         End If
         Log.Print("Starting new backup (Name: '{0}'; Description: '{1}'; Path: '{2}'; Type: '{3}'", BackupInfo(0), BackupInfo(1), BackupInfo(2), BackupInfo(3))
         EnableUI(False)
+        Cancel = False
         Dim t As New Thread(AddressOf Backup)
         t.Start()
     End Sub
@@ -801,7 +802,6 @@ Partial Class MainWindow
 
         If Me.Cancel Then
             Me.Cancel = False
-            MCMapProcess.Kill()
             Exit Sub
         End If
 
@@ -833,6 +833,7 @@ Partial Class MainWindow
     Private Sub RestoreButton_Click(sender As Object, e As EventArgs) Handles RestoreButton.Click, ListViewRestoreItem.Click
         If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.RestoreAreYouSure"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = Forms.DialogResult.Yes Then
             EnableUI(False)
+            Cancel = False
             Log.Print("Starting Restore")
             RestoreInfo(0) = ListView.SelectedItems(0).Name ' Set place 0 of RestoreInfo array to the backup name
 
@@ -1554,7 +1555,10 @@ Partial Class MainWindow
         If BackupThread IsNot Nothing Then
             If BackupThread.IsAlive Then
                 If MetroMessageBox.Show("Are you sure you want to cancel the backup?", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
-                    BackupThread.Abort()
+                    If BackupThread.IsAlive Then
+                        BackupThread.Abort()
+                        Cancel = True
+                    End If
                 End If
             End If
         End If
@@ -1562,7 +1566,17 @@ Partial Class MainWindow
         If MCMapProcess IsNot Nothing Then
             If MCMapProcess.HasExited = False Then
                 If MetroMessageBox.Show("Are you sure you want to cancel the backup?", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
-                    MCMapProcess.Kill()
+                    If Not MCMapProcess.HasExited Then
+                        MCMapProcess.Kill()
+                        If IO.File.Exists(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0) & "\thumb.png") Then IO.File.Delete(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0) & "\thumb.png")
+                        EnableUI(True)
+                        RefreshBackupsList()
+                        ReloadBackupGroups()
+                        Progress.Value = 0
+                        StatusLabel.Content = "Thumbnail Creation Cancelled - Ready"
+                        StatusLabel.Refresh()
+                        Log.Print("Thumbnail creation cancelled")
+                    End If
                 End If
             End If
         End If
@@ -1570,7 +1584,10 @@ Partial Class MainWindow
         If DeleteForRestoreThread IsNot Nothing Then
             If DeleteForRestoreThread.IsAlive Then
                 If MetroMessageBox.Show("WARNING!" & vbNewLine & "Cancelling a restore operation can seriously damage your Minecraft installation!" & vbNewLine & vbNewLine & "Are you sure you want to cancel the restore?", "WARNING!", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
-                    DeleteForRestoreThread.Abort()
+                    If DeleteForRestoreThread.IsAlive Then
+                        DeleteForRestoreThread.Abort()
+                        Cancel = True
+                    End If
                 End If
             End If
         End If
@@ -1578,7 +1595,10 @@ Partial Class MainWindow
         If RestoreThread IsNot Nothing Then
             If RestoreThread.IsAlive Then
                 If MetroMessageBox.Show("WARNING!" & vbNewLine & "Cancelling a restore operation can seriously damage your Minecraft installation!" & vbNewLine & vbNewLine & "Are you sure you want to cancel the restore?", "WARNING!", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
-                    RestoreThread.Abort()
+                    If RestoreThread.IsAlive Then
+                        RestoreThread.Abort()
+                        Cancel = True
+                    End If
                 End If
             End If
         End If
@@ -1586,12 +1606,13 @@ Partial Class MainWindow
         If DeleteThread IsNot Nothing Then
             If DeleteThread.IsAlive Then
                 If MetroMessageBox.Show("Are you sure you want to cancel the delete?", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
-                    DeleteThread.Abort()
+                    If DeleteThread.IsAlive Then
+                        DeleteThread.Abort()
+                        Cancel = True
+                    End If
                 End If
             End If
         End If
-
-        Cancel = True
     End Sub
 
     Private Sub EnableUI(IsEnabled As Boolean)
