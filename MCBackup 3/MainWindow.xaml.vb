@@ -430,6 +430,16 @@ Partial Class MainWindow
                 SidebarTypeContent.ToolTip = MCBackup.Language.Dictionary("MainWindow.Sidebar.NoBackupSelected")
 
                 DescriptionTextBox.Text = MCBackup.Language.Dictionary("MainWindow.Sidebar.Description.NoItem")
+
+                SidebarPlayerHealth.Visibility = Windows.Visibility.Collapsed
+                SidebarPlayerHunger.Visibility = Windows.Visibility.Collapsed
+
+                SidebarTypeLabel.Visibility = Windows.Visibility.Collapsed
+                SidebarTypeContent.Visibility = Windows.Visibility.Collapsed
+                SidebarOriginalNameLabel.Visibility = Windows.Visibility.Collapsed
+                SidebarOriginalNameContent.Visibility = Windows.Visibility.Collapsed
+                SidebarDescriptionLabel.Visibility = Windows.Visibility.Collapsed
+                DescriptionTextBox.Visibility = Windows.Visibility.Collapsed
             Case 1
                 Dim Thread As New Thread(AddressOf LoadBackupInfo)
                 Thread.Start()
@@ -445,7 +455,17 @@ Partial Class MainWindow
                 ListViewDeleteItem.IsEnabled = True
                 ListViewRenameItem.IsEnabled = False
 
-                DescriptionTextBox.Text = MCBackup.Language.Dictionary("MainWindow.Sidebar.Description.NoItem")
+                ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/nothumb.png"))
+
+                SidebarPlayerHealth.Visibility = Windows.Visibility.Collapsed
+                SidebarPlayerHunger.Visibility = Windows.Visibility.Collapsed
+
+                SidebarTypeLabel.Visibility = Windows.Visibility.Collapsed
+                SidebarTypeContent.Visibility = Windows.Visibility.Collapsed
+                SidebarOriginalNameLabel.Visibility = Windows.Visibility.Collapsed
+                SidebarOriginalNameContent.Visibility = Windows.Visibility.Collapsed
+                SidebarDescriptionLabel.Visibility = Windows.Visibility.Collapsed
+                DescriptionTextBox.Visibility = Windows.Visibility.Collapsed
         End Select
     End Sub
 
@@ -461,11 +481,21 @@ Partial Class MainWindow
                               SidebarTitle.ToolTip = SelectedItem
 
                               ListViewRestoreItem.IsEnabled = True
-                              ListViewDeleteItem.IsEnabled = True     'Enable reContextMenu items
+                              ListViewDeleteItem.IsEnabled = True     'Enable ContextMenu items
                               ListViewRenameItem.IsEnabled = True
 
                               SidebarPlayerHealth.Visibility = Windows.Visibility.Collapsed
                               SidebarPlayerHunger.Visibility = Windows.Visibility.Collapsed
+
+                              SidebarPlayerHealth.Children.Clear()
+                              SidebarPlayerHunger.Children.Clear()
+
+                              SidebarTypeLabel.Visibility = Windows.Visibility.Visible
+                              SidebarTypeContent.Visibility = Windows.Visibility.Visible
+                              SidebarOriginalNameLabel.Visibility = Windows.Visibility.Visible
+                              SidebarOriginalNameContent.Visibility = Windows.Visibility.Visible
+                              SidebarDescriptionLabel.Visibility = Windows.Visibility.Visible
+                              DescriptionTextBox.Visibility = Windows.Visibility.Visible
 
                               If My.Computer.FileSystem.FileExists(My.Settings.BackupsFolderLocation & "\" & SelectedItem.Name & "\thumb.png") Then
                                   Try
