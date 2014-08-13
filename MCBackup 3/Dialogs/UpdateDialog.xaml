@@ -22,15 +22,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="New version available!" Height="220" Width="300" WindowStyle="ToolWindow" WindowStartupLocation="CenterOwner" Loaded="UpdateDialog_Loaded" ResizeMode="NoResize" WindowTransitionsEnabled="False" BorderBrush="{DynamicResource AccentColorBrush}" BorderThickness="1">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="79*"/>
-            <RowDefinition Height="10*"/>
-        </Grid.RowDefinitions>
         <Label x:Name="Label1" Content="A new MCBackup version is available!" VerticalAlignment="Top" Margin="10,10,12,0" HorizontalContentAlignment="Center"/>
-        <Label x:Name="CurrentVersionLabel" Content="Current version: 0.0.0.0" FontWeight="Bold" VerticalAlignment="Top" Margin="10,47,12,0" HorizontalContentAlignment="Center"/>
-        <Label x:Name="LatestVersionLabel" Content="Latest version: 0.0.0.0" FontWeight="Bold" VerticalAlignment="Top" Margin="10,73,12,0" HorizontalContentAlignment="Center"/>
-        <Label x:Name="Label2" Content="Would you like to update?" VerticalAlignment="Top" Margin="10,113,12,0" HorizontalContentAlignment="Center"/>
-        <Button x:Name="YesButton" Content="Yes" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="75" Margin="67,0,152,5" IsDefault="True" Grid.RowSpan="2"/>
-        <Button x:Name="NoButton" Content="No" VerticalAlignment="Bottom" Margin="152,0,67,5" HorizontalAlignment="Center" Width="75" Grid.RowSpan="2"/>
+        <Label x:Name="CurrentVersionLabel" Content="Current version: 0.0.0.0" FontWeight="Bold" VerticalAlignment="Top" Margin="10,40,12,0" HorizontalContentAlignment="Center"/>
+        <Label x:Name="LatestVersionLabel" Content="Latest version: 0.0.0.0" FontWeight="Bold" VerticalAlignment="Top" Margin="10,60,12,0" HorizontalContentAlignment="Center"/>
+        <Label x:Name="Label2" Content="Would you like to update?" VerticalAlignment="Top" Margin="10,90,12,0" HorizontalContentAlignment="Center"/>
+        <Button x:Name="YesButton" Content="Yes" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="75" Margin="66,0,151,40" IsDefault="True"/>
+        <Button x:Name="NoButton" Content="No" VerticalAlignment="Bottom" Margin="151,0,66,40" HorizontalAlignment="Center" Width="75"/>
+        <Button Content="Show Changelog" HorizontalAlignment="Left" VerticalAlignment="Top" Width="160" Margin="66,155,0,0" Click="Button_Click"/>
     </Grid>
 </Controls:MetroWindow>

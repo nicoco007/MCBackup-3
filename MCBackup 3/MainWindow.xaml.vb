@@ -92,6 +92,8 @@ Partial Class MainWindow
 
         Dim DefaultLanguage As String = "en_US"
 
+        Log.Print("System language: " & CultureInfo.CurrentCulture.EnglishName, Log.Level.Debug)
+
         Select Case CultureInfo.CurrentCulture.ThreeLetterISOLanguageName
             Case "eng"
                 DefaultLanguage = "en_US"
@@ -101,7 +103,7 @@ Partial Class MainWindow
 
         Splash.StepProgress()
         Try
-            If My.Settings.Language = "" Or My.Settings.Language Is Nothing Then
+            If String.IsNullOrEmpty(My.Settings.Language) Then
                 My.Settings.Language = DefaultLanguage
                 MCBackup.Language.Load(My.Settings.Language & ".lang")
             Else
@@ -486,9 +488,6 @@ Partial Class MainWindow
 
                               SidebarPlayerHealth.Visibility = Windows.Visibility.Collapsed
                               SidebarPlayerHunger.Visibility = Windows.Visibility.Collapsed
-
-                              SidebarPlayerHealth.Children.Clear()
-                              SidebarPlayerHunger.Children.Clear()
 
                               SidebarTypeLabel.Visibility = Windows.Visibility.Visible
                               SidebarTypeContent.Visibility = Windows.Visibility.Visible

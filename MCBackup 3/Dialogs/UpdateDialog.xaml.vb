@@ -33,4 +33,8 @@ Public Class UpdateDialog
         LatestVersionLabel.Content = String.Format(MCBackup.Language.Dictionary("UpdateDialog.LatestVersionLabel.Text"), Main.LatestVersion)
         Label2.Content = MCBackup.Language.Dictionary("UpdateDialog.Label2.Text")
     End Sub
+
+    Private Sub Button_Click(sender As Object, e As RoutedEventArgs)
+        Process.Start("http://www.nicoco007.com/en/minecraft/applications/mcbackup-3/changelog/")
+    End Sub
 End Class
