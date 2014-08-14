@@ -141,8 +141,6 @@ Public Class BackupDialog
         GroupsComboBox.SelectedIndex = 0
     End Sub
 
-
-
     Private Sub Name_CheckChanged(sender As Object, e As RoutedEventArgs) Handles DateAndTimeRadioButton.Checked, CustomNameRadioButton.Checked
         If Me.IsLoaded Then
             CustomNameTextBox.IsEnabled = CustomNameRadioButton.IsChecked
