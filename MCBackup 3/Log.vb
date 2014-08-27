@@ -31,18 +31,19 @@ Public Class Log
     ''' </summary>
     ''' <param name="Message">Message to display</param>
     Public Shared Sub Print(Message As String, ParamArray args As Object())
-        Message = Message.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>")
+        Dim FullMessage As String = String.Format(Message, args)
 
-        For i As Integer = 0 To args.Length - 1
-            If TypeOf args(i) Is String Then
-                args(i) = DirectCast(args(i), String).Replace(Environ("USERPROFILE"), "<USERDIRECTORY>")
-            End If
-        Next
+        FullMessage = FullMessage.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>")
+
+        Dim FullMessageParts = FullMessage.Split(vbNewLine, 0, StringSplitOptions.RemoveEmptyEntries)
 
         Try
             Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
-                Debug.Print(DebugTimeStamp() & " [INFO] " & Message, args)
-                SW.WriteLine(DebugTimeStamp() & " [INFO] " & Message, args)
+                For Each Part As String In FullMessageParts
+                    Part = Part.Replace(vbNewLine, "")
+                    Debug.Print(DebugTimeStamp() & " [INFO] " & Part)
+                    SW.WriteLine(DebugTimeStamp() & " [INFO] " & Part)
+                Next
             End Using
         Catch
         End Try
@@ -53,23 +54,38 @@ Public Class Log
     ''' </summary>
     ''' <param name="Message">Message to display</param>
     Public Shared Sub Print(Message As String, Level As Level)
-        Message = Message.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>")
+        Dim FullMessage = Message.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>")
+
+        Dim FullMessageParts = FullMessage.Split(vbNewLine, 0, StringSplitOptions.RemoveEmptyEntries)
+
         Try
             Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
                 Select Case Level
                     Case Log.Level.Info
-                        Debug.Print(DebugTimeStamp() & " [INFO] " & Message)
-                        SW.WriteLine(DebugTimeStamp() & " [INFO] " & Message)
+                        For Each Part As String In FullMessageParts
+                            Part = Part.Replace(vbNewLine, "")
+                            Debug.Print(DebugTimeStamp() & " [INFO] " & Part)
+                            SW.WriteLine(DebugTimeStamp() & " [INFO] " & Part)
+                        Next
                     Case Log.Level.Warning
-                        Debug.Print(DebugTimeStamp() & " [WARNING] " & Message)
-                        SW.WriteLine(DebugTimeStamp() & " [WARNING] " & Message)
+                        For Each Part As String In FullMessageParts
+                            Part = Part.Replace(vbNewLine, "")
+                            Debug.Print(DebugTimeStamp() & " [WARNING] " & Part)
+                            SW.WriteLine(DebugTimeStamp() & " [WARNING] " & Part)
+                        Next
                     Case Log.Level.Severe
-                        Debug.Print(DebugTimeStamp() & " [SEVERE] " & Message)
-                        SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & Message)
+                        For Each Part As String In FullMessageParts
+                            Part = Part.Replace(vbNewLine, "")
+                            Debug.Print(DebugTimeStamp() & " [SEVERE] " & Part)
+                            SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & Part)
+                        Next
                     Case Log.Level.Debug
                         If Environment.GetCommandLineArgs().Contains("-debug") Then
-                            Debug.Print(DebugTimeStamp() & " [DEBUG] " & Message)
-                            SW.WriteLine(DebugTimeStamp() & " [DEBUG] " & Message)
+                            For Each Part As String In FullMessageParts
+                                Part = Part.Replace(vbNewLine, "")
+                                Debug.Print(DebugTimeStamp() & " [DEBUG] " & Part)
+                                SW.WriteLine(DebugTimeStamp() & " [DEBUG] " & Part)
+                            Next
                         End If
                 End Select
             End Using
@@ -83,30 +99,40 @@ Public Class Log
     ''' <param name="Message">Message to be printed</param>
     ''' <param name="Level">Level, either [INFO], [WARNING], or [SEVERE]</param>
     Public Shared Sub Print(Message As String, Level As Level, ParamArray args As Object())
-        Message = Message.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>")
+        Dim FullMessage As String = String.Format(Message, args)
 
-        For i As Integer = 0 To args.Length - 1
-            If TypeOf args(i) Is String Then
-                args(i) = DirectCast(args(i), String).Replace(Environ("USERPROFILE"), "<USERDIRECTORY>")
-            End If
-        Next
+        FullMessage = FullMessage.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>")
+
+        Dim FullMessageParts = FullMessage.Split(vbNewLine, 0, StringSplitOptions.RemoveEmptyEntries)
 
         Try
             Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
                 Select Case Level
                     Case Log.Level.Info
-                        Debug.Print(DebugTimeStamp() & " [INFO] " & Message, args)
-                        SW.WriteLine(DebugTimeStamp() & " [INFO] " & Message, args)
+                        For Each Part As String In FullMessageParts
+                            Part = Part.Replace(vbNewLine, "")
+                            Debug.Print(DebugTimeStamp() & " [INFO] " & Part)
+                            SW.WriteLine(DebugTimeStamp() & " [INFO] " & Part)
+                        Next
                     Case Log.Level.Warning
-                        Debug.Print(DebugTimeStamp() & " [WARNING] " & Message, args)
-                        SW.WriteLine(DebugTimeStamp() & " [WARNING] " & Message, args)
+                        For Each Part As String In FullMessageParts
+                            Part = Part.Replace(vbNewLine, "")
+                            Debug.Print(DebugTimeStamp() & " [WARNING] " & Part)
+                            SW.WriteLine(DebugTimeStamp() & " [WARNING] " & Part)
+                        Next
                     Case Log.Level.Severe
-                        Debug.Print(DebugTimeStamp() & " [SEVERE] " & Message, args)
-                        SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & Message, args)
+                        For Each Part As String In FullMessageParts
+                            Part = Part.Replace(vbNewLine, "")
+                            Debug.Print(DebugTimeStamp() & " [SEVERE] " & Part)
+                            SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & Part)
+                        Next
                     Case Log.Level.Debug
                         If Environment.GetCommandLineArgs().Contains("-debug") Then
-                            Debug.Print(DebugTimeStamp() & " [DEBUG] " & Message, args)
-                            SW.WriteLine(DebugTimeStamp() & " [DEBUG] " & Message, args)
+                            For Each Part As String In FullMessageParts
+                                Part = Part.Replace(vbNewLine, "")
+                                Debug.Print(DebugTimeStamp() & " [DEBUG] " & Part)
+                                SW.WriteLine(DebugTimeStamp() & " [DEBUG] " & Part)
+                            Next
                         End If
                 End Select
             End Using

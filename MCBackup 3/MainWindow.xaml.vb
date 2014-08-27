@@ -28,6 +28,9 @@ Imports System.Windows.Interop
 Imports Substrate
 Imports MahApps.Metro
 Imports System.Text
+Imports Newtonsoft.Json.Linq
+Imports Newtonsoft.Json
+Imports System.Security
 
 Partial Class MainWindow
 
@@ -281,61 +284,122 @@ Partial Class MainWindow
 
         For Each Folder As DirectoryInfo In Directory.GetDirectories ' For each folder in the backups folder
             Dim Type As String = "[ERROR]"                  ' Create variables with default value [ERROR], in case one of the values doesn't exist
-            Dim OriginalFolderName As String = "[ERROR]"    ' 
 
             Try
-                If Not My.Computer.FileSystem.FileExists(Folder.FullName & "\info.mcb") Then
-                    Log.Print("'info.mcb' does not exist in folder '{0}'. This folder will not be considered as a backup.", Log.Level.Warning, Folder.Name)
+                If IO.File.Exists(Folder.FullName & "\info.mcb") Then ' Convert info.mcb to info.json
+                    Log.Print("Converting info.mcb to JSON in backup '{0}'", Log.Level.Info, Folder.Name)
+
+                    Dim Json As New JObject
+
+                    Using SR As New StreamReader(Folder.FullName & "\info.mcb")
+                        Do While SR.Peek <> -1
+                            Dim Line As String = SR.ReadLine
+                            If Not Line.StartsWith("#") Then
+                                If Line.StartsWith("baseFolderName=") Then
+                                    Json.Add(New JProperty("OriginalName", Line.Substring(15)))
+                                ElseIf Line.StartsWith("type=") Then
+                                    Json.Add(New JProperty("Type", Line.Substring(5)))
+                                ElseIf Line.StartsWith("desc=") Then
+                                    Json.Add(New JProperty("Description", Line.Substring(5)))
+                                ElseIf Line.StartsWith("groupName=") Then
+                                    Json.Add(New JProperty("Group", Line.Substring(10)))
+                                ElseIf Line.StartsWith("launcher=") Then
+                                    Json.Add(New JProperty("Launcher", Line.Substring(9)))
+                                ElseIf Line.StartsWith("modpack=") Then
+                                    Json.Add(New JProperty("Modpack", Line.Substring(8)))
+                                End If
+                            End If
+                        Loop
+                    End Using
+
+                    Using SR As New StreamWriter(Folder.FullName & "\info.json")
+                        SR.Write(JsonConvert.SerializeObject(Json, Formatting.Indented))
+                    End Using
+
+                    IO.File.Delete(Folder.FullName & "\info.mcb")
+                End If
+
+                If Not My.Computer.FileSystem.FileExists(Folder.FullName & "\info.json") Then
+                    Log.Print("'info.json' does not exist in folder '{0}'. This folder will not be considered as a backup.", Log.Level.Warning, Folder.Name)
                     DirectoriesToDelete.Add(Folder.Name)
                     Exit Try
                 End If
 
-                Using SR As New StreamReader(Folder.FullName & "\info.mcb")
-                    Do While SR.Peek <> -1
-                        Dim Line As String = SR.ReadLine
-                        If Not Line.StartsWith("#") Then
-                            If Line.StartsWith("type=") Then
-                                Select Case Line.Substring(5)
-                                    Case "save"
-                                        Type = MCBackup.Language.Dictionary("BackupTypes.Save")
-                                    Case "version"
-                                        Type = MCBackup.Language.Dictionary("BackupTypes.Version")
-                                    Case "everything"
-                                        Type = MCBackup.Language.Dictionary("BackupTypes.Everything")
-                                End Select
-                            ElseIf Line.StartsWith("baseFolderName=") Then
-                                OriginalFolderName = Line.Substring(15) ' Set original folder name to "baseFolderName=" line
-                            ElseIf Line = "groupName=" & Group And Not (Group = "") And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
-                                If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
-                                    Dispatcher.Invoke(Sub()
-                                                          Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), OriginalFolderName, Type))
-                                                      End Sub)
-                                ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
-                                    Dispatcher.Invoke(Sub()
-                                                          Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
-                                                      End Sub)
-                                Else
-                                    Dispatcher.Invoke(Sub()
-                                                          Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
-                                                      End Sub)
-                                End If
-                            End If
-                        End If
-                    Loop
+                Dim InfoJson As JObject
+
+                Using SR As New StreamReader(Folder.FullName & "\info.json")
+                    InfoJson = JsonConvert.DeserializeObject(SR.ReadToEnd)
+                    Debug.Print(InfoJson("Type"))
+                    'Do While SR.Peek <> -1
+                    '    Dim Line As String = SR.ReadLine
+                    '    If Not Line.StartsWith("#") Then
+                    '        If Line.StartsWith("type=") Then
+                    '            Select Case Line.Substring(5)
+                    '                Case "save"
+                    '                    Type = MCBackup.Language.Dictionary("BackupTypes.Save")
+                    '                Case "version"
+                    '                    Type = MCBackup.Language.Dictionary("BackupTypes.Version")
+                    '                Case "everything"
+                    '                    Type = MCBackup.Language.Dictionary("BackupTypes.Everything")
+                    '            End Select
+                    '        ElseIf Line.StartsWith("baseFolderName=") Then
+                    '            OriginalFolderName = Line.Substring(15) ' Set original folder name to "baseFolderName=" line
+                    '        ElseIf Line = "groupName=" & Group And Not (Group = "") And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
+                    '            If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
+                    '                Dispatcher.Invoke(Sub()
+                    '                                      Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), OriginalFolderName, Type))
+                    '                                  End Sub)
+                    '            ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
+                    '                Dispatcher.Invoke(Sub()
+                    '                                      Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
+                    '                                  End Sub)
+                    '            Else
+                    '                Dispatcher.Invoke(Sub()
+                    '                                      Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
+                    '                                  End Sub)
+                    '            End If
+                    '        End If
+                    '    End If
+                    'Loop
                 End Using
+
+                Select Case InfoJson("Type")
+                    Case "save"
+                        Type = MCBackup.Language.Dictionary("BackupTypes.Save")
+                    Case "version"
+                        Type = MCBackup.Language.Dictionary("BackupTypes.Version")
+                    Case "everything"
+                        Type = MCBackup.Language.Dictionary("BackupTypes.Everything")
+                End Select
+
+                Debug.Print(Type)
 
                 If Group = "" And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
                     If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
                         Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), OriginalFolderName, Type))
+                                              Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), InfoJson("OriginalName"), Type))
                                           End Sub)
                     ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
                         Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
+                                              Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
                                           End Sub)
                     Else
                         Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), OriginalFolderName, Type))
+                                              Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
+                                          End Sub)
+                    End If
+                ElseIf InfoJson("Group") = Group And Not (Group = "") And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
+                    If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
+                        Dispatcher.Invoke(Sub()
+                                              Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), InfoJson("OriginalName"), Type))
+                                          End Sub)
+                    ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
+                        Dispatcher.Invoke(Sub()
+                                              Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
+                                          End Sub)
+                    Else
+                        Dispatcher.Invoke(Sub()
+                                              Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
                                           End Sub)
                     End If
                 End If
@@ -510,20 +574,13 @@ Partial Class MainWindow
         Dim Type As String = "-", OriginalFolderName As String = "-", Description As String = ""
 
         Try
-            Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & SelectedItem.Name & "\info.mcb")
-                Do While SR.Peek <> -1
-                    Dim Line As String = SR.ReadLine
-                    If Not Line.StartsWith("#") Then
-                        If Line.StartsWith("type=") Then
-                            Type = Line.Substring(5)
-                        ElseIf Line.StartsWith("baseFolderName=") Then
-                            OriginalFolderName = Line.Substring(15) ' Set original folder name to "baseFolderName=" line
-                        ElseIf Line.StartsWith("desc=") Then
-                            Description = Line.Substring(5)
-                        End If
-                    End If
-                Loop
+            Dim InfoJson As JObject
+            Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & SelectedItem.Name & "\info.json")
+                InfoJson = JsonConvert.DeserializeObject(SR.ReadToEnd)
             End Using
+            Type = InfoJson("Type")
+            OriginalFolderName = InfoJson("OriginalName")
+            Description = InfoJson("Description")
         Catch ex As Exception
             Log.Print(ex.Message, Log.Level.Severe)
         End Try
@@ -739,15 +796,25 @@ Partial Class MainWindow
             ' Stop backup stopwatch
             BackupStopwatch.Stop()
 
-            Using SW As New StreamWriter(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0) & "\info.mcb") ' Create information file (stores description, type, folder name, group name, launcher and modpack)
-                SW.WriteLine("######## WARNING!  DO NOT EDIT THIS FILE! ########")  ' Write warning in case a snooping snooper snoops in the file
-                SW.WriteLine("## YOU COULD DAMAGE YOUR MINECRAFT INSTALLATION ##")
-                SW.WriteLine("baseFolderName=" & BackupInfo(2).Split("\").Last)     ' Write save/version folder name
-                SW.WriteLine("type=" & BackupInfo(3))                               ' Write type
-                SW.WriteLine("desc=" & BackupInfo(1))                               ' Write description
-                SW.WriteLine("groupName=" & BackupInfo(4))                          ' Write group name
-                SW.WriteLine("launcher=" & BackupInfo(5))                           ' Write launcher ID
-                SW.WriteLine("modpack=" & BackupInfo(6))                            ' Write modpack name
+            Dim InfoJson As New JObject
+
+            InfoJson.Add(New JProperty("OriginalName", New DirectoryInfo(BackupInfo(2)).Name))
+            InfoJson.Add(New JProperty("Type", BackupInfo(3)))
+            InfoJson.Add(New JProperty("Description", BackupInfo(1)))
+            InfoJson.Add(New JProperty("Group", BackupInfo(4)))
+            InfoJson.Add(New JProperty("Launcher", BackupInfo(5)))
+            InfoJson.Add(New JProperty("Modpack", BackupInfo(6)))
+
+            Using SW As New StreamWriter(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0) & "\info.json") ' Create information file (stores description, type, folder name, group name, launcher and modpack)
+                'SW.WriteLine("######## WARNING!  DO NOT EDIT THIS FILE! ########")  ' Write warning in case a snooping snooper snoops in the file
+                'SW.WriteLine("## YOU COULD DAMAGE YOUR MINECRAFT INSTALLATION ##")
+                'SW.WriteLine("baseFolderName=" & BackupInfo(2).Split("\").Last)     ' Write save/version folder name
+                'SW.WriteLine("type=" & BackupInfo(3))                               ' Write type
+                'SW.WriteLine("desc=" & BackupInfo(1))                               ' Write description
+                'SW.WriteLine("groupName=" & BackupInfo(4))                          ' Write group name
+                'SW.WriteLine("launcher=" & BackupInfo(5))                           ' Write launcher ID
+                'SW.WriteLine("modpack=" & BackupInfo(6))                            ' Write modpack name
+                SW.Write(JsonConvert.SerializeObject(InfoJson, Formatting.Indented))
             End Using
 
             ' Send +1 to StatCounter
@@ -868,41 +935,70 @@ Partial Class MainWindow
 
             Dim BaseFolderName As String = "", Launcher As Game.Launcher = Game.Launcher.Minecraft, Modpack As String = ""
 
-            Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0) & "\info.mcb")
-                Do While SR.Peek <> -1
-                    Dim Line As String = SR.ReadLine
-                    If Not Line.StartsWith("#") Then
-                        If Line.StartsWith("baseFolderName=") Then
-                            BaseFolderName = Line.Substring(15)
-                        ElseIf Line.StartsWith("type=") Then
-                            RestoreInfo(2) = Line.Substring(5)
-                        ElseIf Line.StartsWith("launcher=") Then
-                            Dim Temp As Object = Line.Substring(9)
-                            If IsNumeric(Temp) Then
-                                If Temp > [Enum].GetValues(GetType(Game.Launcher)).Cast(Of Game.Launcher).Last() Or Temp < 0 Then
-                                    Launcher = Game.Launcher.Minecraft
-                                Else
-                                    Launcher = Temp
-                                End If
-                            Else
-                                Select Case Temp
-                                    Case "minecraft"
-                                        Launcher = Game.Launcher.Minecraft
-                                    Case "technic"
-                                        Launcher = Game.Launcher.Technic
-                                    Case "ftb"
-                                        Launcher = Game.Launcher.FeedTheBeast
-                                    Case "atlauncher"
-                                        Launcher = Game.Launcher.ATLauncher
-                                    Case Else
-                                        Launcher = Game.Launcher.Minecraft
-                                End Select
-                            End If
-                        ElseIf Line.StartsWith("modpack=") Then
-                            Modpack = Line.Substring(8)
-                        End If
+            Dim InfoJson As JObject
+
+            Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0) & "\info.json")
+                'Do While SR.Peek <> -1
+                '    Dim Line As String = SR.ReadLine
+                '    If Not Line.StartsWith("#") Then
+                '        If Line.StartsWith("baseFolderName=") Then
+                '            BaseFolderName = Line.Substring(15)
+                '        ElseIf Line.StartsWith("type=") Then
+                '            RestoreInfo(2) = Line.Substring(5)
+                '        ElseIf Line.StartsWith("launcher=") Then
+                '            Dim Temp As Object = Line.Substring(9)
+                '            If IsNumeric(Temp) Then
+                '                If Temp > [Enum].GetValues(GetType(Game.Launcher)).Cast(Of Game.Launcher).Last() Or Temp < 0 Then
+                '                    Launcher = Game.Launcher.Minecraft
+                '                Else
+                '                    Launcher = Temp
+                '                End If
+                '            Else
+                '                Select Case Temp
+                '                    Case "minecraft"
+                '                        Launcher = Game.Launcher.Minecraft
+                '                    Case "technic"
+                '                        Launcher = Game.Launcher.Technic
+                '                    Case "ftb"
+                '                        Launcher = Game.Launcher.FeedTheBeast
+                '                    Case "atlauncher"
+                '                        Launcher = Game.Launcher.ATLauncher
+                '                    Case Else
+                '                        Launcher = Game.Launcher.Minecraft
+                '                End Select
+                '            End If
+                '        ElseIf Line.StartsWith("modpack=") Then
+                '            Modpack = Line.Substring(8)
+                '        End If
+                '    End If
+                'Loop
+                InfoJson = JsonConvert.DeserializeObject(SR.ReadToEnd)
+                BaseFolderName = InfoJson("OriginalName")
+                RestoreInfo(2) = InfoJson("Type")
+
+                Dim Temp As Object = InfoJson("Launcher")
+                If IsNumeric(Temp) Then
+                    If Temp > [Enum].GetValues(GetType(Game.Launcher)).Cast(Of Game.Launcher).Last() Or Temp < 0 Then
+                        Launcher = Game.Launcher.Minecraft
+                    Else
+                        Launcher = Temp
                     End If
-                Loop
+                Else
+                    Select Case Temp
+                        Case "minecraft"
+                            Launcher = Game.Launcher.Minecraft
+                        Case "technic"
+                            Launcher = Game.Launcher.Technic
+                        Case "ftb"
+                            Launcher = Game.Launcher.FeedTheBeast
+                        Case "atlauncher"
+                            Launcher = Game.Launcher.ATLauncher
+                        Case Else
+                            Launcher = Game.Launcher.Minecraft
+                    End Select
+                End If
+
+                Modpack = InfoJson("Modpack")
             End Using
 
             If Launcher <> My.Settings.Launcher Then
@@ -952,11 +1048,14 @@ Partial Class MainWindow
                     Dim InitialSize As Double = GetFolderSize(RestoreInfo(1))
 
                     ' Start removal async
-                    DeleteForRestoreThread = FileSystemOperations.Directory.DeleteFolderContentsAsync(RestoreInfo(1))
+                    DeleteForRestoreThread = New DirectoryInfo(RestoreInfo(1)).DeleteContentsAsync
+
                     Try
-                        Do
+                        Do Until DeleteForRestoreThread.IsAlive = False
                             ' Set bytes remaining to current folder size
-                            Dim BytesRemaining As Double = GetFolderSize(RestoreInfo(1))
+                            Dim BytesRemaining As Double = 0
+
+                            BytesRemaining = GetFolderSize(RestoreInfo(1))
 
                             ' Determine percent removed (inverted) by dividing bytes remaining by initial size, and multiplying by 100
                             Dim PercentRemoved As Decimal = BytesRemaining / InitialSize * 100
@@ -979,14 +1078,16 @@ Partial Class MainWindow
                                                   End Sub)
                                 Exit Sub
                             End If
-                        Loop Until GetFolderSize(RestoreInfo(1)) = 0 And DeleteForRestoreThread.IsAlive = False
+                        Loop
+                    Catch ex As DirectoryNotFoundException ' HACK Find better way to do this!
+                        Exit Try
                     Catch ex As Exception
-                        If Not TypeOf ex Is DirectoryNotFoundException Then
-                            ErrorReportDialog.Show("An error occured while trying to delete the folder", ex)
-                        End If
+                        Me.Dispatcher.Invoke(Sub() ErrorReportDialog.Show("An error occured while trying to delete the folder.", ex))
                     End Try
                 End If
             End If
+
+            'Exit Sub
 
             ' Create the target directory to prevent exceptions while getting the completion percentage
             My.Computer.FileSystem.CreateDirectory(RestoreInfo(1))
@@ -1044,7 +1145,7 @@ Partial Class MainWindow
             RestoreStopWatch.Stop()
 
             ' Delete info/thumb files from restored backup
-            If My.Computer.FileSystem.FileExists(RestoreInfo(1) & "\info.mcb") Then My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\info.mcb")
+            If My.Computer.FileSystem.FileExists(RestoreInfo(1) & "\info.json") Then My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\info.json")
             If My.Computer.FileSystem.FileExists(RestoreInfo(1) & "\thumb.png") Then My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\thumb.png")
 
             Dispatcher.Invoke(Sub()
@@ -1068,6 +1169,10 @@ Partial Class MainWindow
 #Region "Functions"
     Private Function GetFolderSize(FolderPath As String)
         Dim FSO As FileSystemObject = New FileSystemObject
+        Debug.Print("Finding size of '{0}'...", FolderPath)
+        If Not Directory.Exists(FolderPath) Then
+            Throw New DirectoryNotFoundException(String.Format("Directory '{0}' does not exist.", FolderPath))
+        End If
         Dim Size = FSO.GetFolder(FolderPath).Size ' Get FolderPath's size
         If Size <> Nothing Then
             Return Size
