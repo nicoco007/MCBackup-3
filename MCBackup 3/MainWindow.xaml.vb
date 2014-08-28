@@ -329,7 +329,6 @@ Partial Class MainWindow
 
                 Using SR As New StreamReader(Folder.FullName & "\info.json")
                     InfoJson = JsonConvert.DeserializeObject(SR.ReadToEnd)
-                    Debug.Print(InfoJson("Type"))
                     'Do While SR.Peek <> -1
                     '    Dim Line As String = SR.ReadLine
                     '    If Not Line.StartsWith("#") Then
@@ -371,8 +370,6 @@ Partial Class MainWindow
                     Case "everything"
                         Type = MCBackup.Language.Dictionary("BackupTypes.Everything")
                 End Select
-
-                Debug.Print(Type)
 
                 If Group = "" And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
                     If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
@@ -1080,6 +1077,7 @@ Partial Class MainWindow
                             End If
                         Loop
                     Catch ex As DirectoryNotFoundException ' HACK Find better way to do this!
+                        Log.Print("Directory not found exception occured during removal for restore. This often happens and shouldn't be considered an issue, but may be the source of an occuring problem.", Log.Level.Warning)
                         Exit Try
                     Catch ex As Exception
                         Me.Dispatcher.Invoke(Sub() ErrorReportDialog.Show("An error occured while trying to delete the folder.", ex))
@@ -1169,7 +1167,6 @@ Partial Class MainWindow
 #Region "Functions"
     Private Function GetFolderSize(FolderPath As String)
         Dim FSO As FileSystemObject = New FileSystemObject
-        Debug.Print("Finding size of '{0}'...", FolderPath)
         If Not Directory.Exists(FolderPath) Then
             Throw New DirectoryNotFoundException(String.Format("Directory '{0}' does not exist.", FolderPath))
         End If

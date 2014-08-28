@@ -140,14 +140,21 @@ Public Class AutoBackupWindow
                 Case Game.Launcher.ATLauncher
                     Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\Instances\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Modpack & "\saves\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
             End Select
+
             Main.BackupInfo(3) = "save"
-            Main.BackupInfo(3) = "save"
+
             Main.BackupInfo(5) = SavesListView.SelectedItem.Launcher
             Main.BackupInfo(6) = SavesListView.SelectedItem.Modpack
 
+            Main.BackupInfo(4) = "Auto Backups"
+
             Main.StartBackup()
 
-            If My.Settings.ShowBalloonTips Then Main.NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.AutoBackup"), String.Format(MCBackup.Language.Dictionary("BalloonTip.AutoBackup"), WorldName), Forms.ToolTipIcon.Info)
+            If My.Settings.ShowBalloonTips Then Main.NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.AutoBackup"), String.Format(MCBackup.Language.Dictionary("BalloonTip.AutoBackup"), CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name), Forms.ToolTipIcon.Info)
+
+            If Not My.Settings.BackupGroups.Contains("Auto Backups") Then
+                My.Settings.BackupGroups.Add("Auto Backups")
+            End If
 
             Minutes = MinutesNumUpDown.Value
             Seconds = 0
