@@ -82,6 +82,14 @@ InitializeComponent
 	<summary>
 Options
 </summary>
+</member><member name="M:MCBackup.RenameBackupGroupDialog.InitializeComponent">
+	<summary>
+InitializeComponent
+</summary>
+</member><member name="T:MCBackup.RenameBackupGroupDialog">
+	<summary>
+RenameBackupGroupDialog
+</summary>
 </member><member name="M:MCBackup.MetroMessageBox.InitializeComponent">
 	<summary>
 InitializeComponent

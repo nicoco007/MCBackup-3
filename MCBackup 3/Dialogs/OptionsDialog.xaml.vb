@@ -404,10 +404,12 @@ Partial Public Class Options
             Else
                 MoveGroupDownButton.IsEnabled = True
             End If
+            RenameGroupButton.IsEnabled = True
         Else
             DeleteGroupButton.IsEnabled = False
             MoveGroupUpButton.IsEnabled = False
             MoveGroupDownButton.IsEnabled = False
+            RenameGroupButton.IsEnabled = False
         End If
     End Sub
 
@@ -571,5 +573,12 @@ Partial Public Class Options
         ReloadBackupGroups()
 
         BackupGroupsListBox.SelectedIndex = SelectedIndex + 1
+    End Sub
+
+    Private Sub RenameGroupButton_Click(sender As Object, e As RoutedEventArgs) Handles RenameGroupButton.Click
+        Dim RenameBackupGroupDialog As New RenameBackupGroupDialog(BackupGroupsListBox.SelectedItem)
+        RenameBackupGroupDialog.Owner = Me
+        My.Settings.BackupGroups(BackupGroupsListBox.SelectedIndex) = RenameBackupGroupDialog.ShowDialog()
+        ReloadBackupGroups()
     End Sub
 End Class
