@@ -454,6 +454,7 @@ Partial Class MainWindow
                 ListViewRestoreItem.IsEnabled = False
                 ListViewDeleteItem.IsEnabled = False         'Disable ContextMenu items
                 ListViewRenameItem.IsEnabled = False
+                ListViewMoveToGroupItem.IsEnabled = False
 
                 ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/nothumb.png"))
                 SidebarOriginalNameContent.Text = "-"
@@ -486,6 +487,7 @@ Partial Class MainWindow
                 ListViewRestoreItem.IsEnabled = False
                 ListViewDeleteItem.IsEnabled = True
                 ListViewRenameItem.IsEnabled = False
+                ListViewMoveToGroupItem.IsEnabled = True
 
                 ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/nothumb.png"))
 
@@ -515,6 +517,7 @@ Partial Class MainWindow
                               ListViewRestoreItem.IsEnabled = True
                               ListViewDeleteItem.IsEnabled = True     'Enable ContextMenu items
                               ListViewRenameItem.IsEnabled = True
+                              ListViewMoveToGroupItem.IsEnabled = True
 
                               SidebarPlayerHealth.Visibility = Windows.Visibility.Collapsed
                               SidebarPlayerHunger.Visibility = Windows.Visibility.Collapsed
@@ -1745,7 +1748,7 @@ Partial Class MainWindow
         End If
     End Function
 
-    Private Sub MoveToGroupItem_Click(sender As Object, e As RoutedEventArgs) Handles MoveToGroupItem.Click
+    Private Sub ListViewMoveToGroupItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewMoveToGroupItem.Click
         Dim MoveToGroupDialog As New MoveToGroupDialog(ListView.SelectedItems.Cast(Of ListViewBackupItem).ToList)
         MoveToGroupDialog.Owner = Me
         MoveToGroupDialog.ShowDialog()
@@ -1759,6 +1762,8 @@ Partial Class MainWindow
                              End Sub)
 
         For Each Item As ListViewBackupItem In SelectedItems
+            Log.Print("Rewriting info.json file for backup '{0}'.", Log.Level.Info, Item.Name)
+
             Dim InfoJson As JObject
 
             Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & Item.Name & "\info.json")
