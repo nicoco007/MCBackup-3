@@ -1744,6 +1744,44 @@ Partial Class MainWindow
             Return False
         End If
     End Function
+
+    Private Sub MoveToGroupItem_Click(sender As Object, e As RoutedEventArgs) Handles MoveToGroupItem.Click
+        Dim MoveToGroupDialog As New MoveToGroupDialog(ListView.SelectedItems.Cast(Of ListViewBackupItem).ToList)
+        MoveToGroupDialog.Owner = Me
+        MoveToGroupDialog.ShowDialog()
+    End Sub
+
+    Public Sub MoveToGroup(SelectedItems As List(Of ListViewBackupItem), Group As String)
+        Me.Dispatcher.Invoke(Sub()
+                                 EnableUI(False)
+                                 StatusLabel.Content = "Moving backups, please wait..."
+                                 ProgressBar.IsIndeterminate = True
+                             End Sub)
+
+        For Each Item As ListViewBackupItem In SelectedItems
+            Dim InfoJson As JObject
+
+            Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & Item.Name & "\info.json")
+                InfoJson = JsonConvert.DeserializeObject(SR.ReadToEnd)
+            End Using
+
+            InfoJson.Remove("Group")
+
+            InfoJson.Add(New JProperty("Group", Group))
+
+            Using SW As New StreamWriter(My.Settings.BackupsFolderLocation & "\" & Item.Name & "\info.json")
+                SW.Write(JsonConvert.SerializeObject(InfoJson))
+                SW.Dispose()
+            End Using
+        Next
+
+        Me.Dispatcher.Invoke(Sub()
+                                 EnableUI(True)
+                                 StatusLabel.Content = "Ready"
+                                 ProgressBar.IsIndeterminate = False
+                                 RefreshBackupsList()
+                             End Sub)
+    End Sub
 End Class
 
 Public Class TaggedTabItem

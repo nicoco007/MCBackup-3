@@ -106,6 +106,14 @@ InitializeComponent
 	<summary>
 CullDialog
 </summary>
+</member><member name="M:MCBackup.MoveToGroupDialog.InitializeComponent">
+	<summary>
+InitializeComponent
+</summary>
+</member><member name="T:MCBackup.MoveToGroupDialog">
+	<summary>
+MoveToGroupDialog
+</summary>
 </member><member name="M:MCBackup.RenameDialog.InitializeComponent">
 	<summary>
 InitializeComponent
