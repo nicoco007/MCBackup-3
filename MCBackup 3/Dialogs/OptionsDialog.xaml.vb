@@ -104,12 +104,20 @@ Partial Public Class Options
 
         ListViewTextColorIntensitySlider.Value = My.Settings.ListViewTextColorIntensity
 
-        Main.ReloadBackupGroups()
+        ReloadBackupGroups()
     End Sub
 
     Private Sub AlwaysCloseCheckBox_Checked(sender As Object, e As RoutedEventArgs) Handles AlwaysCloseCheckBox.Click
         CloseToTrayRadioButton.IsEnabled = AlwaysCloseCheckBox.IsChecked
         CloseCompletelyRadioButton.IsEnabled = AlwaysCloseCheckBox.IsChecked
+    End Sub
+
+    Private Sub ReloadBackupGroups()
+        For Each Group As String In My.Settings.BackupGroups
+            BackupGroupsListBox.Items.Add(Group)
+        Next
+
+        ReloadBackupGroups()
     End Sub
 
     Private Sub ListViewOpacitySlider_ValueChanged(sender As Object, e As RoutedPropertyChangedEventArgs(Of Double))
@@ -180,7 +188,7 @@ Partial Public Class Options
         Log.Print("Saving settings...")
         My.Settings.Save()
         Main.RefreshBackupsList()
-        Main.ReloadBackupGroups()
+        ReloadBackupGroups()
     End Sub
 
     Private Sub LanguagesListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles LanguagesComboBox.SelectionChanged
@@ -189,7 +197,7 @@ Partial Public Class Options
             My.Settings.Language = IO.Path.GetFileNameWithoutExtension(LanguagesComboBox.SelectedItem.Tag)
             LoadLanguage()
             Main.LoadLanguage()
-            Main.ReloadBackupGroups()
+            ReloadBackupGroups()
             Main.AutoBackupWindow.LoadLanguage()
         End If
     End Sub
@@ -392,13 +400,13 @@ Partial Public Class Options
     Private Sub CreateNewGroupButton_Click(sender As Object, e As RoutedEventArgs) Handles CreateNewGroupButton.Click
         My.Settings.BackupGroups.Add(CreateNewGroupTextBox.Text)
         CreateNewGroupTextBox.Text = ""
-        Main.ReloadBackupGroups()
+        ReloadBackupGroups()
     End Sub
 
     Private Sub DeleteGroupButton_Click(sender As Object, e As RoutedEventArgs) Handles DeleteGroupButton.Click
         If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.AreYouSureDeleteGroup"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.Yes Then
             My.Settings.BackupGroups.RemoveAt(BackupGroupsListBox.SelectedIndex)
-            Main.ReloadBackupGroups()
+            ReloadBackupGroups()
         End If
     End Sub
 #End Region
