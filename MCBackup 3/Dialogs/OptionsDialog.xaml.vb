@@ -394,8 +394,20 @@ Partial Public Class Options
     Private Sub BackupGroupsListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles BackupGroupsListBox.SelectionChanged
         If BackupGroupsListBox.SelectedItems.Count = 1 Then
             DeleteGroupButton.IsEnabled = True
+            If BackupGroupsListBox.SelectedIndex = 0 Then
+                MoveGroupUpButton.IsEnabled = False
+            Else
+                MoveGroupUpButton.IsEnabled = True
+            End If
+            If BackupGroupsListBox.SelectedIndex = BackupGroupsListBox.Items.Count - 1 Then
+                MoveGroupDownButton.IsEnabled = False
+            Else
+                MoveGroupDownButton.IsEnabled = True
+            End If
         Else
             DeleteGroupButton.IsEnabled = False
+            MoveGroupUpButton.IsEnabled = False
+            MoveGroupDownButton.IsEnabled = False
         End If
     End Sub
 
@@ -535,5 +547,29 @@ Partial Public Class Options
                 MetroMessageBox.Show("This folder cannot be set as your backups folder. Please check if you have read and write permissions in this folder.", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             End Try
         End If
+    End Sub
+
+    Private Sub MoveGroupUpButton_Click(sender As Object, e As RoutedEventArgs) Handles MoveGroupUpButton.Click
+        Dim SelectedIndex = BackupGroupsListBox.SelectedIndex
+
+        Dim temp = My.Settings.BackupGroups(SelectedIndex)
+        My.Settings.BackupGroups(SelectedIndex) = My.Settings.BackupGroups(SelectedIndex - 1)
+        My.Settings.BackupGroups(SelectedIndex - 1) = temp
+
+        ReloadBackupGroups()
+
+        BackupGroupsListBox.SelectedIndex = SelectedIndex - 1
+    End Sub
+
+    Private Sub MoveGroupDownButton_Click(sender As Object, e As RoutedEventArgs) Handles MoveGroupDownButton.Click
+        Dim SelectedIndex = BackupGroupsListBox.SelectedIndex
+
+        Dim temp = My.Settings.BackupGroups(SelectedIndex)
+        My.Settings.BackupGroups(SelectedIndex) = My.Settings.BackupGroups(SelectedIndex + 1)
+        My.Settings.BackupGroups(SelectedIndex + 1) = temp
+
+        ReloadBackupGroups()
+
+        BackupGroupsListBox.SelectedIndex = SelectedIndex + 1
     End Sub
 End Class
