@@ -35,18 +35,28 @@ Public Class Log
 
         FullMessage = FullMessage.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>")
 
-        Dim FullMessageParts = FullMessage.Split(vbNewLine, 0, StringSplitOptions.RemoveEmptyEntries)
+        If FullMessage.Contains(vbNewLine) Then
+            Dim FullMessageParts = FullMessage.Split(vbNewLine, 0, StringSplitOptions.RemoveEmptyEntries)
 
-        Try
-            Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
-                For Each Part As String In FullMessageParts
-                    Part = Part.Replace(vbNewLine, "")
-                    Debug.Print(DebugTimeStamp() & " [INFO] " & Part)
-                    SW.WriteLine(DebugTimeStamp() & " [INFO] " & Part)
-                Next
-            End Using
-        Catch
-        End Try
+            Try
+                Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
+                    For Each Part As String In FullMessageParts
+                        Part = Part.Replace(vbNewLine, "")
+                        Debug.Print(DebugTimeStamp() & " [INFO] " & Part)
+                        SW.WriteLine(DebugTimeStamp() & " [INFO] " & Part)
+                    Next
+                End Using
+            Catch
+            End Try
+        Else
+            Try
+                Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
+                    Debug.Print(DebugTimeStamp() & " [INFO] " & FullMessage)
+                    SW.WriteLine(DebugTimeStamp() & " [INFO] " & FullMessage)
+                End Using
+            Catch
+            End Try
+        End If
     End Sub
 
     ''' <summary>
@@ -56,41 +66,63 @@ Public Class Log
     Public Shared Sub Print(Message As String, Level As Level)
         Dim FullMessage = Message.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>")
 
-        Dim FullMessageParts = FullMessage.Split(vbNewLine, 0, StringSplitOptions.RemoveEmptyEntries)
+        If FullMessage.Contains(vbNewLine) Then
+            Dim FullMessageParts = FullMessage.Split(vbNewLine, 0, StringSplitOptions.RemoveEmptyEntries)
 
-        Try
-            Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
-                Select Case Level
-                    Case Log.Level.Info
-                        For Each Part As String In FullMessageParts
-                            Part = Part.Replace(vbNewLine, "")
-                            Debug.Print(DebugTimeStamp() & " [INFO] " & Part)
-                            SW.WriteLine(DebugTimeStamp() & " [INFO] " & Part)
-                        Next
-                    Case Log.Level.Warning
-                        For Each Part As String In FullMessageParts
-                            Part = Part.Replace(vbNewLine, "")
-                            Debug.Print(DebugTimeStamp() & " [WARNING] " & Part)
-                            SW.WriteLine(DebugTimeStamp() & " [WARNING] " & Part)
-                        Next
-                    Case Log.Level.Severe
-                        For Each Part As String In FullMessageParts
-                            Part = Part.Replace(vbNewLine, "")
-                            Debug.Print(DebugTimeStamp() & " [SEVERE] " & Part)
-                            SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & Part)
-                        Next
-                    Case Log.Level.Debug
-                        If Environment.GetCommandLineArgs().Contains("-debug") Then
+            Try
+                Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
+                    Select Case Level
+                        Case Log.Level.Info
                             For Each Part As String In FullMessageParts
                                 Part = Part.Replace(vbNewLine, "")
-                                Debug.Print(DebugTimeStamp() & " [DEBUG] " & Part)
-                                SW.WriteLine(DebugTimeStamp() & " [DEBUG] " & Part)
+                                Debug.Print(DebugTimeStamp() & " [INFO] " & Part)
+                                SW.WriteLine(DebugTimeStamp() & " [INFO] " & Part)
                             Next
-                        End If
-                End Select
-            End Using
-        Catch
-        End Try
+                        Case Log.Level.Warning
+                            For Each Part As String In FullMessageParts
+                                Part = Part.Replace(vbNewLine, "")
+                                Debug.Print(DebugTimeStamp() & " [WARNING] " & Part)
+                                SW.WriteLine(DebugTimeStamp() & " [WARNING] " & Part)
+                            Next
+                        Case Log.Level.Severe
+                            For Each Part As String In FullMessageParts
+                                Part = Part.Replace(vbNewLine, "")
+                                Debug.Print(DebugTimeStamp() & " [SEVERE] " & Part)
+                                SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & Part)
+                            Next
+                        Case Log.Level.Debug
+                            If Environment.GetCommandLineArgs().Contains("-debug") Then
+                                For Each Part As String In FullMessageParts
+                                    Part = Part.Replace(vbNewLine, "")
+                                    Debug.Print(DebugTimeStamp() & " [DEBUG] " & Part)
+                                    SW.WriteLine(DebugTimeStamp() & " [DEBUG] " & Part)
+                                Next
+                            End If
+                    End Select
+                End Using
+            Catch
+            End Try
+        Else
+            Try
+                Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
+                    Select Case Level
+                        Case Log.Level.Info
+                            Debug.Print(DebugTimeStamp() & " [INFO] " & FullMessage)
+                            SW.WriteLine(DebugTimeStamp() & " [INFO] " & FullMessage)
+                        Case Log.Level.Warning
+                            Debug.Print(DebugTimeStamp() & " [WARNING] " & FullMessage)
+                            SW.WriteLine(DebugTimeStamp() & " [WARNING] " & FullMessage)
+                        Case Log.Level.Severe
+                            Debug.Print(DebugTimeStamp() & " [SEVERE] " & FullMessage)
+                            SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & FullMessage)
+                        Case Log.Level.Debug
+                            Debug.Print(DebugTimeStamp() & " [DEBUG] " & FullMessage)
+                            SW.WriteLine(DebugTimeStamp() & " [DEBUG] " & FullMessage)
+                    End Select
+                End Using
+            Catch
+            End Try
+        End If
     End Sub
 
     ''' <summary>
@@ -103,41 +135,63 @@ Public Class Log
 
         FullMessage = FullMessage.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>")
 
-        Dim FullMessageParts = FullMessage.Split(vbNewLine, 0, StringSplitOptions.RemoveEmptyEntries)
+        If FullMessage.Contains(vbNewLine) Then
+            Dim FullMessageParts = FullMessage.Split(vbNewLine, 0, StringSplitOptions.RemoveEmptyEntries)
 
-        Try
-            Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
-                Select Case Level
-                    Case Log.Level.Info
-                        For Each Part As String In FullMessageParts
-                            Part = Part.Replace(vbNewLine, "")
-                            Debug.Print(DebugTimeStamp() & " [INFO] " & Part)
-                            SW.WriteLine(DebugTimeStamp() & " [INFO] " & Part)
-                        Next
-                    Case Log.Level.Warning
-                        For Each Part As String In FullMessageParts
-                            Part = Part.Replace(vbNewLine, "")
-                            Debug.Print(DebugTimeStamp() & " [WARNING] " & Part)
-                            SW.WriteLine(DebugTimeStamp() & " [WARNING] " & Part)
-                        Next
-                    Case Log.Level.Severe
-                        For Each Part As String In FullMessageParts
-                            Part = Part.Replace(vbNewLine, "")
-                            Debug.Print(DebugTimeStamp() & " [SEVERE] " & Part)
-                            SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & Part)
-                        Next
-                    Case Log.Level.Debug
-                        If Environment.GetCommandLineArgs().Contains("-debug") Then
+            Try
+                Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
+                    Select Case Level
+                        Case Log.Level.Info
                             For Each Part As String In FullMessageParts
                                 Part = Part.Replace(vbNewLine, "")
-                                Debug.Print(DebugTimeStamp() & " [DEBUG] " & Part)
-                                SW.WriteLine(DebugTimeStamp() & " [DEBUG] " & Part)
+                                Debug.Print(DebugTimeStamp() & " [INFO] " & Part)
+                                SW.WriteLine(DebugTimeStamp() & " [INFO] " & Part)
                             Next
-                        End If
-                End Select
-            End Using
-        Catch
-        End Try
+                        Case Log.Level.Warning
+                            For Each Part As String In FullMessageParts
+                                Part = Part.Replace(vbNewLine, "")
+                                Debug.Print(DebugTimeStamp() & " [WARNING] " & Part)
+                                SW.WriteLine(DebugTimeStamp() & " [WARNING] " & Part)
+                            Next
+                        Case Log.Level.Severe
+                            For Each Part As String In FullMessageParts
+                                Part = Part.Replace(vbNewLine, "")
+                                Debug.Print(DebugTimeStamp() & " [SEVERE] " & Part)
+                                SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & Part)
+                            Next
+                        Case Log.Level.Debug
+                            If Environment.GetCommandLineArgs().Contains("-debug") Then
+                                For Each Part As String In FullMessageParts
+                                    Part = Part.Replace(vbNewLine, "")
+                                    Debug.Print(DebugTimeStamp() & " [DEBUG] " & Part)
+                                    SW.WriteLine(DebugTimeStamp() & " [DEBUG] " & Part)
+                                Next
+                            End If
+                    End Select
+                End Using
+            Catch
+            End Try
+        Else
+            Try
+                Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
+                    Select Case Level
+                        Case Log.Level.Info
+                            Debug.Print(DebugTimeStamp() & " [INFO] " & FullMessage)
+                            SW.WriteLine(DebugTimeStamp() & " [INFO] " & FullMessage)
+                        Case Log.Level.Warning
+                            Debug.Print(DebugTimeStamp() & " [WARNING] " & FullMessage)
+                            SW.WriteLine(DebugTimeStamp() & " [WARNING] " & FullMessage)
+                        Case Log.Level.Severe
+                            Debug.Print(DebugTimeStamp() & " [SEVERE] " & FullMessage)
+                            SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & FullMessage)
+                        Case Log.Level.Debug
+                            Debug.Print(DebugTimeStamp() & " [DEBUG] " & FullMessage)
+                            SW.WriteLine(DebugTimeStamp() & " [DEBUG] " & FullMessage)
+                    End Select
+                End Using
+            Catch
+            End Try
+        End If
     End Sub
 
     ''' <summary>
