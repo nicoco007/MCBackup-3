@@ -113,11 +113,13 @@ Partial Public Class Options
     End Sub
 
     Private Sub ReloadBackupGroups()
+        BackupGroupsListBox.Items.Clear()
+
         For Each Group As String In My.Settings.BackupGroups
             BackupGroupsListBox.Items.Add(Group)
         Next
 
-        ReloadBackupGroups()
+        Main.ReloadBackupGroups()
     End Sub
 
     Private Sub ListViewOpacitySlider_ValueChanged(sender As Object, e As RoutedPropertyChangedEventArgs(Of Double))
