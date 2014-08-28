@@ -188,7 +188,7 @@
             </Border>
         </Grid>
 
-        <TabControl x:Name="GroupsTabControl" HorizontalAlignment="Left" Height="59" VerticalAlignment="Top" Width="952" Margin="10,0,0,0">
+        <TabControl x:Name="GroupsTabControl" Height="59" VerticalAlignment="Top" Margin="10,0">
             <TabControl.Template>
                 <ControlTemplate TargetType="{x:Type TabControl}">
                     <StackPanel>
