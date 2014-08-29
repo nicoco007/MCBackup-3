@@ -7,7 +7,7 @@ Public Class SetMinecraftFolderWindow
             Select Case GetInstallationTypeButtons()
                 Case Game.Launcher.Minecraft
                     If My.Computer.FileSystem.FileExists(FSD.FolderName & "\launcher.jar") Then
-                        If MetroMessageBox.Show("Warning! Minecraft does not seem to be installed in that folder. Are you sure you want to set this folder as your Minecraft folder location?", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.No Then
+                        If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.ConfirmInvalidMinecraftFolder"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.No Then
                             Exit Sub
                         End If
                     End If
@@ -40,7 +40,7 @@ Public Class SetMinecraftFolderWindow
 
     Private Sub SaveButton_Click(sender As Object, e As RoutedEventArgs) Handles SaveButton.Click
         If BaseFolderTextBox.Text = "" Then
-            If MetroMessageBox.Show("Please select a folder before continuing.", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OKCancel, MessageBoxImage.Error) = MessageBoxResult.Cancel Then
+            If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.PleaseSelectFolder"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OKCancel, MessageBoxImage.Error) = MessageBoxResult.Cancel Then
                 Application.Current.Shutdown()
             End If
         End If

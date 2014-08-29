@@ -182,7 +182,7 @@ Public Class BackupDialog
             End Select
         ElseIf Not CustomNameTextBox.Text = "" Then
             If Regex.IsMatch(CustomNameTextBox.Text, "[\/:*?""<>|]") Then
-                MetroMessageBox.Show("You cannot use the following characters in a backup name" & vbNewLine & "\ / : * ? "" < > |" & vbNewLine, MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
+                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.InvalidCharacters"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
                 Exit Sub
             End If
             If BackupTypeTabControl.SelectedIndex = 0 Then
@@ -281,7 +281,7 @@ Public Class BackupDialog
 
     Private Sub Window_ContentRendered(sender As Object, e As EventArgs) Handles Window.ContentRendered
         If SavesListView.Items.Count = 0 Then
-            MetroMessageBox.Show(String.Format("Warning! There seem to be no saves in your {0} installation. This is either because you have never started the game, or because the folder you selected as base folder is incorrect. Please check your settings if you have already ran Minecraft at least once.", Game.LauncherToString(My.Settings.Launcher)), "Warning!", MessageBoxButton.OK, MessageBoxImage.Warning)
+            MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.NoSavesWarning"), Game.LauncherToString(My.Settings.Launcher)), MCBackup.Language.Dictionary("Message.Caption.Warning"), MessageBoxButton.OK, MessageBoxImage.Warning)
         End If
     End Sub
 End Class

@@ -181,7 +181,7 @@ Partial Class MainWindow
         Splash.StepProgress()
 
         If Not Directory.Exists(My.Settings.MinecraftFolderLocation) Then
-            If MetroMessageBox.Show("MCBackup was unable to find your Minecraft installation. Please select it in the next window.", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OKCancel, MessageBoxImage.Error) = MessageBoxResult.OK Then
+            If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.NoMinecraftInstallError"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OKCancel, MessageBoxImage.Error) = MessageBoxResult.OK Then
                 Dim SetMinecraftFolderWindow As New SetMinecraftFolderWindow
                 SetMinecraftFolderWindow.ShowDialog()
             Else
@@ -376,14 +376,12 @@ Partial Class MainWindow
 
         If DirectoriesToDelete.Count > 0 Then
             Dim SB As New StringBuilder
-            SB.AppendLine("The following directories do not seem to be backups:")
             For Each Folder As String In DirectoriesToDelete
-                SB.AppendLine("  " & Folder)
+                SB.Append(vbNewLine & "> " & Folder)
             Next
-            SB.AppendLine("Would you like to delete them?")
             Dim Result As MessageBoxResult
             Dispatcher.Invoke(Sub()
-                                  Result = MetroMessageBox.Show(SB.ToString, "Invalid backups", MessageBoxButton.YesNo, MessageBoxImage.Question)
+                                  Result = MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.DeleteInvalidBackups"), SB.ToString), MCBackup.Language.Dictionary("Message.Caption.InvalidBackups"), MessageBoxButton.YesNo, MessageBoxImage.Question)
                               End Sub)
             If Result = MessageBoxResult.Yes Then
                 Dispatcher.Invoke(Sub()
@@ -963,7 +961,7 @@ Partial Class MainWindow
             End Using
 
             If Launcher <> My.Settings.Launcher Then
-                MetroMessageBox.Show(String.Format("This backup is not compatible with your current configuration! It is designed for '{0}' installations.", Game.LauncherToString(Launcher)), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.IncompatibleBackupConfig"), Game.LauncherToString(Launcher)), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
                 EnableUI(True)
                 Exit Sub
             End If
@@ -1023,7 +1021,7 @@ Partial Class MainWindow
 
                             Dispatcher.Invoke(Sub()
                                                   ' Show percent complete and message
-                                                  StatusLabel.Content = String.Format("Removing old content... ({0:0.00}% Complete)", 100 - PercentRemoved)
+                                                  StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.RemovingOldContent"), 100 - PercentRemoved)
                                                   Progress.Value = PercentRemoved
                                               End Sub)
 
@@ -1041,7 +1039,7 @@ Partial Class MainWindow
                             End If
                         Loop
                     Catch ex As DirectoryNotFoundException ' HACK Find better way to do this!
-                        Log.Print("Directory not found exception occured during removal for restore. This often happens and shouldn't be considered an issue, but may be the source of an occuring problem.", Log.Level.Warning)
+                        Log.Print("Directory not found exception occured during removal for restore. This often happens and shouldn't be considered an issue, but may be the source of an occurring problem.", Log.Level.Warning)
                         Exit Try
                     Catch ex As Exception
                         Me.Dispatcher.Invoke(Sub() ErrorReportDialog.Show("An error occured while trying to delete the folder.", ex))
@@ -1123,6 +1121,7 @@ Partial Class MainWindow
             RefreshBackupsList()
         Catch ex As Exception
             Log.Print(ex.Message, Log.Level.Severe)
+            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RestoreError"), MCBackup.Language.Dictionary("BalloonTip.RestoreError"), System.Windows.Forms.ToolTipIcon.Error)
             Me.Dispatcher.Invoke(Sub() ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Restore"), ex))
         End Try
     End Sub
@@ -1247,7 +1246,6 @@ Partial Class MainWindow
                                          StatusLabel.Content = "Delete cancelled."
                                      End Sub)
             Else
-                If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.DeleteError"), MCBackup.Language.Dictionary("BalloonTip.DeleteError"), System.Windows.Forms.ToolTipIcon.Error)
                 Dispatcher.Invoke(Sub() ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Delete"), ex))
             End If
         End Try
@@ -1534,7 +1532,7 @@ Partial Class MainWindow
             End If
 
             If ThreadIsNotNothingAndAlive(BackupThread) Or ProcessIsNotNothingAndRunning(MCMapProcess) Or ThreadIsNotNothingAndAlive(DeleteForRestoreThread) Or ThreadIsNotNothingAndAlive(RestoreThread) Or ThreadIsNotNothingAndAlive(DeleteThread) Then
-                MetroMessageBox.Show("MCBackup is currently working. Please wait for the operation to exit, or cancel it.", "MCBackup is working!", MessageBoxButton.OK, MessageBoxImage.Question)
+                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.MCBackupIsWorking"), MCBackup.Language.Dictionary("Message.Caption.MCBackupIsWorking"), MessageBoxButton.OK, MessageBoxImage.Question)
                 e.Cancel = True
             End If
 
@@ -1654,7 +1652,7 @@ Partial Class MainWindow
     Private Sub CancelButton_Click(sender As Object, e As RoutedEventArgs) Handles CancelButton.Click
         If BackupThread IsNot Nothing Then
             If BackupThread.IsAlive Then
-                If MetroMessageBox.Show("Are you sure you want to cancel the backup?", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
+                If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.CancelBackup"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
                     If BackupThread.IsAlive Then
                         BackupThread.Abort()
                         Cancel = True
@@ -1665,7 +1663,7 @@ Partial Class MainWindow
 
         If MCMapProcess IsNot Nothing Then
             If MCMapProcess.HasExited = False Then
-                If MetroMessageBox.Show("Are you sure you want to cancel the backup?", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
+                If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.CancelBackup"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
                     If Not MCMapProcess.HasExited Then
                         MCMapProcess.Kill()
                         If IO.File.Exists(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0) & "\thumb.png") Then IO.File.Delete(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0) & "\thumb.png")
@@ -1683,7 +1681,7 @@ Partial Class MainWindow
 
         If DeleteForRestoreThread IsNot Nothing Then
             If DeleteForRestoreThread.IsAlive Then
-                If MetroMessageBox.Show("WARNING!" & vbNewLine & "Cancelling a restore operation can seriously damage your Minecraft installation!" & vbNewLine & vbNewLine & "Are you sure you want to cancel the restore?", "WARNING!", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
+                If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.CancelRestore"), MCBackup.Language.Dictionary("Message.Caption.Warning"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
                     If DeleteForRestoreThread.IsAlive Then
                         DeleteForRestoreThread.Abort()
                         Cancel = True
@@ -1694,7 +1692,7 @@ Partial Class MainWindow
 
         If RestoreThread IsNot Nothing Then
             If RestoreThread.IsAlive Then
-                If MetroMessageBox.Show("WARNING!" & vbNewLine & "Cancelling a restore operation can seriously damage your Minecraft installation!" & vbNewLine & vbNewLine & "Are you sure you want to cancel the restore?", "WARNING!", MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
+                If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.CancelRestore"), MCBackup.Language.Dictionary("Message.Caption.Warning"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
                     If RestoreThread.IsAlive Then
                         RestoreThread.Abort()
                         Cancel = True
@@ -1705,7 +1703,7 @@ Partial Class MainWindow
 
         If DeleteThread IsNot Nothing Then
             If DeleteThread.IsAlive Then
-                If MetroMessageBox.Show("Are you sure you want to cancel the delete?", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
+                If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.CancelDelete"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
                     If DeleteThread.IsAlive Then
                         DeleteThread.Abort()
                         Cancel = True
@@ -1770,14 +1768,16 @@ Partial Class MainWindow
                 InfoJson = JsonConvert.DeserializeObject(SR.ReadToEnd)
             End Using
 
-            InfoJson.Remove("Group")
+            If InfoJson("Group") <> Group Then
+                InfoJson.Remove("Group")
 
-            InfoJson.Add(New JProperty("Group", Group))
+                InfoJson.Add(New JProperty("Group", Group))
 
-            Using SW As New StreamWriter(My.Settings.BackupsFolderLocation & "\" & Item.Name & "\info.json")
-                SW.Write(JsonConvert.SerializeObject(InfoJson))
-                SW.Dispose()
-            End Using
+                Using SW As New StreamWriter(My.Settings.BackupsFolderLocation & "\" & Item.Name & "\info.json")
+                    SW.Write(JsonConvert.SerializeObject(InfoJson))
+                    SW.Dispose()
+                End Using
+            End If
         Next
 
         Me.Dispatcher.Invoke(Sub()

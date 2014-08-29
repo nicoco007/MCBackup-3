@@ -1,16 +1,33 @@
-﻿fullname=English
-
+fullname=English
 MainWindow.BackupButton.Content=Backup...
 MainWindow.RestoreButton.Content=Restore
 MainWindow.DeleteButton.Content=Delete
 MainWindow.RenameButton.Content=Rename
-MainWindow.AutomaticBackupButton.Content=Automatic Backup
 MainWindow.CullButton.Content=Selective Cull
-
+MainWindow.AutomaticBackupButton.Content=Automatic Backup
 MainWindow.ListView.Columns(0).Header=Name
 MainWindow.ListView.Columns(1).Header=Date Created
 MainWindow.ListView.Columns(2).Header=Type
-
+MainWindow.Sidebar.OriginalNameLabel.Text=Original Name:
+MainWindow.Sidebar.TypeLabel.Text=Type:
+MainWindow.Sidebar.DescriptionLabel.Text=Description:
+MainWindow.Sidebar.NoBackupSelected=No backup selected.
+MainWindow.Sidebar.NumberElementsSelected={0} elements selected
+MainWindow.Sidebar.NumberElements={0} elements
+MainWindow.Sidebar.Description.NoDesc=No description.
+MainWindow.Sidebar.Description.NoItem=No item selected.
+MainWindow.Search=Search...
+MainWindow.ListView.ContextMenu.SortBy=Sort by
+MainWindow.ListView.ContextMenu.SortBy.Name=Name
+MainWindow.ListView.ContextMenu.SortBy.DateCreated=Date Created
+MainWindow.ListView.ContextMenu.SortBy.Type=Type
+MainWindow.ListView.ContextMenu.SortBy.Ascending=Ascending
+MainWindow.ListView.ContextMenu.SortBy.Descending=Descending
+MainWindow.ListView.ContextMenu.GroupBy=Group by
+MainWindow.ListView.ContextMenu.GroupBy.OriginalName=Original Name
+MainWindow.ListView.ContextMenu.GroupBy.Type=Type
+MainWindow.ListView.ContextMenu.GroupBy.Nothing=Nothing
+MainWindow.Groups.All=All
 MainWindow.Toolbar.EditButton.Text=Edit
 MainWindow.Toolbar.EditContextMenu.Items(0).Header=Refresh Backups List
 MainWindow.Toolbar.EditContextMenu.Items(1).Header=Backups Folder
@@ -20,32 +37,6 @@ MainWindow.Toolbar.HelpButton.Text=Help
 MainWindow.Toolbar.HelpContextMenu.Items(0).Header=Report a bug
 MainWindow.Toolbar.HelpContextMenu.Items(2).Header=Website
 MainWindow.Toolbar.HelpContextMenu.Items(3).Header=About
-
-MainWindow.Sidebar.NoBackupSelected=No backup selected.
-MainWindow.Sidebar.NumberElementsSelected={0} elements selected
-MainWindow.Sidebar.NumberElements={0} elements
-MainWindow.Sidebar.OriginalNameLabel.Text=Original Name:
-MainWindow.Sidebar.TypeLabel.Text=Type:
-MainWindow.Sidebar.DescriptionLabel.Text=Description:
-MainWindow.Sidebar.Description.NoDesc=No description.
-MainWindow.Sidebar.Description.NoItem=No item selected.
-
-MainWindow.Search=Search...
-
-MainWindow.ListView.ContextMenu.SortBy=Sort by
-MainWindow.ListView.ContextMenu.SortBy.Name=Name
-MainWindow.ListView.ContextMenu.SortBy.DateCreated=Date Created
-MainWindow.ListView.ContextMenu.SortBy.Type=Type
-MainWindow.ListView.ContextMenu.SortBy.Ascending=Ascending
-MainWindow.ListView.ContextMenu.SortBy.Descending=Descending
-
-MainWindow.ListView.ContextMenu.GroupBy=Group by
-MainWindow.ListView.ContextMenu.GroupBy.OriginalName=Original Name
-MainWindow.ListView.ContextMenu.GroupBy.Type=Type
-MainWindow.ListView.ContextMenu.GroupBy.Nothing=Nothing
-
-MainWindow.Groups.All=All
-
 Status.Ready=Ready
 Status.BackingUp=Backing up... ({0:0.00}% Complete at {1:0.00} MB/s, {2})
 Status.BackupComplete=Backup Complete; Ready.
@@ -56,10 +47,12 @@ Status.RestoreComplete=Restore Complete; Ready
 Status.Deleting=Deleting...
 Status.DeleteComplete=Delete Complete; Ready
 Status.RefreshingBackupsList=Refreshing backups list, please wait...
-
 Message.Caption.Information=Information
+Message.Caption.Warning=Warning!
 Message.Caption.Error=Error!
 Message.Caption.AreYouSure=Are you sure?
+Message.Caption.InvalidBackups=Invalid Backups
+Message.Caption.MCBackupIsWorking=MCBackup is working!
 Message.NoMinecraftInstallError=MCBackup was unable to find an installation of Minecraft on your computer. Please select your Minecraft folder in the following dialog.
 Message.Info.MinecraftFolderSetTo=Minecraft folder set to {0}
 Message.NotInstalledInFolder=Minecraft is not installed in that folder! Try again?
@@ -70,7 +63,7 @@ Message.ChooseSave=Please choose a save to back up.
 Message.ChooseVersion=Please choose a version to back up.
 Message.ResetSettings=Are you sure you want to reset all of your settings?\n\nClick 'Yes' to reset all your settings and restart MCBackup.
 Message.BackupInProgress=A backup is currently in progress! Please wait until it is complete before starting a new one.
-Message.SetBackupsFolderError=An error occured while trying to set folder {0} as backups folder.\n\nPlease check if you have writing permissions in that folder.
+Message.SetBackupsFolderError=An error occurred while trying to set folder {0} as backups folder.\n\nPlease check if you have writing permissions in that folder.
 Message.SetSavesFolderWarning=Are you sure '{0}' is a saves folder? It isn't named 'saves'!
 Message.BackupNameCannotContainIllegalCharacters=Backup name cannot contain characters\n\ / : * ? "" < > |\nCheck the prefix/suffix boxes.
 Message.CopiedToClipboard=Copied to clipboard.
@@ -80,26 +73,37 @@ Message.MinecraftNotIn=Minecraft is not installed in '{0}'!
 Message.FolderDoesNotExist=The folder '{0}' does not exist!
 Message.AreYouSureDeleteGroup=Are you sure you want to delete this group? It will be lost forever (a long time)!
 Message.BackupAlreadyExists=That backup already exists! Please enter another name.
-
+Message.InvalidCharacters=You cannot use the following characters in a backup name\n\ / : * ? "" < > |
+Message.NoSavesWarning=Warning! There seem to be no saves in your {0} installation. This is either because you have never started the game, or because the folder you selected as base folder is incorrect. Please check your settings if you have already ran Minecraft at least once.
+Message.DisableAnonymousStats=Are you sure you want to disable anonymous statistics collection? They are only used for global statistics!
+Message.InvalidSavesFolder=That folder is not named 'saves'! Please select another folder.
+Message.CouldNotSetBackupsFolder=This folder cannot be set as your backups folder. Please check if you have read and write permissions in this folder.
+Message.ConfirmInvalidMinecraftFolder=Warning! Minecraft does not seem to be installed in that folder. Are you sure you want to set this folder as your Minecraft folder location?
+Message.PleaseSelectFolder=Please select a folder before continuing.
+Message.DeleteInvalidBackups=The following directories do not seem to be backups:\n{0}\n\nWould you like to delete them?
+Message.IncompatibleBackupConfig=This backup is not compatible with your current configuration! It is designed for {0} installations only.
+Message.MCBackupIsWorking=MCBackup is currently working. Please wait for the operation to exit, or cancel it.
+Message.CancelBackup=Are you sure you want to cancel the backup?
+Message.CancelRestore=Cancelling a restore operation can seriously damage your Minecraft installation!\n\nAre you sure you want to cancel the restore?
+Message.CancelDelete=Are you sure you want to cancel the deletion?
 BalloonTip.Title.BackupError=Backup Error!
-BalloonTip.BackupError=An error occured during the backup.
+BalloonTip.BackupError=An error occurred during the backup.
 BalloonTip.Title.BackupComplete=Backup complete!
 BalloonTip.BackupComplete=Your backup has completed.
 BalloonTip.Title.RestoreError=Restore Error!
-BalloonTip.RestoreError=An error occured during the restore.
+BalloonTip.RestoreError=An error occurred during the restore.
 BalloonTip.Title.RestoreComplete=Restore Complete!
 BalloonTip.RestoreComplete=Restore completed.
 BalloonTip.Title.RunningBackground=I'm Here!
 BalloonTip.RunningBackground=MCBackup is running in background.
 BalloonTip.Title.AutoBackup=Automated Backup Started
 BalloonTip.AutoBackup=An automated backup has started for '{0}'.
-
 BackupWindow.Title=Backup
 BackupWindow.BackupDetailsGroupBox.Header=Backup Details
 BackupWindow.BackupNameGroupBox.Header=Backup Name
 BackupWindow.DateAndTimeRadioButton.Content=Date and Time
 BackupWindow.CustomNameRadioButton.Content=Custom Name
-BackupWindow.ShortDescriptionLabel.Content=Short Description (max. 64 characters), optional
+BackupWindow.ShortDescriptionLabel.Content=Short Description (max. 128 characters), optional
 BackupWindow.Save=Save
 BackupWindow.WholeMinecraftFolder=Whole Minecraft Folder
 BackupWindow.Version=Version
@@ -109,7 +113,6 @@ BackupWindow.CancelButton.Content=Cancel
 BackupWindow.GroupLabel.Text=Group:
 BackupWindow.Groups.None=None
 BackupWindow.Groups.EditGroups=Edit Groups...
-
 AutoBackupWindow.Title=Automatic Backup
 AutoBackupWindow.BackupEveryLabel.Content=Backup every
 AutoBackupWindow.MinutesLabel.Content=minutes.
@@ -121,11 +124,10 @@ AutoBackupWindow.SuffixLabel.Content=Suffix
 AutoBackupWindow.StartButton.Content.Start=Start
 AutoBackupWindow.StartButton.Content.Stop=Stop
 AutoBackupWindow.BackupDescription=Automated backup of '{0}'.
-
 OptionsWindow.Title=Preferences
-
+OptionsWindow.CloseButton.Content=Close
+OptionsWindow.ResetButton.Content=Reset
 OptionsWindow.AllSupportedImages=All Supported Images
-
 OptionsWindow.GeneralPanel.GeneralOptionsGroupBox.Header=General Options
 OptionsWindow.GeneralPanel.CloseToTrayOptionsGroupBox.Header=Close To Tray Options
 OptionsWindow.GeneralPanel.LanguageGroupBox.Header=Language
@@ -138,7 +140,6 @@ OptionsWindow.GeneralPanel.CloseToTrayRadioButton.Content=Close to tray
 OptionsWindow.GeneralPanel.CloseCompletelyRadioButton.Content=Close completely
 OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text=Note: You can close MCBackup from the tray by right-clicking on it's icon.
 OptionsWindow.GeneralPanel.SendAnonymousDataCheckBox.Content=Send anonymous statistics
-
 OptionsWindow.AppearancePanel.GeneralAppearanceGroupBox.Header=General Appearance
 OptionsWindow.AppearancePanel.StatusTextColorGroupBox.Header=Status text color
 OptionsWindow.AppearancePanel.ListViewTextColorIntensityGroupBox.Header=Backups list text color intensity
@@ -151,35 +152,28 @@ OptionsWindow.AppearancePanel.SizeModeComboBox.Items(2).Content=Auto Size
 OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content=Zoom
 OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content=Browse...
 OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content=Remove
+OptionsWindow.AppearancePanel.ThemeLabel.Content=Theme
 OptionsWindow.AppearancePanel.SampleText=Sample Text
-
-## ONLY MODIFY THE ORDER OF 'ThemeTags', OR THE PROGRAM *WILL* CRASH ##
 OptionsWindow.AppearancePanel.Themes=Amber;Blue;Brown;Cobalt;Crimson;Cyan;Emerald;Green;Indigo;Lime;Magenta;Mauve;Olive;Orange;Pink;Purple;Red;Sienna;Steel;Teal;Violet;Yellow
 OptionsWindow.AppearancePanel.ThemeTags=Amber;Blue;Brown;Cobalt;Crimson;Cyan;Emerald;Green;Indigo;Lime;Magenta;Mauve;Olive;Orange;Pink;Purple;Red;Sienna;Steel;Teal;Violet;Yellow
-
 OptionsWindow.FoldersPanel.GeneralFoldersGroupBox.Header=General Folders
 OptionsWindow.FoldersPanel.MinecraftFolderLocationLabel.Content=Minecraft Folder Location
 OptionsWindow.FoldersPanel.SavesFolderLocationLabel.Content=Saves Folder Location
 OptionsWindow.FoldersPanel.BackupsFolderLocationLabel.Content=Backups Folder Location
 OptionsWindow.FoldersPanel.BrowseButton.Content=Browse
-
-OptionsWindow.Tabs.General=General
-OptionsWindow.Tabs.Appearance=Appearance
-OptionsWindow.Tabs.Folders=Folders
-OptionsWindow.Tabs.Groups=Groups
-
 OptionsWindow.GroupsTab.AddNewGroupGroupBox.Header=Add new group
 OptionsWindow.GroupsTab.OtherOptionsGroupBox.Header=Other options
 OptionsWindow.GroupsTab.DeleteGroupButton.Text=Delete
 OptionsWindow.GroupsTab.RenameGroupButton.Text=Rename
-
+OptionsWindow.Tabs.General=General
+OptionsWindow.Tabs.Appearance=Appearance
+OptionsWindow.Tabs.Folders=Folders
+OptionsWindow.Tabs.Groups=Groups
 RenameWindow.Title=Rename
 RenameWindow.RenameButton.Content=Rename
 RenameWindow.CancelButton.Content=Cancel
-
 AboutWindow.Title=About
-AboutWindow.Text=MCBackup Singleplayer\nVersion {0}\n\nCopyright © 2013 nicoco007\n\nLicensed under the Apache License, Version 2.0 (the License);\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\nhttp://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an AS IS BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.\n\nMCBackup also uses the following software:\nMahApps.Metro - Licensed under the Microsoft Public License\nMCMap - License-free\nModernUIIcons - Licensed under the Creative Commons BY-ND 3.0 License\nSubstrate - Licensed under the MIT License
-
+AboutWindow.Text=MCBackup Single Player\nVersion {0}\n\nCopyright © 2013 nicoco007\n\nLicensed under the Apache License, Version 2.0 (the License);\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\nhttp://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an AS IS BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.\n\nMCBackup also uses the following software:\nMahApps.Metro - Licensed under the Microsoft Public License\nMCMap - License-free\nModernUIIcons - Licensed under the Creative Commons BY-ND 3.0 License\nSubstrate - Licensed under the MIT License
 CloseToTrayWindow.Title=Close to tray?
 CloseToTrayWindow.MessageLabel.Content=Would you like to close MCBackup to tray?
 CloseToTrayWindow.YesButton.Content=Yes
@@ -187,48 +181,29 @@ CloseToTrayWindow.NoButton.Content=No
 CloseToTrayWindow.CancelButton.Content=Cancel
 CloseToTrayWindow.SaveCheckBox.Content=Always do this in the future
 CloseToTrayWindow.RevertLabel.Content=You can always revert this in the options menu.
-
 ErrorWindow.ContinueButton.Content=Continue
 ErrorWindow.CopyToClipboardButton.Content=Copy to clipboard
 ErrorWindow.ErrorAtLine=Error at line {0} in file {1}: {2}
 ErrorWindow.ContactMessage=If this error persists, please consider contacting me at support@nicoco007.com.
-
-Splash.Status.Starting=Starting...
-Splash.Status.LoadingLang=Loading Language...
-Splash.Status.LoadingProps=Loading Properties...
-Splash.Status.CheckingUpdates=Checking for Updates...
-Splash.Status.FindingMinecraft=Finding Minecraft..
-Splash.Status.Done=Done.
-
 CullWindow.Title=Selective Cull
 CullWindow.Label1.Content=Delete all backups older than
 CullWindow.Label2.Content=days.
 CullWindow.CullButton.Content=Cull
 CullWindow.AreYouSureMsg=Are you sure you want remove all backups older than {0} days? They will be deleted forever! (A long time)
-
-NotifyIcon.ContextMenu.ExitItem.Text=Exit
-OptionsWindow.CloseButton.Content=Close
-OptionsWindow.ResetButton.Content=Reset
-OptionsWindow.AppearancePanel.ThemeLabel.Content=Theme
-
 BackupTypes.Save=Save
 BackupTypes.Version=Version
 BackupTypes.Everything=Everything
-
 MetroMsgBox.Button.OK=OK
 MetroMsgBox.Button.Yes=Yes
 MetroMsgBox.Button.No=No
 MetroMsgBox.Button.Cancel=Cancel
-
-Exception.Backup=An error occured during the backup.
-Exception.Restore=An error occured during the restore.
-Exception.Delete=An error occured during the removal.
-Exception.Rename=An error occured while trying to rename the backup.
-
+Exception.Backup=An error occurred during the backup.
+Exception.Restore=An error occurred during the restore.
+Exception.Delete=An error occurred during the removal.
+Exception.Rename=An error occurred while trying to rename the backup.
 TimeLeft.LessThanFive=less than 5 seconds remaining
 TimeLeft.Seconds={0} seconds remaining
 TimeLeft.MinutesAndSeconds={0} minutes and {1} seconds remaining
-
 UpdateDialog.Title=New Version Available!
 UpdateDialog.Label1.Text=A new version of MCBackup is available!
 UpdateDialog.CurrentVersionLabel.Text=Current Version: {0}

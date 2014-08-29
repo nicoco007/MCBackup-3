@@ -429,7 +429,7 @@ Partial Public Class Options
 
     Private Sub SendAnonymousDataCheckBox_Checked(sender As Object, e As RoutedEventArgs) Handles SendAnonymousDataCheckBox.Checked
         If Not SendAnonymousDataCheckBox.IsChecked Then
-            If MetroMessageBox.Show("Are you sure you want to disable anonymous statistics collection? They are only used for global statistics!", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.No Then
+            If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.DisableAnonymousStats"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.No Then
                 SendAnonymousDataCheckBox.IsChecked = True
             End If
         End If
@@ -529,7 +529,7 @@ Partial Public Class Options
                 My.Settings.SavesFolderLocation = FSD.FolderName
                 SavesFolderTextBox.Text = My.Settings.SavesFolderLocation
             Else
-                If MetroMessageBox.Show("That folder is not named 'saves'! Please select another folder", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OKCancel, MessageBoxImage.Error) = MessageBoxResult.OK Then
+                If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.InvalidSavesFolder"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OKCancel, MessageBoxImage.Error) = MessageBoxResult.OK Then
                     SavesFolderBrowseButton_Click(sender, e)
                 End If
             End If
@@ -546,7 +546,7 @@ Partial Public Class Options
                 My.Settings.BackupsFolderLocation = FSD.FolderName
                 BackupsFolderTextBox.Text = My.Settings.BackupsFolderLocation
             Catch ex As Exception
-                MetroMessageBox.Show("This folder cannot be set as your backups folder. Please check if you have read and write permissions in this folder.", MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.CouldNotSetBackupsFolder"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             End Try
         End If
     End Sub
