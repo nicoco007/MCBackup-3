@@ -171,6 +171,15 @@ Public Class Language
         Dictionary.Add("BackupWindow.GroupLabel.Text", FindString("BackupWindow.GroupLabel.Text"))
         Dictionary.Add("BackupWindow.Groups.None", FindString("BackupWindow.Groups.None"))
         Dictionary.Add("BackupWindow.Groups.EditGroups", FindString("BackupWindow.Groups.EditGroups"))
+        Dictionary.Add("BackupWindow.BackupWorldTab.Header", FindString("BackupWindow.BackupWorldTab.Header"))
+        Dictionary.Add("BackupWindow.SaveNameColumn.Header", FindString("BackupWindow.SaveNameColumn.Header"))
+        Dictionary.Add("BackupWindow.SaveLocationColumn.Header", FindString("BackupWindow.SaveLocationColumn.Header"))
+        Dictionary.Add("BackupWindow.BackupVersionTab.Header.Minecraft", FindString("BackupWindow.BackupVersionTab.Header.Minecraft"))
+        Dictionary.Add("BackupWindow.BackupVersionTab.Header.Technic", FindString("BackupWindow.BackupVersionTab.Header.Technic"))
+        Dictionary.Add("BackupWindow.BackupVersionTab.Header.FeedTheBeast", FindString("BackupWindow.BackupVersionTab.Header.FeedTheBeast"))
+        Dictionary.Add("BackupWindow.BackupVersionTab.Header.ATLauncher", FindString("BackupWindow.BackupVersionTab.Header.ATLauncher"))
+        Dictionary.Add("BackupWindow.VersionNameColumn.Header", FindString("BackupWindow.VersionNameColumn.Header"))
+        Dictionary.Add("BackupWindow.BackupEverythingTab.Header", FindString("BackupWindow.BackupEverythingTab.Header"))
 
         ' = Automatic Backup Window =
         Dictionary.Add("AutoBackupWindow.Title", FindString("AutoBackupWindow.Title"))
@@ -302,6 +311,9 @@ Public Class Language
         Dictionary.Add("UpdateDialog.CurrentVersionLabel.Text", FindString("UpdateDialog.CurrentVersionLabel.Text"))
         Dictionary.Add("UpdateDialog.LatestVersionLabel.Text", FindString("UpdateDialog.LatestVersionLabel.Text"))
         Dictionary.Add("UpdateDialog.Label2.Text", FindString("UpdateDialog.Label2.Text"))
+
+        ' = Move to Group Dialog
+        Dictionary.Add("MoveToGroupDialog.MoveButton.Text", FindString("MoveToGroupDialog.MoveButton.Text"))
 
         If ErrorOccured Then
             Log.Print("Language loaded with errors. Please try solving the error(s) above.", Log.Level.Warning)

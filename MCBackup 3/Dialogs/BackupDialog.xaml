@@ -110,7 +110,7 @@
                     </Setter>
                 </Style>
             </TabControl.Resources>
-            <TabItem Header="World">
+            <TabItem x:Name="BackupWorldTab" Header="World">
                 <Grid>
                     <ListView x:Name="SavesListView" SelectionMode="Single" BorderThickness="1">
                         <ListView.View>
@@ -134,18 +134,18 @@
                     </ListView>
                 </Grid>
             </TabItem>
-            <TabItem Header="Version">
+            <TabItem x:Name="BackupVersionTab" Header="Version">
                 <Grid>
                     <ListView x:Name="VersionsListView" SelectionMode="Single" BorderThickness="1">
                         <ListView.View>
                             <GridView x:Name="VersionsListViewGridView">
-                                <GridViewColumn Header="Name" Width="600"/>
+                                <GridViewColumn x:Name="VersionNameColumn" Header="Name" Width="600"/>
                             </GridView>
                         </ListView.View>
                     </ListView>
                 </Grid>
             </TabItem>
-            <TabItem Header="Everything">
+            <TabItem x:Name="BackupEverythingTab" Header="Everything">
                 <Grid/>
             </TabItem>
         </TabControl>

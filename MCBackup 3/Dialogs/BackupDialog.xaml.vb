@@ -253,16 +253,21 @@ Public Class BackupDialog
         StartButton.Content = MCBackup.Language.Dictionary("BackupWindow.StartButton.Content")
         CancelButton.Content = MCBackup.Language.Dictionary("BackupWindow.CancelButton.Content")
         GroupLabel.Content = MCBackup.Language.Dictionary("BackupWindow.GroupLabel.Text")
+        BackupWorldTab.Header = MCBackup.Language.Dictionary("BackupWindow.BackupWorldTab.Header")
+        SaveNameColumn.Header = MCBackup.Language.Dictionary("BackupWindow.SaveNameColumn.Header")
+        SaveLocationColumn.Header = MCBackup.Language.Dictionary("BackupWindow.SaveLocationColumn.Header")
         Select Case My.Settings.Launcher
             Case Game.Launcher.Minecraft
-                BackupTypeTabControl.Items(1).Header = "Version"
+                BackupVersionTab.Header = MCBackup.Language.Dictionary("BackupWindow.BackupVersionTab.Header.Minecraft")
             Case Game.Launcher.Technic
-                BackupTypeTabControl.Items(1).Header = "Modpack"
+                BackupVersionTab.Header = MCBackup.Language.Dictionary("BackupWindow.BackupVersionTab.Header.Technic")
             Case Game.Launcher.FeedTheBeast
-                BackupTypeTabControl.Items(1).Header = "Modpack"
+                BackupVersionTab.Header = MCBackup.Language.Dictionary("BackupWindow.BackupVersionTab.Header.FeedTheBeast")
             Case Game.Launcher.ATLauncher
-                BackupTypeTabControl.Items(1).Header = "Instance"
+                BackupVersionTab.Header = MCBackup.Language.Dictionary("BackupWindow.BackupVersionTab.Header.ATLauncher")
         End Select
+        VersionNameColumn.Header = MCBackup.Language.Dictionary("BackupWindow.VersionNameColumn.Header")
+        BackupEverythingTab.Header = MCBackup.Language.Dictionary("BackupWindow.BackupEverythingTab.Header")
     End Sub
 
     Private Sub CancelButton_Click(sender As Object, e As RoutedEventArgs) Handles CancelButton.Click

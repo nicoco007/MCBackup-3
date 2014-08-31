@@ -23,6 +23,6 @@
     Title="Move to group..." Height="250" Width="300" WindowTransitionsEnabled="False" WindowStartupLocation="CenterOwner" BorderBrush="{DynamicResource AccentColorBrush}" BorderThickness="1" WindowStyle="ToolWindow">
     <Grid>
         <ListBox x:Name="GroupsListBox" Margin="10,10,10,48" BorderBrush="Black" BorderThickness="1" SelectedIndex="0"/>
-        <Button x:Name="MoveButton" Content="Move" Margin="111,0,111,10" HorizontalAlignment="Center" Height="29" VerticalAlignment="Bottom" Width="70"/>
+        <Button x:Name="MoveButton" Content="Move"  Margin="0,0,0,10" HorizontalAlignment="Center" Height="29" VerticalAlignment="Bottom" Width="Auto"/>
     </Grid>
 </Controls:MetroWindow>

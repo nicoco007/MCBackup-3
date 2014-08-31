@@ -28,6 +28,6 @@
         <Label x:Name="Label2" Content="Would you like to update?" VerticalAlignment="Top" Margin="10,90,12,0" HorizontalContentAlignment="Center"/>
         <Button x:Name="YesButton" Content="Yes" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="75" Margin="66,0,151,40" IsDefault="True"/>
         <Button x:Name="NoButton" Content="No" VerticalAlignment="Bottom" Margin="151,0,66,40" HorizontalAlignment="Center" Width="75"/>
-        <Button Content="Show Changelog" HorizontalAlignment="Left" VerticalAlignment="Top" Width="160" Margin="66,155,0,0" Click="Button_Click"/>
+        <Button x:Name="ShowChangelogButton" Content="Show Changelog" HorizontalAlignment="Left" VerticalAlignment="Top" Width="160" Margin="66,155,0,0" Click="Button_Click"/>
     </Grid>
 </Controls:MetroWindow>

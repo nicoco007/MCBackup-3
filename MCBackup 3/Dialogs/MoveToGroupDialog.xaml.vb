@@ -19,6 +19,12 @@ Public Class MoveToGroupDialog
         For Each Group As String In My.Settings.BackupGroups
             GroupsListBox.Items.Add(Group)
         Next
+
+        LoadLanguage()
+    End Sub
+
+    Private Sub LoadLanguage()
+        MoveButton.Content = MCBackup.Language.Dictionary("MoveToGroupDialog.MoveButton.Text")
     End Sub
 
     Private Sub MoveButton_Click(sender As Object, e As RoutedEventArgs) Handles MoveButton.Click
