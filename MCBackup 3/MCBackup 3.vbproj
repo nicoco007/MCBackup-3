@@ -122,6 +122,7 @@
     <Compile Include="Extension Classes\FolderBrowserDialog\Reflector.vb" />
     <Compile Include="Extension Classes\ListViewBackupItem.vb" />
     <Compile Include="Extension Classes\TaggedComboBoxItem.vb" />
+    <Compile Include="Extension Classes\ViewboxEx.vb" />
     <Compile Include="Language.vb" />
     <Compile Include="Log.vb" />
     <Compile Include="MetroMessageBox.xaml.vb">

@@ -24,6 +24,7 @@ Public Class MoveToGroupDialog
     End Sub
 
     Private Sub LoadLanguage()
+        Me.Title = MCBackup.Language.Dictionary("MoveToGroupDialog.Title")
         MoveButton.Content = MCBackup.Language.Dictionary("MoveToGroupDialog.MoveButton.Text")
     End Sub
 

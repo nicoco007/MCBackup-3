@@ -619,7 +619,7 @@ Partial Class MainWindow
             DeleteButton.Content = MCBackup.Language.Dictionary("MainWindow.DeleteButton.Content")
             RenameButton.Content = MCBackup.Language.Dictionary("MainWindow.RenameButton.Content")
             CullButton.Content = MCBackup.Language.Dictionary("MainWindow.CullButton.Content")
-
+            ListViewMoveToGroupItem.Header = MCBackup.Language.Dictionary("MainWindow.MoveToGroupButton.Text")
             AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " >>"
 
             NameColumnHeader.Content = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(0).Header")
@@ -629,7 +629,11 @@ Partial Class MainWindow
             SidebarOriginalNameLabel.Text = MCBackup.Language.Dictionary("MainWindow.Sidebar.OriginalNameLabel.Text")
             SidebarTypeLabel.Text = MCBackup.Language.Dictionary("MainWindow.Sidebar.TypeLabel.Text")
             SidebarDescriptionLabel.Text = MCBackup.Language.Dictionary("MainWindow.Sidebar.DescriptionLabel.Text")
+            SidebarPlayerHealthLabel.Text = MCBackup.Language.Dictionary("MainWindow.Sidebar.PlayerHealthLabel.Text")
+            SidebarPlayerHungerLabel.Text = MCBackup.Language.Dictionary("MainWindow.Sidebar.PlayerHungerLabel.Text")
 
+            FileToolbarButton.Content = MCBackup.Language.Dictionary("MainWindow.Toolbar.FileButton.Text")
+            FileContextMenu.Items(0).Header = MCBackup.Language.Dictionary("MainWindow.Toolbar.FileContextMenu.Items(0).Header")
             EditToolbarButton.Content = MCBackup.Language.Dictionary("MainWindow.Toolbar.EditButton.Text")
             EditContextMenu.Items(0).Header = MCBackup.Language.Dictionary("MainWindow.Toolbar.EditContextMenu.Items(0).Header")
             EditContextMenu.Items(1).Header = MCBackup.Language.Dictionary("MainWindow.Toolbar.EditContextMenu.Items(1).Header")
@@ -660,6 +664,10 @@ Partial Class MainWindow
             ListViewRestoreItem.Header = MCBackup.Language.Dictionary("MainWindow.RestoreButton.Content")
             ListViewDeleteItem.Header = MCBackup.Language.Dictionary("MainWindow.DeleteButton.Content")
             ListViewRenameItem.Header = MCBackup.Language.Dictionary("MainWindow.RenameButton.Content")
+
+            NoBackupsOverlay.Text = MCBackup.Language.Dictionary("MainWindow.NoBackupsOverlay.Text")
+
+            CancelButton.Content = MCBackup.Language.Dictionary("MainWindow.CancelButton.Text")
         Catch ex As Exception
             Dispatcher.Invoke(Sub() ErrorReportDialog.Show("Could not load language.", ex))
         End Try

@@ -32,6 +32,9 @@ Public Class UpdateDialog
         CurrentVersionLabel.Content = String.Format(MCBackup.Language.Dictionary("UpdateDialog.CurrentVersionLabel.Text"), Main.ApplicationVersion)
         LatestVersionLabel.Content = String.Format(MCBackup.Language.Dictionary("UpdateDialog.LatestVersionLabel.Text"), Main.LatestVersion)
         Label2.Content = MCBackup.Language.Dictionary("UpdateDialog.Label2.Text")
+        YesButton.Content = MCBackup.Language.Dictionary("MetroMsgBox.Button.Yes")
+        NoButton.Content = MCBackup.Language.Dictionary("MetroMsgBox.Button.No")
+        ShowChangelogButton.Content = MCBackup.Language.Dictionary("UpdateDialog.ShowChangelogButton.Text")
     End Sub
 
     Private Sub Button_Click(sender As Object, e As RoutedEventArgs)

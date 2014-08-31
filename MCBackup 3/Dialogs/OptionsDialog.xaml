@@ -166,9 +166,20 @@
                         <Grid>
                             <Button x:Name="DeleteGroupButton" Content="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Margin="6,10,0,0" IsEnabled="False"/>
                             <Button x:Name="RenameGroupButton" Content="Rename" VerticalAlignment="Top" Margin="0,10,6,0" IsEnabled="False" HorizontalAlignment="Right" Width="100"/>
-                            <Button x:Name="MoveGroupUpButton" Content="Move Up" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Margin="6,53,0,0" IsEnabled="False"/>
-                            <Button x:Name="MoveGroupDownButton" Content="Move Down" HorizontalAlignment="Right" VerticalAlignment="Top" Width="100" Margin="0,53,6,0" IsEnabled="False"/>
-
+                            <Button x:Name="MoveGroupUpButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Margin="6,53,0,0" IsEnabled="False" Height="29">
+                                <Button.Content>
+                                    <Viewbox StretchDirection="DownOnly" Stretch="Uniform">
+                                        <ContentControl Content="Move Up"/>
+                                    </Viewbox>
+                                </Button.Content>
+                            </Button>
+                            <Button x:Name="MoveGroupDownButton" HorizontalAlignment="Right" VerticalAlignment="Top" Width="100" Margin="0,53,6,0" IsEnabled="False" Height="29">
+                                <Button.Content>
+                                    <Viewbox StretchDirection="DownOnly" Stretch="Uniform">
+                                        <ContentControl Content="Move Down"/>
+                                    </Viewbox>
+                                </Button.Content>
+                            </Button>
                         </Grid>
                     </GroupBox>
                 </Grid>

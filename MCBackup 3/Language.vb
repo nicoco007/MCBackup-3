@@ -47,6 +47,7 @@ Public Class Language
         Dictionary.Add("MainWindow.DeleteButton.Content", FindString("MainWindow.DeleteButton.Content"))
         Dictionary.Add("MainWindow.RenameButton.Content", FindString("MainWindow.RenameButton.Content"))
         Dictionary.Add("MainWindow.CullButton.Content", FindString("MainWindow.CullButton.Content"))
+        Dictionary.Add("MainWindow.MoveToGroupButton.Text", FindString("MainWindow.MoveToGroupButton.Text"))
         Dictionary.Add("MainWindow.AutomaticBackupButton.Content", FindString("MainWindow.AutomaticBackupButton.Content"))
 
         Dictionary.Add("MainWindow.ListView.Columns(0).Header", FindString("MainWindow.ListView.Columns(0).Header"))
@@ -56,6 +57,8 @@ Public Class Language
         Dictionary.Add("MainWindow.Sidebar.OriginalNameLabel.Text", FindString("MainWindow.Sidebar.OriginalNameLabel.Text"))
         Dictionary.Add("MainWindow.Sidebar.TypeLabel.Text", FindString("MainWindow.Sidebar.TypeLabel.Text"))
         Dictionary.Add("MainWindow.Sidebar.DescriptionLabel.Text", FindString("MainWindow.Sidebar.DescriptionLabel.Text"))
+        Dictionary.Add("MainWindow.Sidebar.PlayerHealthLabel.Text", FindString("MainWindow.Sidebar.PlayerHealthLabel.Text"))
+        Dictionary.Add("MainWindow.Sidebar.PlayerHungerLabel.Text", FindString("MainWindow.Sidebar.PlayerHungerLabel.Text"))
         Dictionary.Add("MainWindow.Sidebar.NoBackupSelected", FindString("MainWindow.Sidebar.NoBackupSelected"))
         Dictionary.Add("MainWindow.Sidebar.NumberElementsSelected", FindString("MainWindow.Sidebar.NumberElementsSelected"))
         Dictionary.Add("MainWindow.Sidebar.NumberElements", FindString("MainWindow.Sidebar.NumberElements"))
@@ -78,6 +81,8 @@ Public Class Language
 
         Dictionary.Add("MainWindow.Groups.All", FindString("MainWindow.Groups.All"))
 
+        Dictionary.Add("MainWindow.Toolbar.FileButton.Text", FindString("MainWindow.Toolbar.FileButton.Text"))
+        Dictionary.Add("MainWindow.Toolbar.FileContextMenu.Items(0).Header", FindString("MainWindow.Toolbar.FileContextMenu.Items(0).Header"))
         Dictionary.Add("MainWindow.Toolbar.EditButton.Text", FindString("MainWindow.Toolbar.EditButton.Text"))
         Dictionary.Add("MainWindow.Toolbar.EditContextMenu.Items(0).Header", FindString("MainWindow.Toolbar.EditContextMenu.Items(0).Header"))
         Dictionary.Add("MainWindow.Toolbar.EditContextMenu.Items(1).Header", FindString("MainWindow.Toolbar.EditContextMenu.Items(1).Header"))
@@ -87,6 +92,10 @@ Public Class Language
         Dictionary.Add("MainWindow.Toolbar.HelpContextMenu.Items(0).Header", FindString("MainWindow.Toolbar.HelpContextMenu.Items(0).Header"))
         Dictionary.Add("MainWindow.Toolbar.HelpContextMenu.Items(2).Header", FindString("MainWindow.Toolbar.HelpContextMenu.Items(2).Header"))
         Dictionary.Add("MainWindow.Toolbar.HelpContextMenu.Items(3).Header", FindString("MainWindow.Toolbar.HelpContextMenu.Items(3).Header"))
+
+        Dictionary.Add("MainWindow.NoBackupsOverlay.Text", FindString("MainWindow.NoBackupsOverlay.Text"))
+
+        Dictionary.Add("MainWindow.CancelButton.Text", FindString("MainWindow.CancelButton.Text"))
 
         ' = Statuses =
         Dictionary.Add("Status.Ready", FindString("Status.Ready"))
@@ -101,15 +110,13 @@ Public Class Language
         Dictionary.Add("Status.RefreshingBackupsList", FindString("Status.RefreshingBackupsList"))
 
         ' = Messages =
-        Dictionary.Add("Message.Caption.Information", FindString("Message.Caption.Information"))
         Dictionary.Add("Message.Caption.Warning", FindString("Message.Caption.Warning"))
         Dictionary.Add("Message.Caption.Error", FindString("Message.Caption.Error"))
         Dictionary.Add("Message.Caption.AreYouSure", FindString("Message.Caption.AreYouSure"))
         Dictionary.Add("Message.Caption.InvalidBackups", FindString("Message.Caption.InvalidBackups"))
         Dictionary.Add("Message.Caption.MCBackupIsWorking", FindString("Message.Caption.MCBackupIsWorking"))
+        Dictionary.Add("Message.Caption.Copied", FindString("Message.Caption.Copied"))
         Dictionary.Add("Message.NoMinecraftInstallError", FindString("Message.NoMinecraftInstallError"))
-        Dictionary.Add("Message.Info.MinecraftFolderSetTo", FindString("Message.Info.MinecraftFolderSetTo"))
-        Dictionary.Add("Message.NotInstalledInFolder", FindString("Message.NotInstalledInFolder"))
         Dictionary.Add("Message.RestoreAreYouSure", FindString("Message.RestoreAreYouSure"))
         Dictionary.Add("Message.DeleteAreYouSure", FindString("Message.DeleteAreYouSure"))
         Dictionary.Add("Message.EnterValidName", FindString("Message.EnterValidName"))
@@ -117,14 +124,9 @@ Public Class Language
         Dictionary.Add("Message.ChooseVersion", FindString("Message.ChooseVersion"))
         Dictionary.Add("Message.ResetSettings", FindString("Message.ResetSettings"))
         Dictionary.Add("Message.BackupInProgress", FindString("Message.BackupInProgress"))
-        Dictionary.Add("Message.SetBackupsFolderError", FindString("Message.SetBackupsFolderError"))
-        Dictionary.Add("Message.SetSavesFolderWarning", FindString("Message.SetSavesFolderWarning"))
         Dictionary.Add("Message.BackupNameCannotContainIllegalCharacters", FindString("Message.BackupNameCannotContainIllegalCharacters"))
         Dictionary.Add("Message.CopiedToClipboard", FindString("Message.CopiedToClipboard"))
-        Dictionary.Add("Message.Caption.Copied", FindString("Message.Caption.Copied"))
         Dictionary.Add("Message.BackupsFolderNotFound", FindString("Message.BackupsFolderNotFound"))
-        Dictionary.Add("Message.MinecraftNotIn", FindString("Message.MinecraftNotIn"))
-        Dictionary.Add("Message.FolderDoesNotExist", FindString("Message.FolderDoesNotExist"))
         Dictionary.Add("Message.AreYouSureDeleteGroup", FindString("Message.AreYouSureDeleteGroup"))
         Dictionary.Add("Message.BackupAlreadyExists", FindString("Message.BackupAlreadyExists"))
         Dictionary.Add("Message.InvalidCharacters", FindString("Message.InvalidCharacters"))
@@ -162,9 +164,6 @@ Public Class Language
         Dictionary.Add("BackupWindow.DateAndTimeRadioButton.Content", FindString("BackupWindow.DateAndTimeRadioButton.Content"))
         Dictionary.Add("BackupWindow.CustomNameRadioButton.Content", FindString("BackupWindow.CustomNameRadioButton.Content"))
         Dictionary.Add("BackupWindow.ShortDescriptionLabel.Content", FindString("BackupWindow.ShortDescriptionLabel.Content"))
-        Dictionary.Add("BackupWindow.Save", FindString("BackupWindow.Save"))
-        Dictionary.Add("BackupWindow.WholeMinecraftFolder", FindString("BackupWindow.WholeMinecraftFolder"))
-        Dictionary.Add("BackupWindow.Version", FindString("BackupWindow.Version"))
         Dictionary.Add("BackupWindow.ListBox.Columns(0).Header", FindString("BackupWindow.ListBox.Columns(0).Header"))
         Dictionary.Add("BackupWindow.StartButton.Content", FindString("BackupWindow.StartButton.Content"))
         Dictionary.Add("BackupWindow.CancelButton.Content", FindString("BackupWindow.CancelButton.Content"))
@@ -235,17 +234,23 @@ Public Class Language
         Dictionary.Add("OptionsWindow.AppearancePanel.Themes", FindString("OptionsWindow.AppearancePanel.Themes"))
         Dictionary.Add("OptionsWindow.AppearancePanel.ThemeTags", FindString("OptionsWindow.AppearancePanel.ThemeTags"))
 
-        Dictionary.Add("OptionsWindow.FoldersPanel.GeneralFoldersGroupBox.Header", FindString("OptionsWindow.FoldersPanel.GeneralFoldersGroupBox.Header"))
-
-        Dictionary.Add("OptionsWindow.FoldersPanel.MinecraftFolderLocationLabel.Content", FindString("OptionsWindow.FoldersPanel.MinecraftFolderLocationLabel.Content"))
-        Dictionary.Add("OptionsWindow.FoldersPanel.SavesFolderLocationLabel.Content", FindString("OptionsWindow.FoldersPanel.SavesFolderLocationLabel.Content"))
-        Dictionary.Add("OptionsWindow.FoldersPanel.BackupsFolderLocationLabel.Content", FindString("OptionsWindow.FoldersPanel.BackupsFolderLocationLabel.Content"))
-        Dictionary.Add("OptionsWindow.FoldersPanel.BrowseButton.Content", FindString("OptionsWindow.FoldersPanel.BrowseButton.Content"))
+        Dictionary.Add("OptionsWindow.FoldersTab.InstallTypeGroupBox.Header", FindString("OptionsWindow.FoldersTab.InstallTypeGroupBox.Header"))
+        Dictionary.Add("OptionsWindow.FoldersTab.MinecraftInstallationRadioButton.Text", FindString("OptionsWindow.FoldersTab.MinecraftInstallationRadioButton.Text"))
+        Dictionary.Add("OptionsWindow.FoldersTab.TechnicInstallationRadioButton.Text", FindString("OptionsWindow.FoldersTab.TechnicInstallationRadioButton.Text"))
+        Dictionary.Add("OptionsWindow.FoldersTab.FtbInstallationRadioButton.Text", FindString("OptionsWindow.FoldersTab.FtbInstallationRadioButton.Text"))
+        Dictionary.Add("OptionsWindow.FoldersTab.AtLauncherInstallationRadioButton.Text", FindString("OptionsWindow.FoldersTab.AtLauncherInstallationRadioButton.Text"))
+        Dictionary.Add("OptionsWindow.FoldersTab.BaseFolderLabel.Text", FindString("OptionsWindow.FoldersTab.BaseFolderLabel.Text"))
+        Dictionary.Add("OptionsWindow.FoldersTab.BrowseButton.Text", FindString("OptionsWindow.FoldersTab.BrowseButton.Text"))
+        Dictionary.Add("OptionsWindow.FoldersTab.GeneralFoldersGroupBox.Header", FindString("OptionsWindow.FoldersTab.GeneralFoldersGroupBox.Header"))
+        Dictionary.Add("OptionsWindow.FoldersTab.SavesFolderLabel.Text", FindString("OptionsWindow.FoldersTab.SavesFolderLabel.Text"))
+        Dictionary.Add("OptionsWindow.FoldersTab.BackupsFolderLabel.Text", FindString("OptionsWindow.FoldersTab.BackupsFolderLabel.Text"))
 
         Dictionary.Add("OptionsWindow.GroupsTab.AddNewGroupGroupBox.Header", FindString("OptionsWindow.GroupsTab.AddNewGroupGroupBox.Header"))
         Dictionary.Add("OptionsWindow.GroupsTab.OtherOptionsGroupBox.Header", FindString("OptionsWindow.GroupsTab.OtherOptionsGroupBox.Header"))
         Dictionary.Add("OptionsWindow.GroupsTab.DeleteGroupButton.Text", FindString("OptionsWindow.GroupsTab.DeleteGroupButton.Text"))
         Dictionary.Add("OptionsWindow.GroupsTab.RenameGroupButton.Text", FindString("OptionsWindow.GroupsTab.RenameGroupButton.Text"))
+        Dictionary.Add("OptionsWindow.GroupsTab.MoveGroupUpButton.Text", FindString("OptionsWindow.GroupsTab.MoveGroupUpButton.Text"))
+        Dictionary.Add("OptionsWindow.GroupsTab.MoveGroupDownButton.Text", FindString("OptionsWindow.GroupsTab.MoveGroupDownButton.Text"))
 
         Dictionary.Add("OptionsWindow.Tabs.General", FindString("OptionsWindow.Tabs.General"))
         Dictionary.Add("OptionsWindow.Tabs.Appearance", FindString("OptionsWindow.Tabs.Appearance"))
@@ -273,7 +278,6 @@ Public Class Language
         ' = Error window =
         Dictionary.Add("ErrorWindow.ContinueButton.Content", FindString("ErrorWindow.ContinueButton.Content"))
         Dictionary.Add("ErrorWindow.CopyToClipboardButton.Content", FindString("ErrorWindow.CopyToClipboardButton.Content"))
-        Dictionary.Add("ErrorWindow.ErrorAtLine", FindString("ErrorWindow.ErrorAtLine"))
         Dictionary.Add("ErrorWindow.ContactMessage", FindString("ErrorWindow.ContactMessage"))
 
         ' = Cull Window = 
@@ -311,9 +315,15 @@ Public Class Language
         Dictionary.Add("UpdateDialog.CurrentVersionLabel.Text", FindString("UpdateDialog.CurrentVersionLabel.Text"))
         Dictionary.Add("UpdateDialog.LatestVersionLabel.Text", FindString("UpdateDialog.LatestVersionLabel.Text"))
         Dictionary.Add("UpdateDialog.Label2.Text", FindString("UpdateDialog.Label2.Text"))
+        Dictionary.Add("UpdateDialog.ShowChangelogButton.Text", FindString("UpdateDialog.ShowChangelogButton.Text"))
 
-        ' = Move to Group Dialog
+        ' = Move to Group Dialog =
+        Dictionary.Add("MoveToGroupDialog.Title", FindString("MoveToGroupDialog.Title"))
         Dictionary.Add("MoveToGroupDialog.MoveButton.Text", FindString("MoveToGroupDialog.MoveButton.Text"))
+
+        ' = Set Minecraft Folder Window =
+        Dictionary.Add("SetMinecraftFolderWindow.Title", FindString("SetMinecraftFolderWindow.Title"))
+        Dictionary.Add("SetMinecraftFolderWindow.SaveButton.Text", FindString("SetMinecraftFolderWindow.SaveButton.Text"))
 
         If ErrorOccured Then
             Log.Print("Language loaded with errors. Please try solving the error(s) above.", Log.Level.Warning)

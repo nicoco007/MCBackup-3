@@ -19,12 +19,12 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Splash" Height="340" Width="530" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None">
+    Title="Splash" Height="340" Width="530" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None" Loaded="Window_Loaded">
     <Grid>
         <Image Source="Resources/Splash.png" Height="320" Width="530" VerticalAlignment="Top"/>
         <ProgressBar x:Name="Progress" HorizontalAlignment="Left" VerticalAlignment="Top" Width="530" Margin="0,320,0,0" Height="20" Maximum="15"/>
         <Label x:Name="VersionLabel" Content="MCBackup vX.X.X.X" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,255,0,0" Foreground="White" FontFamily="Arial" FontSize="16"/>
-        <Label Content="Copyright © 2014 nicoco007" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="14,275,0,0" Foreground="White" FontFamily="Arial" FontSize="13"/>
+        <Label x:Name="CopyrightLabel" Content="Copyright © 2014 nicoco007" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="14,275,0,0" Foreground="White" FontFamily="Arial" FontSize="13"/>
         <Label x:Name="Status" Content="Starting..." HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,294,0,0" Width="530" HorizontalContentAlignment="Center" Foreground="White"/>
     </Grid>
 </Window>

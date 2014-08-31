@@ -46,4 +46,21 @@ Public Class SetMinecraftFolderWindow
         End If
         Me.Close()
     End Sub
+
+    Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs) Handles Window.Loaded
+        LoadLanguage()
+    End Sub
+
+    Private Sub LoadLanguage()
+        Me.Title = MCBackup.Language.Dictionary("SetMinecraftFolderWindow.Title")
+        MinecraftInstallationRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.MinecraftInstallationRadioButton.Text")
+        TechnicInstallationRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.TechnicInstallationRadioButton.Text")
+        FTBInstallationRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.FtbInstallationRadioButton.Text")
+        ATLauncherInstallationRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.AtLauncherInstallationRadioButton.Text")
+
+        BaseFolderLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.BaseFolderLabel.Text")
+        BaseFolderBrowseButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.BrowseButton.Text")
+
+        SaveButton.Content = MCBackup.Language.Dictionary("SetMinecraftFolderWindow.SaveButton.Text")
+    End Sub
 End Class

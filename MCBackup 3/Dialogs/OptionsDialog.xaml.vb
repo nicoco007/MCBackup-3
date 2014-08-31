@@ -261,11 +261,27 @@ Partial Public Class Options
             End If
         Next
 
+        ' Folders
+        InstallTypeGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.InstallTypeGroupBox.Header")
+        MinecraftInstallationRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.MinecraftInstallationRadioButton.Text")
+        TechnicInstallationRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.TechnicInstallationRadioButton.Text")
+        FTBInstallationRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.FtbInstallationRadioButton.Text")
+        ATLauncherInstallationRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.AtLauncherInstallationRadioButton.Text")
+        BaseFolderLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.BaseFolderLabel.Text")
+        BaseFolderBrowseButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.BrowseButton.Text")
+        GeneralFoldersGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.GeneralFoldersGroupBox.Header")
+        SavesFolderLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.SavesFolderLabel.Text")
+        SavesFolderBrowseButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.BrowseButton.Text")
+        BackupsFolderLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.BackupsFolderLabel.Text")
+        BackupsFolderBrowseButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.BrowseButton.Text")
+
         ' Groups
         AddNewGroupGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.GroupsTab.AddNewGroupGroupBox.Header")
         OtherOptionsGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.GroupsTab.OtherOptionsGroupBox.Header")
         DeleteGroupButton.Content = MCBackup.Language.Dictionary("OptionsWindow.GroupsTab.DeleteGroupButton.Text")
         RenameGroupButton.Content = MCBackup.Language.Dictionary("OptionsWindow.GroupsTab.RenameGroupButton.Text")
+        MoveGroupUpButton.Content = New ViewboxEx(MCBackup.Language.Dictionary("OptionsWindow.GroupsTab.MoveGroupUpButton.Text"), Stretch.Uniform, StretchDirection.DownOnly)
+        MoveGroupDownButton.Content = New ViewboxEx(MCBackup.Language.Dictionary("OptionsWindow.GroupsTab.MoveGroupDownButton.Text"), Stretch.Uniform, StretchDirection.DownOnly)
     End Sub
 
     Private Sub ColorSlider_ValueChanged(sender As Object, e As RoutedPropertyChangedEventArgs(Of Double)) Handles RedColorSlider.ValueChanged, GreenColorSlider.ValueChanged, BlueColorSlider.ValueChanged
