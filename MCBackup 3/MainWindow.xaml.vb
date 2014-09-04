@@ -180,6 +180,12 @@ Partial Class MainWindow
         Splash.ShowStatus("Splash.Status.FindingMinecraft", "Finding Minecraft...")
         Splash.StepProgress()
 
+        If String.IsNullOrEmpty(My.Settings.MinecraftFolderLocation) Then
+            If IO.File.Exists(AppData & "\.minecraft\launcher.jar") Then
+                My.Settings.MinecraftFolderLocation = AppData & "\.minecraft"
+            End If
+        End If
+
         If Not Directory.Exists(My.Settings.MinecraftFolderLocation) Then
             If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.NoMinecraftInstallError"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OKCancel, MessageBoxImage.Error) = MessageBoxResult.OK Then
                 Dim SetMinecraftFolderWindow As New SetMinecraftFolderWindow

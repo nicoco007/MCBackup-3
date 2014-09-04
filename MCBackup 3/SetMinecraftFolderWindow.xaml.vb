@@ -6,7 +6,8 @@ Public Class SetMinecraftFolderWindow
         If FSD.ShowDialog(New WindowInteropHelper(Me).Handle) = Forms.DialogResult.OK Then
             Select Case GetInstallationTypeButtons()
                 Case Game.Launcher.Minecraft
-                    If My.Computer.FileSystem.FileExists(FSD.FolderName & "\launcher.jar") Then
+                    Debug.Print(FSD.FolderName & "\launcher.jar")
+                    If Not IO.File.Exists(FSD.FolderName & "\launcher.jar") Then
                         If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.ConfirmInvalidMinecraftFolder"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.No Then
                             Exit Sub
                         End If
