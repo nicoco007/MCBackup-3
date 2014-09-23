@@ -40,12 +40,12 @@ To submit bugs, please go go to our [Bug Tracker][2].
 
 Attributions
 ------------
-JSON.NET - [MIT License](https://json.codeplex.com/license)
+JSON.NET - [MIT License](https://json.codeplex.com/license) - https://json.codeplex.com/
 
-MahApps.Metro - [Microsoft Public License](https://github.com/MahApps/MahApps.Metro/blob/master/LICENSE)
+MahApps.Metro - [Microsoft Public License](https://github.com/MahApps/MahApps.Metro/blob/master/LICENSE) - http://mahapps.com/
 
-MCMap - Currently Unlicensed (last updated 2014-09-22)
+MCMap - Currently Unlicensed (last updated 2014-09-22) - http://wrim.pl/mcmap/
 
-ModernUIIcons - [CC BY ND](https://github.com/coolwanglu/OK/blob/master/license-modernuiicons.txt)
+ModernUIIcons - [CC BY ND](https://github.com/coolwanglu/OK/blob/master/license-modernuiicons.txt) - http://modernuiicons.com/
 
-Substrate - [MIT License](https://github.com/jaquadro/Substrate/blob/master/LICENSE.txt)
+Substrate - [MIT License](https://github.com/jaquadro/Substrate/blob/master/LICENSE.txt) - https://github.com/jaquadro/Substrate/
