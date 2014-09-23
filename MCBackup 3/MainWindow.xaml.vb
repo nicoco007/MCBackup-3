@@ -160,6 +160,7 @@ Partial Class MainWindow
 
         If My.Settings.BackupsFolderLocation = "" Then
             My.Settings.BackupsFolderLocation = StartupPath & "\backups"
+            Directory.CreateDirectory(My.Settings.BackupsFolderLocation)
         End If
 
         If Not My.Computer.FileSystem.DirectoryExists(My.Settings.BackupsFolderLocation) Then
