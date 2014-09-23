@@ -106,6 +106,14 @@ InitializeComponent
 	<summary>
 BackupDialog
 </summary>
+</member><member name="M:MCBackup.DeleteDialog.InitializeComponent">
+	<summary>
+InitializeComponent
+</summary>
+</member><member name="T:MCBackup.DeleteDialog">
+	<summary>
+DeleteDialog
+</summary>
 </member><member name="M:MCBackup.CullDialog.InitializeComponent">
 	<summary>
 InitializeComponent

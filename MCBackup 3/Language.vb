@@ -325,6 +325,8 @@ Public Class Language
         Dictionary.Add("SetMinecraftFolderWindow.Title", FindString("SetMinecraftFolderWindow.Title"))
         Dictionary.Add("SetMinecraftFolderWindow.SaveButton.Text", FindString("SetMinecraftFolderWindow.SaveButton.Text"))
 
+        Dictionary.Add("DeleteDialog.DoNotAskAgain.Text", FindString("DeleteDialog.DoNotAskAgain.Text"))
+
         If ErrorOccured Then
             Log.Print("Language loaded with errors. Please try solving the error(s) above.", Log.Level.Warning)
         Else

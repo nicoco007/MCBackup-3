@@ -53,6 +53,7 @@ Partial Public Class Options
         BlueColorLabel.ContextMenu = Nothing
 
         SendAnonymousDataCheckBox.IsChecked = My.Settings.SendAnonymousData
+        ShowDeleteConfirmationCheckBox.IsChecked = My.Settings.ShowDeleteDialog
 
         Select Case My.Settings.Launcher
             Case Game.Launcher.Minecraft
@@ -381,22 +382,6 @@ Partial Public Class Options
     End Sub
 
 #Region "Backup Groups Tab"
-    'Private Sub ReloadBackupGroups()
-    '    Main.GroupsTabControl.Items.Clear()
-    '    BackupGroupsListBox.Items.Clear()
-
-    '    Main.GroupsTabControl.Items.Clear()
-    '    Main.GroupsTabControl.Items.Add("All")
-
-    '    For Each Group As String In My.Settings.BackupGroups
-    '        BackupGroupsListBox.Items.Add(Group)
-    '        Main.GroupsTabControl.Items.Add(Group)
-    '    Next
-
-    '    BackupGroupsListBox.SelectedIndex = 0
-    '    Main.GroupsTabControl.SelectedIndex = 0
-    'End Sub
-
     Private Sub CreateNewGroupTextBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles CreateNewGroupTextBox.TextChanged
         If CreateNewGroupButton IsNot Nothing Then
             If CreateNewGroupTextBox.Text = "" Then
@@ -597,5 +582,9 @@ Partial Public Class Options
         RenameBackupGroupDialog.Owner = Me
         My.Settings.BackupGroups(BackupGroupsListBox.SelectedIndex) = RenameBackupGroupDialog.ShowDialog()
         ReloadBackupGroups()
+    End Sub
+
+    Private Sub ShowDeleteConfirmationCheckBox_Click(sender As Object, e As RoutedEventArgs) Handles ShowDeleteConfirmationCheckBox.Click
+        My.Settings.ShowDeleteDialog = ShowDeleteConfirmationCheckBox.IsChecked
     End Sub
 End Class

@@ -511,6 +511,9 @@ Partial Class MainWindow
         Dim SelectedItem As ListViewBackupItem = Nothing
         Dispatcher.Invoke(Sub()
                               SelectedItem = ListView.SelectedItem
+                              If SelectedItem Is Nothing Then
+                                  Exit Sub
+                              End If
                               RestoreButton.IsEnabled = True
                               RenameButton.IsEnabled = True ' Allow anything if only 1 item is selected
                               DeleteButton.IsEnabled = True
@@ -1223,7 +1226,15 @@ Partial Class MainWindow
 
 #Region "Delete"
     Private Sub DeleteButton_Click(sender As Object, e As EventArgs) Handles DeleteButton.Click, ListViewDeleteItem.Click
-        If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.DeleteAreYouSure"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = Windows.Forms.DialogResult.Yes Then
+        If My.Settings.ShowDeleteDialog Then
+            If DeleteDialog.Show(Me) = Windows.Forms.DialogResult.Yes Then
+                Dim ListViewItems As New ArrayList
+                For Each Item In ListView.SelectedItems
+                    ListViewItems.Add(Item.Name)
+                Next
+                Delete(ListViewItems)
+            End If
+        Else
             Dim ListViewItems As New ArrayList
             For Each Item In ListView.SelectedItems
                 ListViewItems.Add(Item.Name)

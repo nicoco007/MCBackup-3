@@ -388,6 +388,18 @@ Partial Friend NotInheritable Class MySettings
             Me("Launcher") = Value
         End Set
     End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+    Public Property ShowDeleteDialog() As Boolean
+        Get
+            Return CType(Me("ShowDeleteDialog"),Boolean)
+        End Get
+        Set
+            Me("ShowDeleteDialog") = value
+        End Set
+    End Property
 End Class
 
 Namespace My

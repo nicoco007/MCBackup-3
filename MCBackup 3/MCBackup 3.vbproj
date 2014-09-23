@@ -117,6 +117,9 @@
     <Compile Include="Dialogs\RenameBackupGroupDialog.xaml.vb">
       <DependentUpon>RenameBackupGroupDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\DeleteDialog.xaml.vb">
+      <DependentUpon>DeleteDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Extension Classes\FileSystemOperations.vb" />
     <Compile Include="Extension Classes\FolderBrowserDialog\FolderSelectDialog.vb" />
     <Compile Include="Extension Classes\FolderBrowserDialog\Reflector.vb" />
@@ -177,6 +180,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\RenameBackupGroupDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\DeleteDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

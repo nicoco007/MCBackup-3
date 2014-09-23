@@ -87,5 +87,8 @@
     <Setting Name="Launcher" Type="MCBackup.MainWindow.Launcher" Scope="User">
       <Value Profile="(Default)">Minecraft</Value>
     </Setting>
+    <Setting Name="ShowDeleteDialog" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
