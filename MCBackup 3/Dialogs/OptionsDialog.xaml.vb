@@ -557,11 +557,12 @@ Partial Public Class Options
         FSD.InitialDirectory = My.Settings.BackupsFolderLocation
         If FSD.ShowDialog(New WindowInteropHelper(Me).Handle) = Forms.DialogResult.OK Then
             Try
-                IO.File.Create(FSD.FolderName & "\tmp")
+                IO.File.Create(FSD.FolderName & "\tmp").Dispose()
                 IO.File.Delete(FSD.FolderName & "\tmp")
                 My.Settings.BackupsFolderLocation = FSD.FolderName
                 BackupsFolderTextBox.Text = My.Settings.BackupsFolderLocation
             Catch ex As Exception
+                Log.Print("Could not set backups folder: " & ex.Message, Log.Level.Severe)
                 MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.CouldNotSetBackupsFolder"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             End Try
         End If

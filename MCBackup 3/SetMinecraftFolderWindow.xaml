@@ -11,6 +11,6 @@
         <Label x:Name="BaseFolderLabel" Content="Base Folder" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,50,0,0" Padding="0,5" Width="105"/>
         <TextBox x:Name="BaseFolderTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="414" Margin="120,50,0,0"/>
         <Button x:Name="BaseFolderBrowseButton" Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85" Margin="539,49,0,0" Height="28"/>
-        <Button x:Name="SaveButton" Content="Save" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85" Margin="276,83,0,0" Height="28"/>
+        <Button x:Name="SaveButton" Content="Save" HorizontalAlignment="Center" VerticalAlignment="Top" Width="Auto" Margin="278,83,278,0" Height="29" MinWidth="85"/>
     </Grid>
 </Controls:MetroWindow>

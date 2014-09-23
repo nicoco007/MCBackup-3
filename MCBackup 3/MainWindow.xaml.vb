@@ -576,46 +576,47 @@ Partial Class MainWindow
                               DescriptionTextBox.Text = IIf(String.IsNullOrEmpty(Description), MCBackup.Language.Dictionary("MainWindow.Sidebar.Description.NoDesc"), Description)
                           End Sub)
 
-        If Type = "save" Then
-            Dispatcher.Invoke(Sub()
-                                  SidebarPlayerHealth.Visibility = Windows.Visibility.Visible
-                                  SidebarPlayerHunger.Visibility = Windows.Visibility.Visible
-                                  SidebarPlayerHealthGrid.Children.Clear()
-                                  SidebarPlayerHungerGrid.Children.Clear()
-                              End Sub)
-            Try
-                Dim World As NbtWorld = AnvilWorld.Open(My.Settings.BackupsFolderLocation & "\" & SelectedItem.Name)
+        ' Removed until fix is found
+        'If Type = "save" Then
+        '    Dispatcher.Invoke(Sub()
+        '                          SidebarPlayerHealth.Visibility = Windows.Visibility.Visible
+        '                          SidebarPlayerHunger.Visibility = Windows.Visibility.Visible
+        '                          SidebarPlayerHealthGrid.Children.Clear()
+        '                          SidebarPlayerHungerGrid.Children.Clear()
+        '                      End Sub)
+        '    Try
+        '        Dim World As NbtWorld = NbtWorld.Open(My.Settings.BackupsFolderLocation & "\" & SelectedItem.Name)
 
-                Dispatcher.Invoke(Sub()
-                                      For i As Integer = 0 To World.Level.Player.Health \ 2 - 1
-                                          SidebarPlayerHealthGrid.Children.Add(New Game.Images.Health(New Thickness(SidebarPlayerHealthGrid.Children.Count * 10, 0, 0, 0), Game.Images.State.Full))
-                                      Next
-                                      If World.Level.Player.Health Mod 2 <> 0 Then
-                                          SidebarPlayerHealthGrid.Children.Add(New Game.Images.Health(New Thickness(SidebarPlayerHealthGrid.Children.Count * 10, 0, 0, 0), Game.Images.State.Half))
-                                      End If
-                                      For i As Integer = 0 To (20 - World.Level.Player.Health) \ 2 - 1
-                                          SidebarPlayerHealthGrid.Children.Add(New Game.Images.Health(New Thickness(SidebarPlayerHealthGrid.Children.Count * 10, 0, 0, 0), Game.Images.State.Empty))
-                                      Next
+        '        Dispatcher.Invoke(Sub()
+        '                              For i As Integer = 0 To World.Level.Player.Health \ 2 - 1
+        '                                  SidebarPlayerHealthGrid.Children.Add(New Game.Images.Health(New Thickness(SidebarPlayerHealthGrid.Children.Count * 10, 0, 0, 0), Game.Images.State.Full))
+        '                              Next
+        '                              If World.Level.Player.Health Mod 2 <> 0 Then
+        '                                  SidebarPlayerHealthGrid.Children.Add(New Game.Images.Health(New Thickness(SidebarPlayerHealthGrid.Children.Count * 10, 0, 0, 0), Game.Images.State.Half))
+        '                              End If
+        '                              For i As Integer = 0 To (20 - World.Level.Player.Health) \ 2 - 1
+        '                                  SidebarPlayerHealthGrid.Children.Add(New Game.Images.Health(New Thickness(SidebarPlayerHealthGrid.Children.Count * 10, 0, 0, 0), Game.Images.State.Empty))
+        '                              Next
 
-                                      For i As Integer = 0 To World.Level.Player.HungerLevel \ 2 - 1
-                                          SidebarPlayerHungerGrid.Children.Add(New Game.Images.Hunger(New Thickness(90 - SidebarPlayerHungerGrid.Children.Count * 10, 0, 0, 0), Game.Images.State.Full))
-                                      Next
-                                      If World.Level.Player.HungerLevel Mod 2 <> 0 Then
-                                          SidebarPlayerHungerGrid.Children.Add(New Game.Images.Hunger(New Thickness(90 - SidebarPlayerHungerGrid.Children.Count * 10, 0, 0, 0), Game.Images.State.Half))
-                                      End If
-                                      For i As Integer = 0 To (20 - World.Level.Player.HungerLevel) \ 2 - 1
-                                          SidebarPlayerHungerGrid.Children.Add(New Game.Images.Hunger(New Thickness(90 - SidebarPlayerHungerGrid.Children.Count * 10, 0, 0, 0), Game.Images.State.Empty))
-                                      Next
-                                  End Sub)
-            Catch ex As Exception
-                Dispatcher.Invoke(Sub() ErrorReportDialog.Show("An error occured while trying to load world info.", ex))
-            End Try
-        Else
-            Dispatcher.Invoke(Sub()
-                                  SidebarPlayerHealth.Visibility = Windows.Visibility.Collapsed
-                                  SidebarPlayerHunger.Visibility = Windows.Visibility.Collapsed
-                              End Sub)
-        End If
+        '                              For i As Integer = 0 To World.Level.Player.HungerLevel \ 2 - 1
+        '                                  SidebarPlayerHungerGrid.Children.Add(New Game.Images.Hunger(New Thickness(90 - SidebarPlayerHungerGrid.Children.Count * 10, 0, 0, 0), Game.Images.State.Full))
+        '                              Next
+        '                              If World.Level.Player.HungerLevel Mod 2 <> 0 Then
+        '                                  SidebarPlayerHungerGrid.Children.Add(New Game.Images.Hunger(New Thickness(90 - SidebarPlayerHungerGrid.Children.Count * 10, 0, 0, 0), Game.Images.State.Half))
+        '                              End If
+        '                              For i As Integer = 0 To (20 - World.Level.Player.HungerLevel) \ 2 - 1
+        '                                  SidebarPlayerHungerGrid.Children.Add(New Game.Images.Hunger(New Thickness(90 - SidebarPlayerHungerGrid.Children.Count * 10, 0, 0, 0), Game.Images.State.Empty))
+        '                              Next
+        '                          End Sub)
+        '    Catch ex As Exception
+        '        Dispatcher.Invoke(Sub() ErrorReportDialog.Show("An error occured while trying to load world info.", ex))
+        '    End Try
+        'Else
+        '    Dispatcher.Invoke(Sub()
+        '                          SidebarPlayerHealth.Visibility = Windows.Visibility.Collapsed
+        '                          SidebarPlayerHunger.Visibility = Windows.Visibility.Collapsed
+        '                      End Sub)
+        'End If
     End Sub
 
     Public Sub LoadLanguage()
