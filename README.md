@@ -37,3 +37,15 @@ To submit bugs, please go go to our [Bug Tracker][2].
 [2]:http://bugtracker.nicoco007.com/index.php?project=2                       "Bug Tracker"
 [3]:http://ci.nicoco007.com:8080/job/MCBackup%203                             "MCBackup 3 Jenkins Job"
 [4]:mailto:support@nicoco007.com                                              "Support Email"
+
+Attributions
+------------
+JSON.NET - [MIT License](https://json.codeplex.com/license)
+
+MahApps.Metro - [Microsoft Public License](https://github.com/MahApps/MahApps.Metro/blob/master/LICENSE)
+
+MCMap - Currently Unlicensed (last updated 2014-09-22)
+
+ModernUIIcons - [CC BY ND](https://github.com/coolwanglu/OK/blob/master/license-modernuiicons.txt)
+
+Substrate - [MIT License](https://github.com/jaquadro/Substrate/blob/master/LICENSE.txt)
