@@ -252,7 +252,7 @@ Public Class AutoBackupWindow
     End Sub
 
     Private Sub SaveListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles SavesListView.SelectionChanged
-        If SavesListView.SelectedItems.Count = 1 Then StartButton.IsEnabled = True Else StartButton.IsEnabled = False
+        StartButton.IsEnabled = (SavesListView.SelectedItems.Count = 1)
     End Sub
 
     Private Sub AutoBackupWindow_Activated(sender As Object, e As EventArgs) Handles MyBase.Activated

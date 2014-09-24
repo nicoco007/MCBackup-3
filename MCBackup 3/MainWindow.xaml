@@ -162,28 +162,28 @@
                 <Grid>
                     <TextBlock Name="SidebarTitle" Text="XXX element(s)" Foreground="#FF1F3995" FontSize="20" FontFamily="Segoe UI" Padding="5"  TextTrimming="CharacterEllipsis" Height="38" VerticalAlignment="Top"/>
                     <Image x:Name="ThumbnailImage" Source="Resources/nothumb.png"  Margin="10,37,10,190"/>
-                    <StackPanel Height="190" VerticalAlignment="Bottom">
-                        <Grid>
+                    <DockPanel Height="190" VerticalAlignment="Bottom">
+                        <Grid DockPanel.Dock="Top">
                             <TextBlock x:Name="SidebarTypeLabel" Text="Type: " Foreground="#FF5A6779" Padding="5,5,0,5"  Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="99"/>
                             <TextBlock x:Name="SidebarTypeContent" Padding="0,5,0,5" VerticalAlignment="Bottom" Text="&lt;Type&gt;" Margin="99,0,0,0"/>
                         </Grid>
-                        <Grid>
+                        <Grid DockPanel.Dock="Top">
                             <TextBlock x:Name="SidebarOriginalNameLabel" Text="Original Name: " Foreground="#FF5A6779" Padding="5,5,0,5"  Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="99"/>
                             <TextBlock x:Name="SidebarOriginalNameContent" Padding="0,5,0,5" VerticalAlignment="Bottom" Text="&lt;Original Name&gt;" Margin="99,0,0,0"/>
                         </Grid>
-                        <Grid Name="SidebarPlayerHealth" Visibility="Collapsed">
+                        <Grid Name="SidebarPlayerHealth" Visibility="Collapsed" DockPanel.Dock="Top">
                             <TextBlock x:Name="SidebarPlayerHealthLabel" Text="Player Health:" Foreground="#FF5A6779" Padding="5,5,0,5"  Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="99"/>
                             <Grid x:Name="SidebarPlayerHealthGrid"  VerticalAlignment="Bottom" Height="21" Margin="99,0,0,0"/>
                         </Grid>
-                        <Grid Name="SidebarPlayerHunger" Visibility="Collapsed">
+                        <Grid Name="SidebarPlayerHunger" Visibility="Collapsed" DockPanel.Dock="Top">
                             <TextBlock x:Name="SidebarPlayerHungerLabel" Text="Player Hunger:" Foreground="#FF5A6779" Padding="5,5,0,5" Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="99"/>
                             <Grid x:Name="SidebarPlayerHungerGrid" VerticalAlignment="Bottom" Height="21" Margin="99,0,0,0"/>
                         </Grid>
-                        <Grid Height="86">
-                            <TextBlock x:Name="SidebarDescriptionLabel" Text="Description :" Foreground="#FF5A6779" Padding="5,5,0,5"  Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="99" Margin="0,0,0,60"/>
-                            <TextBlock x:Name="DescriptionTextBox" TextWrapping="Wrap" Text="&lt;Description&gt;" Padding="5,0" TextTrimming="WordEllipsis" Height="60" VerticalAlignment="Bottom"/>
+                        <Grid DockPanel.Dock="Top">
+                            <TextBlock x:Name="SidebarDescriptionLabel" Text="Description :" Foreground="#FF5A6779" Padding="5,5,0,5"  Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Width="99" Margin="0,0,0,60"/>
+                            <TextBlock x:Name="DescriptionTextBox" TextWrapping="Wrap" Text="&lt;Description&gt;" Padding="5,0" TextTrimming="CharacterEllipsis" Height="112" VerticalAlignment="Bottom"/>
                         </Grid>
-                    </StackPanel>
+                    </DockPanel>
                 </Grid>
             </Border>
         </Grid>
