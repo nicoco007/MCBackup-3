@@ -42,9 +42,6 @@ Public Class CullDialog
         m2.Left = Label1.ActualWidth + DaysNumUpDown.ActualWidth + 20
         DaysNumUpDown.Margin = m1
         Label2.Margin = m2
-
-        ' Using this because "black border fix" doesn't work here
-        Me.Width = Label1.ActualWidth + DaysNumUpDown.ActualWidth + Label2.ActualWidth + 30
     End Sub
 
     Private Sub CullButton_Click(sender As Object, e As RoutedEventArgs) Handles CullButton.Click
@@ -80,5 +77,13 @@ Public Class CullDialog
         Main.StatusLabel.Content = MCBackup.Language.Dictionary("Status.DeleteComplete")
         Main.ProgressBar.IsIndeterminate = False
         Main.RefreshBackupsList()
+    End Sub
+
+    Private Sub Window_ContentRendered(sender As Object, e As EventArgs) Handles MyBase.ContentRendered
+        ' SizeToContent Black Border Fix © nicoco007
+        Dim s As New Size(Me.Width, Me.Height)
+        Me.SizeToContent = SizeToContent.Manual
+        Me.Width = s.Width
+        Me.Height = s.Height
     End Sub
 End Class

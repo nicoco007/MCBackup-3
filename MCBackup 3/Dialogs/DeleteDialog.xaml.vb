@@ -33,7 +33,7 @@
     End Sub
 
     Private Sub Window_ContentRendered(sender As Object, e As EventArgs) Handles MyBase.ContentRendered
-        ' MahApps.Metro Black Border Fix © nicoco007
+        ' SizeToContent Black Border Fix © nicoco007
         Dim s As New Size(Me.Width, Me.Height)
         Me.SizeToContent = SizeToContent.Manual
         Me.Width = s.Width
