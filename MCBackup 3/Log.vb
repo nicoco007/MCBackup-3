@@ -116,8 +116,10 @@ Public Class Log
                             Debug.Print(DebugTimeStamp() & " [SEVERE] " & FullMessage)
                             SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & FullMessage)
                         Case Log.Level.Debug
-                            Debug.Print(DebugTimeStamp() & " [DEBUG] " & FullMessage)
-                            SW.WriteLine(DebugTimeStamp() & " [DEBUG] " & FullMessage)
+                            If Environment.GetCommandLineArgs().Contains("-debug") Then
+                                Debug.Print(DebugTimeStamp() & " [DEBUG] " & FullMessage)
+                                SW.WriteLine(DebugTimeStamp() & " [DEBUG] " & FullMessage)
+                            End If
                     End Select
                 End Using
             Catch
@@ -185,8 +187,10 @@ Public Class Log
                             Debug.Print(DebugTimeStamp() & " [SEVERE] " & FullMessage)
                             SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & FullMessage)
                         Case Log.Level.Debug
-                            Debug.Print(DebugTimeStamp() & " [DEBUG] " & FullMessage)
-                            SW.WriteLine(DebugTimeStamp() & " [DEBUG] " & FullMessage)
+                            If Environment.GetCommandLineArgs().Contains("-debug") Then
+                                Debug.Print(DebugTimeStamp() & " [DEBUG] " & FullMessage)
+                                SW.WriteLine(DebugTimeStamp() & " [DEBUG] " & FullMessage)
+                            End If
                     End Select
                 End Using
             Catch

@@ -453,7 +453,10 @@ Partial Public Class Options
             If FSD.ShowDialog(New WindowInteropHelper(Me).Handle) = Forms.DialogResult.OK Then
                 My.Settings.Launcher = GetInstallationTypeButtons()
                 My.Settings.MinecraftFolderLocation = FSD.FolderName
-                If My.Settings.Launcher = Game.Launcher.Minecraft Then My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
+                If My.Settings.Launcher = Game.Launcher.Minecraft Then
+                    Directory.CreateDirectory(My.Settings.MinecraftFolderLocation & "\saves")
+                    My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
+                End If
                 BaseFolderTextBox.Text = My.Settings.MinecraftFolderLocation
                 SavesFolderTextBox.Text = My.Settings.SavesFolderLocation
             Else
@@ -505,7 +508,10 @@ Partial Public Class Options
         If FSD.ShowDialog(New WindowInteropHelper(Me).Handle) = Forms.DialogResult.OK Then
             My.Settings.Launcher = GetInstallationTypeButtons()
             My.Settings.MinecraftFolderLocation = FSD.FolderName
-            If My.Settings.Launcher = Game.Launcher.Minecraft Then My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
+            If My.Settings.Launcher = Game.Launcher.Minecraft Then
+                Directory.CreateDirectory(My.Settings.MinecraftFolderLocation & "\saves")
+                My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
+            End If
             BaseFolderTextBox.Text = My.Settings.MinecraftFolderLocation
 
             If My.Settings.Launcher = Game.Launcher.Minecraft Then
@@ -586,5 +592,34 @@ Partial Public Class Options
 
     Private Sub ShowDeleteConfirmationCheckBox_Click(sender As Object, e As RoutedEventArgs) Handles ShowDeleteConfirmationCheckBox.Click
         My.Settings.ShowDeleteDialog = ShowDeleteConfirmationCheckBox.IsChecked
+    End Sub
+
+    Private Sub Window_ContentRendered(sender As Object, e As EventArgs) Handles Window.ContentRendered
+        
+    End Sub
+
+    Private Sub TabControl_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles TabControl.SelectionChanged
+        
+    End Sub
+
+    Private Sub BackupsFolderLabel_Loaded(sender As Object, e As RoutedEventArgs) Handles BackupsFolderLabel.Loaded
+        
+    End Sub
+
+    Private Sub Grid_Loaded(sender As Object, e As RoutedEventArgs)
+        Dim Width As Integer = 414
+        If 514 - BaseFolderLabel.ActualWidth < Width Then
+            Width = 514 - BaseFolderLabel.ActualWidth
+        End If
+        If 514 - SavesFolderLabel.ActualWidth < Width Then
+            Width = 514 - SavesFolderLabel.ActualWidth
+        End If
+        If 514 - BackupsFolderLabel.ActualWidth < Width Then
+            Width = 514 - BackupsFolderLabel.ActualWidth
+        End If
+
+        BaseFolderTextBox.Width = Width
+        SavesFolderTextBox.Width = Width
+        BackupsFolderTextBox.Width = Width
     End Sub
 End Class

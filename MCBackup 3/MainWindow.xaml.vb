@@ -184,6 +184,7 @@ Partial Class MainWindow
         If String.IsNullOrEmpty(My.Settings.MinecraftFolderLocation) Then
             If IO.File.Exists(AppData & "\.minecraft\launcher.jar") Then
                 My.Settings.MinecraftFolderLocation = AppData & "\.minecraft"
+                My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
             End If
         End If
 
