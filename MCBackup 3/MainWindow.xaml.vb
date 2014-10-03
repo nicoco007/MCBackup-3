@@ -348,32 +348,35 @@ Partial Class MainWindow
                         Type = MCBackup.Language.Dictionary("BackupTypes.Everything")
                 End Select
 
+                Dim BackupDateCreated As DateTime = GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString)
+
+
                 If Group = "" And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
-                    If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
+                    If BackupDateCreated.AddDays(14) < DateTime.Today Then
                         Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), InfoJson("OriginalName"), Type))
+                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.Dictionary("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), InfoJson("OriginalName"), Type))
                                           End Sub)
-                    ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
+                    ElseIf BackupDateCreated.AddDays(7) < DateTime.Today Then
                         Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
+                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.Dictionary("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
                                           End Sub)
                     Else
                         Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
+                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.Dictionary("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
                                           End Sub)
                     End If
                 ElseIf InfoJson("Group") = Group And Not (Group = "") And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
-                    If GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(14) < DateTime.Today Then
+                    If BackupDateCreated.AddDays(14) < DateTime.Today Then
                         Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), InfoJson("OriginalName"), Type))
+                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.Dictionary("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), InfoJson("OriginalName"), Type))
                                           End Sub)
-                    ElseIf GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString).AddDays(7) < DateTime.Today Then
+                    ElseIf BackupDateCreated.AddDays(7) < DateTime.Today Then
                         Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
+                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.Dictionary("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
                                           End Sub)
                     Else
                         Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString), New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
+                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.Dictionary("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
                                           End Sub)
                     End If
                 End If
@@ -1162,14 +1165,14 @@ Partial Class MainWindow
         Return 0
     End Function
 
-    Public Function GetFolderDateCreated(FolderPath As String)
+    Public Function GetFolderDateCreated(FolderPath As String) As DateTime
         Try
             Dim FSO As FileSystemObject = New FileSystemObject
             Return FSO.GetFolder(FolderPath).DateCreated ' Get FolderPath's date of creation
         Catch ex As Exception
             Dispatcher.Invoke(Sub() ErrorReportDialog.Show(String.Format("Could not find {0}'s creation date:", FolderPath), ex))
         End Try
-        Return 0
+        Return Nothing
     End Function
 
     Public Shared Function BitmapToBitmapSource(bitmap As System.Drawing.Bitmap) As BitmapSource

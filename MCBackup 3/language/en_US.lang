@@ -234,3 +234,4 @@ SetMinecraftFolderWindow.Title=Set Minecraft Folder
 SetMinecraftFolderWindow.SaveButton.Text=Save
 NotifyIcon.ContextMenu.ExitItem.Text=Exit
 DeleteDialog.DoNotAskAgain.Text=Do not ask me again
+Localization.DefaultDateFormat=yyyy/MM/dd hh:mm:ss tt

@@ -327,6 +327,8 @@ Public Class Language
 
         Dictionary.Add("DeleteDialog.DoNotAskAgain.Text", FindString("DeleteDialog.DoNotAskAgain.Text"))
 
+        Dictionary.Add("Localization.DefaultDateFormat", FindString("Localization.DefaultDateFormat"))
+
         If ErrorOccured Then
             Log.Print("Language loaded with errors. Please try solving the error(s) above.", Log.Level.Warning)
         Else
@@ -347,7 +349,7 @@ Public Class Language
                     Dim ReturnString = Line.Substring(Identifier.Length + 1)
 
                     If String.IsNullOrEmpty(ReturnString) Then
-                        Log.Print("[Language] Error at line " & LineNumber & ": Entry is empty!", Log.Level.Warning)
+                        Log.Print("Language Error at line " & LineNumber & ": Entry is empty!", Log.Level.Warning)
                         ErrorOccured = True
                         Return Identifier.Split(".")(Identifier.Split(".").Count - 2) & "." & Identifier.Split(".").Last
                     End If
@@ -356,7 +358,7 @@ Public Class Language
                 End If
             End While
         End Using
-        Log.Print("[Language] Error: '" & Identifier & "' identifier not found, added automatically.", Log.Level.Warning)
+        Log.Print("Language Error: '" & Identifier & "' identifier not found, added automatically.", Log.Level.Warning)
         Using SW As New StreamWriter(Directory.GetCurrentDirectory() & "\language\" & LanguageFile, True)
             SW.Write(vbNewLine & Identifier & "=")
         End Using

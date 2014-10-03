@@ -234,3 +234,4 @@ SetMinecraftFolderWindow.Title=Définir le dossier de Minecraft
 SetMinecraftFolderWindow.SaveButton.Text=Sauvegarder
 NotifyIcon.ContextMenu.ExitItem.Text=Quitter
 DeleteDialog.DoNotAskAgain.Text=Ne plus me demander à l'avenir
+Localization.DefaultDateFormat=yyyy-MM-dd HH:mm:ss
