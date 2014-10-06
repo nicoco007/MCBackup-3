@@ -61,9 +61,12 @@ Partial Class MainWindow
     Public WithEvents NotifyIcon As New System.Windows.Forms.NotifyIcon
 
     Public AutoBackupWindow As New AutoBackupWindow
+    Public NotificationIconWindow As New NotificationIconWindow
     Private Splash As New Splash
 
     Private Cancel As Boolean = False
+
+    Public AutoBackupWindowWasShown As Boolean = False
 #End Region
 
 #Region "Load"
@@ -128,6 +131,7 @@ Partial Class MainWindow
         Dim ExitToolbarMenuItem As New System.Windows.Forms.MenuItem
         ExitToolbarMenuItem.Text = MCBackup.Language.FindString("NotifyIcon.ContextMenu.ExitItem.Text", My.Settings.Language & ".lang")
         AddHandler ExitToolbarMenuItem.Click, AddressOf ExitToolbarMenuItem_Click
+
         ContextMenu.MenuItems.Add(ExitToolbarMenuItem)
         NotifyIcon.ContextMenu = ContextMenu
         NotifyIcon.Visible = True
@@ -1506,10 +1510,20 @@ Partial Class MainWindow
         Me.Close()
     End Sub
 
+    Private Sub NotifyIcon_Click(sender As Object, e As EventArgs) Handles NotifyIcon.Click
+        If NotificationIconWindow.IsVisible Then
+            NotificationIconWindow.Hide()
+        Else
+            NotificationIconWindow.Top = My.Computer.Screen.WorkingArea.Height - NotificationIconWindow.Height - 5
+            NotificationIconWindow.Left = System.Windows.Forms.Cursor.Position.X - (NotificationIconWindow.Width / 2)
+            NotificationIconWindow.Show()
+        End If
+    End Sub
+
     Private Sub NotifyIcon_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon.DoubleClick, NotifyIcon.BalloonTipClicked
         Me.Show()
         Me.Activate()
-        If AutoBackupWindow.IsVisible Then
+        If AutoBackupWindowWasShown Then
             AutoBackupWindow.Show()
             AutoBackupWindow.Activate()
         End If
@@ -1528,6 +1542,8 @@ Partial Class MainWindow
                     Select Case CloseToTrayDialog.ShowDialog()
                         Case Forms.DialogResult.Yes
                             Me.Hide()
+                            AutoBackupWindowWasShown = AutoBackupWindow.IsVisible
+                            If AutoBackupWindow.IsVisible Then AutoBackupWindow.Hide()
                             If My.Settings.FirstCloseToTray Then
                                 NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RunningBackground"), MCBackup.Language.Dictionary("BalloonTip.RunningBackground"), System.Windows.Forms.ToolTipIcon.Info)
                                 My.Settings.FirstCloseToTray = False
@@ -1548,6 +1564,8 @@ Partial Class MainWindow
                 Else
                     If My.Settings.CloseToTray Then
                         Me.Hide()
+                        AutoBackupWindowWasShown = AutoBackupWindow.IsVisible
+                        If AutoBackupWindow.IsVisible Then AutoBackupWindow.Hide()
                         If My.Settings.FirstCloseToTray Then
                             NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RunningBackground"), MCBackup.Language.Dictionary("BalloonTip.RunningBackground"), System.Windows.Forms.ToolTipIcon.Info)
                             My.Settings.FirstCloseToTray = False

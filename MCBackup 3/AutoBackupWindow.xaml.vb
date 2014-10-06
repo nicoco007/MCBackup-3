@@ -19,7 +19,7 @@ Imports System.Text.RegularExpressions
 Imports System.IO
 
 Public Class AutoBackupWindow
-    Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
+    Private MainWindow As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
     Public IsMoving As Boolean
 
     Private Timer As New DispatcherTimer
@@ -62,19 +62,19 @@ Public Class AutoBackupWindow
     Private Sub AutoBackupWindow_Closing(sender As Object, e As ComponentModel.CancelEventArgs) Handles MyBase.Closing
         e.Cancel = True
         Me.Hide()
-        Main.Left = Main.Left + (Me.Width / 2)
+        MainWindow.Left = MainWindow.Left + (Me.Width / 2)
         Try
-            Main.AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " >>"
+            MainWindow.AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " >>"
         Catch
         End Try
-        Main.Focus()
+        MainWindow.Focus()
     End Sub
 
     Private Sub AutoBackupWindow_LocationChanged(sender As Object, e As EventArgs) Handles MyBase.LocationChanged
-        If Not Main.IsMoving Then
+        If Not MainWindow.IsMoving Then
             IsMoving = True
-            Main.Left = Me.Left - (Main.Width + 5)
-            Main.Top = Me.Top
+            MainWindow.Left = Me.Left - (MainWindow.Width + 5)
+            MainWindow.Top = Me.Top
             IsMoving = False
         End If
     End Sub
@@ -87,6 +87,9 @@ Public Class AutoBackupWindow
         If TimerStarted Then
             Timer.Stop()
             TimeLabel.Content = "00:00"
+            MainWindow.NotificationIconWindow.AutoBackupLabel.Content = "Automatic Backup is not running."
+            MainWindow.NotificationIconWindow.AutoBackupTimeLabel.Visibility = Windows.Visibility.Collapsed
+
             StartButton.Content = MCBackup.Language.Dictionary("AutoBackupWindow.StartButton.Content.Start")
             TimerStarted = False
 
@@ -101,9 +104,13 @@ Public Class AutoBackupWindow
                 Exit Sub
             End If
 
+            MainWindow.NotificationIconWindow.AutoBackupLabel.Content = "Time until next automatic backup:"
+            MainWindow.NotificationIconWindow.AutoBackupTimeLabel.Visibility = Windows.Visibility.Visible
+
             Minutes = MinutesNumUpDown.Value
             Seconds = 0
             TimeLabel.Content = String.Format("{0:00}:00", MinutesNumUpDown.Value)
+            If MainWindow.NotificationIconWindow.IsVisible Then MainWindow.NotificationIconWindow.AutoBackupTimeLabel.Content = String.Format("{0:00}:00", MinutesNumUpDown.Value)
             Timer.Start()
             StartButton.Content = MCBackup.Language.Dictionary("AutoBackupWindow.StartButton.Content.Stop")
             TimerStarted = True
@@ -127,32 +134,33 @@ Public Class AutoBackupWindow
         End If
 
         TimeLabel.Content = String.Format("{0:00}:{1:00}", Minutes, Seconds)
+        If MainWindow.NotificationIconWindow.IsVisible Then MainWindow.NotificationIconWindow.AutoBackupTimeLabel.Content = String.Format("{0:00}:{1:00}", Minutes, Seconds)
 
         If Minutes = 0 And Seconds = 0 Then
             Log.Print("Starting automated backup...")
-            Main.BackupInfo(0) = PrefixTextBox.Text & BackupDialog.GetBackupTimeStamp() & SuffixTextBox.Text
-            Main.BackupInfo(1) = String.Format(MCBackup.Language.Dictionary("AutoBackupWindow.BackupDescription"), SavesListView.SelectedItem.Name)
+            MainWindow.BackupInfo(0) = PrefixTextBox.Text & BackupDialog.GetBackupTimeStamp() & SuffixTextBox.Text
+            MainWindow.BackupInfo(1) = String.Format(MCBackup.Language.Dictionary("AutoBackupWindow.BackupDescription"), SavesListView.SelectedItem.Name)
             Select Case My.Settings.Launcher
                 Case Game.Launcher.Minecraft
-                    Main.BackupInfo(2) = My.Settings.SavesFolderLocation & "\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
+                    MainWindow.BackupInfo(2) = My.Settings.SavesFolderLocation & "\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
                 Case Game.Launcher.Technic
-                    Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\modpacks\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Modpack & "\saves\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
+                    MainWindow.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\modpacks\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Modpack & "\saves\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
                 Case Game.Launcher.FeedTheBeast
-                    Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Modpack & "\minecraft\saves\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
+                    MainWindow.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Modpack & "\minecraft\saves\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
                 Case Game.Launcher.ATLauncher
-                    Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\Instances\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Modpack & "\saves\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
+                    MainWindow.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\Instances\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Modpack & "\saves\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
             End Select
 
-            Main.BackupInfo(3) = "save"
+            MainWindow.BackupInfo(3) = "save"
 
-            Main.BackupInfo(5) = SavesListView.SelectedItem.Launcher
-            Main.BackupInfo(6) = SavesListView.SelectedItem.Modpack
+            MainWindow.BackupInfo(5) = SavesListView.SelectedItem.Launcher
+            MainWindow.BackupInfo(6) = SavesListView.SelectedItem.Modpack
 
-            Main.BackupInfo(4) = "Auto Backups"
+            MainWindow.BackupInfo(4) = "Auto Backups"
 
-            Main.StartBackup()
+            MainWindow.StartBackup()
 
-            If My.Settings.ShowBalloonTips Then Main.NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.AutoBackup"), String.Format(MCBackup.Language.Dictionary("BalloonTip.AutoBackup"), CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name), Forms.ToolTipIcon.Info)
+            If My.Settings.ShowBalloonTips Then MainWindow.NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.AutoBackup"), String.Format(MCBackup.Language.Dictionary("BalloonTip.AutoBackup"), CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name), Forms.ToolTipIcon.Info)
 
             If Not My.Settings.BackupGroups.Contains("Auto Backups") Then
                 My.Settings.BackupGroups.Add("Auto Backups")
@@ -161,6 +169,7 @@ Public Class AutoBackupWindow
             Minutes = MinutesNumUpDown.Value
             Seconds = 0
             TimeLabel.Content = String.Format("{0:00}:00", MinutesNumUpDown.Value)
+            If MainWindow.NotificationIconWindow.IsVisible Then MainWindow.NotificationIconWindow.AutoBackupTimeLabel.Content = String.Format("{0:00}:00", MinutesNumUpDown.Value)
         End If
     End Sub
 #End Region
@@ -256,7 +265,7 @@ Public Class AutoBackupWindow
     End Sub
 
     Private Sub AutoBackupWindow_Activated(sender As Object, e As EventArgs) Handles MyBase.Activated
-        Main.Focus()
+        MainWindow.Focus()
     End Sub
 
     Private Sub SaveListBox_PreviewMouseDown(sender As Object, e As MouseButtonEventArgs) Handles SavesListView.PreviewMouseDown

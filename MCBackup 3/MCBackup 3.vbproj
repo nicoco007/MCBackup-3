@@ -139,6 +139,9 @@
       <DependentUpon>RenameDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Game.vb" />
+    <Compile Include="NotificationIconWindow.xaml.vb">
+      <DependentUpon>NotificationIconWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Progress.vb" />
     <Compile Include="SetMinecraftFolderWindow.xaml.vb">
       <DependentUpon>SetMinecraftFolderWindow.xaml</DependentUpon>
@@ -214,6 +217,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\RenameDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NotificationIconWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
