@@ -236,6 +236,12 @@ Partial Class MainWindow
         Splash.Hide()
 
         Application.CloseAction = Application.AppCloseAction.Ask
+
+        ' Send +1 to StatCounter
+        If My.Settings.SendAnonymousData Then
+            Dim WebClient As New WebClient
+            WebClient.DownloadDataAsync(New Uri("http://c.statcounter.com/10065404/0/6bad5aa6/1/"))
+        End If
     End Sub
 
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
