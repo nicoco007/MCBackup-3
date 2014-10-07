@@ -99,6 +99,7 @@ Public Class Language
 
         ' = Statuses =
         Dictionary.Add("Status.Ready", FindString("Status.Ready"))
+        Dictionary.Add("Status.CanceledAndReady", FindString("Status.CanceledAndReady"))
         Dictionary.Add("Status.BackingUp", FindString("Status.BackingUp"))
         Dictionary.Add("Status.BackupComplete", FindString("Status.BackupComplete"))
         Dictionary.Add("Status.CreatingThumb", FindString("Status.CreatingThumb"))

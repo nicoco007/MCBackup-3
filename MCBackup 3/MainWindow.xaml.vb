@@ -784,7 +784,7 @@ Partial Class MainWindow
                                           BackupStopwatch.Stop()
                                           Progress.Value = 0
                                           ProgressBar.IsIndeterminate = False
-                                          StatusLabel.Content = "Operation cancelled - Ready"
+                                          StatusLabel.Content = MCBackup.Language.Dictionary("Status.CanceledAndReady")
                                           EnableUI(True)
                                           RefreshBackupsList()
                                           ReloadBackupGroups()
@@ -1063,7 +1063,7 @@ Partial Class MainWindow
                                                       RestoreStopWatch.Stop()
                                                       Progress.Value = 0
                                                       ProgressBar.IsIndeterminate = False
-                                                      StatusLabel.Content = "Operation cancelled - Ready"
+                                                      StatusLabel.Content = MCBackup.Language.Dictionary("Status.CanceledAndReady")
                                                       EnableUI(True)
                                                       RefreshBackupsList()
                                                       ReloadBackupGroups()
@@ -1125,7 +1125,7 @@ Partial Class MainWindow
                                           RestoreStopWatch.Stop()
                                           Progress.Value = 0
                                           ProgressBar.IsIndeterminate = False
-                                          StatusLabel.Content = "Operation cancelled - Ready"
+                                          StatusLabel.Content = MCBackup.Language.Dictionary("Status.CanceledAndReady")
                                           EnableUI(True)
                                           RefreshBackupsList()
                                           ReloadBackupGroups()
@@ -1724,7 +1724,7 @@ Partial Class MainWindow
                         RefreshBackupsList()
                         ReloadBackupGroups()
                         Progress.Value = 0
-                        StatusLabel.Content = "Thumbnail Creation Cancelled - Ready"
+                        StatusLabel.Content = MCBackup.Language.Dictionary("Status.CanceledAndReady")
                         StatusLabel.Refresh()
                         Log.Print("Thumbnail creation cancelled")
                     End If
@@ -1835,7 +1835,7 @@ Partial Class MainWindow
 
         Me.Dispatcher.Invoke(Sub()
                                  EnableUI(True)
-                                 StatusLabel.Content = "Ready"
+                                 StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
                                  ProgressBar.IsIndeterminate = False
                                  RefreshBackupsList()
                              End Sub)
