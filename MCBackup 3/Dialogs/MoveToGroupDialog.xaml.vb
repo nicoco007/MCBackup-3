@@ -1,6 +1,4 @@
 ﻿Imports System.IO
-Imports Newtonsoft.Json.Linq
-Imports Newtonsoft.Json
 Imports System.Threading
 
 Public Class MoveToGroupDialog
@@ -14,7 +12,7 @@ Public Class MoveToGroupDialog
     End Sub
 
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs) Handles Window.Loaded
-        GroupsListBox.Items.Add("None")
+        GroupsListBox.Items.Add(MCBackup.Language.Dictionary("BackupWindow.Groups.None"))
 
         For Each Group As String In My.Settings.BackupGroups
             GroupsListBox.Items.Add(Group)
