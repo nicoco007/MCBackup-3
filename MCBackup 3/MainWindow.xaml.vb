@@ -1840,6 +1840,10 @@ Partial Class MainWindow
                                  RefreshBackupsList()
                              End Sub)
     End Sub
+
+    Private Sub OpenInExplorerItem_Click(sender As Object, e As RoutedEventArgs) Handles OpenInExplorerItem.Click
+        Process.Start(My.Settings.BackupsFolderLocation & "\" & ListView.SelectedItem.Name)
+    End Sub
 End Class
 
 Public Class TaggedTabItem

@@ -78,6 +78,8 @@
                             <Separator/>
                             <MenuItem Name="ListViewMoveToGroupItem" Header="Move to group..."/>
                             <Separator/>
+                            <MenuItem Name="OpenInExplorerItem" Header="Open in Explorer"/>
+                            <Separator/>
                             <MenuItem Name="ListViewSortByItem" Header="Sort by">
                                 <MenuItem Name="ListViewSortByNameItem" Header="Name" IsCheckable="True"/>
                                 <MenuItem Name="ListViewSortByDateCreatedItem" Header="Date Created" IsCheckable="True"/>
