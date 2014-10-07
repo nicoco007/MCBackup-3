@@ -138,7 +138,7 @@ Public Class AutoBackupWindow
 
         If Minutes = 0 And Seconds = 0 Then
             Log.Print("Starting automated backup...")
-            MainWindow.BackupInfo(0) = PrefixTextBox.Text & BackupDialog.GetBackupTimeStamp() & SuffixTextBox.Text
+            MainWindow.BackupInfo(0) = PrefixTextBox.Text & SavesListView.SelectedItem.Name & " " & BackupDialog.GetBackupTimeStamp() & SuffixTextBox.Text
             MainWindow.BackupInfo(1) = String.Format(MCBackup.Language.Dictionary("AutoBackupWindow.BackupDescription"), SavesListView.SelectedItem.Name)
             Select Case My.Settings.Launcher
                 Case Game.Launcher.Minecraft

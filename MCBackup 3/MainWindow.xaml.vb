@@ -1520,8 +1520,6 @@ Partial Class MainWindow
         If NotificationIconWindow.IsVisible Then
             NotificationIconWindow.Hide()
         Else
-            NotificationIconWindow.Top = My.Computer.Screen.WorkingArea.Height - NotificationIconWindow.Height - 5
-            NotificationIconWindow.Left = System.Windows.Forms.Cursor.Position.X - (NotificationIconWindow.Width / 2)
             NotificationIconWindow.Show()
         End If
     End Sub

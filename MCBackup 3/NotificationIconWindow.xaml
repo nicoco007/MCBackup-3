@@ -6,6 +6,6 @@
     <Grid>
         <Label x:Name="TitleLabel" Content="MCBackup v0.0.0.0" VerticalAlignment="Top" BorderBrush="{DynamicResource AccentColorBrush3}" BorderThickness="0,0,0,1"/>
         <Label x:Name="AutoBackupLabel" Content="Automatic Backup is not running" VerticalAlignment="Top" Margin="0,27,0,0" HorizontalContentAlignment="Center"/>
-        <Label x:Name="AutoBackupTimeLabel" Content="00:00" VerticalAlignment="Top" Margin="0,53,0,0" HorizontalContentAlignment="Center" FontSize="24" Visibility="Collapsed"/>
+        <Label x:Name="AutoBackupTimeLabel" Content="00:00" VerticalAlignment="Top" Margin="0,45,0,0" HorizontalContentAlignment="Center" FontSize="24" Visibility="Collapsed"/>
     </Grid>
 </Window>
