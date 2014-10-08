@@ -160,7 +160,7 @@ Partial Class MainWindow
         Me.Width = My.Settings.WindowSize.Width
         Me.Height = My.Settings.WindowSize.Height
 
-        If My.Settings.IsWindowMaximized Then Me.WindowState = WindowState.Maximized
+        Me.WindowState = IIf(My.Settings.IsWindowMaximized, WindowState.Maximized, WindowState.Normal)
 
         If My.Settings.BackupsFolderLocation = "" Then
             My.Settings.BackupsFolderLocation = StartupPath & "\backups"
@@ -1604,7 +1604,8 @@ Partial Class MainWindow
             My.Settings.ListViewSortBy = View.SortDescriptions(0).PropertyName
             My.Settings.ListViewSortByDirection = View.SortDescriptions(0).Direction
 
-            My.Settings.WindowSize = New Size(Me.Width, Me.Height)
+            If Not Me.WindowState = Windows.WindowState.Maximized Then My.Settings.WindowSize = New Size(Me.Width, Me.Height)
+
             My.Settings.IsWindowMaximized = IIf(Me.WindowState = WindowState.Maximized, True, False)
 
             My.Settings.Save()
@@ -1815,22 +1816,26 @@ Partial Class MainWindow
         For Each Item As ListViewBackupItem In SelectedItems
             Log.Print("Rewriting info.json file for backup '{0}'.", Log.Level.Info, Item.Name)
 
-            Dim InfoJson As JObject
+            Try
+                Dim InfoJson As JObject
 
-            Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & Item.Name & "\info.json")
-                InfoJson = JsonConvert.DeserializeObject(SR.ReadToEnd)
-            End Using
-
-            If InfoJson("Group") <> Group Then
-                InfoJson.Remove("Group")
-
-                InfoJson.Add(New JProperty("Group", Group))
-
-                Using SW As New StreamWriter(My.Settings.BackupsFolderLocation & "\" & Item.Name & "\info.json")
-                    SW.Write(JsonConvert.SerializeObject(InfoJson))
-                    SW.Dispose()
+                Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & Item.Name & "\info.json")
+                    InfoJson = JsonConvert.DeserializeObject(SR.ReadToEnd)
                 End Using
-            End If
+
+                If InfoJson("Group") <> Group Then
+                    InfoJson.Remove("Group")
+
+                    InfoJson.Add(New JProperty("Group", Group))
+
+                    Using SW As New StreamWriter(My.Settings.BackupsFolderLocation & "\" & Item.Name & "\info.json")
+                        SW.Write(JsonConvert.SerializeObject(InfoJson))
+                        SW.Dispose()
+                    End Using
+                End If
+            Catch ex As Exception
+                Log.Print("An error occured while trying to rewrite JSON data: " & ex.Message, Log.Level.Severe)
+            End Try
         Next
 
         Me.Dispatcher.Invoke(Sub()
@@ -1843,6 +1848,10 @@ Partial Class MainWindow
 
     Private Sub OpenInExplorerItem_Click(sender As Object, e As RoutedEventArgs) Handles OpenInExplorerItem.Click
         Process.Start(My.Settings.BackupsFolderLocation & "\" & ListView.SelectedItem.Name)
+    End Sub
+
+    Private Sub Window_StateChanged(sender As Object, e As EventArgs) Handles Window.StateChanged
+        If Not Me.WindowState = Windows.WindowState.Maximized Then My.Settings.WindowSize = New Size(Me.Width, Me.Height)
     End Sub
 End Class
 
