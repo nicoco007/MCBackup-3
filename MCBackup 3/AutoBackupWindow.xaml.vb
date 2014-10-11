@@ -17,6 +17,8 @@
 Imports System.Windows.Threading
 Imports System.Text.RegularExpressions
 Imports System.IO
+Imports System.Text
+Imports System.Globalization
 
 Public Class AutoBackupWindow
     Private MainWindow As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
@@ -42,8 +44,8 @@ Public Class AutoBackupWindow
             WorldToBackUpLabel.Text = MCBackup.Language.Dictionary("AutoBackupWindow.WorldToBackUpLabel.Text")
             RefreshButton.Content = MCBackup.Language.Dictionary("AutoBackupWindow.RefreshButton.Content")
             SaveAsLabel.Content = MCBackup.Language.Dictionary("AutoBackupWindow.SaveAsLabel.Content")
-            PrefixLabel.Content = MCBackup.Language.Dictionary("AutoBackupWindow.PrefixLabel.Content")
-            SuffixLabel.Content = MCBackup.Language.Dictionary("AutoBackupWindow.SuffixLabel.Content")
+            'PrefixLabel.Content = MCBackup.Language.Dictionary("AutoBackupWindow.PrefixLabel.Content")
+            'SuffixLabel.Content = MCBackup.Language.Dictionary("AutoBackupWindow.SuffixLabel.Content")
             StartButton.Content = MCBackup.Language.Dictionary("AutoBackupWindow.StartButton.Content.Start")
             SaveNameColumn.Header = MCBackup.Language.Dictionary("BackupWindow.SaveNameColumn.Header")
             SaveLocationColumn.Header = MCBackup.Language.Dictionary("BackupWindow.SaveLocationColumn.Header")
@@ -55,8 +57,8 @@ Public Class AutoBackupWindow
     Private Sub AutoBackupWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
         ReloadSaves()
         LoadLanguage()
-        PrefixTextBox.Text = My.Settings.AutoBkpPrefix
-        SuffixTextBox.Text = My.Settings.AutoBkpSuffix
+        'PrefixTextBox.Text = My.Settings.AutoBkpPrefix
+        'SuffixTextBox.Text = My.Settings.AutoBkpSuffix
     End Sub
 
     Private Sub AutoBackupWindow_Closing(sender As Object, e As ComponentModel.CancelEventArgs) Handles MyBase.Closing
@@ -96,10 +98,18 @@ Public Class AutoBackupWindow
             MinutesNumUpDown.IsEnabled = True
             SavesListView.IsEnabled = True
             RefreshButton.IsEnabled = True
-            PrefixTextBox.IsEnabled = True
-            SuffixTextBox.IsEnabled = True
+            BackupNameTextBox.IsEnabled = True
         Else
-            If Regex.IsMatch(PrefixTextBox.Text, "[\/:*?""<>|]") Or Regex.IsMatch(SuffixTextBox.Text, "[\/:*?""<>|]") Then
+            Dim BackupName As String = BackupNameTextBox.Text
+            If Regex.Matches(BackupName, "%timestamp:.*%").Count > 0 Then
+                For Each Match As RegularExpressions.Match In Regex.Matches(BackupName, "%timestamp:.*%")
+                    Dim Format = Match.ToString.Split(":")(1)
+                    Format = Format.Remove(Format.IndexOf("%"))
+                    BackupName = BackupName.Replace(Match.ToString, DateTime.Now.ToString(Format, CultureInfo.InvariantCulture))
+                Next
+            End If
+
+            If Regex.IsMatch(BackupName, "[\/:*?""<>|]") Then
                 MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.BackupNameCannotContainIllegalCharacters"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
                 Exit Sub
             End If
@@ -118,8 +128,7 @@ Public Class AutoBackupWindow
             MinutesNumUpDown.IsEnabled = False
             SavesListView.IsEnabled = False
             RefreshButton.IsEnabled = False
-            PrefixTextBox.IsEnabled = False
-            SuffixTextBox.IsEnabled = False
+            BackupNameTextBox.IsEnabled = False
         End If
     End Sub
 
@@ -138,7 +147,17 @@ Public Class AutoBackupWindow
 
         If Minutes = 0 And Seconds = 0 Then
             Log.Print("Starting automated backup...")
-            MainWindow.BackupInfo(0) = PrefixTextBox.Text & SavesListView.SelectedItem.Name & " " & BackupDialog.GetBackupTimeStamp() & SuffixTextBox.Text
+            Dim BackupName As String = BackupNameTextBox.Text
+            If Regex.Matches(BackupName, "%timestamp:.*%").Count > 0 Then
+                For Each Match As RegularExpressions.Match In Regex.Matches(BackupName, "%timestamp:.*%")
+                    Dim Format = Match.ToString.Split(":")(1)
+                    Format = Format.Remove(Format.IndexOf("%"))
+                    BackupName = BackupName.Replace(Match.ToString, DateTime.Now.ToString(Format, CultureInfo.InvariantCulture))
+                Next
+            End If
+            BackupName = BackupName.Replace("%worldname%", SavesListView.SelectedItem.Name)
+            MainWindow.BackupInfo(0) = BackupName
+
             MainWindow.BackupInfo(1) = String.Format(MCBackup.Language.Dictionary("AutoBackupWindow.BackupDescription"), SavesListView.SelectedItem.Name)
             Select Case My.Settings.Launcher
                 Case Game.Launcher.Minecraft

@@ -23,12 +23,8 @@
 
     <Grid>
         <Label x:Name="TimeLabel" Content="00:00" Margin="10,0,15,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="64" Height="100" VerticalAlignment="Top"/>
-        <TextBox x:Name="PrefixTextBox" HorizontalAlignment="Center" Height="23" TextWrapping="Wrap" Text="[AUTO] " VerticalAlignment="Bottom" Width="89" Margin="42,0,178,90" HorizontalContentAlignment="Right"/>
-        <Label Content="hhmmss" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="131,0,124,90" Height="25"/>
-        <TextBox x:Name="SuffixTextBox" Height="23" TextWrapping="Wrap" VerticalAlignment="Bottom" Margin="185,0,36,90" HorizontalAlignment="Center" Width="88"/>
+        <TextBox x:Name="BackupNameTextBox" HorizontalAlignment="Center" Height="23" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="200" Margin="72,0,72,90" HorizontalContentAlignment="Center"/>
         <Label x:Name="SaveAsLabel" Content="Backups will save as" VerticalAlignment="Bottom" Margin="42,0,43,118" HorizontalContentAlignment="Center"/>
-        <Label x:Name="PrefixLabel" Content="Prefix" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="42,0,178,72" Width="89" HorizontalContentAlignment="Center" FontSize="10"/>
-        <Label x:Name="SuffixLabel" Content="Suffix" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="185,0,36,72" Width="88" HorizontalContentAlignment="Center" FontSize="10"/>
         <Button x:Name="StartButton" Content="Start" Margin="82,0,81,24" FontSize="24" Height="40" VerticalAlignment="Bottom" IsEnabled="False"/>
         <ListView Name="SavesListView" Margin="10,196,10,178" BorderThickness="1">
             <ListView.View>

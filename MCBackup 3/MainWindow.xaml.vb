@@ -31,6 +31,7 @@ Imports System.Text
 Imports Newtonsoft.Json.Linq
 Imports Newtonsoft.Json
 Imports System.Security
+Imports System.Text.RegularExpressions
 
 Partial Class MainWindow
 
@@ -1597,8 +1598,8 @@ Partial Class MainWindow
             My.Settings.SidebarWidth = GridSidebarColumn.Width
             My.Settings.ListViewWidth = GridListViewColumn.Width
 
-            My.Settings.AutoBkpPrefix = AutoBackupWindow.PrefixTextBox.Text
-            My.Settings.AutoBkpSuffix = AutoBackupWindow.SuffixTextBox.Text
+            'My.Settings.AutoBkpPrefix = AutoBackupWindow.PrefixTextBox.Text
+            'My.Settings.AutoBkpSuffix = AutoBackupWindow.SuffixTextBox.Text
 
             Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
             My.Settings.ListViewSortBy = View.SortDescriptions(0).PropertyName
@@ -1853,6 +1854,10 @@ Partial Class MainWindow
     Private Sub Window_StateChanged(sender As Object, e As EventArgs) Handles Window.StateChanged
         If Not Me.WindowState = Windows.WindowState.Maximized Then My.Settings.WindowSize = New Size(Me.Width, Me.Height)
     End Sub
+
+    Public Shared Function GetBackupTimeStamp()
+        Return DateTime.Now.ToString("yyyy-MM-dd (hh\hmm\mss\s)")
+    End Function
 End Class
 
 Public Class TaggedTabItem

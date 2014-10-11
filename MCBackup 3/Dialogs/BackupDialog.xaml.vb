@@ -1,5 +1,7 @@
 ﻿Imports System.IO
 Imports System.Text.RegularExpressions
+Imports System.Text
+Imports System.Globalization
 
 '   ╔═══════════════════════════════════════════════════════════════════════════╗
 '   ║                        Copyright © 2014 nicoco007                         ║
@@ -158,45 +160,6 @@ Public Class BackupDialog
             Exit Sub
         End If
 
-        If DateAndTimeRadioButton.IsChecked Then
-            Select Case BackupTypeTabControl.SelectedIndex
-                Case 0
-                    Main.BackupInfo(0) = CType(SavesListView.SelectedItem, SavesListViewItem).Name & " " & GetBackupTimeStamp()
-                Case 1
-                    If My.Settings.Launcher = Game.Launcher.Minecraft Then
-                        Main.BackupInfo(0) = "Version " & VersionsListView.SelectedItem & " " & GetBackupTimeStamp()
-                    Else
-                        Main.BackupInfo(0) = VersionsListView.SelectedItem & " " & GetBackupTimeStamp()
-                    End If
-                Case 2
-                    Select Case My.Settings.Launcher
-                        Case Game.Launcher.Minecraft
-                            Main.BackupInfo(0) = "Minecraft " & GetBackupTimeStamp()
-                        Case Game.Launcher.Technic
-                            Main.BackupInfo(0) = "Technic " & GetBackupTimeStamp()
-                        Case Game.Launcher.FeedTheBeast
-                            Main.BackupInfo(0) = "Feed the Beast " & GetBackupTimeStamp()
-                        Case Game.Launcher.ATLauncher
-                            Main.BackupInfo(0) = "ATLauncher " & GetBackupTimeStamp()
-                    End Select
-            End Select
-        ElseIf Not CustomNameTextBox.Text = "" Then
-            If Regex.IsMatch(CustomNameTextBox.Text, "[\/:*?""<>|]") Then
-                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.InvalidCharacters"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
-                Exit Sub
-            End If
-            If BackupTypeTabControl.SelectedIndex = 0 Then
-                Main.BackupInfo(0) = CustomNameTextBox.Text.Replace("!foldername", CType(SavesListView.SelectedItem, SavesListViewItem).Name).Replace("!time", GetBackupTimeStamp()).Replace("!hh", DateTime.Now.Hour.ToString("00")).Replace("!mm", DateTime.Now.Minute.ToString("00")).Replace("!ss", DateTime.Now.Second.ToString("00")).Replace("!dd", DateTime.Now.Day.ToString("00")).Replace("!MM", DateTime.Now.Month.ToString("00")).Replace("!yyyy", DateTime.Now.Year.ToString("0000"))
-            Else
-                Main.BackupInfo(0) = CustomNameTextBox.Text.Replace("!foldername", VersionsListView.SelectedItem).Replace("!time", GetBackupTimeStamp()).Replace("!hh", DateTime.Now.Hour.ToString("00")).Replace("!mm", DateTime.Now.Minute.ToString("00")).Replace("!ss", DateTime.Now.Second.ToString("00")).Replace("!dd", DateTime.Now.Day.ToString("00")).Replace("!MM", DateTime.Now.Month.ToString("00")).Replace("!yyyy", DateTime.Now.Year.ToString("0000"))
-            End If
-        Else
-            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.EnterValidName"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
-            Exit Sub
-        End If
-
-        Main.BackupInfo(1) = DescriptionTextBox.Text
-
         Select Case BackupTypeTabControl.SelectedIndex
             Case 0
                 Select Case My.Settings.Launcher
@@ -226,6 +189,50 @@ Public Class BackupDialog
                 Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation
                 Main.BackupInfo(3) = "everything"
         End Select
+
+        If DateAndTimeRadioButton.IsChecked Then
+            Select Case BackupTypeTabControl.SelectedIndex
+                Case 0
+                    Main.BackupInfo(0) = CType(SavesListView.SelectedItem, SavesListViewItem).Name & " " & GetBackupTimeStamp()
+                Case 1
+                    If My.Settings.Launcher = Game.Launcher.Minecraft Then
+                        Main.BackupInfo(0) = "Version " & VersionsListView.SelectedItem & " " & GetBackupTimeStamp()
+                    Else
+                        Main.BackupInfo(0) = VersionsListView.SelectedItem & " " & GetBackupTimeStamp()
+                    End If
+                Case 2
+                    Select Case My.Settings.Launcher
+                        Case Game.Launcher.Minecraft
+                            Main.BackupInfo(0) = "Minecraft " & GetBackupTimeStamp()
+                        Case Game.Launcher.Technic
+                            Main.BackupInfo(0) = "Technic " & GetBackupTimeStamp()
+                        Case Game.Launcher.FeedTheBeast
+                            Main.BackupInfo(0) = "Feed the Beast " & GetBackupTimeStamp()
+                        Case Game.Launcher.ATLauncher
+                            Main.BackupInfo(0) = "ATLauncher " & GetBackupTimeStamp()
+                    End Select
+            End Select
+        ElseIf Not CustomNameTextBox.Text = "" Then
+            Dim BackupName As String = CustomNameTextBox.Text
+            If Regex.Matches(BackupName, "%timestamp:.*%").Count > 0 Then
+                For Each Match As RegularExpressions.Match In Regex.Matches(BackupName, "%timestamp:.*%")
+                    Dim Format = Match.ToString.Split(":")(1)
+                    Format = Format.Remove(Format.IndexOf("%"))
+                    BackupName = BackupName.Replace(Match.ToString, DateTime.Now.ToString(Format, CultureInfo.InvariantCulture))
+                Next
+            End If
+            BackupName = BackupName.Replace("%worldname%", New DirectoryInfo(Main.BackupInfo(2)).Name)
+            If Regex.IsMatch(BackupName, "[\/:*?""<>|]") Then
+                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.InvalidCharacters"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
+                Exit Sub
+            End If
+            Main.BackupInfo(0) = BackupName
+        Else
+            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.EnterValidName"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            Exit Sub
+        End If
+
+        Main.BackupInfo(1) = DescriptionTextBox.Text
 
         Main.BackupInfo(4) = IIf(GroupsComboBox.SelectedIndex = 0, Nothing, GroupsComboBox.SelectedItem)
         Main.BackupInfo(5) = My.Settings.Launcher
