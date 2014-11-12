@@ -1300,7 +1300,7 @@ Partial Class MainWindow
         StatusLabel.Content = MCBackup.Language.Dictionary("Status.DeleteComplete")
         ProgressBar.IsIndeterminate = False
         If Environment.OSVersion.Version.Major > 5 Then
-            TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress)
+            TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal)
         End If
     End Sub
 #End Region
