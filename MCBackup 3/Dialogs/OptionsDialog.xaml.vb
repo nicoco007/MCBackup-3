@@ -21,6 +21,10 @@ Imports MahApps.Metro
 Imports System.Windows.Interop
 Imports System.Windows.Threading
 Imports System.IO
+Imports System.Text.RegularExpressions
+Imports System.Text
+Imports System.Globalization
+Imports System.Windows.Media.Animation
 
 Partial Public Class Options
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
@@ -105,6 +109,11 @@ Partial Public Class Options
 
         ListViewTextColorIntensitySlider.Value = My.Settings.ListViewTextColorIntensity
 
+        DefaultBackupNameTextBox.Text = My.Settings.DefaultBackupName
+        DefaultAutoBackupNameTextBox.Text = My.Settings.DefaultAutoBackupName
+        DefaultBackupNameTextBox_TextChanged(Nothing, Nothing)
+        DefaultAutoBackupNameTextBox_TextChanged(Nothing, Nothing)
+
         ReloadBackupGroups()
     End Sub
 
@@ -188,17 +197,19 @@ Partial Public Class Options
         Else
             My.Settings.SaveCloseState = False
         End If
-        Log.Print("Saving settings...")
+        'Log.Print("Saving settings...")
         My.Settings.Save()
         Main.RefreshBackupsList()
         ReloadBackupGroups()
     End Sub
 
-    Private Sub LanguagesListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles LanguagesComboBox.SelectionChanged
+    Private Sub LanguagesComboBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles LanguagesComboBox.SelectionChanged
         If Me.IsLoaded Then
             MCBackup.Language.Load(LanguagesComboBox.SelectedItem.Tag)
             My.Settings.Language = IO.Path.GetFileNameWithoutExtension(LanguagesComboBox.SelectedItem.Tag)
             LoadLanguage()
+            DefaultBackupNameTextBox.Text = MCBackup.Language.Dictionary("Localization.DefaultBackupName")
+            DefaultAutoBackupNameTextBox.Text = MCBackup.Language.Dictionary("Localization.DefaultAutoBackupName")
             Main.LoadLanguage()
             ReloadBackupGroups()
             Main.AutoBackupWindow.LoadLanguage()
@@ -228,7 +239,7 @@ Partial Public Class Options
         AlwaysCloseCheckBox.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.AlwaysCloseCheckBox.Content")
         CloseToTrayRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.CloseToTrayRadioButton.Content")
         CloseCompletelyRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.CloseCompletelyRadioButton.Content")
-        AlwaysCloseNoteTextBlock.Text = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text")
+        'AlwaysCloseNoteTextBlock.Text = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text")
         SendAnonymousDataCheckBox.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.SendAnonymousDataCheckBox.Content")
 
         ' Appearance 
@@ -594,18 +605,6 @@ Partial Public Class Options
         My.Settings.ShowDeleteDialog = ShowDeleteConfirmationCheckBox.IsChecked
     End Sub
 
-    Private Sub Window_ContentRendered(sender As Object, e As EventArgs) Handles Window.ContentRendered
-        
-    End Sub
-
-    Private Sub TabControl_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles TabControl.SelectionChanged
-        
-    End Sub
-
-    Private Sub BackupsFolderLabel_Loaded(sender As Object, e As RoutedEventArgs) Handles BackupsFolderLabel.Loaded
-        
-    End Sub
-
     Private Sub Grid_Loaded(sender As Object, e As RoutedEventArgs)
         Dim Width As Integer = 414
         If 514 - BaseFolderLabel.ActualWidth < Width Then
@@ -621,5 +620,101 @@ Partial Public Class Options
         BaseFolderTextBox.Width = Width
         SavesFolderTextBox.Width = Width
         BackupsFolderTextBox.Width = Width
+    End Sub
+
+    Private Sub TextBlock_MouseDown(sender As Object, e As MouseButtonEventArgs)
+        TryCast(sender, TextBlock).Foreground = New SolidColorBrush(Color.FromArgb(255, 255, 0, 0))
+    End Sub
+
+    Private Sub TextBlock_MouseUp(sender As Object, e As MouseButtonEventArgs)
+        TryCast(sender, TextBlock).Foreground = New SolidColorBrush(Color.FromArgb(255, 0, 0, 255))
+        If MetroMessageBox.Show("This action will open a window in your default web browser.", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.OKCancel, MessageBoxImage.Information) = MessageBoxResult.OK Then
+            Process.Start("http://www.nicoco007.com/en/minecraft/applications/mcbackup-3/documentation#placeholders")
+        End If
+    End Sub
+
+    Private Sub TextBlock_MouseLeave(sender As Object, e As MouseEventArgs)
+        TryCast(sender, TextBlock).Foreground = New SolidColorBrush(Color.FromArgb(255, 0, 0, 255))
+    End Sub
+
+    Private Sub DefaultBackupNameTextBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles DefaultBackupNameTextBox.TextChanged
+        If Me.IsLoaded Then
+            Dim BackupName As String = DefaultBackupNameTextBox.Text
+            If Regex.Matches(BackupName, "%timestamp:.+?%").Count > 0 Then
+                For Each Match As RegularExpressions.Match In Regex.Matches(BackupName, "%timestamp:.+?%")
+                    Dim Format = Match.Value.Substring(Match.Value.IndexOf(":") + 1)
+                    Format = Format.Remove(Format.IndexOf("%"))
+                    Try
+                        BackupName = BackupName.Replace(Match.ToString, DateTime.Now.ToString(Format, IIf(IgnoreSystemLocalizationCheckBox.IsChecked, CultureInfo.InvariantCulture, CultureInfo.CurrentCulture)))
+                    Catch
+                    End Try
+                Next
+            End If
+            BackupName = BackupName.Replace("%worldname%", "World_Name")
+            If Regex.IsMatch(BackupName, "[\/:*?""<>|]") Then
+                DefaultBackupNameTextBox.Background = New SolidColorBrush(Color.FromArgb(100, 255, 0, 0))
+                Exit Sub
+            Else
+                DefaultBackupNameTextBox.Background = New SolidColorBrush(Colors.White)
+            End If
+            BackupNameOutputLabel.Text = MCBackup.Language.Dictionary("Localization.Output") & BackupName
+        End If
+    End Sub
+
+    Private Sub DefaultAutoBackupNameTextBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles DefaultAutoBackupNameTextBox.TextChanged
+        If Me.IsLoaded Then
+            Dim AutoBackupName As String = DefaultAutoBackupNameTextBox.Text
+            If Regex.Matches(AutoBackupName, "%timestamp:.+?%").Count > 0 Then
+                For Each Match As RegularExpressions.Match In Regex.Matches(AutoBackupName, "%timestamp:.+?%")
+                    Dim Format = Match.Value.Substring(Match.Value.IndexOf(":") + 1)
+                    Format = Format.Remove(Format.IndexOf("%"))
+                    Try
+                        AutoBackupName = AutoBackupName.Replace(Match.ToString, DateTime.Now.ToString(Format, IIf(IgnoreSystemLocalizationCheckBox.IsChecked, CultureInfo.InvariantCulture, CultureInfo.CurrentCulture)))
+                    Catch
+                    End Try
+                Next
+            End If
+            AutoBackupName = AutoBackupName.Replace("%worldname%", "World_Name")
+            If Regex.IsMatch(AutoBackupName, "[\/:*?""<>|]") Then
+                DefaultAutoBackupNameTextBox.Background = New SolidColorBrush(Color.FromArgb(100, 255, 0, 0))
+                Exit Sub
+            Else
+                DefaultAutoBackupNameTextBox.Background = New SolidColorBrush(Colors.White)
+            End If
+            AutoBackupNameOutputLabel.Text = MCBackup.Language.Dictionary("Localization.Output") & AutoBackupName
+        End If
+    End Sub
+
+    Private Sub IgnoreSystemLocalizationCheckBox_Click(sender As Object, e As RoutedEventArgs) Handles IgnoreSystemLocalizationCheckBox.Click
+        My.Settings.IgnoreSystemLocalizationWhenFormatting = IgnoreSystemLocalizationCheckBox.IsChecked
+        DefaultBackupNameTextBox_TextChanged(sender, Nothing)
+        DefaultAutoBackupNameTextBox_TextChanged(sender, Nothing)
+    End Sub
+
+    Private Sub TabControl_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles TabControl.SelectionChanged
+        If Not Me.IsLoaded() Then
+            Me.Height = 120 + GeneralGrid.Height
+        End If
+
+        Dim Animation As New DoubleAnimation
+        Animation.From = Me.Height
+        Select Case TabControl.SelectedIndex
+            Case 0
+                Animation.To = 120 + GeneralGrid.Height
+            Case 1
+                Animation.To = 120 + AppearanceGrid.Height
+            Case 2
+                Animation.To = 120 + FoldersGrid.Height
+            Case 3
+                Animation.To = 120 + GroupsGrid.Height
+            Case 4
+                Animation.To = 120 + AdvancedGrid.Height
+            Case Else
+                Animation.To = 120 + GeneralGrid.Height
+        End Select
+
+        Animation.Duration = New Duration(TimeSpan.FromMilliseconds(250))
+
+        Me.BeginAnimation(FrameworkElement.HeightProperty, Animation)
     End Sub
 End Class

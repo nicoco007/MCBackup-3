@@ -24,8 +24,8 @@
     <Grid>
         <TabControl Margin="0,0,0,42" x:Name="TabControl">
             <TabItem x:Name="GeneralTabItem" Header="General">
-                <Grid>
-                    <GroupBox x:Name="LanguageGroupBox" Header="Language" Margin="335,162,0,0" Canvas.Left="10" Canvas.Top="146" Height="86" HorizontalAlignment="Left" Width="320" VerticalAlignment="Top">
+                <Grid x:Name="GeneralGrid" Height="217" VerticalAlignment="Top">
+                    <GroupBox x:Name="LanguageGroupBox" Header="Language" Margin="335,126,0,0" Canvas.Left="10" Canvas.Top="146" Height="86" HorizontalAlignment="Left" Width="323" VerticalAlignment="Top">
                         <Grid>
                             <ComboBox x:Name="LanguagesComboBox" Margin="10,10,10,0" Height="26" VerticalAlignment="Top">
                                 <ComboBox.ItemTemplate>
@@ -36,16 +36,15 @@
                             </ComboBox>
                         </Grid>
                     </GroupBox>
-                    <GroupBox x:Name="CloseToTrayOptionsGroupBox" Header="Close to tray options" Margin="335,10,0,0" Canvas.Left="337" Canvas.Top="10" Height="147" HorizontalAlignment="Left" Width="323" VerticalAlignment="Top">
+                    <GroupBox x:Name="CloseToTrayOptionsGroupBox" Header="Close to tray options" Margin="335,10,0,0" Canvas.Left="337" Canvas.Top="10" Height="111" HorizontalAlignment="Left" Width="323" VerticalAlignment="Top">
                         <Grid Height="Auto">
                             <CheckBox x:Name="AlwaysCloseCheckBox" Content="Always..." Margin="5,4,0,0" Height="18" VerticalAlignment="Top" HorizontalAlignment="Left" Width="293"/>
                             <RadioButton x:Name="CloseCompletelyRadioButton" Content="Close completely" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,50,0,0" Width="293"/>
                             <RadioButton x:Name="CloseToTrayRadioButton" Content="Close to tray" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,27,0,0" Width="293"/>
-                            <TextBlock x:Name="AlwaysCloseNoteTextBlock" Text="Note: You can close MCBackup from the tray by right-clicking on it's icon." HorizontalAlignment="Left" VerticalAlignment="Top" Width="288" TextWrapping="WrapWithOverflow" Height="Auto" Margin="10,73,0,0"/>
 
                         </Grid>
                     </GroupBox>
-                    <GroupBox x:Name="GeneralOptionsGroupBox" Header="General Options" Margin="10,10,0,0" Canvas.Left="10" Canvas.Top="10" Height="159" HorizontalAlignment="Left" Width="320" VerticalAlignment="Top">
+                    <GroupBox x:Name="GeneralOptionsGroupBox" Header="General Options" Margin="10,10,0,0" Canvas.Left="10" Canvas.Top="10" Height="202" HorizontalAlignment="Left" Width="320" VerticalAlignment="Top">
                         <Grid>
                             <CheckBox x:Name="ShowBalloonTipsCheckBox" Content="Show balloon tips" HorizontalAlignment="Left" VerticalAlignment="Top" ToolTipService.ShowOnDisabled="True" IsChecked="True" Margin="0,2,0,0" Width="308"/>
                             <CheckBox x:Name="ShowDeleteConfirmationCheckBox" Content="Show delete confirmation" HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="True" Margin="0,25,0,0" Width="308"/>
@@ -57,7 +56,7 @@
                 </Grid>
             </TabItem>
             <TabItem x:Name="AppearanceTabItem" Header="Appearance">
-                <Grid>
+                <Grid x:Name="AppearanceGrid" Height="313" VerticalAlignment="Top">
                     <GroupBox x:Name="StatusTextColorGroupBox" Header="Status Text Color" HorizontalAlignment="Left" Margin="10,193,0,0" VerticalAlignment="Top" Canvas.Left="10" Canvas.Top="193" Height="115" Width="320">
                         <Grid>
                             <Rectangle x:Name="RedRect" Width="192" HorizontalAlignment="Left" Margin="6,4,0,0" Height="14" VerticalAlignment="Top">
@@ -129,7 +128,7 @@
                 </Grid>
             </TabItem>
             <TabItem x:Name="FoldersTabItem" Header="Folders">
-                <Grid Loaded="Grid_Loaded">
+                <Grid x:Name="FoldersGrid" Loaded="Grid_Loaded" Height="285" VerticalAlignment="Top">
                     <GroupBox x:Name="InstallTypeGroupBox" Header="Installation type" Margin="10,10,0,0" VerticalAlignment="Top" Height="125" HorizontalAlignment="Left" Width="646">
                         <Grid>
                             <RadioButton x:Name="MinecraftInstallationRadioButton" Content="Minecraft" Tag="0" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Style="{StaticResource MetroToggleButton}" Width="150" HorizontalContentAlignment="Center" Checked="InstallationType_SelectionChanged"/>
@@ -154,7 +153,7 @@
                 </Grid>
             </TabItem>
             <TabItem x:Name="GroupsTabItem" Header="Groups">
-                <Grid>
+                <Grid x:Name="GroupsGrid" Height="330" VerticalAlignment="Top">
                     <ListBox x:Name="BackupGroupsListBox" HorizontalAlignment="Left" Height="310" VerticalAlignment="Top" Width="194" BorderThickness="1" Margin="113,10,0,0" BorderBrush="#FFC8C8C8"/>
                     <GroupBox x:Name="AddNewGroupGroupBox" Header="Add new group" HorizontalAlignment="Left" Margin="312,10,0,0" VerticalAlignment="Top" Height="65" Width="237">
                         <Grid>
@@ -184,9 +183,25 @@
                     </GroupBox>
                 </Grid>
             </TabItem>
+            <TabItem x:Name="AdvancedTabItem" Header="Advanced">
+                <Grid x:Name="AdvancedGrid" Height="211" VerticalAlignment="Top">
+                    <GroupBox Header="Default Backup Names" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="197" Width="646">
+                        <Grid>
+                            <Label x:Name="DefaultBackupNameLabel" Content="Default Backup Name" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,1,0,0"/>
+                            <Label x:Name="DefaultAutoBackupNameLabel" Content="Default Automatic Backup Name" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,72,0,0"/>
+                            <TextBox x:Name="DefaultBackupNameTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="446" Margin="188,1,0,0"/>
+                            <TextBox x:Name="DefaultAutoBackupNameTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="446" Margin="188,72,0,0"/>
+                            <TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" Text="Placeholders" VerticalAlignment="Bottom" Foreground="Blue" TextDecorations="Underline" MouseDown="TextBlock_MouseDown" MouseUp="TextBlock_MouseUp" MouseLeave="TextBlock_MouseLeave"/>
+                            <TextBlock x:Name="BackupNameOutputLabel" Text="Label" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="188,32,0,0" Width="446"/>
+                            <TextBlock x:Name="AutoBackupNameOutputLabel" Text="Label" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="188,103,0,0" Width="446"/>
+                            <CheckBox x:Name="IgnoreSystemLocalizationCheckBox" Content="Ignore system localization when formatting" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,130,0,0"/>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
         </TabControl>
 
-        <Button x:Name="CloseButton" Content="Close" VerticalAlignment="Top" Margin="234,382,0,0" HorizontalAlignment="Left" Width="100"/>
-        <Button x:Name="ResetButton" Content="Reset" VerticalAlignment="Top" Margin="340,382,0,0" HorizontalAlignment="Left" Width="100"/>
+        <Button x:Name="CloseButton" Content="Close" VerticalAlignment="Bottom" Margin="234,0,0,8" HorizontalAlignment="Left" Width="100"/>
+        <Button x:Name="ResetButton" Content="Reset" VerticalAlignment="Bottom" Margin="340,0,0,8" HorizontalAlignment="Left" Width="100"/>
     </Grid>
 </Controls:MetroWindow>

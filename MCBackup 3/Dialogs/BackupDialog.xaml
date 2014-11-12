@@ -22,19 +22,21 @@
     Title="Backup" Height="500" Width="660" WindowStyle="ToolWindow" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" WindowTransitionsEnabled="False" BorderBrush="{DynamicResource AccentColorBrush}" BorderThickness="1">
 
     <Grid HorizontalAlignment="Left" Width="644" Height="462" VerticalAlignment="Top">
-        <GroupBox x:Name="BackupDetailsGroupBox" Header="Backup Details" HorizontalAlignment="Left" VerticalAlignment="Top" Height="187" Width="622" Margin="10,10,0,0">
-            <GroupBox x:Name="BackupNameGroupBox" Header="Backup Name" HorizontalAlignment="Left" VerticalAlignment="Top" Height="75" Width="602" Margin="4,3,0,0"/>
+        <GroupBox x:Name="BackupDetailsGroupBox" Header="Backup Details" HorizontalAlignment="Left" VerticalAlignment="Top" Height="202" Width="622" Margin="10,10,0,0">
+            <GroupBox x:Name="BackupNameGroupBox" Header="Backup Name" HorizontalAlignment="Left" VerticalAlignment="Top" Height="92" Width="602" Margin="4,3,0,0">
+                <TextBlock x:Name="CustomNameOutputTextBlock" Text="Output: " HorizontalAlignment="Left" Margin="237,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="347"/>
+            </GroupBox>
         </GroupBox>
         <RadioButton x:Name="CustomNameRadioButton" Content="Custom Name" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="157,88,0,0" GroupName="BackupName"/>
-        <RadioButton x:Name="DateAndTimeRadioButton" Content="Date and Time" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="32,88,0,0" IsChecked="True" GroupName="BackupName"/>
+        <RadioButton x:Name="DefaultNameRadioButton" Content="Default Name" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="32,88,0,0" IsChecked="True" GroupName="BackupName"/>
         <TextBox x:Name="CustomNameTextBox" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Margin="0,84,33,0" MaxLines="1" HorizontalAlignment="Right" Width="349"/>
-        <Label x:Name="ShortDescriptionLabel" Content="Short Description (Max. 128 characters, optional)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,132,0,0" Width="602"/>
-        <TextBox x:Name="DescriptionTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="602" Margin="20,158,0,0" MaxLines="1" MaxLength="128"/>
-        <Button x:Name="StartButton" Content="Start" VerticalAlignment="Top" Margin="237,359,257,0" Width="150" Height="40" FontSize="24" IsDefault="True"/>
-        <Button x:Name="CancelButton" Content="Cancel" VerticalAlignment="Top" Margin="274,412,0,0" HorizontalAlignment="Left" Width="75"/>
-        <ComboBox x:Name="GroupsComboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Margin="32,393,0,0"/>
-        <Label x:Name="GroupLabel" Content="Group:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="32,367,0,0" Width="150"/>
-        <TabControl x:Name="BackupTypeTabControl" Margin="10,202,12,108">
+        <Label x:Name="ShortDescriptionLabel" Content="Short Description (Max. 128 characters, optional)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,147,0,0" Width="602"/>
+        <TextBox x:Name="DescriptionTextBox" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="602" Margin="20,173,0,0" MaxLines="1" MaxLength="128"/>
+        <Button x:Name="StartButton" Content="Start" VerticalAlignment="Top" Margin="237,374,257,0" Width="150" Height="40" FontSize="24" IsDefault="True"/>
+        <Button x:Name="CancelButton" Content="Cancel" VerticalAlignment="Top" Margin="274,427,0,0" HorizontalAlignment="Left" Width="75"/>
+        <ComboBox x:Name="GroupsComboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Margin="32,408,0,0"/>
+        <Label x:Name="GroupLabel" Content="Group:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="32,382,0,0" Width="150"/>
+        <TabControl x:Name="BackupTypeTabControl" Margin="10,217,12,93">
             <TabControl.Resources>
                 <Style TargetType="TabItem">
                     <Setter Property="FocusVisualStyle"

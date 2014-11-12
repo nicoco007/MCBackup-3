@@ -162,7 +162,7 @@ Public Class Language
         Dictionary.Add("BackupWindow.Title", FindString("BackupWindow.Title"))
         Dictionary.Add("BackupWindow.BackupDetailsGroupBox.Header", FindString("BackupWindow.BackupDetailsGroupBox.Header"))
         Dictionary.Add("BackupWindow.BackupNameGroupBox.Header", FindString("BackupWindow.BackupNameGroupBox.Header"))
-        Dictionary.Add("BackupWindow.DateAndTimeRadioButton.Content", FindString("BackupWindow.DateAndTimeRadioButton.Content"))
+        Dictionary.Add("BackupWindow.DefaultNameRadioButton.Content", FindString("BackupWindow.DefaultNameRadioButton.Content"))
         Dictionary.Add("BackupWindow.CustomNameRadioButton.Content", FindString("BackupWindow.CustomNameRadioButton.Content"))
         Dictionary.Add("BackupWindow.ShortDescriptionLabel.Content", FindString("BackupWindow.ShortDescriptionLabel.Content"))
         Dictionary.Add("BackupWindow.ListBox.Columns(0).Header", FindString("BackupWindow.ListBox.Columns(0).Header"))
@@ -329,6 +329,9 @@ Public Class Language
         Dictionary.Add("DeleteDialog.DoNotAskAgain.Text", FindString("DeleteDialog.DoNotAskAgain.Text"))
 
         Dictionary.Add("Localization.DefaultDateFormat", FindString("Localization.DefaultDateFormat"))
+        Dictionary.Add("Localization.DefaultBackupName", FindString("Localization.DefaultBackupName"))
+        Dictionary.Add("Localization.DefaultAutoBackupName", FindString("Localization.DefaultAutoBackupName"))
+        Dictionary.Add("Localization.Output", FindString("Localization.Output"))
 
         If ErrorOccured Then
             Log.Print("Language loaded with errors. Please try solving the error(s) above.", Log.Level.Warning)

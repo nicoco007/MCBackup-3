@@ -32,7 +32,7 @@ Public Class BackupDialog
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
         CustomNameTextBox.Text = ""
         DescriptionTextBox.Text = ""
-        DateAndTimeRadioButton.IsChecked = True
+        DefaultNameRadioButton.IsChecked = True
 
         SavesListView.Items.Clear()
         VersionsListView.Items.Clear()
@@ -143,7 +143,7 @@ Public Class BackupDialog
         GroupsComboBox.SelectedIndex = 0
     End Sub
 
-    Private Sub Name_CheckChanged(sender As Object, e As RoutedEventArgs) Handles DateAndTimeRadioButton.Checked, CustomNameRadioButton.Checked
+    Private Sub Name_CheckChanged(sender As Object, e As RoutedEventArgs) Handles DefaultNameRadioButton.Checked, CustomNameRadioButton.Checked
         If Me.IsLoaded Then
             CustomNameTextBox.IsEnabled = CustomNameRadioButton.IsChecked
         End If
@@ -190,47 +190,45 @@ Public Class BackupDialog
                 Main.BackupInfo(3) = "everything"
         End Select
 
-        If DateAndTimeRadioButton.IsChecked Then
-            Select Case BackupTypeTabControl.SelectedIndex
-                Case 0
-                    Main.BackupInfo(0) = CType(SavesListView.SelectedItem, SavesListViewItem).Name & " " & GetBackupTimeStamp()
-                Case 1
-                    If My.Settings.Launcher = Game.Launcher.Minecraft Then
-                        Main.BackupInfo(0) = "Version " & VersionsListView.SelectedItem & " " & GetBackupTimeStamp()
-                    Else
-                        Main.BackupInfo(0) = VersionsListView.SelectedItem & " " & GetBackupTimeStamp()
-                    End If
-                Case 2
-                    Select Case My.Settings.Launcher
-                        Case Game.Launcher.Minecraft
-                            Main.BackupInfo(0) = "Minecraft " & GetBackupTimeStamp()
-                        Case Game.Launcher.Technic
-                            Main.BackupInfo(0) = "Technic " & GetBackupTimeStamp()
-                        Case Game.Launcher.FeedTheBeast
-                            Main.BackupInfo(0) = "Feed the Beast " & GetBackupTimeStamp()
-                        Case Game.Launcher.ATLauncher
-                            Main.BackupInfo(0) = "ATLauncher " & GetBackupTimeStamp()
-                    End Select
-            End Select
-        ElseIf Not CustomNameTextBox.Text = "" Then
-            Dim BackupName As String = CustomNameTextBox.Text
-            If Regex.Matches(BackupName, "%timestamp:.*%").Count > 0 Then
-                For Each Match As RegularExpressions.Match In Regex.Matches(BackupName, "%timestamp:.*%")
-                    Dim Format = Match.ToString.Split(":")(1)
-                    Format = Format.Remove(Format.IndexOf("%"))
-                    BackupName = BackupName.Replace(Match.ToString, DateTime.Now.ToString(Format, CultureInfo.InvariantCulture))
-                Next
-            End If
-            BackupName = BackupName.Replace("%worldname%", New DirectoryInfo(Main.BackupInfo(2)).Name)
-            If Regex.IsMatch(BackupName, "[\/:*?""<>|]") Then
-                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.InvalidCharacters"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
-                Exit Sub
-            End If
-            Main.BackupInfo(0) = BackupName
+        Dim OriginalFolderName As String
+
+        Select Case BackupTypeTabControl.SelectedIndex
+            Case 0
+                OriginalFolderName = DirectCast(SavesListView.SelectedItem, SavesListViewItem).Name
+            Case 1
+                OriginalFolderName = VersionsListView.SelectedItem
+            Case 2
+                OriginalFolderName = My.Settings.Launcher
+            Case Else
+                OriginalFolderName = "Unknown"
+        End Select
+
+        Dim BackupName As String
+
+        If DefaultNameRadioButton.IsChecked Then
+            BackupName = My.Settings.DefaultBackupName
         Else
-            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.EnterValidName"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            BackupName = CustomNameTextBox.Text
+        End If
+
+        If Regex.Matches(BackupName, "%timestamp:.+?%").Count > 0 Then
+            For Each Match As RegularExpressions.Match In Regex.Matches(BackupName, "%timestamp:.+?%")
+                Dim Format = Match.Value.Substring(Match.Value.IndexOf(":") + 1)
+                Format = Format.Remove(Format.IndexOf("%"))
+                Try
+                    BackupName = BackupName.Replace(Match.ToString, DateTime.Now.ToString(Format, IIf(My.Settings.IgnoreSystemLocalizationWhenFormatting, CultureInfo.InvariantCulture, CultureInfo.CurrentCulture)))
+                Catch
+                End Try
+            Next
+        End If
+        BackupName = BackupName.Replace("%worldname%", OriginalFolderName)
+
+        If Regex.IsMatch(BackupName, "[\/:*?""<>|]") Then
+            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.InvalidCharacters"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
             Exit Sub
         End If
+
+        Main.BackupInfo(0) = BackupName
 
         Main.BackupInfo(1) = DescriptionTextBox.Text
 
@@ -253,7 +251,7 @@ Public Class BackupDialog
         Me.Title = MCBackup.Language.Dictionary("BackupWindow.Title")
         BackupDetailsGroupBox.Header = MCBackup.Language.Dictionary("BackupWindow.BackupDetailsGroupBox.Header")
         BackupNameGroupBox.Header = MCBackup.Language.Dictionary("BackupWindow.BackupNameGroupBox.Header")
-        DateAndTimeRadioButton.Content = MCBackup.Language.Dictionary("BackupWindow.DateAndTimeRadioButton.Content")
+        DefaultNameRadioButton.Content = MCBackup.Language.Dictionary("BackupWindow.DefaultNameRadioButton.Content")
         CustomNameRadioButton.Content = MCBackup.Language.Dictionary("BackupWindow.CustomNameRadioButton.Content")
         ShortDescriptionLabel.Content = MCBackup.Language.Dictionary("BackupWindow.ShortDescriptionLabel.Content")
         SavesListViewGridView.Columns(0).Header = MCBackup.Language.Dictionary("BackupWindow.ListBox.Columns(0).Header")
@@ -295,6 +293,29 @@ Public Class BackupDialog
         If SavesListView.Items.Count = 0 Then
             MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.NoSavesWarning"), Game.LauncherToString(My.Settings.Launcher)), MCBackup.Language.Dictionary("Message.Caption.Warning"), MessageBoxButton.OK, MessageBoxImage.Warning)
         End If
+    End Sub
+
+    Private Sub CustomNameTextBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles CustomNameTextBox.TextChanged
+        sender = DirectCast(sender, TextBox)
+        Dim BackupName As String = sender.Text
+        If Regex.Matches(BackupName, "%timestamp:.+?%").Count > 0 Then
+            For Each Match As RegularExpressions.Match In Regex.Matches(BackupName, "%timestamp:.+?%")
+                Dim Format = Match.Value.Substring(Match.Value.IndexOf(":") + 1)
+                Format = Format.Remove(Format.IndexOf("%"))
+                Try
+                    BackupName = BackupName.Replace(Match.ToString, DateTime.Now.ToString(Format, IIf(My.Settings.IgnoreSystemLocalizationWhenFormatting, CultureInfo.InvariantCulture, CultureInfo.CurrentCulture)))
+                Catch
+                End Try
+            Next
+        End If
+        BackupName = BackupName.Replace("%worldname%", "World_Name")
+        If Regex.IsMatch(BackupName, "[\/:*?""<>|]") Then
+            sender.Background = New SolidColorBrush(Color.FromArgb(100, 255, 0, 0))
+            Exit Sub
+        Else
+            sender.Background = New SolidColorBrush(Colors.White)
+        End If
+        CustomNameOutputTextBlock.Text = BackupName
     End Sub
 End Class
 

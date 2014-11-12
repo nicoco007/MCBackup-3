@@ -112,10 +112,10 @@ Partial Class MainWindow
         Try
             If String.IsNullOrEmpty(My.Settings.Language) Then
                 My.Settings.Language = DefaultLanguage
-                MCBackup.Language.Load(My.Settings.Language & ".lang")
-            Else
-                MCBackup.Language.Load(My.Settings.Language & ".lang")
             End If
+            MCBackup.Language.Load(My.Settings.Language & ".lang")
+            If String.IsNullOrEmpty(My.Settings.DefaultBackupName) Then My.Settings.DefaultBackupName = MCBackup.Language.Dictionary("Localization.DefaultBackupName")
+            If String.IsNullOrEmpty(My.Settings.DefaultAutoBackupName) Then My.Settings.DefaultAutoBackupName = MCBackup.Language.Dictionary("Localization.DefaultAutoBackupName")
         Catch ex As Exception
             ErrorReportDialog.Show("Error: Could not load language file (" & My.Settings.Language & ")! MCBackup will now exit.", ex)
             My.Settings.Language = DefaultLanguage
@@ -1517,12 +1517,8 @@ Partial Class MainWindow
         Me.Close()
     End Sub
 
-    Private Sub NotifyIcon_Click(sender As Object, e As EventArgs) Handles NotifyIcon.Click
-        If NotificationIconWindow.IsVisible Then
-            NotificationIconWindow.Hide()
-        Else
-            NotificationIconWindow.Show()
-        End If
+    Private Sub NotifyIcon_Click(sender As Object, e As EventArgs) Handles NotifyIcon.MouseMove
+
     End Sub
 
     Private Sub NotifyIcon_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon.DoubleClick, NotifyIcon.BalloonTipClicked
