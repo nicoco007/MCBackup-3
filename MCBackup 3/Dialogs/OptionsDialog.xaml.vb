@@ -191,6 +191,9 @@ Partial Public Class Options
         My.Settings.ShowBalloonTips = ShowBalloonTipsCheckBox.IsChecked
         My.Settings.CreateThumbOnWorld = CreateThumbOnWorldCheckBox.IsChecked
 
+        My.Settings.DefaultBackupName = DefaultBackupNameTextBox.Text
+        My.Settings.DefaultAutoBackupName = DefaultAutoBackupNameTextBox.Text
+
         If AlwaysCloseCheckBox.IsChecked Then
             My.Settings.SaveCloseState = True
             My.Settings.CloseToTray = CloseToTrayRadioButton.IsChecked
