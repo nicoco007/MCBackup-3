@@ -169,8 +169,6 @@ Public Class Language
         Dictionary.Add("BackupWindow.StartButton.Content", FindString("BackupWindow.StartButton.Content"))
         Dictionary.Add("BackupWindow.CancelButton.Content", FindString("BackupWindow.CancelButton.Content"))
         Dictionary.Add("BackupWindow.GroupLabel.Text", FindString("BackupWindow.GroupLabel.Text"))
-        Dictionary.Add("BackupWindow.Groups.None", FindString("BackupWindow.Groups.None"))
-        Dictionary.Add("BackupWindow.Groups.EditGroups", FindString("BackupWindow.Groups.EditGroups"))
         Dictionary.Add("BackupWindow.BackupWorldTab.Header", FindString("BackupWindow.BackupWorldTab.Header"))
         Dictionary.Add("BackupWindow.SaveNameColumn.Header", FindString("BackupWindow.SaveNameColumn.Header"))
         Dictionary.Add("BackupWindow.SaveLocationColumn.Header", FindString("BackupWindow.SaveLocationColumn.Header"))
@@ -332,6 +330,10 @@ Public Class Language
         Dictionary.Add("Localization.DefaultBackupName", FindString("Localization.DefaultBackupName"))
         Dictionary.Add("Localization.DefaultAutoBackupName", FindString("Localization.DefaultAutoBackupName"))
         Dictionary.Add("Localization.Output", FindString("Localization.Output"))
+
+        Dictionary.Add("Groups.None", FindString("Groups.None"))
+        Dictionary.Add("Groups.AutoBackups", FindString("Groups.AutoBackups"))
+        Dictionary.Add("Groups.EditGroups", FindString("Groups.EditGroups"))
 
         If ErrorOccured Then
             Log.Print("Language loaded with errors. Please try solving the error(s) above.", Log.Level.Warning)

@@ -44,8 +44,6 @@ Public Class AutoBackupWindow
             WorldToBackUpLabel.Text = MCBackup.Language.Dictionary("AutoBackupWindow.WorldToBackUpLabel.Text")
             RefreshButton.Content = MCBackup.Language.Dictionary("AutoBackupWindow.RefreshButton.Content")
             SaveAsLabel.Content = MCBackup.Language.Dictionary("AutoBackupWindow.SaveAsLabel.Content")
-            'PrefixLabel.Content = MCBackup.Language.Dictionary("AutoBackupWindow.PrefixLabel.Content")
-            'SuffixLabel.Content = MCBackup.Language.Dictionary("AutoBackupWindow.SuffixLabel.Content")
             StartButton.Content = MCBackup.Language.Dictionary("AutoBackupWindow.StartButton.Content.Start")
             SaveNameColumn.Header = MCBackup.Language.Dictionary("BackupWindow.SaveNameColumn.Header")
             SaveLocationColumn.Header = MCBackup.Language.Dictionary("BackupWindow.SaveLocationColumn.Header")
@@ -100,20 +98,6 @@ Public Class AutoBackupWindow
             RefreshButton.IsEnabled = True
             BackupNameTextBox.IsEnabled = True
         Else
-            Dim BackupName As String = BackupNameTextBox.Text
-            If Regex.Matches(BackupName, "%timestamp:.*%").Count > 0 Then
-                For Each Match As RegularExpressions.Match In Regex.Matches(BackupName, "%timestamp:.*%")
-                    Dim Format = Match.ToString.Split(":")(1)
-                    Format = Format.Remove(Format.IndexOf("%"))
-                    BackupName = BackupName.Replace(Match.ToString, DateTime.Now.ToString(Format, CultureInfo.InvariantCulture))
-                Next
-            End If
-
-            If Regex.IsMatch(BackupName, "[\/:*?""<>|]") Then
-                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.BackupNameCannotContainIllegalCharacters"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
-                Exit Sub
-            End If
-
             MainWindow.NotificationIconWindow.AutoBackupLabel.Content = "Time until next automatic backup:"
             MainWindow.NotificationIconWindow.AutoBackupTimeLabel.Visibility = Windows.Visibility.Visible
 
@@ -147,15 +131,24 @@ Public Class AutoBackupWindow
 
         If Minutes = 0 And Seconds = 0 Then
             Log.Print("Starting automated backup...")
-            Dim BackupName As String = BackupNameTextBox.Text
-            If Regex.Matches(BackupName, "%timestamp:.*%").Count > 0 Then
-                For Each Match As RegularExpressions.Match In Regex.Matches(BackupName, "%timestamp:.*%")
-                    Dim Format = Match.ToString.Split(":")(1)
+            Dim BackupName As String = My.Settings.DefaultAutoBackupName
+            If Regex.Matches(BackupName, "%timestamp:.+?%").Count > 0 Then
+                For Each Match As RegularExpressions.Match In Regex.Matches(BackupName, "%timestamp:.+?%")
+                    Dim Format = Match.Value.Substring(Match.Value.IndexOf(":") + 1)
                     Format = Format.Remove(Format.IndexOf("%"))
-                    BackupName = BackupName.Replace(Match.ToString, DateTime.Now.ToString(Format, CultureInfo.InvariantCulture))
+                    Try
+                        BackupName = BackupName.Replace(Match.ToString, DateTime.Now.ToString(Format, IIf(My.Settings.IgnoreSystemLocalizationWhenFormatting, CultureInfo.InvariantCulture, CultureInfo.CurrentCulture)))
+                    Catch
+                    End Try
                 Next
             End If
-            BackupName = BackupName.Replace("%worldname%", SavesListView.SelectedItem.Name)
+            BackupName = BackupName.Replace("%worldname%", DirectCast(SavesListView.SelectedItem, SaveInfoListViewItem).Name)
+
+            If Regex.IsMatch(BackupName, "[\/:*?""<>|]") Then
+                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.InvalidCharacters"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
+                Exit Sub
+            End If
+
             MainWindow.BackupInfo(0) = BackupName
 
             MainWindow.BackupInfo(1) = String.Format(MCBackup.Language.Dictionary("AutoBackupWindow.BackupDescription"), SavesListView.SelectedItem.Name)
@@ -175,14 +168,14 @@ Public Class AutoBackupWindow
             MainWindow.BackupInfo(5) = SavesListView.SelectedItem.Launcher
             MainWindow.BackupInfo(6) = SavesListView.SelectedItem.Modpack
 
-            MainWindow.BackupInfo(4) = "Auto Backups"
+            MainWindow.BackupInfo(4) = MCBackup.Language.Dictionary("Groups.AutoBackups")
 
             MainWindow.StartBackup()
 
             If My.Settings.ShowBalloonTips Then MainWindow.NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.AutoBackup"), String.Format(MCBackup.Language.Dictionary("BalloonTip.AutoBackup"), CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name), Forms.ToolTipIcon.Info)
 
-            If Not My.Settings.BackupGroups.Contains("Auto Backups") Then
-                My.Settings.BackupGroups.Add("Auto Backups")
+            If Not My.Settings.BackupGroups.Contains(MCBackup.Language.Dictionary("Groups.AutoBackups")) Then
+                My.Settings.BackupGroups.Add(MCBackup.Language.Dictionary("Groups.AutoBackups"))
             End If
 
             Minutes = MinutesNumUpDown.Value

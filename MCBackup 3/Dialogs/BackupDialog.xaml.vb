@@ -134,11 +134,11 @@ Public Class BackupDialog
 
         CustomNameTextBox.Width = 449 - CustomNameRadioButton.ActualWidth
 
-        GroupsComboBox.Items.Add(MCBackup.Language.Dictionary("BackupWindow.Groups.None"))
+        GroupsComboBox.Items.Add(MCBackup.Language.Dictionary("Groups.None"))
         For Each Group As String In My.Settings.BackupGroups
             GroupsComboBox.Items.Add(Group)
         Next
-        GroupsComboBox.Items.Add(MCBackup.Language.Dictionary("BackupWindow.Groups.EditGroups"))
+        GroupsComboBox.Items.Add(MCBackup.Language.Dictionary("Groups.EditGroups"))
 
         GroupsComboBox.SelectedIndex = 0
     End Sub
