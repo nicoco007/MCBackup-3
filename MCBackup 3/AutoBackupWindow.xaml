@@ -23,7 +23,6 @@
 
     <Grid>
         <Label x:Name="TimeLabel" Content="00:00" Margin="10,0,15,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="64" Height="100" VerticalAlignment="Top"/>
-        <TextBox x:Name="BackupNameTextBox" HorizontalAlignment="Center" Height="23" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="200" Margin="72,0,72,90" HorizontalContentAlignment="Center"/>
         <Label x:Name="SaveAsLabel" Content="Backups will save as" VerticalAlignment="Bottom" Margin="42,0,43,118" HorizontalContentAlignment="Center"/>
         <Button x:Name="StartButton" Content="Start" Margin="82,0,81,24" FontSize="24" Height="40" VerticalAlignment="Bottom" IsEnabled="False"/>
         <ListView Name="SavesListView" Margin="10,196,10,178" BorderThickness="1">

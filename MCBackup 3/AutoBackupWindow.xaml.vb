@@ -96,7 +96,6 @@ Public Class AutoBackupWindow
             MinutesNumUpDown.IsEnabled = True
             SavesListView.IsEnabled = True
             RefreshButton.IsEnabled = True
-            BackupNameTextBox.IsEnabled = True
         Else
             MainWindow.NotificationIconWindow.AutoBackupLabel.Content = "Time until next automatic backup:"
             MainWindow.NotificationIconWindow.AutoBackupTimeLabel.Visibility = Windows.Visibility.Visible
@@ -112,7 +111,6 @@ Public Class AutoBackupWindow
             MinutesNumUpDown.IsEnabled = False
             SavesListView.IsEnabled = False
             RefreshButton.IsEnabled = False
-            BackupNameTextBox.IsEnabled = False
         End If
     End Sub
 
