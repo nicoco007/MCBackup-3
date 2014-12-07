@@ -187,11 +187,11 @@
                 <Grid x:Name="AdvancedGrid" Height="211" VerticalAlignment="Top">
                     <GroupBox Header="Default Backup Names" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="197" Width="646">
                         <Grid>
-                            <Label x:Name="DefaultBackupNameLabel" Content="Default Backup Name" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,1,0,0"/>
-                            <Label x:Name="DefaultAutoBackupNameLabel" Content="Default Automatic Backup Name" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,72,0,0"/>
+                            <Label x:Name="DefaultBackupNameLabel" Content="Nom de sauvegarde" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,1,0,0"/>
+                            <Label x:Name="DefaultAutoBackupNameLabel" Content="Nom de sauvegarde automatique" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,72,0,0"/>
                             <TextBox x:Name="DefaultBackupNameTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="446" Margin="188,1,0,0"/>
                             <TextBox x:Name="DefaultAutoBackupNameTextBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="446" Margin="188,72,0,0"/>
-                            <TextBlock HorizontalAlignment="Right" TextWrapping="Wrap" Text="Placeholders" VerticalAlignment="Bottom" Foreground="Blue" TextDecorations="Underline" MouseDown="TextBlock_MouseDown" MouseUp="TextBlock_MouseUp" MouseLeave="TextBlock_MouseLeave"/>
+                            <TextBlock x:Name="PlaceholdersLink" HorizontalAlignment="Right" TextWrapping="Wrap" Text="Placeholders" VerticalAlignment="Bottom" Foreground="Blue" TextDecorations="Underline" MouseDown="TextBlock_MouseDown" MouseUp="TextBlock_MouseUp" MouseLeave="TextBlock_MouseLeave"/>
                             <TextBlock x:Name="BackupNameOutputLabel" Text="Label" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="188,32,0,0" Width="446"/>
                             <TextBlock x:Name="AutoBackupNameOutputLabel" Text="Label" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="188,103,0,0" Width="446"/>
                             <CheckBox x:Name="IgnoreSystemLocalizationCheckBox" Content="Ignore system localization when formatting" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,130,0,0"/>

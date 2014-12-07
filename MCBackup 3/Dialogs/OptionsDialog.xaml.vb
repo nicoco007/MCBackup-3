@@ -229,6 +229,7 @@ Partial Public Class Options
         AppearanceTabItem.Header = MCBackup.Language.Dictionary("OptionsWindow.Tabs.Appearance")
         FoldersTabItem.Header = MCBackup.Language.Dictionary("OptionsWindow.Tabs.Folders")
         GroupsTabItem.Header = MCBackup.Language.Dictionary("OptionsWindow.Tabs.Groups")
+        AdvancedTabItem.Header = MCBackup.Language.Dictionary("OptionsWindow.Tabs.Advanced")
 
         ' General Tab
         GeneralOptionsGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.GeneralOptionsGroupBox.Header")
@@ -297,6 +298,12 @@ Partial Public Class Options
         RenameGroupButton.Content = MCBackup.Language.Dictionary("OptionsWindow.GroupsTab.RenameGroupButton.Text")
         MoveGroupUpButton.Content = New ViewboxEx(MCBackup.Language.Dictionary("OptionsWindow.GroupsTab.MoveGroupUpButton.Text"), Stretch.Uniform, StretchDirection.DownOnly)
         MoveGroupDownButton.Content = New ViewboxEx(MCBackup.Language.Dictionary("OptionsWindow.GroupsTab.MoveGroupDownButton.Text"), Stretch.Uniform, StretchDirection.DownOnly)
+
+        ' Advanced
+        DefaultBackupNameLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.AdvancedTab.DefaultBackupNameLabel.Text")
+        DefaultAutoBackupNameLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.AdvancedTab.DefaultAutoBackupNameLabel.Text")
+        IgnoreSystemLocalizationCheckBox.Content = MCBackup.Language.Dictionary("OptionsWindow.AdvancedTab.IgnoreSystemLocalizationCheckBox.Text")
+        PlaceholdersLink.Text = MCBackup.Language.Dictionary("OptionsWindow.AdvancedTab.PlaceholdersLink.Text")
     End Sub
 
     Private Sub ColorSlider_ValueChanged(sender As Object, e As RoutedPropertyChangedEventArgs(Of Double)) Handles RedColorSlider.ValueChanged, GreenColorSlider.ValueChanged, BlueColorSlider.ValueChanged
@@ -631,8 +638,8 @@ Partial Public Class Options
 
     Private Sub TextBlock_MouseUp(sender As Object, e As MouseButtonEventArgs)
         TryCast(sender, TextBlock).Foreground = New SolidColorBrush(Color.FromArgb(255, 0, 0, 255))
-        If MetroMessageBox.Show("This action will open a window in your default web browser.", MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.OKCancel, MessageBoxImage.Information) = MessageBoxResult.OK Then
-            Process.Start("http://www.nicoco007.com/en/minecraft/applications/mcbackup-3/documentation#placeholders")
+        If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.OpenWebpage"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.OKCancel, MessageBoxImage.Information) = MessageBoxResult.OK Then
+            Process.Start("http://go.nicoco007.com/fwlink/?LinkID=1002")
         End If
     End Sub
 
@@ -653,7 +660,7 @@ Partial Public Class Options
                     End Try
                 Next
             End If
-            BackupName = BackupName.Replace("%worldname%", "World_Name")
+            BackupName = BackupName.Replace("%worldname%", MCBackup.Language.Dictionary("Localization.DirectoryName"))
             If Regex.IsMatch(BackupName, "[\/:*?""<>|]") Then
                 DefaultBackupNameTextBox.Background = New SolidColorBrush(Color.FromArgb(100, 255, 0, 0))
                 Exit Sub
@@ -677,7 +684,7 @@ Partial Public Class Options
                     End Try
                 Next
             End If
-            AutoBackupName = AutoBackupName.Replace("%worldname%", "World_Name")
+            AutoBackupName = AutoBackupName.Replace("%worldname%", MCBackup.Language.Dictionary("Localization.DirectoryName"))
             If Regex.IsMatch(AutoBackupName, "[\/:*?""<>|]") Then
                 DefaultAutoBackupNameTextBox.Background = New SolidColorBrush(Color.FromArgb(100, 255, 0, 0))
                 Exit Sub

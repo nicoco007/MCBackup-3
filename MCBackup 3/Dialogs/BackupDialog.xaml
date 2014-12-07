@@ -24,7 +24,7 @@
     <Grid HorizontalAlignment="Left" Width="644" Height="462" VerticalAlignment="Top">
         <GroupBox x:Name="BackupDetailsGroupBox" Header="Backup Details" HorizontalAlignment="Left" VerticalAlignment="Top" Height="202" Width="622" Margin="10,10,0,0">
             <GroupBox x:Name="BackupNameGroupBox" Header="Backup Name" HorizontalAlignment="Left" VerticalAlignment="Top" Height="92" Width="602" Margin="4,3,0,0">
-                <TextBlock x:Name="CustomNameOutputTextBlock" Text="Output: " HorizontalAlignment="Left" Margin="237,36,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="347"/>
+                <TextBlock x:Name="CustomNameOutputTextBlock" Text="Output: " HorizontalAlignment="Right" Margin="0,36,6,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="347"/>
             </GroupBox>
         </GroupBox>
         <RadioButton x:Name="CustomNameRadioButton" Content="Custom Name" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="157,88,0,0" GroupName="BackupName"/>

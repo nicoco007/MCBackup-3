@@ -143,6 +143,7 @@ Public Class Language
         Dictionary.Add("Message.CancelBackup", FindString("Message.CancelBackup"))
         Dictionary.Add("Message.CancelRestore", FindString("Message.CancelRestore"))
         Dictionary.Add("Message.CancelDelete", FindString("Message.CancelDelete"))
+        Dictionary.Add("Message.OpenWebpage", FindString("Message.OpenWebpage"))
 
         ' = Balloon Tips =
         Dictionary.Add("BalloonTip.Title.BackupError", FindString("BalloonTip.Title.BackupError"))
@@ -251,10 +252,16 @@ Public Class Language
         Dictionary.Add("OptionsWindow.GroupsTab.MoveGroupUpButton.Text", FindString("OptionsWindow.GroupsTab.MoveGroupUpButton.Text"))
         Dictionary.Add("OptionsWindow.GroupsTab.MoveGroupDownButton.Text", FindString("OptionsWindow.GroupsTab.MoveGroupDownButton.Text"))
 
+        Dictionary.Add("OptionsWindow.AdvancedTab.DefaultBackupNameLabel.Text", FindString("OptionsWindow.AdvancedTab.DefaultBackupNameLabel.Text"))
+        Dictionary.Add("OptionsWindow.AdvancedTab.DefaultAutoBackupNameLabel.Text", FindString("OptionsWindow.AdvancedTab.DefaultAutoBackupNameLabel.Text"))
+        Dictionary.Add("OptionsWindow.AdvancedTab.IgnoreSystemLocalizationCheckBox.Text", FindString("OptionsWindow.AdvancedTab.IgnoreSystemLocalizationCheckBox.Text"))
+        Dictionary.Add("OptionsWindow.AdvancedTab.PlaceholdersLink.Text", FindString("OptionsWindow.AdvancedTab.PlaceholdersLink.Text"))
+
         Dictionary.Add("OptionsWindow.Tabs.General", FindString("OptionsWindow.Tabs.General"))
         Dictionary.Add("OptionsWindow.Tabs.Appearance", FindString("OptionsWindow.Tabs.Appearance"))
         Dictionary.Add("OptionsWindow.Tabs.Folders", FindString("OptionsWindow.Tabs.Folders"))
         Dictionary.Add("OptionsWindow.Tabs.Groups", FindString("OptionsWindow.Tabs.Groups"))
+        Dictionary.Add("OptionsWindow.Tabs.Advanced", FindString("OptionsWindow.Tabs.Advanced"))
 
         ' = Rename Window =
         Dictionary.Add("RenameWindow.Title", FindString("RenameWindow.Title"))
@@ -330,6 +337,7 @@ Public Class Language
         Dictionary.Add("Localization.DefaultBackupName", FindString("Localization.DefaultBackupName"))
         Dictionary.Add("Localization.DefaultAutoBackupName", FindString("Localization.DefaultAutoBackupName"))
         Dictionary.Add("Localization.Output", FindString("Localization.Output"))
+        Dictionary.Add("Localization.DirectoryName", FindString("Localization.DirectoryName"))
 
         Dictionary.Add("Groups.None", FindString("Groups.None"))
         Dictionary.Add("Groups.AutoBackups", FindString("Groups.AutoBackups"))

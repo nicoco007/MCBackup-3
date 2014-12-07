@@ -133,6 +133,7 @@ Public Class BackupDialog
         Name_CheckChanged(sender, e)
 
         CustomNameTextBox.Width = 449 - CustomNameRadioButton.ActualWidth
+        CustomNameOutputTextBlock.Width = 449 - CustomNameRadioButton.ActualWidth
 
         GroupsComboBox.Items.Add(MCBackup.Language.Dictionary("Groups.None"))
         For Each Group As String In My.Settings.BackupGroups
@@ -253,6 +254,7 @@ Public Class BackupDialog
         BackupNameGroupBox.Header = MCBackup.Language.Dictionary("BackupWindow.BackupNameGroupBox.Header")
         DefaultNameRadioButton.Content = MCBackup.Language.Dictionary("BackupWindow.DefaultNameRadioButton.Content")
         CustomNameRadioButton.Content = MCBackup.Language.Dictionary("BackupWindow.CustomNameRadioButton.Content")
+        CustomNameOutputTextBlock.Text = MCBackup.Language.Dictionary("Localization.Output")
         ShortDescriptionLabel.Content = MCBackup.Language.Dictionary("BackupWindow.ShortDescriptionLabel.Content")
         SavesListViewGridView.Columns(0).Header = MCBackup.Language.Dictionary("BackupWindow.ListBox.Columns(0).Header")
         StartButton.Content = MCBackup.Language.Dictionary("BackupWindow.StartButton.Content")
@@ -308,14 +310,14 @@ Public Class BackupDialog
                 End Try
             Next
         End If
-        BackupName = BackupName.Replace("%worldname%", "World_Name")
+        BackupName = BackupName.Replace("%worldname%", MCBackup.Language.Dictionary("Localization.DirectoryName"))
         If Regex.IsMatch(BackupName, "[\/:*?""<>|]") Then
             sender.Background = New SolidColorBrush(Color.FromArgb(100, 255, 0, 0))
             Exit Sub
         Else
             sender.Background = New SolidColorBrush(Colors.White)
         End If
-        CustomNameOutputTextBlock.Text = BackupName
+        CustomNameOutputTextBlock.Text = MCBackup.Language.Dictionary("Localization.Output") & BackupName
     End Sub
 End Class
 
