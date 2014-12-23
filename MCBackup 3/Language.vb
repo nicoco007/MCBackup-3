@@ -109,6 +109,7 @@ Public Class Language
         Dictionary.Add("Status.Deleting", FindString("Status.Deleting"))
         Dictionary.Add("Status.DeleteComplete", FindString("Status.DeleteComplete"))
         Dictionary.Add("Status.RefreshingBackupsList", FindString("Status.RefreshingBackupsList"))
+        Dictionary.Add("Status.RevertingChanges", FindString("Status.RevertingChanges"))
 
         ' = Messages =
         Dictionary.Add("Message.Caption.Warning", FindString("Message.Caption.Warning"))

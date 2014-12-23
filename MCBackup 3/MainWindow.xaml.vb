@@ -784,7 +784,7 @@ Partial Class MainWindow
 
                 If Cancel = True And BackupThread.IsAlive = False Then
                     Dispatcher.Invoke(Sub()
-                                          StatusLabel.Content = "Reverting changes..."
+                                          StatusLabel.Content = MCBackup.Language.Dictionary("Status.RevertingChanges")
                                           ProgressBar.IsIndeterminate = True
                                       End Sub)
                     My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0), FileIO.DeleteDirectoryOption.DeleteAllContents)
