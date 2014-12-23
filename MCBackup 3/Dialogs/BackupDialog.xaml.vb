@@ -259,7 +259,7 @@ Public Class BackupDialog
         BackupNameGroupBox.Header = MCBackup.Language.Dictionary("BackupWindow.BackupNameGroupBox.Header")
         DefaultNameRadioButton.Content = MCBackup.Language.Dictionary("BackupWindow.DefaultNameRadioButton.Content")
         CustomNameRadioButton.Content = MCBackup.Language.Dictionary("BackupWindow.CustomNameRadioButton.Content")
-        CustomNameOutputTextBlock.Text = MCBackup.Language.Dictionary("Localization.Output")
+        CustomNameOutputTextBlock.Content = MCBackup.Language.Dictionary("Localization.Output")
         ShortDescriptionLabel.Content = MCBackup.Language.Dictionary("BackupWindow.ShortDescriptionLabel.Content")
         SavesListViewGridView.Columns(0).Header = MCBackup.Language.Dictionary("BackupWindow.ListBox.Columns(0).Header")
         StartButton.Content = MCBackup.Language.Dictionary("BackupWindow.StartButton.Content")
@@ -322,7 +322,7 @@ Public Class BackupDialog
         Else
             sender.Background = New SolidColorBrush(Colors.White)
         End If
-        CustomNameOutputTextBlock.Text = MCBackup.Language.Dictionary("Localization.Output") & BackupName
+        CustomNameOutputTextBlock.Content = New ViewboxEx(MCBackup.Language.Dictionary("Localization.Output") & BackupName, Stretch.Uniform, StretchDirection.DownOnly)
     End Sub
 End Class
 
