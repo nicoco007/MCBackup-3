@@ -199,7 +199,7 @@ Public Class BackupDialog
             Case 1
                 OriginalFolderName = VersionsListView.SelectedItem
             Case 2
-                OriginalFolderName = My.Settings.Launcher
+                OriginalFolderName = My.Settings.Launcher.ToString()
             Case Else
                 OriginalFolderName = "Unknown"
         End Select
