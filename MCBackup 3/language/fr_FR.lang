@@ -20,6 +20,7 @@ MainWindow.Sidebar.NumberElements={0} élément(s)
 MainWindow.Sidebar.Description.NoDesc=Aucune description.
 MainWindow.Sidebar.Description.NoItem=Aucun élément sélectionné.
 MainWindow.Search=Rechercher...
+MainWindow.ListView.ContextMenu.OpenInExplorer=Ouvrir dans l'Explorateur Windows
 MainWindow.ListView.ContextMenu.SortBy=Trier par
 MainWindow.ListView.ContextMenu.SortBy.Name=Nom
 MainWindow.ListView.ContextMenu.SortBy.DateCreated=Date de création

@@ -691,6 +691,8 @@ Partial Class MainWindow
             ListViewDeleteItem.Header = MCBackup.Language.Dictionary("MainWindow.DeleteButton.Content")
             ListViewRenameItem.Header = MCBackup.Language.Dictionary("MainWindow.RenameButton.Content")
 
+            ListViewOpenInExplorerItem.Header = MCBackup.Language.Dictionary("MainWindow.ListView.ContextMenu.OpenInExplorer")
+
             NoBackupsOverlay.Text = MCBackup.Language.Dictionary("MainWindow.NoBackupsOverlay.Text")
 
             CancelButton.Content = MCBackup.Language.Dictionary("MainWindow.CancelButton.Text")
@@ -1820,7 +1822,7 @@ Partial Class MainWindow
                              End Sub)
     End Sub
 
-    Private Sub OpenInExplorerItem_Click(sender As Object, e As RoutedEventArgs) Handles OpenInExplorerItem.Click
+    Private Sub OpenInExplorerItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewOpenInExplorerItem.Click
         Process.Start(My.Settings.BackupsFolderLocation & "\" & ListView.SelectedItem.Name)
     End Sub
 

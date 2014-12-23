@@ -67,6 +67,8 @@ Public Class Language
 
         Dictionary.Add("MainWindow.Search", FindString("MainWindow.Search"))
 
+        Dictionary.Add("MainWindow.ListView.ContextMenu.OpenInExplorer", FindString("MainWindow.ListView.ContextMenu.OpenInExplorer"))
+
         Dictionary.Add("MainWindow.ListView.ContextMenu.SortBy", FindString("MainWindow.ListView.ContextMenu.SortBy"))
         Dictionary.Add("MainWindow.ListView.ContextMenu.SortBy.Name", FindString("MainWindow.ListView.ContextMenu.SortBy.Name"))
         Dictionary.Add("MainWindow.ListView.ContextMenu.SortBy.DateCreated", FindString("MainWindow.ListView.ContextMenu.SortBy.DateCreated"))
