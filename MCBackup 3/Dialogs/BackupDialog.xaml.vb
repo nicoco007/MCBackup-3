@@ -209,7 +209,12 @@ Public Class BackupDialog
         If DefaultNameRadioButton.IsChecked Then
             BackupName = My.Settings.DefaultBackupName
         Else
-            BackupName = CustomNameTextBox.Text
+            If String.IsNullOrEmpty(CustomNameTextBox.Text) Then
+                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.EnterValidName"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                Exit Sub
+            Else
+                BackupName = CustomNameTextBox.Text
+            End If
         End If
 
         If Regex.Matches(BackupName, "%timestamp:.+?%").Count > 0 Then

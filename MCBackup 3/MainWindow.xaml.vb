@@ -1222,7 +1222,7 @@ Partial Class MainWindow
     End Sub
 
     Private Sub WebsiteMenuItem_Click(sender As Object, e As RoutedEventArgs)
-        Process.Start("http://www.nicoco007.com/minecraft/applications/mcbackup-3")
+        Process.Start("http://go.nicoco007.com/fwlink/?LinkID=1000")
     End Sub
 
     Private Sub AboutMenuItem_Click(sender As Object, e As RoutedEventArgs)
@@ -1232,7 +1232,7 @@ Partial Class MainWindow
     End Sub
 
     Private Sub ReportBugMenuItem_Click(sender As Object, e As RoutedEventArgs)
-        Process.Start("http://bugtracker.nicoco007.com/index.php?do=newtask&project=2")
+        Process.Start("http://go.nicoco007.com/fwlink/?LinkID=5000")
     End Sub
 
     Private Sub RefreshBackupsList_Click(sender As Object, e As RoutedEventArgs)
