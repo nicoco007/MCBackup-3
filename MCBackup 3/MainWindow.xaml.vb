@@ -535,7 +535,7 @@ Partial Class MainWindow
                               DeleteButton.IsEnabled = True
 
                               SidebarTitle.Text = SelectedItem.Name     'Set sidebar title to backup name
-                              SidebarTitle.ToolTip = SelectedItem
+                              SidebarTitle.ToolTip = SelectedItem.Name
 
                               ListViewRestoreItem.IsEnabled = True
                               ListViewDeleteItem.IsEnabled = True     'Enable ContextMenu items
