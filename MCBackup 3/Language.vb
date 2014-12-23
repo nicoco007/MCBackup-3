@@ -313,7 +313,7 @@ Public Class Language
         ' = Time Left Strings =
         Dictionary.Add("TimeLeft.LessThanFive", FindString("TimeLeft.LessThanFive"))
         Dictionary.Add("TimeLeft.Seconds", FindString("TimeLeft.Seconds"))
-        Dictionary.Add("TimeLeft.MinutesAndSeconds", FindString("TimeLeft.MinutesAndSeconds"))
+        Dictionary.Add("TimeLeft.MinutesSeconds", FindString("TimeLeft.MinutesSeconds"))
 
         ' = Update Dialog =
         Dictionary.Add("UpdateDialog.Title", FindString("UpdateDialog.Title"))

@@ -767,13 +767,20 @@ Partial Class MainWindow
                     TimeLeft = TimeSpan.FromSeconds(Math.Round((BackupStopwatch.ElapsedMilliseconds / 1000) / Copied * (Total - Copied) / 5) * 5)
                 End If
 
-                Dispatcher.Invoke(Sub()
-                                      StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed, TimeLeft.TotalSeconds)
-                                  End Sub)
+                Dim TimeLeftString As String
 
-                Me.Dispatcher.Invoke(Sub()
-                                         Progress.Value = PercentComplete
-                                     End Sub)
+                If TimeLeft.TotalSeconds > 60 Then
+                    TimeLeftString = String.Format(MCBackup.Language.Dictionary("TimeLeft.MinutesSeconds"), TimeLeft.TotalMinutes, TimeLeft.TotalSeconds)
+                ElseIf TimeLeft.TotalSeconds > 5 Then
+                    TimeLeftString = String.Format(MCBackup.Language.Dictionary("TimeLeft.Seconds"), TimeLeft.TotalSeconds)
+                Else
+                    TimeLeftString = MCBackup.Language.Dictionary("TimeLeft.LessThanFive")
+                End If
+
+                Dispatcher.Invoke(Sub()
+                                      StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed, TimeLeftString)
+                                      Progress.Value = PercentComplete
+                                  End Sub)
 
                 If Cancel = True And BackupThread.IsAlive = False Then
                     Dispatcher.Invoke(Sub()
@@ -1113,9 +1120,19 @@ Partial Class MainWindow
                     TimeLeft = TimeSpan.FromSeconds(Math.Round((RestoreStopWatch.ElapsedMilliseconds / 1000) / Copied * (Total - Copied) / 5) * 5)
                 End If
 
+                Dim TimeLeftString As String
+
+                If TimeLeft.TotalSeconds > 60 Then
+                    TimeLeftString = String.Format(MCBackup.Language.Dictionary("TimeLeft.MinutesSeconds"), TimeLeft.TotalMinutes, TimeLeft.TotalSeconds)
+                ElseIf TimeLeft.TotalSeconds > 5 Then
+                    TimeLeftString = String.Format(MCBackup.Language.Dictionary("TimeLeft.Seconds"), TimeLeft.TotalSeconds)
+                Else
+                    TimeLeftString = MCBackup.Language.Dictionary("TimeLeft.LessThanFive")
+                End If
+
                 Dispatcher.Invoke(Sub()
                                       ' Display percent complete on progress bar and restoring message
-                                      StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed, TimeLeft.TotalSeconds)
+                                      StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed, TimeLeftString)
                                       Progress.Value = PercentComplete
                                       ProgressBar.Refresh()
                                   End Sub)
