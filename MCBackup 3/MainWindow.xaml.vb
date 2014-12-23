@@ -245,7 +245,7 @@ Partial Class MainWindow
         End If
     End Sub
 
-    Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
+    Private Sub Window_ContentRendered(sender As Object, e As EventArgs) Handles Window.ContentRendered
         RefreshBackupsList()
         ReloadBackupGroups()
     End Sub
@@ -280,7 +280,7 @@ Partial Class MainWindow
             If Dispatcher.CheckAccess Then
                 Items = New List(Of ListViewBackupItem)
                 EnableUI(False)
-                ProgressBar.IsIndeterminate = True
+                Progress.IsIndeterminate = True
                 StatusLabel.Content = MCBackup.Language.Dictionary("Status.RefreshingBackupsList")
                 BGW.RunWorkerAsync()
             Else
@@ -456,7 +456,7 @@ Partial Class MainWindow
         End Select
         ListView_SelectionChanged(New Object, New EventArgs)
 
-        ProgressBar.IsIndeterminate = False
+        Progress.IsIndeterminate = False
         StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
         EnableUI(True)
     End Sub
@@ -785,13 +785,13 @@ Partial Class MainWindow
                 If Cancel = True And BackupThread.IsAlive = False Then
                     Dispatcher.Invoke(Sub()
                                           StatusLabel.Content = MCBackup.Language.Dictionary("Status.RevertingChanges")
-                                          ProgressBar.IsIndeterminate = True
+                                          Progress.IsIndeterminate = True
                                       End Sub)
                     My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0), FileIO.DeleteDirectoryOption.DeleteAllContents)
                     Dispatcher.Invoke(Sub()
                                           BackupStopwatch.Stop()
                                           Progress.Value = 0
-                                          ProgressBar.IsIndeterminate = False
+                                          Progress.IsIndeterminate = False
                                           StatusLabel.Content = MCBackup.Language.Dictionary("Status.CanceledAndReady")
                                           EnableUI(True)
                                           RefreshBackupsList()
@@ -938,40 +938,6 @@ Partial Class MainWindow
             Dim InfoJson As JObject
 
             Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0) & "\info.json")
-                'Do While SR.Peek <> -1
-                '    Dim Line As String = SR.ReadLine
-                '    If Not Line.StartsWith("#") Then
-                '        If Line.StartsWith("baseFolderName=") Then
-                '            BaseFolderName = Line.Substring(15)
-                '        ElseIf Line.StartsWith("type=") Then
-                '            RestoreInfo(2) = Line.Substring(5)
-                '        ElseIf Line.StartsWith("launcher=") Then
-                '            Dim Temp As Object = Line.Substring(9)
-                '            If IsNumeric(Temp) Then
-                '                If Temp > [Enum].GetValues(GetType(Game.Launcher)).Cast(Of Game.Launcher).Last() Or Temp < 0 Then
-                '                    Launcher = Game.Launcher.Minecraft
-                '                Else
-                '                    Launcher = Temp
-                '                End If
-                '            Else
-                '                Select Case Temp
-                '                    Case "minecraft"
-                '                        Launcher = Game.Launcher.Minecraft
-                '                    Case "technic"
-                '                        Launcher = Game.Launcher.Technic
-                '                    Case "ftb"
-                '                        Launcher = Game.Launcher.FeedTheBeast
-                '                    Case "atlauncher"
-                '                        Launcher = Game.Launcher.ATLauncher
-                '                    Case Else
-                '                        Launcher = Game.Launcher.Minecraft
-                '                End Select
-                '            End If
-                '        ElseIf Line.StartsWith("modpack=") Then
-                '            Modpack = Line.Substring(8)
-                '        End If
-                '    End If
-                'Loop
                 InfoJson = JsonConvert.DeserializeObject(SR.ReadToEnd)
                 BaseFolderName = InfoJson("OriginalName")
                 RestoreInfo(2) = InfoJson("Type")
@@ -1070,7 +1036,7 @@ Partial Class MainWindow
                                 Dispatcher.Invoke(Sub()
                                                       RestoreStopWatch.Stop()
                                                       Progress.Value = 0
-                                                      ProgressBar.IsIndeterminate = False
+                                                      Progress.IsIndeterminate = False
                                                       StatusLabel.Content = MCBackup.Language.Dictionary("Status.CanceledAndReady")
                                                       EnableUI(True)
                                                       RefreshBackupsList()
@@ -1142,7 +1108,7 @@ Partial Class MainWindow
                     Dispatcher.Invoke(Sub()
                                           RestoreStopWatch.Stop()
                                           Progress.Value = 0
-                                          ProgressBar.IsIndeterminate = False
+                                          Progress.IsIndeterminate = False
                                           StatusLabel.Content = MCBackup.Language.Dictionary("Status.CanceledAndReady")
                                           EnableUI(True)
                                           RefreshBackupsList()
@@ -1282,10 +1248,7 @@ Partial Class MainWindow
         DeleteThread = New Thread(Sub() DeleteBackgroundWorker_DoWork(ItemsToDelete))
         DeleteThread.Start()
         StatusLabel.Content = MCBackup.Language.Dictionary("Status.Deleting")
-        ProgressBar.IsIndeterminate = True
-        If Environment.OSVersion.Version.Major > 5 Then
-            TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate)
-        End If
+        Progress.IsIndeterminate = True
     End Sub
 
     Private Sub DeleteBackgroundWorker_DoWork(ItemsToDelete As ArrayList)
@@ -1315,10 +1278,7 @@ Partial Class MainWindow
         RefreshBackupsList()
         ReloadBackupGroups()
         StatusLabel.Content = MCBackup.Language.Dictionary("Status.DeleteComplete")
-        ProgressBar.IsIndeterminate = False
-        If Environment.OSVersion.Version.Major > 5 Then
-            TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal)
-        End If
+        Progress.IsIndeterminate = False
     End Sub
 #End Region
 
@@ -1824,7 +1784,7 @@ Partial Class MainWindow
         Me.Dispatcher.Invoke(Sub()
                                  EnableUI(False)
                                  StatusLabel.Content = "Moving backups, please wait..."
-                                 ProgressBar.IsIndeterminate = True
+                                 Progress.IsIndeterminate = True
                              End Sub)
 
         For Each Item As ListViewBackupItem In SelectedItems
@@ -1855,7 +1815,7 @@ Partial Class MainWindow
         Me.Dispatcher.Invoke(Sub()
                                  EnableUI(True)
                                  StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
-                                 ProgressBar.IsIndeterminate = False
+                                 Progress.IsIndeterminate = False
                                  RefreshBackupsList()
                              End Sub)
     End Sub

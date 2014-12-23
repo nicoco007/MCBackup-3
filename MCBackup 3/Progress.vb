@@ -11,10 +11,22 @@ Public Class Progress
             MainWindow.ProgressBar.Value = value
             If Environment.OSVersion.Version.Major > 5 Then
                 If value >= 100 Then
-                    TaskbarManager.Instance.SetProgressValue(0, MainWindow.ProgressBar.Maximum)
+                    TaskbarManager.Instance.SetProgressValue(100, MainWindow.ProgressBar.Maximum)
                 Else
                     TaskbarManager.Instance.SetProgressValue(value, MainWindow.ProgressBar.Maximum)
                 End If
+            End If
+        End Set
+    End Property
+
+    Public Shared Property IsIndeterminate As Boolean
+        Get
+            Return MainWindow.ProgressBar.IsIndeterminate
+        End Get
+        Set(value As Boolean)
+            MainWindow.ProgressBar.IsIndeterminate = value
+            If Environment.OSVersion.Version.Major > 5 Then
+                If value Then TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate) Else TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress)
             End If
         End Set
     End Property
