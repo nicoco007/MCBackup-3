@@ -99,6 +99,7 @@ Message.CancelRestore=Annuler une restauration peut sérieusement endommager vot
 Message.CancelDelete=Êtes-vous sûr de vouloir annuler la suppression?
 Message.OpenWebpage=Cette action ouvrira une page web dans votre fureteur web par défaut.
 BalloonTip.Title.BackupError=Erreur de sauvegarde!
+Message.ExceptionOccured=Une exception de type {0} s'est produite : 
 BalloonTip.BackupError=Une erreur est survenue lors de la sauvegarde.
 BalloonTip.Title.BackupComplete=Sauvegarde terminée!
 BalloonTip.BackupComplete=Votre sauvegarde s'est terminée avec succès.

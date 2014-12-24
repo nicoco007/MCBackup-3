@@ -156,6 +156,7 @@ Public Class Language
         Dictionary.Add("Message.CancelRestore", FindString("Message.CancelRestore"))
         Dictionary.Add("Message.CancelDelete", FindString("Message.CancelDelete"))
         Dictionary.Add("Message.OpenWebpage", FindString("Message.OpenWebpage"))
+        Dictionary.Add("Message.ExceptionOccured", FindString("Message.ExceptionOccured"))
 
         ' = Balloon Tips =
         Dictionary.Add("BalloonTip.Title.BackupError", FindString("BalloonTip.Title.BackupError"))

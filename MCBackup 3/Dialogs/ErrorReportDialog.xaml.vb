@@ -35,7 +35,7 @@ Public Class ErrorReportDialog
 
         Try
             If MCBackup.Language.IsLoaded Then
-                ErrorReportDialog.MessageLabel.Content = String.Format("An exception of type {0} occured: " & Message, Exception.GetType)
+                ErrorReportDialog.MessageLabel.Content = New TextblockEx(String.Format(MCBackup.Language.Dictionary("Message.ExceptionOccured") & Message, Exception.GetType))
 
                 Dim StackTrace As String = New StackTrace(Exception, True).ToString
                 Log.Print(StackTrace)
@@ -48,7 +48,7 @@ Public Class ErrorReportDialog
                 System.Media.SystemSounds.Hand.Play()
                 ErrorReportDialog.ShowDialog()
             Else
-                ErrorReportDialog.MessageLabel.Content = String.Format("An exception of type {0} occured: " & Message, Exception.GetType)
+                ErrorReportDialog.MessageLabel.Content = New TextblockEx(String.Format("An exception of type {0} occured: " & Message, Exception.GetType))
 
                 Dim StackTrace As String = New StackTrace(Exception, True).ToString
                 Log.Print(StackTrace)
@@ -79,5 +79,13 @@ Public Class ErrorReportDialog
 
     Private Sub ContinueButton_Click(sender As Object, e As RoutedEventArgs) Handles ContinueButton.Click
         Me.Close()
+    End Sub
+End Class
+
+Public Class TextblockEx
+    Inherits TextBlock
+
+    Sub New(Text As String)
+        Me.Text = Text
     End Sub
 End Class

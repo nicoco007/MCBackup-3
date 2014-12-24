@@ -71,41 +71,79 @@ Public Class MetroMessageBox
     End Function
 
     Public Shared Sub ShowButtons(Button As MessageBoxButton)
-        Select Case Button
-            Case MessageBoxButton.OK
-                MsgBox.Button1.Visibility = Windows.Visibility.Visible
-                MsgBox.Button1.Content = MCBackup.Language.Dictionary("MetroMsgBox.Button.OK")
-                MsgBox.Button1.Tag = MessageBoxResult.OK
-                MsgBox.Button2.Visibility = Windows.Visibility.Collapsed
-                MsgBox.Button3.Visibility = Windows.Visibility.Collapsed
-            Case MessageBoxButton.OKCancel
-                MsgBox.Button1.Visibility = Windows.Visibility.Visible
-                MsgBox.Button1.Content = MCBackup.Language.Dictionary("MetroMsgBox.Button.Cancel")
-                MsgBox.Button1.Tag = MessageBoxResult.Cancel
-                MsgBox.Button2.Visibility = Windows.Visibility.Visible
-                MsgBox.Button2.Content = MCBackup.Language.Dictionary("MetroMsgBox.Button.OK")
-                MsgBox.Button2.Tag = MessageBoxResult.OK
-                MsgBox.Button3.Visibility = Windows.Visibility.Collapsed
-            Case MessageBoxButton.YesNo
-                MsgBox.Button1.Visibility = Windows.Visibility.Visible
-                MsgBox.Button1.Content = MCBackup.Language.Dictionary("MetroMsgBox.Button.No")
-                MsgBox.Button1.Tag = MessageBoxResult.No
-                MsgBox.Button2.Visibility = Windows.Visibility.Visible
-                MsgBox.Button2.Content = MCBackup.Language.Dictionary("MetroMsgBox.Button.Yes")
-                MsgBox.Button2.Tag = MessageBoxResult.Yes
-                MsgBox.Button3.Visibility = Windows.Visibility.Collapsed
-            Case MessageBoxButton.YesNoCancel
-                MsgBox.Button1.Visibility = Windows.Visibility.Visible
-                MsgBox.Button1.Content = MCBackup.Language.Dictionary("MetroMsgBox.Button.Cancel")
-                MsgBox.Button1.Tag = MessageBoxResult.Cancel
-                MsgBox.Button2.Visibility = Windows.Visibility.Visible
-                MsgBox.Button2.Content = MCBackup.Language.Dictionary("MetroMsgBox.Button.No")
-                MsgBox.Button2.Tag = MessageBoxResult.No
-                MsgBox.Button3.Visibility = Windows.Visibility.Visible
-                MsgBox.Button3.Content = MCBackup.Language.Dictionary("MetroMsgBox.Button.Yes")
-                MsgBox.Button3.Tag = MessageBoxResult.Yes
-                MsgBox.MinWidth = 264
-        End Select
+        If MCBackup.Language.IsLoaded Then
+            Select Case Button
+                Case MessageBoxButton.OK
+                    MsgBox.Button1.Visibility = Windows.Visibility.Visible
+                    MsgBox.Button1.Content = MCBackup.Language.Dictionary("MetroMsgBox.Button.OK")
+                    MsgBox.Button1.Tag = MessageBoxResult.OK
+                    MsgBox.Button2.Visibility = Windows.Visibility.Collapsed
+                    MsgBox.Button3.Visibility = Windows.Visibility.Collapsed
+                Case MessageBoxButton.OKCancel
+                    MsgBox.Button1.Visibility = Windows.Visibility.Visible
+                    MsgBox.Button1.Content = MCBackup.Language.Dictionary("MetroMsgBox.Button.Cancel")
+                    MsgBox.Button1.Tag = MessageBoxResult.Cancel
+                    MsgBox.Button2.Visibility = Windows.Visibility.Visible
+                    MsgBox.Button2.Content = MCBackup.Language.Dictionary("MetroMsgBox.Button.OK")
+                    MsgBox.Button2.Tag = MessageBoxResult.OK
+                    MsgBox.Button3.Visibility = Windows.Visibility.Collapsed
+                Case MessageBoxButton.YesNo
+                    MsgBox.Button1.Visibility = Windows.Visibility.Visible
+                    MsgBox.Button1.Content = MCBackup.Language.Dictionary("MetroMsgBox.Button.No")
+                    MsgBox.Button1.Tag = MessageBoxResult.No
+                    MsgBox.Button2.Visibility = Windows.Visibility.Visible
+                    MsgBox.Button2.Content = MCBackup.Language.Dictionary("MetroMsgBox.Button.Yes")
+                    MsgBox.Button2.Tag = MessageBoxResult.Yes
+                    MsgBox.Button3.Visibility = Windows.Visibility.Collapsed
+                Case MessageBoxButton.YesNoCancel
+                    MsgBox.Button1.Visibility = Windows.Visibility.Visible
+                    MsgBox.Button1.Content = MCBackup.Language.Dictionary("MetroMsgBox.Button.Cancel")
+                    MsgBox.Button1.Tag = MessageBoxResult.Cancel
+                    MsgBox.Button2.Visibility = Windows.Visibility.Visible
+                    MsgBox.Button2.Content = MCBackup.Language.Dictionary("MetroMsgBox.Button.No")
+                    MsgBox.Button2.Tag = MessageBoxResult.No
+                    MsgBox.Button3.Visibility = Windows.Visibility.Visible
+                    MsgBox.Button3.Content = MCBackup.Language.Dictionary("MetroMsgBox.Button.Yes")
+                    MsgBox.Button3.Tag = MessageBoxResult.Yes
+                    MsgBox.MinWidth = 264
+            End Select
+        Else
+            Select Case Button
+                Case MessageBoxButton.OK
+                    MsgBox.Button1.Visibility = Windows.Visibility.Visible
+                    MsgBox.Button1.Content = "OK"
+                    MsgBox.Button1.Tag = MessageBoxResult.OK
+                    MsgBox.Button2.Visibility = Windows.Visibility.Collapsed
+                    MsgBox.Button3.Visibility = Windows.Visibility.Collapsed
+                Case MessageBoxButton.OKCancel
+                    MsgBox.Button1.Visibility = Windows.Visibility.Visible
+                    MsgBox.Button1.Content = "Cancel"
+                    MsgBox.Button1.Tag = MessageBoxResult.Cancel
+                    MsgBox.Button2.Visibility = Windows.Visibility.Visible
+                    MsgBox.Button2.Content = "OK"
+                    MsgBox.Button2.Tag = MessageBoxResult.OK
+                    MsgBox.Button3.Visibility = Windows.Visibility.Collapsed
+                Case MessageBoxButton.YesNo
+                    MsgBox.Button1.Visibility = Windows.Visibility.Visible
+                    MsgBox.Button1.Content = "No"
+                    MsgBox.Button1.Tag = MessageBoxResult.No
+                    MsgBox.Button2.Visibility = Windows.Visibility.Visible
+                    MsgBox.Button2.Content = "Yes"
+                    MsgBox.Button2.Tag = MessageBoxResult.Yes
+                    MsgBox.Button3.Visibility = Windows.Visibility.Collapsed
+                Case MessageBoxButton.YesNoCancel
+                    MsgBox.Button1.Visibility = Windows.Visibility.Visible
+                    MsgBox.Button1.Content = "Cancel"
+                    MsgBox.Button1.Tag = MessageBoxResult.Cancel
+                    MsgBox.Button2.Visibility = Windows.Visibility.Visible
+                    MsgBox.Button2.Content = "No"
+                    MsgBox.Button2.Tag = MessageBoxResult.No
+                    MsgBox.Button3.Visibility = Windows.Visibility.Visible
+                    MsgBox.Button3.Content = "Yes"
+                    MsgBox.Button3.Tag = MessageBoxResult.Yes
+                    MsgBox.MinWidth = 264
+            End Select
+        End If
     End Sub
 
     Public Shared Sub ShowImage(Image As MessageBoxImage)

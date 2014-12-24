@@ -123,7 +123,7 @@ Partial Class MainWindow
             If String.IsNullOrEmpty(My.Settings.DefaultBackupName) Then My.Settings.DefaultBackupName = MCBackup.Language.Dictionary("Localization.DefaultBackupName")
             If String.IsNullOrEmpty(My.Settings.DefaultAutoBackupName) Then My.Settings.DefaultAutoBackupName = MCBackup.Language.Dictionary("Localization.DefaultAutoBackupName")
         Catch ex As Exception
-            ErrorReportDialog.Show("Error: Could not load language file (" & My.Settings.Language & ")! MCBackup will now exit.", ex)
+            ErrorReportDialog.Show("Could not load language file " & My.Settings.Language & ".lang! MCBackup will now exit.", ex)
             My.Settings.Language = DefaultLanguage
             My.Settings.Save()
             Me.Close()

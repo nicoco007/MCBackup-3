@@ -98,6 +98,7 @@ Message.CancelBackup=Are you sure you want to cancel the backup?
 Message.CancelRestore=Cancelling a restore operation can seriously damage your Minecraft installation!\n\nAre you sure you want to cancel the restore?
 Message.CancelDelete=Are you sure you want to cancel the deletion?
 Message.OpenWebpage=This action will open a webpage in your default web browser.
+Message.ExceptionOccured=An exception of type {0} occured: 
 BalloonTip.Title.BackupError=Backup Error!
 BalloonTip.BackupError=An error occurred during the backup.
 BalloonTip.Title.BackupComplete=Backup complete!
