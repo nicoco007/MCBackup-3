@@ -80,7 +80,6 @@ Message.ChooseSave=Veuillez choisir un monde à sauvegarder.
 Message.ChooseVersion=Veuillez choisir une version à sauvegarder.
 Message.ResetSettings=Êtes-vous sûr de vouloir réinitialiser vos préférences?\n\nCliquez 'Oui' pour tout réinitialiser et redémarrer MCBackup.
 Message.BackupInProgress=Une sauvegarde est déjà en cours! Veuillez attendre qu'elle finisse avant d'en démarrer une autre.
-Message.BackupNameCannotContainIllegalCharacters=Le nom de sauvegarde ne peut pas contenir les caractèrs\n\ / : * ? "" < > |\nVérifiez le préfixe/suffixe.
 Message.CopiedToClipboard=Copié dans le presse-papiers
 Message.BackupsFolderNotFound=Votre dossier de sauvegardes n'a pas pu être trouvé. Ceci veut dire qu'il a été supprimé ou est sur un lecteur réseau déconnecté. Appuyez sur OK pour réinitialiser l'emplacement de votre dossier de sauvegardes. Appuyez sur Annuler pour quitter MCBackup.
 Message.AreYouSureDeleteGroup=Êtes-vous sûr de vouloir supprimer ce groupe? Il sera perdu pour toujours (très longtemps)!

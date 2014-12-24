@@ -138,7 +138,6 @@ Public Class Language
         Dictionary.Add("Message.ChooseVersion", FindString("Message.ChooseVersion"))
         Dictionary.Add("Message.ResetSettings", FindString("Message.ResetSettings"))
         Dictionary.Add("Message.BackupInProgress", FindString("Message.BackupInProgress"))
-        Dictionary.Add("Message.BackupNameCannotContainIllegalCharacters", FindString("Message.BackupNameCannotContainIllegalCharacters"))
         Dictionary.Add("Message.CopiedToClipboard", FindString("Message.CopiedToClipboard"))
         Dictionary.Add("Message.BackupsFolderNotFound", FindString("Message.BackupsFolderNotFound"))
         Dictionary.Add("Message.AreYouSureDeleteGroup", FindString("Message.AreYouSureDeleteGroup"))

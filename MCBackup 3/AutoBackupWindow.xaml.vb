@@ -43,7 +43,6 @@ Public Class AutoBackupWindow
             MinutesLabel.Content = MCBackup.Language.Dictionary("AutoBackupWindow.MinutesLabel.Content")
             WorldToBackUpLabel.Text = MCBackup.Language.Dictionary("AutoBackupWindow.WorldToBackUpLabel.Text")
             RefreshButton.Content = MCBackup.Language.Dictionary("AutoBackupWindow.RefreshButton.Content")
-            SaveAsLabel.Content = MCBackup.Language.Dictionary("AutoBackupWindow.SaveAsLabel.Content")
             StartButton.Content = MCBackup.Language.Dictionary("AutoBackupWindow.StartButton.Content.Start")
             SaveNameColumn.Header = MCBackup.Language.Dictionary("BackupWindow.SaveNameColumn.Header")
             SaveLocationColumn.Header = MCBackup.Language.Dictionary("BackupWindow.SaveLocationColumn.Header")
