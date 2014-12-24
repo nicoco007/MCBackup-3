@@ -10,7 +10,11 @@ Public Class FileSystemOperations
         End Function
 
         Private Shared Sub Copy(SourceDirectory As String, DestinationDirectory As String, Overwrite As Boolean)
-            My.Computer.FileSystem.CopyDirectory(SourceDirectory, DestinationDirectory, Overwrite)
+            Try
+                My.Computer.FileSystem.CopyDirectory(SourceDirectory, DestinationDirectory, Overwrite)
+            Catch ex As Exception
+                Log.Print(ex.Message)
+            End Try
         End Sub
 
         'Public Shared Function DeleteAsync(Directory As String)

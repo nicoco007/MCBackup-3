@@ -407,7 +407,8 @@ Partial Class MainWindow
                               End Sub)
             If Result = MessageBoxResult.Yes Then
                 Dispatcher.Invoke(Sub()
-                                      Delete(DirectoriesToDelete)
+                                      Progress.IsIndeterminate = False
+                                      StartDelete(DirectoriesToDelete)
                                   End Sub)
             End If
         End If
@@ -753,7 +754,7 @@ Partial Class MainWindow
             Dim PercentComplete As Double = 0
 
             ' Do until percent complete is equal to or over 100
-            Do Until Int(PercentComplete) = 100
+            Do Until Int(PercentComplete) >= 100
                 ' Calculate percent complete by dividing target location by source location, and multiply by 100
                 PercentComplete = GetFolderSize(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0)) / GetFolderSize(BackupInfo(2)) * 100
 
@@ -801,6 +802,8 @@ Partial Class MainWindow
                                       End Sub)
                     Exit Sub
                 End If
+
+                Thread.Sleep(200)
             Loop
 
             ' Stop backup stopwatch
@@ -1046,10 +1049,9 @@ Partial Class MainWindow
                                                   End Sub)
                                 Exit Sub
                             End If
+
+                            Thread.Sleep(200)
                         Loop
-                    Catch ex As DirectoryNotFoundException ' HACK Find better way to do this!
-                        Log.Print("Directory not found exception occured during removal for restore. This often happens and shouldn't be considered an issue, but may be the source of an occurring problem.", Log.Level.Warning)
-                        Exit Try
                     Catch ex As Exception
                         Me.Dispatcher.Invoke(Sub() ErrorReportDialog.Show("An error occured while trying to delete the folder.", ex))
                     End Try
@@ -1118,6 +1120,8 @@ Partial Class MainWindow
                                       End Sub)
                     Exit Sub
                 End If
+
+                Thread.Sleep(200)
             Loop
 
             ' Stop backup stopwatch
@@ -1150,7 +1154,8 @@ Partial Class MainWindow
     Private Function GetFolderSize(FolderPath As String)
         Dim FSO As FileSystemObject = New FileSystemObject
         If Not Directory.Exists(FolderPath) Then
-            Throw New DirectoryNotFoundException(String.Format("Directory '{0}' does not exist.", FolderPath))
+            Log.Print(String.Format("Directory '{0}' does not exist.", FolderPath))
+            Return 0
         End If
         Dim Size = FSO.GetFolder(FolderPath).Size ' Get FolderPath's size
         If Size <> Nothing Then
@@ -1233,29 +1238,62 @@ Partial Class MainWindow
                 For Each Item In ListView.SelectedItems
                     ListViewItems.Add(Item.Name)
                 Next
-                Delete(ListViewItems)
+                StartDelete(ListViewItems)
             End If
         Else
             Dim ListViewItems As New ArrayList
             For Each Item In ListView.SelectedItems
                 ListViewItems.Add(Item.Name)
             Next
-            Delete(ListViewItems)
+            StartDelete(ListViewItems)
         End If
     End Sub
 
-    Private Sub Delete(ItemsToDelete As ArrayList)
+    Private Sub StartDelete(ItemsToDelete As ArrayList)
         EnableUI(False)
         ListView.SelectedIndex = -1
+        Dim TotalSize As Double
+        For Each Directory As String In ItemsToDelete
+            TotalSize += GetFolderSize(My.Settings.BackupsFolderLocation & "\" & Directory)
+        Next
+        Dim t As New Thread(Sub() Delete(ItemsToDelete, TotalSize))
+        t.Start()
+    End Sub
+
+    Private Sub Delete(ItemsToDelete As ArrayList, TotalSize As Double)
         DeleteThread = New Thread(Sub() DeleteBackgroundWorker_DoWork(ItemsToDelete))
         DeleteThread.Start()
-        StatusLabel.Content = MCBackup.Language.Dictionary("Status.Deleting")
-        Progress.IsIndeterminate = True
+
+        Dim PercentComplete As Double = 100
+        Do Until Int(PercentComplete) <= 0
+            Dim CurrentSize As Double = 0
+            For Each Directory As String In ItemsToDelete
+                If IO.Directory.Exists(My.Settings.BackupsFolderLocation & "\" & Directory) Then
+                    CurrentSize += GetFolderSize(My.Settings.BackupsFolderLocation & "\" & Directory)
+                End If
+            Next
+
+            PercentComplete = CurrentSize / TotalSize * 100
+
+            Log.Print("Percent complete: " & PercentComplete.ToString, Log.Level.Debug)
+
+            Dispatcher.Invoke(Sub()
+                                  StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Deleting"), PercentComplete)
+                                  MCBackup.Progress.Value = PercentComplete
+                              End Sub)
+            Thread.Sleep(200)
+        Loop
+
+        Dispatcher.Invoke(Sub()
+                              StatusLabel.Content = MCBackup.Language.Dictionary("Status.DeleteComplete")
+                              EnableUI(True)
+                          End Sub)
     End Sub
 
     Private Sub DeleteBackgroundWorker_DoWork(ItemsToDelete As ArrayList)
         Try
             For Each Item As String In ItemsToDelete
+                Log.Print("Deleting " & Item)
                 My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & Item, FileIO.DeleteDirectoryOption.DeleteAllContents)
             Next
             Me.Dispatcher.Invoke(Sub()
@@ -1273,6 +1311,8 @@ Partial Class MainWindow
                 Dispatcher.Invoke(Sub() ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Delete"), ex))
             End If
         End Try
+
+        Log.Print("Done.")
     End Sub
 
     Private Sub DeleteBackgroundWorker_RunWorkerCompleted()
@@ -1573,9 +1613,6 @@ Partial Class MainWindow
             My.Settings.SidebarWidth = GridSidebarColumn.Width
             My.Settings.ListViewWidth = GridListViewColumn.Width
 
-            'My.Settings.AutoBkpPrefix = AutoBackupWindow.PrefixTextBox.Text
-            'My.Settings.AutoBkpSuffix = AutoBackupWindow.SuffixTextBox.Text
-
             Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
             My.Settings.ListViewSortBy = View.SortDescriptions(0).PropertyName
             My.Settings.ListViewSortByDirection = View.SortDescriptions(0).Direction
@@ -1753,6 +1790,11 @@ Partial Class MainWindow
         GroupsTabControl.IsEnabled = IsEnabled
         ListView.IsEnabled = IsEnabled
         ListView_SelectionChanged(Nothing, Nothing)
+        SearchTextBox.IsEnabled = IsEnabled
+        FileToolbarButton.IsEnabled = IsEnabled
+        EditToolbarButton.IsEnabled = IsEnabled
+        ToolsToolbarButton.IsEnabled = IsEnabled
+        HelpToolbarButton.IsEnabled = IsEnabled
     End Sub
 
     Private Sub QuitToolbarMenuItem_Click(sender As Object, e As RoutedEventArgs)
