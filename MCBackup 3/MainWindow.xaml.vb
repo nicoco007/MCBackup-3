@@ -72,10 +72,9 @@ Partial Class MainWindow
 
 #Region "Load"
     Public Sub New()
-        Application.CloseAction = Application.AppCloseAction.Force
-
         InitializeComponent()
 
+        Application.CloseAction = Application.AppCloseAction.Force
         ThemeManager.ChangeAppStyle(My.Application, ThemeManager.GetAccent(My.Settings.Theme), ThemeManager.GetAppTheme("BaseLight"))
 
         Splash.Show()
@@ -87,6 +86,13 @@ Partial Class MainWindow
         Log.Print("OS Version: " & Environment.OSVersion.Version.Major & "." & Environment.OSVersion.Version.Minor)
         Log.Print("Architecture: " & Log.GetWindowsArch())
         Log.Print(".NET Framework Version: " & Environment.Version.Major & "." & Environment.Version.Minor)
+
+        If (My.Settings.CallUpgrade) Then
+            Log.Print("Loading settings from last version, please wait...")
+            My.Settings.Upgrade()
+            My.Settings.CallUpgrade = False
+            Log.Print("Loaded settings.")
+        End If
 
         Log.Print(String.Format("Current Launcher: '{0}'", My.Settings.Launcher))
 
