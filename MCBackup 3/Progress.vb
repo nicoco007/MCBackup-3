@@ -11,7 +11,7 @@ Public Class Progress
             MainWindow.ProgressBar.Value = value
             If Environment.OSVersion.Version.Major > 5 Then
                 If value >= MainWindow.ProgressBar.Maximum Then
-                    TaskbarManager.Instance.SetProgressValue(MainWindow.ProgressBar.Maximum, MainWindow.ProgressBar.Maximum)
+                    TaskbarManager.Instance.SetProgressValue(0, MainWindow.ProgressBar.Maximum)
                 Else
                     TaskbarManager.Instance.SetProgressValue(value, MainWindow.ProgressBar.Maximum)
                 End If
