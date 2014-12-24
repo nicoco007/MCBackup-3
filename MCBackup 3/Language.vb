@@ -42,6 +42,15 @@ Public Class Language
         LanguageFile = FileName
 
         ' = Main Window =
+        Dictionary.Add("MainWindow.Title.Backup", FindString("MainWindow.Title.Backup"))
+        Dictionary.Add("MainWindow.Title.Restore", FindString("MainWindow.Title.Restore"))
+        Dictionary.Add("MainWindow.Title.RemovingOldContent", FindString("MainWindow.Title.RemovingOldContent"))
+        Dictionary.Add("MainWindow.Title.Delete", FindString("MainWindow.Title.Delete"))
+        Dictionary.Add("MainWindow.Title.RefreshingBackupsList", FindString("MainWindow.Title.RefreshingBackupsList"))
+        Dictionary.Add("MainWindow.Title.RevertingChanges", FindString("MainWindow.Title.RevertingChanges"))
+        Dictionary.Add("MainWindow.Title.CreatingThumb", FindString("MainWindow.Title.CreatingThumb"))
+        Dictionary.Add("MainWindow.Title.MovingBackups", FindString("MainWindow.Title.MovingBackups"))
+
         Dictionary.Add("MainWindow.BackupButton.Content", FindString("MainWindow.BackupButton.Content"))
         Dictionary.Add("MainWindow.RestoreButton.Content", FindString("MainWindow.RestoreButton.Content"))
         Dictionary.Add("MainWindow.DeleteButton.Content", FindString("MainWindow.DeleteButton.Content"))
@@ -112,6 +121,7 @@ Public Class Language
         Dictionary.Add("Status.DeleteComplete", FindString("Status.DeleteComplete"))
         Dictionary.Add("Status.RefreshingBackupsList", FindString("Status.RefreshingBackupsList"))
         Dictionary.Add("Status.RevertingChanges", FindString("Status.RevertingChanges"))
+        Dictionary.Add("Status.MovingBackups", FindString("Status.MovingBackups"))
 
         ' = Messages =
         Dictionary.Add("Message.Caption.Warning", FindString("Message.Caption.Warning"))

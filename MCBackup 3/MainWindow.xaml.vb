@@ -282,6 +282,7 @@ Partial Class MainWindow
                 EnableUI(False)
                 Progress.IsIndeterminate = True
                 StatusLabel.Content = MCBackup.Language.Dictionary("Status.RefreshingBackupsList")
+                Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.RefreshingBackupsList"), ApplicationVersion)
                 BGW.RunWorkerAsync()
             Else
                 Dispatcher.Invoke(Sub() RefreshBackupsList())
@@ -459,6 +460,7 @@ Partial Class MainWindow
 
         Progress.IsIndeterminate = False
         StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
+        Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
         EnableUI(True)
     End Sub
 
@@ -672,6 +674,7 @@ Partial Class MainWindow
             HelpContextMenu.Items(3).Header = MCBackup.Language.Dictionary("MainWindow.Toolbar.HelpContextMenu.Items(3).Header")
 
             StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
+            Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
 
             SearchTextBox.Text = MCBackup.Language.Dictionary("MainWindow.Search")
             SearchTextBox.Foreground = New SolidColorBrush(Colors.Gray)
@@ -782,12 +785,14 @@ Partial Class MainWindow
 
                 Dispatcher.Invoke(Sub()
                                       StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed, TimeLeftString)
+                                      Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.Backup"), ApplicationVersion, PercentComplete)
                                       Progress.Value = PercentComplete
                                   End Sub)
 
                 If Cancel = True And BackupThread.IsAlive = False Then
                     Dispatcher.Invoke(Sub()
                                           StatusLabel.Content = MCBackup.Language.Dictionary("Status.RevertingChanges")
+                                          Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.RevertingChanges"), ApplicationVersion)
                                           Progress.IsIndeterminate = True
                                       End Sub)
                     My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0), FileIO.DeleteDirectoryOption.DeleteAllContents)
@@ -796,6 +801,7 @@ Partial Class MainWindow
                                           Progress.Value = 0
                                           Progress.IsIndeterminate = False
                                           StatusLabel.Content = MCBackup.Language.Dictionary("Status.CanceledAndReady")
+                                          Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
                                           EnableUI(True)
                                           RefreshBackupsList()
                                           ReloadBackupGroups()
@@ -834,6 +840,7 @@ Partial Class MainWindow
 
                 Dispatcher.Invoke(Sub()
                                       StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), 0)
+                                      Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.CreatingThumb"), ApplicationVersion, 0)
 
                                       MCMapProcess = New Process
 
@@ -870,6 +877,7 @@ Partial Class MainWindow
                                       RefreshBackupsList()
                                       ReloadBackupGroups()
                                       StatusLabel.Content = MCBackup.Language.Dictionary("Status.BackupComplete")
+                                      Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
                                       StatusLabel.Refresh()
                                       Progress.Value = 100
                                   End Sub)
@@ -911,7 +919,8 @@ Partial Class MainWindow
 
             Dispatcher.Invoke(Sub()
                                   Progress.Value = PercentComplete
-                                  StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), Int(PercentComplete))
+                                  StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), PercentComplete)
+                                  Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.CreatingThumb"), ApplicationVersion, PercentComplete)
                               End Sub)
         ElseIf e.Data = "Job complete." Then
             Dispatcher.Invoke(Sub()
@@ -920,6 +929,7 @@ Partial Class MainWindow
                                   ReloadBackupGroups()
                                   Progress.Value = 100
                                   StatusLabel.Content = MCBackup.Language.Dictionary("Status.BackupComplete")
+                                  Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
                                   StatusLabel.Refresh()
                                   If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupComplete"), MCBackup.Language.Dictionary("BalloonTip.BackupComplete"), System.Windows.Forms.ToolTipIcon.Info)
                                   Log.Print("Backup Complete")
@@ -1034,6 +1044,7 @@ Partial Class MainWindow
                             Dispatcher.Invoke(Sub()
                                                   ' Show percent complete and message
                                                   StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.RemovingOldContent"), 100 - PercentRemoved)
+                                                  Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.RemovingOldContent"), ApplicationVersion, 100 - PercentRemoved)
                                                   Progress.Value = PercentRemoved
                                               End Sub)
 
@@ -1043,6 +1054,7 @@ Partial Class MainWindow
                                                       Progress.Value = 0
                                                       Progress.IsIndeterminate = False
                                                       StatusLabel.Content = MCBackup.Language.Dictionary("Status.CanceledAndReady")
+                                                      Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
                                                       EnableUI(True)
                                                       RefreshBackupsList()
                                                       ReloadBackupGroups()
@@ -1103,6 +1115,7 @@ Partial Class MainWindow
                 Dispatcher.Invoke(Sub()
                                       ' Display percent complete on progress bar and restoring message
                                       StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed, TimeLeftString)
+                                      Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.Restore"), ApplicationVersion, PercentComplete)
                                       Progress.Value = PercentComplete
                                       ProgressBar.Refresh()
                                   End Sub)
@@ -1114,6 +1127,7 @@ Partial Class MainWindow
                                           Progress.Value = 0
                                           Progress.IsIndeterminate = False
                                           StatusLabel.Content = MCBackup.Language.Dictionary("Status.CanceledAndReady")
+                                          Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
                                           EnableUI(True)
                                           RefreshBackupsList()
                                           ReloadBackupGroups()
@@ -1133,6 +1147,7 @@ Partial Class MainWindow
 
             Dispatcher.Invoke(Sub()
                                   StatusLabel.Content = MCBackup.Language.Dictionary("Status.RestoreComplete")
+                                  Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
                                   Progress.Value = 100
                                   EnableUI(True)
                                   RefreshBackupsList()
@@ -1279,6 +1294,7 @@ Partial Class MainWindow
 
             Dispatcher.Invoke(Sub()
                                   StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Deleting"), PercentComplete)
+                                  Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.Delete"), ApplicationVersion, PercentComplete)
                                   MCBackup.Progress.Value = PercentComplete
                               End Sub)
             Thread.Sleep(200)
@@ -1286,6 +1302,7 @@ Partial Class MainWindow
 
         Dispatcher.Invoke(Sub()
                               StatusLabel.Content = MCBackup.Language.Dictionary("Status.DeleteComplete")
+                              Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
                               EnableUI(True)
                           End Sub)
     End Sub
@@ -1305,7 +1322,8 @@ Partial Class MainWindow
                 Me.Dispatcher.Invoke(Sub()
                                          BackupStopwatch.Stop()
                                          Progress.Value = 0
-                                         StatusLabel.Content = "Delete cancelled."
+                                         StatusLabel.Content = MCBackup.Language.Dictionary("Status.CanceledAndReady")
+                                         Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
                                      End Sub)
             Else
                 Dispatcher.Invoke(Sub() ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Delete"), ex))
@@ -1320,6 +1338,7 @@ Partial Class MainWindow
         RefreshBackupsList()
         ReloadBackupGroups()
         StatusLabel.Content = MCBackup.Language.Dictionary("Status.DeleteComplete")
+        Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
         Progress.IsIndeterminate = False
     End Sub
 #End Region
@@ -1739,6 +1758,7 @@ Partial Class MainWindow
                         ReloadBackupGroups()
                         Progress.Value = 0
                         StatusLabel.Content = MCBackup.Language.Dictionary("Status.CanceledAndReady")
+                        Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
                         StatusLabel.Refresh()
                         Log.Print("Thumbnail creation cancelled")
                     End If
@@ -1827,7 +1847,8 @@ Partial Class MainWindow
     Public Sub MoveToGroup(SelectedItems As List(Of ListViewBackupItem), Group As String)
         Me.Dispatcher.Invoke(Sub()
                                  EnableUI(False)
-                                 StatusLabel.Content = "Moving backups, please wait..."
+                                 StatusLabel.Content = MCBackup.Language.Dictionary("Status.MovingBackups")
+                                 Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.MovingBackups"), ApplicationVersion)
                                  Progress.IsIndeterminate = True
                              End Sub)
 
@@ -1859,6 +1880,7 @@ Partial Class MainWindow
         Me.Dispatcher.Invoke(Sub()
                                  EnableUI(True)
                                  StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
+                                 Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
                                  Progress.IsIndeterminate = False
                                  RefreshBackupsList()
                              End Sub)
