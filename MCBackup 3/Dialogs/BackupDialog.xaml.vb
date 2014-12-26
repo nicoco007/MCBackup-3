@@ -204,37 +204,25 @@ Public Class BackupDialog
                 OriginalFolderName = "Unknown"
         End Select
 
-        Dim BackupName As String
+        Dim Name As String
 
         If DefaultNameRadioButton.IsChecked Then
-            BackupName = My.Settings.DefaultBackupName
+            Name = BackupName.Process(My.Settings.DefaultBackupName, MCBackup.Language.Dictionary("Localization.DirectoryName"))
         Else
             If String.IsNullOrEmpty(CustomNameTextBox.Text) Then
-                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.EnterValidName"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.EnterValidName"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
                 Exit Sub
             Else
-                BackupName = CustomNameTextBox.Text
+                Name = BackupName.Process(CustomNameTextBox.Text, MCBackup.Language.Dictionary("Localization.DirectoryName"))
             End If
         End If
 
-        If Regex.Matches(BackupName, "%timestamp:.+?%").Count > 0 Then
-            For Each Match As RegularExpressions.Match In Regex.Matches(BackupName, "%timestamp:.+?%")
-                Dim Format = Match.Value.Substring(Match.Value.IndexOf(":") + 1)
-                Format = Format.Remove(Format.IndexOf("%"))
-                Try
-                    BackupName = BackupName.Replace(Match.ToString, DateTime.Now.ToString(Format, IIf(My.Settings.IgnoreSystemLocalizationWhenFormatting, CultureInfo.InvariantCulture, CultureInfo.CurrentCulture)))
-                Catch
-                End Try
-            Next
-        End If
-        BackupName = BackupName.Replace("%worldname%", OriginalFolderName)
-
-        If Regex.IsMatch(BackupName, "[\/:*?""<>|]") Then
-            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.InvalidCharacters"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
+        If Regex.IsMatch(Name, "[\/:*?""<>|]") Then
+            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.IllegalCharacters"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
             Exit Sub
         End If
 
-        Main.BackupInfo(0) = BackupName
+        Main.BackupInfo(0) = Name
 
         Main.BackupInfo(1) = DescriptionTextBox.Text
 
@@ -303,26 +291,16 @@ Public Class BackupDialog
     End Sub
 
     Private Sub CustomNameTextBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles CustomNameTextBox.TextChanged
-        sender = DirectCast(sender, TextBox)
-        Dim BackupName As String = sender.Text
-        If Regex.Matches(BackupName, "%timestamp:.+?%").Count > 0 Then
-            For Each Match As RegularExpressions.Match In Regex.Matches(BackupName, "%timestamp:.+?%")
-                Dim Format = Match.Value.Substring(Match.Value.IndexOf(":") + 1)
-                Format = Format.Remove(Format.IndexOf("%"))
-                Try
-                    BackupName = BackupName.Replace(Match.ToString, DateTime.Now.ToString(Format, IIf(My.Settings.IgnoreSystemLocalizationWhenFormatting, CultureInfo.InvariantCulture, CultureInfo.CurrentCulture)))
-                Catch
-                End Try
-            Next
-        End If
-        BackupName = BackupName.Replace("%worldname%", MCBackup.Language.Dictionary("Localization.DirectoryName"))
-        If Regex.IsMatch(BackupName, "[\/:*?""<>|]") Then
-            sender.Background = New SolidColorBrush(Color.FromArgb(100, 255, 0, 0))
+        Dim Name As String = BackupName.Process(CustomNameTextBox.Text, MCBackup.Language.Dictionary("Localization.DirectoryName"))
+
+        If Regex.IsMatch(Name, "[\/:*?""<>|]") Then
+            CustomNameTextBox.Background = New SolidColorBrush(Color.FromArgb(100, 255, 0, 0))
             Exit Sub
         Else
-            sender.Background = New SolidColorBrush(Colors.White)
+            CustomNameTextBox.Background = New SolidColorBrush(Colors.White)
         End If
-        CustomNameOutputTextBlock.Content = New ViewboxEx(MCBackup.Language.Dictionary("Localization.Output") & BackupName, Stretch.Uniform, StretchDirection.DownOnly)
+
+        CustomNameOutputTextBlock.Content = New ViewboxEx(MCBackup.Language.Dictionary("Localization.Output") & Name, Stretch.Uniform, StretchDirection.DownOnly)
     End Sub
 End Class
 
@@ -351,4 +329,21 @@ Public Class SavesListViewItem
         Me.Name = Name
         Me.Location = Location
     End Sub
+End Class
+
+Public Class BackupName
+    Public Shared Function Process(BackupName As String, OriginalFolderName As String) As String
+        If Regex.Matches(BackupName, "%timestamp:.+?%").Count > 0 Then
+            For Each Match As RegularExpressions.Match In Regex.Matches(BackupName, "%timestamp:.+?%")
+                Dim Format = Match.Value.Substring(Match.Value.IndexOf(":") + 1)
+                Format = Format.Remove(Format.IndexOf("%"))
+                Try
+                    BackupName = BackupName.Replace(Match.ToString, DateTime.Now.ToString(Format, IIf(My.Settings.IgnoreSystemLocalizationWhenFormatting, CultureInfo.InvariantCulture, CultureInfo.CurrentCulture)))
+                Catch
+                End Try
+            Next
+        End If
+        BackupName = BackupName.Replace("%worldname%", OriginalFolderName)
+        Return BackupName
+    End Function
 End Class

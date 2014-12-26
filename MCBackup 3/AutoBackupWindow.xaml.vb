@@ -128,25 +128,16 @@ Public Class AutoBackupWindow
 
         If Minutes = 0 And Seconds = 0 Then
             Log.Print("Starting automated backup...")
-            Dim BackupName As String = My.Settings.DefaultAutoBackupName
-            If Regex.Matches(BackupName, "%timestamp:.+?%").Count > 0 Then
-                For Each Match As RegularExpressions.Match In Regex.Matches(BackupName, "%timestamp:.+?%")
-                    Dim Format = Match.Value.Substring(Match.Value.IndexOf(":") + 1)
-                    Format = Format.Remove(Format.IndexOf("%"))
-                    Try
-                        BackupName = BackupName.Replace(Match.ToString, DateTime.Now.ToString(Format, IIf(My.Settings.IgnoreSystemLocalizationWhenFormatting, CultureInfo.InvariantCulture, CultureInfo.CurrentCulture)))
-                    Catch
-                    End Try
-                Next
-            End If
-            BackupName = BackupName.Replace("%worldname%", DirectCast(SavesListView.SelectedItem, SaveInfoListViewItem).Name)
 
-            If Regex.IsMatch(BackupName, "[\/:*?""<>|]") Then
-                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.InvalidCharacters"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
+            Dim Name As String = BackupName.Process(My.Settings.DefaultAutoBackupName, MCBackup.Language.Dictionary("Localization.DirectoryName"))
+
+            If Regex.IsMatch(Name, "[\/:*?""<>|]") Then
+                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.IllegalCharacters"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
+                Timer.Stop()
                 Exit Sub
             End If
 
-            MainWindow.BackupInfo(0) = BackupName
+            MainWindow.BackupInfo(0) = Name
 
             MainWindow.BackupInfo(1) = String.Format(MCBackup.Language.Dictionary("AutoBackupWindow.BackupDescription"), SavesListView.SelectedItem.Name)
             Select Case My.Settings.Launcher

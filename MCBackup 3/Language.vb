@@ -142,7 +142,6 @@ Public Class Language
         Dictionary.Add("Message.BackupsFolderNotFound", FindString("Message.BackupsFolderNotFound"))
         Dictionary.Add("Message.AreYouSureDeleteGroup", FindString("Message.AreYouSureDeleteGroup"))
         Dictionary.Add("Message.BackupAlreadyExists", FindString("Message.BackupAlreadyExists"))
-        Dictionary.Add("Message.InvalidCharacters", FindString("Message.InvalidCharacters"))
         Dictionary.Add("Message.NoSavesWarning", FindString("Message.NoSavesWarning"))
         Dictionary.Add("Message.DisableAnonymousStats", FindString("Message.DisableAnonymousStats"))
         Dictionary.Add("Message.InvalidSavesFolder", FindString("Message.InvalidSavesFolder"))
@@ -157,6 +156,7 @@ Public Class Language
         Dictionary.Add("Message.CancelDelete", FindString("Message.CancelDelete"))
         Dictionary.Add("Message.OpenWebpage", FindString("Message.OpenWebpage"))
         Dictionary.Add("Message.ExceptionOccured", FindString("Message.ExceptionOccured"))
+        Dictionary.Add("Message.IllegalCharacters", FindString("Message.IllegalCharacters"))
 
         ' = Balloon Tips =
         Dictionary.Add("BalloonTip.Title.BackupError", FindString("BalloonTip.Title.BackupError"))

@@ -25,6 +25,7 @@ Imports System.Text.RegularExpressions
 Imports System.Text
 Imports System.Globalization
 Imports System.Windows.Media.Animation
+Imports System.ComponentModel
 
 Partial Public Class Options
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
@@ -182,7 +183,16 @@ Partial Public Class Options
         Me.Close()
     End Sub
 
-    Private Sub Window_Unloaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Unloaded
+    Private Sub Window_Unloaded(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
+        Dim DefaultBackupName As String = BackupName.Process(DefaultBackupNameTextBox.Text, MCBackup.Language.Dictionary("Localization.DirectoryName"))
+        Dim DefaultAutoBackupName As String = BackupName.Process(DefaultAutoBackupNameTextBox.Text, MCBackup.Language.Dictionary("Localization.DirectoryName"))
+
+        If Regex.IsMatch(DefaultBackupName, "[\/:*?""<>|]") Or Regex.IsMatch(DefaultAutoBackupName, "[\/:*?""<>|]") Then
+            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.IllegalCharacters"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
+            e.Cancel = True
+            Exit Sub
+        End If
+
         Log.Print("Minecraft folder location set to " & My.Settings.MinecraftFolderLocation)
         Log.Print("Saves folder location set to " & My.Settings.SavesFolderLocation)
         Log.Print("Backups folder location set to " & My.Settings.BackupsFolderLocation)
@@ -649,49 +659,31 @@ Partial Public Class Options
 
     Private Sub DefaultBackupNameTextBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles DefaultBackupNameTextBox.TextChanged
         If Me.IsLoaded Then
-            Dim BackupName As String = DefaultBackupNameTextBox.Text
-            If Regex.Matches(BackupName, "%timestamp:.+?%").Count > 0 Then
-                For Each Match As RegularExpressions.Match In Regex.Matches(BackupName, "%timestamp:.+?%")
-                    Dim Format = Match.Value.Substring(Match.Value.IndexOf(":") + 1)
-                    Format = Format.Remove(Format.IndexOf("%"))
-                    Try
-                        BackupName = BackupName.Replace(Match.ToString, DateTime.Now.ToString(Format, IIf(IgnoreSystemLocalizationCheckBox.IsChecked, CultureInfo.InvariantCulture, CultureInfo.CurrentCulture)))
-                    Catch
-                    End Try
-                Next
-            End If
-            BackupName = BackupName.Replace("%worldname%", MCBackup.Language.Dictionary("Localization.DirectoryName"))
-            If Regex.IsMatch(BackupName, "[\/:*?""<>|]") Then
+            Dim Name As String = BackupName.Process(DefaultBackupNameTextBox.Text, MCBackup.Language.Dictionary("Localization.DirectoryName"))
+
+            If Regex.IsMatch(Name, "[\/:*?""<>|]") Then
                 DefaultBackupNameTextBox.Background = New SolidColorBrush(Color.FromArgb(100, 255, 0, 0))
                 Exit Sub
             Else
                 DefaultBackupNameTextBox.Background = New SolidColorBrush(Colors.White)
             End If
-            BackupNameOutputLabel.Text = MCBackup.Language.Dictionary("Localization.Output") & BackupName
+
+            BackupNameOutputLabel.Text = MCBackup.Language.Dictionary("Localization.Output") & Name
         End If
     End Sub
 
     Private Sub DefaultAutoBackupNameTextBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles DefaultAutoBackupNameTextBox.TextChanged
         If Me.IsLoaded Then
-            Dim AutoBackupName As String = DefaultAutoBackupNameTextBox.Text
-            If Regex.Matches(AutoBackupName, "%timestamp:.+?%").Count > 0 Then
-                For Each Match As RegularExpressions.Match In Regex.Matches(AutoBackupName, "%timestamp:.+?%")
-                    Dim Format = Match.Value.Substring(Match.Value.IndexOf(":") + 1)
-                    Format = Format.Remove(Format.IndexOf("%"))
-                    Try
-                        AutoBackupName = AutoBackupName.Replace(Match.ToString, DateTime.Now.ToString(Format, IIf(IgnoreSystemLocalizationCheckBox.IsChecked, CultureInfo.InvariantCulture, CultureInfo.CurrentCulture)))
-                    Catch
-                    End Try
-                Next
-            End If
-            AutoBackupName = AutoBackupName.Replace("%worldname%", MCBackup.Language.Dictionary("Localization.DirectoryName"))
-            If Regex.IsMatch(AutoBackupName, "[\/:*?""<>|]") Then
+            Dim Name As String = BackupName.Process(DefaultAutoBackupNameTextBox.Text, MCBackup.Language.Dictionary("Localization.DirectoryName"))
+
+            If Regex.IsMatch(Name, "[\/:*?""<>|]") Then
                 DefaultAutoBackupNameTextBox.Background = New SolidColorBrush(Color.FromArgb(100, 255, 0, 0))
                 Exit Sub
             Else
                 DefaultAutoBackupNameTextBox.Background = New SolidColorBrush(Colors.White)
             End If
-            AutoBackupNameOutputLabel.Text = MCBackup.Language.Dictionary("Localization.Output") & AutoBackupName
+
+            AutoBackupNameOutputLabel.Text = MCBackup.Language.Dictionary("Localization.Output") & Name
         End If
     End Sub
 
