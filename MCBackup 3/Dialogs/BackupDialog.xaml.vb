@@ -207,13 +207,13 @@ Public Class BackupDialog
         Dim Name As String
 
         If DefaultNameRadioButton.IsChecked Then
-            Name = BackupName.Process(My.Settings.DefaultBackupName, MCBackup.Language.Dictionary("Localization.DirectoryName"))
+            Name = BackupName.Process(My.Settings.DefaultBackupName, OriginalFolderName)
         Else
             If String.IsNullOrEmpty(CustomNameTextBox.Text) Then
                 MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.EnterValidName"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
                 Exit Sub
             Else
-                Name = BackupName.Process(CustomNameTextBox.Text, MCBackup.Language.Dictionary("Localization.DirectoryName"))
+                Name = BackupName.Process(CustomNameTextBox.Text, OriginalFolderName)
             End If
         End If
 
