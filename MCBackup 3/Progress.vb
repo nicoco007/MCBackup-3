@@ -3,11 +3,11 @@
 Public Class Progress
     Private Shared MainWindow As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
 
-    Public Shared Property Value As Integer
+    Public Shared Property Value As Double
         Get
             Return MainWindow.ProgressBar.Value
         End Get
-        Set(value As Integer)
+        Set(value As Double)
             MainWindow.ProgressBar.Value = value
             If Environment.OSVersion.Version.Major > 5 Then
                 If value >= MainWindow.ProgressBar.Maximum Then
@@ -28,6 +28,15 @@ Public Class Progress
             If Environment.OSVersion.Version.Major > 5 Then
                 If value Then TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Indeterminate) Else TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress)
             End If
+        End Set
+    End Property
+
+    Public Shared Property Maximum As Double
+        Get
+            Return MainWindow.ProgressBar.Maximum
+        End Get
+        Set(value As Double)
+            MainWindow.ProgressBar.Maximum = value
         End Set
     End Property
 End Class

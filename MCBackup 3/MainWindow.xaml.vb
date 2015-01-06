@@ -1,5 +1,5 @@
 ﻿'   ╔═══════════════════════════════════════════════════════════════════════════╗
-'   ║                        Copyright © 2014 nicoco007                         ║
+'   ║                      Copyright © 2013-2015 nicoco007                      ║
 '   ║                                                                           ║
 '   ║      Licensed under the Apache License, Version 2.0 (the "License");      ║
 '   ║      you may not use this file except in compliance with the License.     ║
@@ -752,6 +752,9 @@ Partial Class MainWindow
             ' Create the target directory to prevent exceptions while getting the completion percentage
             My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0))
 
+            Dim TotalBytes As Double = GetFolderSize(BackupInfo(2))
+            Dim BytesCopied As Double = 0
+
             ' Start copying the source directory asynchronously to the target directory
             BackupThread = FileSystemOperations.Directory.CopyAsync(BackupInfo(2), My.Settings.BackupsFolderLocation & "\" & BackupInfo(0), True)
 
@@ -759,24 +762,26 @@ Partial Class MainWindow
             BackupStopwatch.Reset()
             BackupStopwatch.Start()
 
-            ' Set variables
-            Dim PercentComplete As Double = 0
-
             ' Do until percent complete is equal to or over 100
-            Do Until Int(PercentComplete) >= 100
+            Do Until TotalBytes = BytesCopied
                 ' Calculate percent complete by dividing target location by source location, and multiply by 100
-                PercentComplete = GetFolderSize(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0)) / GetFolderSize(BackupInfo(2)) * 100
+
+
 
                 ' Determine speed in megabytes per second (MB/s) by dividing bytes copied by seconds elapsed (in decimal for more accuracy), and dividing by 1048576.
-                Dim Total As Double = GetFolderSize(BackupInfo(2))
-                Dim Copied As Double = GetFolderSize(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0)) ' 1024 (1K bytes) × 1024 = 1048576 (1M bytes)
-                Dim Speed As Double = Math.Round((Copied / 1048576) / (BackupStopwatch.ElapsedMilliseconds / 1000), 2)
+                TotalBytes = GetFolderSize(BackupInfo(2))
+                Dispatcher.Invoke(Sub()
+                                      Progress.Maximum = TotalBytes
+                                  End Sub)
+                BytesCopied = GetFolderSize(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0)) ' 1024 (1K bytes) × 1024 = 1048576 (1M bytes)
+                Dim Speed As Double = Math.Round((BytesCopied / 1048576) / (BackupStopwatch.ElapsedMilliseconds / 1000), 2)
+                Dim PercentComplete As Double = (BytesCopied / TotalBytes) * 100
 
                 Dim TimeLeft As New TimeSpan(0)
 
                 ' Determine time remaining using (TimeElapsed / BytesCopied) * BytesRemaining and round to the nearest 5
-                If Copied > 0 Then
-                    TimeLeft = TimeSpan.FromSeconds(Math.Round((BackupStopwatch.ElapsedMilliseconds / 1000) / Copied * (Total - Copied) / 5) * 5)
+                If BytesCopied > 0 Then
+                    TimeLeft = TimeSpan.FromSeconds(Math.Round((BackupStopwatch.ElapsedMilliseconds / 1000) / BytesCopied * (TotalBytes - BytesCopied) / 5) * 5)
                 End If
 
                 Dim TimeLeftString As String
@@ -792,7 +797,7 @@ Partial Class MainWindow
                 Dispatcher.Invoke(Sub()
                                       StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), PercentComplete, Speed, TimeLeftString)
                                       Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.Backup"), ApplicationVersion, PercentComplete)
-                                      Progress.Value = PercentComplete
+                                      Progress.Value = BytesCopied
                                   End Sub)
 
                 If Cancel = True And BackupThread.IsAlive = False Then
@@ -1034,6 +1039,10 @@ Partial Class MainWindow
                     ' Set initial size variable
                     Dim InitialSize As Double = GetFolderSize(RestoreInfo(1))
 
+                    Dispatcher.Invoke(Sub()
+                                          Progress.Maximum = InitialSize
+                                      End Sub)
+
                     ' Start removal async
                     DeleteForRestoreThread = New DirectoryInfo(RestoreInfo(1)).DeleteContentsAsync
 
@@ -1050,8 +1059,8 @@ Partial Class MainWindow
                             Dispatcher.Invoke(Sub()
                                                   ' Show percent complete and message
                                                   StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.RemovingOldContent"), 100 - PercentRemoved)
-                                                  Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.RemovingOldContent"), ApplicationVersion, 100 - PercentRemoved)
-                                                  Progress.Value = PercentRemoved
+                                                  Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.Delete"), ApplicationVersion, 100 - PercentRemoved)
+                                                  Progress.Value = BytesRemaining
                                               End Sub)
 
                             If Cancel And DeleteForRestoreThread.IsAlive = False Then
@@ -1072,6 +1081,7 @@ Partial Class MainWindow
                         Loop
                     Catch ex As Exception
                         Me.Dispatcher.Invoke(Sub() ErrorReportDialog.Show("An error occured while trying to delete the folder.", ex))
+                        Exit Sub
                     End Try
                 End If
             End If
@@ -1090,22 +1100,28 @@ Partial Class MainWindow
 
             ' Set variables
             Dim PercentComplete As Double = 0
+            Dim TotalBytes As Double = GetFolderSize(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0))
+            Dim BytesCopied As Double = 0
+
+            Dispatcher.Invoke(Sub()
+                                  Progress.Maximum = TotalBytes
+                              End Sub)
 
             ' Do until percent complete is equal to or over 100
-            Do Until Int(PercentComplete) >= 100
+            Do Until TotalBytes = BytesCopied
                 ' Calculate percent complete by dividing target location by source location, and multiply by 100
                 PercentComplete = GetFolderSize(RestoreInfo(1)) / GetFolderSize(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0)) * 100
 
                 ' Determine speed in megabytes per second (MB/s) by dividing bytes copied by seconds elapsed (in decimal for more accuracy), and dividing by 1048576.
-                Dim Total As Double = GetFolderSize(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0))
-                Dim Copied As Double = GetFolderSize(RestoreInfo(1))
-                Dim Speed As Double = Math.Round((Copied / 1048576) / (RestoreStopWatch.ElapsedMilliseconds / 1000), 2) ' 1024 (1K bytes) × 1024 = 1048576 (1M bytes)
+                TotalBytes = GetFolderSize(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0))
+                BytesCopied = GetFolderSize(RestoreInfo(1))
+                Dim Speed As Double = Math.Round((BytesCopied / 1048576) / (RestoreStopWatch.ElapsedMilliseconds / 1000), 2) ' 1024 (1K bytes) × 1024 = 1048576 (1M bytes)
 
                 Dim TimeLeft As New TimeSpan(0)
 
                 ' Determine time remaining using (TimeElapsed / BytesCopied) * BytesRemaining and round to the nearest 5
-                If Copied > 0 Then
-                    TimeLeft = TimeSpan.FromSeconds(Math.Round((RestoreStopWatch.ElapsedMilliseconds / 1000) / Copied * (Total - Copied) / 5) * 5)
+                If BytesCopied > 0 Then
+                    TimeLeft = TimeSpan.FromSeconds(Math.Round((RestoreStopWatch.ElapsedMilliseconds / 1000) / BytesCopied * (TotalBytes - BytesCopied) / 5) * 5)
                 End If
 
                 Dim TimeLeftString As String
@@ -1122,7 +1138,7 @@ Partial Class MainWindow
                                       ' Display percent complete on progress bar and restoring message
                                       StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed, TimeLeftString)
                                       Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.Restore"), ApplicationVersion, PercentComplete)
-                                      Progress.Value = PercentComplete
+                                      Progress.Value = BytesCopied
                                       ProgressBar.Refresh()
                                   End Sub)
 
@@ -1277,6 +1293,7 @@ Partial Class MainWindow
         For Each Directory As String In ItemsToDelete
             TotalSize += GetFolderSize(My.Settings.BackupsFolderLocation & "\" & Directory)
         Next
+        Progress.Maximum = TotalSize
         Dim t As New Thread(Sub() Delete(ItemsToDelete, TotalSize))
         t.Start()
     End Sub
@@ -1296,12 +1313,10 @@ Partial Class MainWindow
 
             PercentComplete = CurrentSize / TotalSize * 100
 
-            Log.Print("Percent complete: " & PercentComplete.ToString, Log.Level.Debug)
-
             Dispatcher.Invoke(Sub()
                                   StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Deleting"), PercentComplete)
                                   Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.Delete"), ApplicationVersion, PercentComplete)
-                                  MCBackup.Progress.Value = PercentComplete
+                                  MCBackup.Progress.Value = CurrentSize
                               End Sub)
             Thread.Sleep(200)
         Loop

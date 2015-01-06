@@ -15,7 +15,7 @@ Imports System.Windows
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("nicoco007")> 
 <Assembly: AssemblyProduct("MCBackup 3")> 
-<Assembly: AssemblyCopyright("Copyright © nicoco007 2013")> 
+<Assembly: AssemblyCopyright("Copyright © 2013-2015 nicoco007")> 
 <Assembly: AssemblyTrademark("")> 
 <Assembly: ComVisible(false)>
 
@@ -55,7 +55,7 @@ Imports System.Windows
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("3.7.4.0")> 
-<Assembly: AssemblyFileVersion("3.7.4.0")> 
+<Assembly: AssemblyVersion("3.7.5.0")> 
+<Assembly: AssemblyFileVersion("3.7.5.0")> 
 
 <Assembly: NeutralResourcesLanguageAttribute("en-CA")> 
