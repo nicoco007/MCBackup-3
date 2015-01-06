@@ -1,3 +1,10 @@
+' ------------------------------------------------------------------
+' The FolderSelectDialog and Reflector classes are not of my doing.
+' They are based on the Front-End for DOSBox project:
+' http://code.google.com/p/fed/
+' All credit goes to the author.
+' ------------------------------------------------------------------
+
 Imports System.Windows.Forms
 Imports System.Windows.Threading
 

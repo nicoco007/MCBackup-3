@@ -1,4 +1,20 @@
-﻿Imports System.Threading
+﻿'   ╔═══════════════════════════════════════════════════════════════════════════╗
+'   ║                      Copyright © 2013-2015 nicoco007                      ║
+'   ║                                                                           ║
+'   ║      Licensed under the Apache License, Version 2.0 (the "License");      ║
+'   ║      you may not use this file except in compliance with the License.     ║
+'   ║                  You may obtain a copy of the License at                  ║
+'   ║                                                                           ║
+'   ║                 http://www.apache.org/licenses/LICENSE-2.0                ║
+'   ║                                                                           ║
+'   ║    Unless required by applicable law or agreed to in writing, software    ║
+'   ║     distributed under the License is distributed on an "AS IS" BASIS,     ║
+'   ║  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. ║
+'   ║     See the License for the specific language governing permissions and   ║
+'   ║                      limitations under the License.                       ║
+'   ╚═══════════════════════════════════════════════════════════════════════════╝
+
+Imports System.Threading
 Imports System.IO
 
 Public Class FileSystemOperations
@@ -16,40 +32,6 @@ Public Class FileSystemOperations
                 Log.Print(ex.Message)
             End Try
         End Sub
-
-        'Public Shared Function DeleteAsync(Directory As String)
-        '    Dim Thread As New Thread(Sub() Delete(Directory))
-        '    Thread.Start()
-        '    Return Thread
-        'End Function
-
-        'Public Shared Sub Delete(Directory As String)
-        '    For Each File As FileInfo In New DirectoryInfo(Directory).GetFiles
-        '        File.Delete()
-        '    Next
-
-        '    For Each Folder As DirectoryInfo In New DirectoryInfo(Directory).GetDirectories
-        '        Delete(Folder.FullName)
-        '    Next
-
-        '    IO.Directory.Delete(Directory)
-        'End Sub
-
-        'Public Shared Function DeleteFolderContentsAsync(Directory As String)
-        '    Dim Thread As New Thread(Sub() DeleteFolderContents(Directory))
-        '    Thread.Start()
-        '    Return Thread
-        'End Function
-
-        'Public Shared Sub DeleteFolderContents(Directory As String)
-        '    For Each File As FileInfo In New DirectoryInfo(Directory).GetFiles
-        '        IO.File.Delete(File.FullName)
-        '    Next
-
-        '    For Each Folder As DirectoryInfo In New DirectoryInfo(Directory).GetDirectories
-        '        Delete(Folder.FullName)
-        '    Next
-        'End Sub
 
         Public Shared Function DeleteAsync(Directory As String)
             Dim Thread As New Thread(Sub() Delete(Directory))
