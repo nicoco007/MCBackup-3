@@ -764,10 +764,6 @@ Partial Class MainWindow
 
             ' Do until percent complete is equal to or over 100
             Do Until TotalBytes = BytesCopied
-                ' Calculate percent complete by dividing target location by source location, and multiply by 100
-
-
-
                 ' Determine speed in megabytes per second (MB/s) by dividing bytes copied by seconds elapsed (in decimal for more accuracy), and dividing by 1048576.
                 TotalBytes = GetFolderSize(BackupInfo(2))
                 Dispatcher.Invoke(Sub()
@@ -1314,8 +1310,8 @@ Partial Class MainWindow
             PercentComplete = CurrentSize / TotalSize * 100
 
             Dispatcher.Invoke(Sub()
-                                  StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Deleting"), PercentComplete)
-                                  Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.Delete"), ApplicationVersion, PercentComplete)
+                                  StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Deleting"), 100 - PercentComplete)
+                                  Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.Delete"), ApplicationVersion, 100 - PercentComplete)
                                   MCBackup.Progress.Value = CurrentSize
                               End Sub)
             Thread.Sleep(200)
