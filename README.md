@@ -31,7 +31,7 @@ MCBackup offers the most to its users. This is the list of **currently included 
 Support
 -------
 You can contact me using [support@nicoco007.com][4].<br>
-To submit bugs, please go go to our [Bug Tracker][2].
+If you happen to find a bug, please go to the [bug tracker][2] and submit a report!
 
 [1]:http://www.nicoco007.com/minecraft/applications/mcbackup-3/downloads/     "Downloads"
 [2]:https://github.com/nicoco007/MCBackup-3/issues                            "Bug Tracker"
