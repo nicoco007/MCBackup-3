@@ -19,19 +19,13 @@ Imports System.Net
 Imports Scripting
 Imports System.Windows.Threading
 Imports System.ComponentModel
-Imports System.Windows.Interop.Imaging
-Imports Microsoft.WindowsAPICodePack
-Imports Microsoft.WindowsAPICodePack.Taskbar
 Imports System.Globalization
 Imports System.Threading
-Imports System.Windows.Interop
 Imports Substrate
 Imports MahApps.Metro
 Imports System.Text
 Imports Newtonsoft.Json.Linq
 Imports Newtonsoft.Json
-Imports System.Security
-Imports System.Text.RegularExpressions
 
 Partial Class MainWindow
 
