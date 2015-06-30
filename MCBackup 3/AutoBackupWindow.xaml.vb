@@ -137,26 +137,26 @@ Public Class AutoBackupWindow
                 Exit Sub
             End If
 
-            MainWindow.BackupInfo(0) = Name
+            MainWindow.BackupInfo.Name = Name
 
-            MainWindow.BackupInfo(1) = String.Format(MCBackup.Language.Dictionary("AutoBackupWindow.BackupDescription"), SavesListView.SelectedItem.Name)
+            MainWindow.BackupInfo.Description = String.Format(MCBackup.Language.Dictionary("AutoBackupWindow.BackupDescription"), SavesListView.SelectedItem.Name)
             Select Case My.Settings.Launcher
                 Case Game.Launcher.Minecraft
-                    MainWindow.BackupInfo(2) = My.Settings.SavesFolderLocation & "\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
+                    MainWindow.BackupInfo.Location = My.Settings.SavesFolderLocation & "\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
                 Case Game.Launcher.Technic
-                    MainWindow.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\modpacks\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Modpack & "\saves\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
+                    MainWindow.BackupInfo.Location = My.Settings.MinecraftFolderLocation & "\modpacks\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Modpack & "\saves\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
                 Case Game.Launcher.FeedTheBeast
-                    MainWindow.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Modpack & "\minecraft\saves\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
+                    MainWindow.BackupInfo.Location = My.Settings.MinecraftFolderLocation & "\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Modpack & "\minecraft\saves\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
                 Case Game.Launcher.ATLauncher
-                    MainWindow.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\Instances\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Modpack & "\saves\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
+                    MainWindow.BackupInfo.Location = My.Settings.MinecraftFolderLocation & "\Instances\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Modpack & "\saves\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
             End Select
 
-            MainWindow.BackupInfo(3) = "save"
+            MainWindow.BackupInfo.Type = "save"
 
-            MainWindow.BackupInfo(5) = SavesListView.SelectedItem.Launcher
-            MainWindow.BackupInfo(6) = SavesListView.SelectedItem.Modpack
+            MainWindow.BackupInfo.Launcher = SavesListView.SelectedItem.Launcher
+            MainWindow.BackupInfo.Modpack = SavesListView.SelectedItem.Modpack
 
-            MainWindow.BackupInfo(4) = MCBackup.Language.Dictionary("Groups.AutoBackups")
+            MainWindow.BackupInfo.Group = MCBackup.Language.Dictionary("Groups.AutoBackups")
 
             MainWindow.StartBackup()
 

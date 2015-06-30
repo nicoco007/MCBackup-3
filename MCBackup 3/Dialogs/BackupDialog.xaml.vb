@@ -165,30 +165,30 @@ Public Class BackupDialog
             Case 0
                 Select Case My.Settings.Launcher
                     Case Game.Launcher.Minecraft
-                        Main.BackupInfo(2) = My.Settings.SavesFolderLocation & "\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
+                        Main.BackupInfo.Location = My.Settings.SavesFolderLocation & "\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
                     Case Game.Launcher.Technic
-                        Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\modpacks\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
+                        Main.BackupInfo.Location = My.Settings.MinecraftFolderLocation & "\modpacks\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
                     Case Game.Launcher.FeedTheBeast
-                        Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\minecraft\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
+                        Main.BackupInfo.Location = My.Settings.MinecraftFolderLocation & "\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\minecraft\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
                     Case Game.Launcher.ATLauncher
-                        Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\Instances\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
+                        Main.BackupInfo.Location = My.Settings.MinecraftFolderLocation & "\Instances\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
                 End Select
-                Main.BackupInfo(3) = "save"
+                Main.BackupInfo.Type = "save"
             Case 1
                 Select Case My.Settings.Launcher
                     Case Game.Launcher.Minecraft
-                        Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\versions\" & VersionsListView.SelectedItem
+                        Main.BackupInfo.Location = My.Settings.MinecraftFolderLocation & "\versions\" & VersionsListView.SelectedItem
                     Case Game.Launcher.Technic
-                        Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\modpacks\" & VersionsListView.SelectedItem
+                        Main.BackupInfo.Location = My.Settings.MinecraftFolderLocation & "\modpacks\" & VersionsListView.SelectedItem
                     Case Game.Launcher.FeedTheBeast
-                        Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\" & VersionsListView.SelectedItem
+                        Main.BackupInfo.Location = My.Settings.MinecraftFolderLocation & "\" & VersionsListView.SelectedItem
                     Case Game.Launcher.ATLauncher
-                        Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation & "\Instances\" & VersionsListView.SelectedItem
+                        Main.BackupInfo.Location = My.Settings.MinecraftFolderLocation & "\Instances\" & VersionsListView.SelectedItem
                 End Select
-                Main.BackupInfo(3) = "version"
+                Main.BackupInfo.Type = "version"
             Case 2
-                Main.BackupInfo(2) = My.Settings.MinecraftFolderLocation
-                Main.BackupInfo(3) = "everything"
+                Main.BackupInfo.Location = My.Settings.MinecraftFolderLocation
+                Main.BackupInfo.Type = "everything"
         End Select
 
         Dim OriginalFolderName As String
@@ -222,15 +222,15 @@ Public Class BackupDialog
             Exit Sub
         End If
 
-        Main.BackupInfo(0) = Name
+        Main.BackupInfo.Name = Name
 
-        Main.BackupInfo(1) = DescriptionTextBox.Text
+        Main.BackupInfo.Description = DescriptionTextBox.Text
 
-        Main.BackupInfo(4) = IIf(GroupsComboBox.SelectedIndex = 0, Nothing, GroupsComboBox.SelectedItem)
-        Main.BackupInfo(5) = My.Settings.Launcher
+        Main.BackupInfo.Group = IIf(GroupsComboBox.SelectedIndex = 0, Nothing, GroupsComboBox.SelectedItem)
+        Main.BackupInfo.Launcher = My.Settings.Launcher
 
         If My.Settings.Launcher <> Game.Launcher.Minecraft And SavesListView.SelectedItems.Count > 0 Then
-            Main.BackupInfo(6) = CType(SavesListView.SelectedItem, SavesListViewItem).Location
+            Main.BackupInfo.Modpack = CType(SavesListView.SelectedItem, SavesListViewItem).Location
         End If
 
         Me.Close()

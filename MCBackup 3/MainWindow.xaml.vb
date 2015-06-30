@@ -16,7 +16,7 @@
 
 Imports System.IO
 Imports System.Net
-Imports Scripting
+'Imports Scripting
 Imports System.Windows.Threading
 Imports System.ComponentModel
 Imports System.Globalization
@@ -39,7 +39,7 @@ Partial Class MainWindow
     ' BackupInfo(4) = Backup group
     ' BackupInfo(5) = Launcher
     ' BackupInfo(6) = Modpack
-    Public BackupInfo(6) As String
+    Public BackupInfo As New BackupInfo
     Public RestoreInfo(2) As String
 
     Private FolderBrowserDialog As New System.Windows.Forms.FolderBrowserDialog
@@ -178,7 +178,7 @@ Partial Class MainWindow
             End If
         End If
 
-        Log.Print("Set Backups folder location to '" & My.Settings.BackupsFolderLocation & "'")
+        Log.Print("Backups folder location set to '" & My.Settings.BackupsFolderLocation & "'")
 
         GridSidebarColumn.Width = New GridLength(My.Settings.SidebarWidth.Value, GridUnitType.Star)
         GridListViewColumn.Width = New GridLength(My.Settings.ListViewWidth.Value, GridUnitType.Star)
@@ -261,7 +261,7 @@ Partial Class MainWindow
                 UpdateDialog.Owner = Me
                 UpdateDialog.Show()
             ElseIf ApplicationVersionInt > LatestVersionInt Then
-                Log.Print("MCBackup is running in beta mode (version " & ApplicationVersion & ")!")
+                Log.Print("MCBackup seems to be running a beta version (version " & ApplicationVersion & ")!")
                 Me.Title += " Beta"
             ElseIf ApplicationVersionInt = LatestVersionInt Then
                 Log.Print("MCBackup is up-to-date (version " & ApplicationVersion & ").")
@@ -732,7 +732,7 @@ Partial Class MainWindow
                 Exit Sub
             End If
         End If
-        Log.Print("Starting new backup (Name: '{0}'; Description: '{1}'; Path: '{2}'; Type: '{3}'", BackupInfo(0), BackupInfo(1), BackupInfo(2), BackupInfo(3))
+        Log.Print("Starting new backup (Name: '{0}'; Description: '{1}'; Path: '{2}'; Type: '{3}'", BackupInfo.Name, BackupInfo.Description, BackupInfo.Location, BackupInfo.Type)
         EnableUI(False)
         Cancel = False
         Dim t As New Thread(AddressOf Backup)
@@ -744,13 +744,13 @@ Partial Class MainWindow
     Private Sub Backup()
         Try
             ' Create the target directory to prevent exceptions while getting the completion percentage
-            My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0))
+            My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation & "\" & BackupInfo.Name)
 
-            Dim TotalBytes As Double = GetFolderSize(BackupInfo(2))
+            Dim TotalBytes As Double = GetFolderSize(BackupInfo.Description)
             Dim BytesCopied As Double = 0
 
             ' Start copying the source directory asynchronously to the target directory
-            BackupThread = FileSystemOperations.Directory.CopyAsync(BackupInfo(2), My.Settings.BackupsFolderLocation & "\" & BackupInfo(0), True)
+            BackupThread = FileSystemOperations.Directory.CopyAsync(BackupInfo.Location, My.Settings.BackupsFolderLocation & "\" & BackupInfo.Name, True)
 
             ' Reset & start the backup stopwatch
             BackupStopwatch.Reset()
@@ -759,11 +759,11 @@ Partial Class MainWindow
             ' Do until percent complete is equal to or over 100
             Do Until TotalBytes = BytesCopied
                 ' Determine speed in megabytes per second (MB/s) by dividing bytes copied by seconds elapsed (in decimal for more accuracy), and dividing by 1048576.
-                TotalBytes = GetFolderSize(BackupInfo(2))
+                TotalBytes = GetFolderSize(BackupInfo.Location)
                 Dispatcher.Invoke(Sub()
                                       Progress.Maximum = TotalBytes
                                   End Sub)
-                BytesCopied = GetFolderSize(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0)) ' 1024 (1K bytes) × 1024 = 1048576 (1M bytes)
+                BytesCopied = GetFolderSize(My.Settings.BackupsFolderLocation & "\" & BackupInfo.Name) ' 1024 (1K bytes) × 1024 = 1048576 (1M bytes)
                 Dim Speed As Double = Math.Round((BytesCopied / 1048576) / (BackupStopwatch.ElapsedMilliseconds / 1000), 2)
                 Dim PercentComplete As Double = (BytesCopied / TotalBytes) * 100
 
@@ -796,7 +796,7 @@ Partial Class MainWindow
                                           Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.RevertingChanges"), ApplicationVersion)
                                           Progress.IsIndeterminate = True
                                       End Sub)
-                    My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0), FileIO.DeleteDirectoryOption.DeleteAllContents)
+                    My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & BackupInfo.Name, FileIO.DeleteDirectoryOption.DeleteAllContents)
                     Dispatcher.Invoke(Sub()
                                           BackupStopwatch.Stop()
                                           Progress.Value = 0
@@ -818,14 +818,14 @@ Partial Class MainWindow
 
             Dim InfoJson As New JObject
 
-            InfoJson.Add(New JProperty("OriginalName", New DirectoryInfo(BackupInfo(2)).Name))
-            InfoJson.Add(New JProperty("Type", BackupInfo(3)))
-            InfoJson.Add(New JProperty("Description", BackupInfo(1)))
-            InfoJson.Add(New JProperty("Group", BackupInfo(4)))
-            InfoJson.Add(New JProperty("Launcher", BackupInfo(5)))
-            InfoJson.Add(New JProperty("Modpack", BackupInfo(6)))
+            InfoJson.Add(New JProperty("OriginalName", New DirectoryInfo(BackupInfo.Location).Name))
+            InfoJson.Add(New JProperty("Type", BackupInfo.Type))
+            InfoJson.Add(New JProperty("Description", BackupInfo.Description))
+            InfoJson.Add(New JProperty("Group", BackupInfo.Group))
+            InfoJson.Add(New JProperty("Launcher", BackupInfo.Launcher))
+            InfoJson.Add(New JProperty("Modpack", BackupInfo.Modpack))
 
-            Using SW As New StreamWriter(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0) & "\info.json") ' Create information file (stores description, type, folder name, group name, launcher and modpack)
+            Using SW As New StreamWriter(My.Settings.BackupsFolderLocation & "\" & BackupInfo.Name & "\info.json") ' Create information file (stores description, type, folder name, group name, launcher and modpack)
                 SW.Write(JsonConvert.SerializeObject(InfoJson, Formatting.Indented))
             End Using
 
@@ -835,7 +835,7 @@ Partial Class MainWindow
                 WebClient.DownloadDataAsync(New Uri("http://c.statcounter.com/9820848/0/90ee98bc/1/"))
             End If
 
-            If BackupInfo(3) = "save" And My.Settings.CreateThumbOnWorld Then
+            If BackupInfo.Type = "save" And My.Settings.CreateThumbOnWorld Then
                 ' Create thumbnail if backup type is save
                 Log.Print("Creating thumbnail")
 
@@ -848,7 +848,7 @@ Partial Class MainWindow
                                       With MCMapProcess.StartInfo
                                           .FileName = Chr(34) & StartupPath & "\mcmap\mcmap.exe" & Chr(34)
                                           .WorkingDirectory = StartupPath & "\mcmap\"
-                                          .Arguments = String.Format(" -from -15 -15 -to 15 15 -file ""{0}\{1}\thumb.png"" ""{2}""", My.Settings.BackupsFolderLocation, BackupInfo(0), BackupInfo(2))
+                                          .Arguments = String.Format(" -from -15 -15 -to 15 15 -file ""{0}\{1}\thumb.png"" ""{2}""", My.Settings.BackupsFolderLocation, BackupInfo.Name, BackupInfo.Location)
                                           .CreateNoWindow = True
                                           .UseShellExecute = False
                                           .RedirectStandardError = True
@@ -1179,7 +1179,7 @@ Partial Class MainWindow
 
 #Region "Functions"
     Private Function GetFolderSize(FolderPath As String)
-        Dim FSO As FileSystemObject = New FileSystemObject
+        Dim FSO As New Scripting.FileSystemObject
         If Not Directory.Exists(FolderPath) Then
             Log.Print(String.Format("Directory '{0}' does not exist.", FolderPath))
             Return 0
@@ -1195,7 +1195,7 @@ Partial Class MainWindow
 
     Public Function GetFolderDateCreated(FolderPath As String) As DateTime
         Try
-            Dim FSO As FileSystemObject = New FileSystemObject
+            Dim FSO As New Scripting.FileSystemObject
             Return FSO.GetFolder(FolderPath).DateCreated ' Get FolderPath's date of creation
         Catch ex As Exception
             Dispatcher.Invoke(Sub() ErrorReportDialog.Show(String.Format("Could not find {0}'s creation date:", FolderPath), ex))
@@ -1763,13 +1763,13 @@ Partial Class MainWindow
                 If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.CancelBackup"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
                     If Not MCMapProcess.HasExited Then
                         MCMapProcess.Kill()
-                        If IO.File.Exists(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0) & "\thumb.png") Then IO.File.Delete(My.Settings.BackupsFolderLocation & "\" & BackupInfo(0) & "\thumb.png")
+                        If File.Exists(My.Settings.BackupsFolderLocation & "\" & BackupInfo.Name & "\thumb.png") Then File.Delete(My.Settings.BackupsFolderLocation & "\" & BackupInfo.Name & "\thumb.png")
                         EnableUI(True)
                         RefreshBackupsList()
                         ReloadBackupGroups()
                         Progress.Value = 0
                         StatusLabel.Content = MCBackup.Language.Dictionary("Status.CanceledAndReady")
-                        Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
+                        Me.Title = "MCBackup v" + ApplicationVersion
                         StatusLabel.Refresh()
                         Log.Print("Thumbnail creation cancelled")
                     End If
@@ -1934,5 +1934,86 @@ Public Class TaggedTabItem
     Sub New(Text As String, Tag As Object)
         Me.Text = Text
         Me.Tag = Tag
+    End Sub
+End Class
+
+Public Class BackupInfo
+    Private _Name As String
+    Public Property Name As String
+        Get
+            Return _Name
+        End Get
+        Set(value As String)
+            _Name = value
+        End Set
+    End Property
+
+    Private _Location As String
+    Public Property Location As String
+        Get
+            Return _Location
+        End Get
+        Set(value As String)
+            _Location = value
+        End Set
+    End Property
+
+    Private _Description As String
+    Public Property Description As String
+        Get
+            Return _Description
+        End Get
+        Set(value As String)
+            _Description = value
+        End Set
+    End Property
+
+    Private _Type As String
+    Public Property Type As String
+        Get
+            Return _Type
+        End Get
+        Set(value As String)
+            _Type = value
+        End Set
+    End Property
+
+    Private _Group As String
+    Public Property Group As String
+        Get
+            Return _Group
+        End Get
+        Set(value As String)
+            _Group = value
+        End Set
+    End Property
+
+    Private _Launcher As String
+    Public Property Launcher As String
+        Get
+            Return _Launcher
+        End Get
+        Set(value As String)
+            _Launcher = value
+        End Set
+    End Property
+
+    Private _Modpack As String
+    Public Property Modpack As String
+        Get
+            Return _Modpack
+        End Get
+        Set(value As String)
+            _Modpack = value
+        End Set
+    End Property
+
+    Public Sub BackupInfo(Name As String, Description As String, Location As String, Type As String, Group As String, Launcher As String, Modpack As String)
+        Me.Name = Name
+        Me.Description = Description
+        Me.Location = Location
+        Me.Type = Type
+        Me.Group = Group
+        Me.Launcher = Launcher
     End Sub
 End Class

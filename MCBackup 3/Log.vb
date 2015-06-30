@@ -91,7 +91,7 @@ Public Class Log
                                 SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & Part)
                             Next
                         Case Log.Level.Debug
-                            If Environment.GetCommandLineArgs().Contains("-debug") Then
+                            If Environment.GetCommandLineArgs().Contains("---debug") Then
                                 For Each Part As String In FullMessageParts
                                     Part = Part.Replace(vbNewLine, "")
                                     Debug.Print(DebugTimeStamp() & " [DEBUG] " & Part)
@@ -116,7 +116,7 @@ Public Class Log
                             Debug.Print(DebugTimeStamp() & " [SEVERE] " & FullMessage)
                             SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & FullMessage)
                         Case Log.Level.Debug
-                            If Environment.GetCommandLineArgs().Contains("-debug") Then
+                            If Environment.GetCommandLineArgs().Contains("--debug") Then
                                 Debug.Print(DebugTimeStamp() & " [DEBUG] " & FullMessage)
                                 SW.WriteLine(DebugTimeStamp() & " [DEBUG] " & FullMessage)
                             End If
@@ -162,7 +162,7 @@ Public Class Log
                                 SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & Part)
                             Next
                         Case Log.Level.Debug
-                            If Environment.GetCommandLineArgs().Contains("-debug") Then
+                            If Environment.GetCommandLineArgs().Contains("--debug") Then
                                 For Each Part As String In FullMessageParts
                                     Part = Part.Replace(vbNewLine, "")
                                     Debug.Print(DebugTimeStamp() & " [DEBUG] " & Part)
@@ -187,7 +187,7 @@ Public Class Log
                             Debug.Print(DebugTimeStamp() & " [SEVERE] " & FullMessage)
                             SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & FullMessage)
                         Case Log.Level.Debug
-                            If Environment.GetCommandLineArgs().Contains("-debug") Then
+                            If Environment.GetCommandLineArgs().Contains("--debug") Then
                                 Debug.Print(DebugTimeStamp() & " [DEBUG] " & FullMessage)
                                 SW.WriteLine(DebugTimeStamp() & " [DEBUG] " & FullMessage)
                             End If
