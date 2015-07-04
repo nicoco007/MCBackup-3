@@ -16,7 +16,6 @@
 
 Imports System.IO
 Imports System.Net
-'Imports Scripting
 Imports System.Windows.Threading
 Imports System.ComponentModel
 Imports System.Globalization
@@ -32,13 +31,6 @@ Partial Class MainWindow
 #Region "Variables"
     Private AppData As String = Environ("APPDATA")
 
-    ' BackupInfo(0) = Backup name
-    ' BackupInfo(1) = Backup description
-    ' BackupInfo(2) = Location
-    ' BackupInfo(3) = Backup type
-    ' BackupInfo(4) = Backup group
-    ' BackupInfo(5) = Launcher
-    ' BackupInfo(6) = Modpack
     Public BackupInfo As New BackupInfo
     Public RestoreInfo(2) As String
 
