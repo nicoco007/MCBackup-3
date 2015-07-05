@@ -21,4 +21,12 @@ Public Class AboutDialog
         Me.Title = MCBackup.Language.Dictionary("AboutWindow.Title")
         TextBlock1.Text = String.Format(MCBackup.Language.Dictionary("AboutWindow.Text").Replace("\n", vbNewLine), Main.ApplicationVersion)
     End Sub
+
+    Private Sub Window_ContentRendered(sender As Object, e As EventArgs) Handles MyBase.ContentRendered
+        ' SizeToContent Black Border Fix © nicoco007
+        Dim s As New Size(Me.Width, Me.Height)
+        Me.SizeToContent = SizeToContent.Manual
+        Me.Width = s.Width
+        Me.Height = s.Height
+    End Sub
 End Class
