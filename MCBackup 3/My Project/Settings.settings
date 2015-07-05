@@ -62,10 +62,6 @@
     <Setting Name="ListViewSortByDirection" Type="System.ComponentModel.ListSortDirection" Scope="User">
       <Value Profile="(Default)">Ascending</Value>
     </Setting>
-    <Setting Name="BackupGroups" Type="System.Collections.Specialized.StringCollection" Scope="User">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" /&gt;</Value>
-    </Setting>
     <Setting Name="FirstCloseToTray" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
@@ -84,8 +80,8 @@
     <Setting Name="SendAnonymousData" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="Launcher" Type="MCBackup.MainWindow.Launcher" Scope="User">
-      <Value Profile="(Default)">Minecraft</Value>
+    <Setting Name="Launcher" Type="MCBackup.Game.Launcher" Scope="User">
+      <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="ShowDeleteDialog" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
@@ -101,6 +97,10 @@
     </Setting>
     <Setting Name="CallUpgrade" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="BackupGroups" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" /&gt;</Value>
     </Setting>
   </Settings>
 </SettingsFile>

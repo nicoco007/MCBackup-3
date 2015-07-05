@@ -286,7 +286,7 @@ Public Class BackupDialog
 
     Private Sub Window_ContentRendered(sender As Object, e As EventArgs) Handles Window.ContentRendered
         If SavesListView.Items.Count = 0 Then
-            MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.NoSavesWarning"), Game.LauncherToString(My.Settings.Launcher)), MCBackup.Language.Dictionary("Message.Caption.Warning"), MessageBoxButton.OK, MessageBoxImage.Warning)
+            MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.NoSavesWarning"), My.Settings.Launcher.ToString()), MCBackup.Language.Dictionary("Message.Caption.Warning"), MessageBoxButton.OK, MessageBoxImage.Warning)
         End If
     End Sub
 

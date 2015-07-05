@@ -14,28 +14,66 @@
 '   ║                      limitations under the License.                       ║
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
 
-Public Class Game
-    Public Enum Launcher As Integer
-        Minecraft
-        Technic
-        FeedTheBeast
-        ATLauncher
-    End Enum
+Imports MCBackup
 
-    Public Shared Function LauncherToString(Launcher As Launcher)
-        Select Case Launcher
-            Case Game.Launcher.Minecraft
-                Return "Minecraft"
-            Case Game.Launcher.Technic
-                Return "Technic"
-            Case Game.Launcher.FeedTheBeast
-                Return "Feed the Beast"
-            Case Game.Launcher.ATLauncher
-                Return "ATLauncher"
-            Case Else
-                Return "Minecraft"
-        End Select
-    End Function
+Public Class Game
+    <Serializable()>
+    Public Class Launcher
+        Implements IEquatable(Of Launcher)
+        Public Shared Minecraft As New Launcher(0, "Minecraft")
+        Public Shared Technic As New Launcher(1, "Technic")
+        Public Shared FeedTheBeast As New Launcher(2, "Feed the Beast")
+        Public Shared ATLauncher As New Launcher(3, "ATLauncher")
+
+        Private counter As Integer = 0
+
+        Private _id As Integer
+        Private Property id As Integer
+            Get
+                Return _id
+            End Get
+            Set(value As Integer)
+                _id = value
+            End Set
+        End Property
+
+        Private _name As String
+        Private Property name As String
+            Get
+                Return _name
+            End Get
+            Set(value As String)
+                _name = value
+            End Set
+        End Property
+
+        Public Sub New(id As Integer, name As String)
+            Me.id = id
+            Me.name = name
+        End Sub
+
+        Public Overrides Function ToString() As String
+            Return Me.name
+        End Function
+
+        Private Overloads Function Equals(other As Launcher) As Boolean Implements IEquatable(Of Launcher).Equals
+            If other Is Nothing Then Return False
+
+            Return Me.id = other.id
+        End Function
+
+        Public Shared Operator =(launcher1 As Launcher, launcher2 As Launcher)
+            If launcher1 Is Nothing OrElse launcher2 Is Nothing Then Return False
+
+            Return launcher1.Equals(launcher2)
+        End Operator
+
+        Public Shared Operator <>(launcher1 As Launcher, launcher2 As Launcher)
+            If launcher1 Is Nothing OrElse launcher2 Is Nothing Then Return False
+
+            Return launcher1.Equals(launcher2)
+        End Operator
+    End Class
 
     Public Class Images
         Public Class Health

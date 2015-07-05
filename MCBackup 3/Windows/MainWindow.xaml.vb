@@ -976,7 +976,7 @@ Partial Class MainWindow
             End Using
 
             If Launcher <> My.Settings.Launcher Then
-                MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.IncompatibleBackupConfig"), Game.LauncherToString(Launcher)), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.IncompatibleBackupConfig"), Launcher.ToString()), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
                 EnableUI(True)
                 Exit Sub
             End If
@@ -1980,12 +1980,12 @@ Public Class BackupInfo
         End Set
     End Property
 
-    Private _Launcher As String
-    Public Property Launcher As String
+    Private _Launcher As Game.Launcher
+    Public Property Launcher As Game.Launcher
         Get
             Return _Launcher
         End Get
-        Set(value As String)
+        Set(value As Game.Launcher)
             _Launcher = value
         End Set
     End Property
@@ -2000,7 +2000,7 @@ Public Class BackupInfo
         End Set
     End Property
 
-    Public Sub BackupInfo(Name As String, Description As String, Location As String, Type As String, Group As String, Launcher As String, Modpack As String)
+    Public Sub BackupInfo(Name As String, Description As String, Location As String, Type As String, Group As String, Launcher As Game.Launcher, Modpack As String)
         Me.Name = Name
         Me.Description = Description
         Me.Location = Location

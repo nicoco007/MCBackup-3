@@ -531,7 +531,7 @@ Partial Public Class Options
         ElseIf ATLauncherInstallationRadioButton.IsChecked Then
             Return Game.Launcher.ATLauncher
         End If
-        Return Nothing
+        Return Game.Launcher.Minecraft
     End Function
 
     Private Sub BaseFolderBrowseButton_Click(sender As Object, e As RoutedEventArgs) Handles BaseFolderBrowseButton.Click
