@@ -81,7 +81,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="Launcher" Type="MCBackup.Game.Launcher" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="ShowDeleteDialog" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

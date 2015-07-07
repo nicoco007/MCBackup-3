@@ -124,6 +124,7 @@ Public Class Language
         Dictionary.Add("Status.MovingBackups", FindString("Status.MovingBackups"))
 
         ' = Messages =
+        Dictionary.Add("Message.Caption.Information", FindString("Message.Caption.Information"))
         Dictionary.Add("Message.Caption.Warning", FindString("Message.Caption.Warning"))
         Dictionary.Add("Message.Caption.Error", FindString("Message.Caption.Error"))
         Dictionary.Add("Message.Caption.AreYouSure", FindString("Message.Caption.AreYouSure"))
@@ -157,6 +158,7 @@ Public Class Language
         Dictionary.Add("Message.OpenWebpage", FindString("Message.OpenWebpage"))
         Dictionary.Add("Message.ExceptionOccured", FindString("Message.ExceptionOccured"))
         Dictionary.Add("Message.IllegalCharacters", FindString("Message.IllegalCharacters"))
+        Dictionary.Add("Message.SettingsUpgrade", FindString("Message.SettingsUpgrade"))
 
         ' = Balloon Tips =
         Dictionary.Add("BalloonTip.Title.BackupError", FindString("BalloonTip.Title.BackupError"))

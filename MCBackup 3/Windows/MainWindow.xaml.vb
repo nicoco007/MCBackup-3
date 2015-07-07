@@ -25,6 +25,7 @@ Imports MahApps.Metro
 Imports System.Text
 Imports Newtonsoft.Json.Linq
 Imports Newtonsoft.Json
+Imports System.Configuration
 
 Partial Class MainWindow
 
@@ -73,14 +74,23 @@ Partial Class MainWindow
         Log.Print("Architecture: " & Log.GetWindowsArch())
         Log.Print(".NET Framework Version: " & Environment.Version.Major & "." & Environment.Version.Minor)
 
-        If (My.Settings.CallUpgrade) Then
-            Log.Print("Loading settings from last version, please wait...")
+        Dim SettingsUpgraded As Boolean = False
+
+        If My.Settings.CallUpgrade Then
+            ' Check if other configuration files exist
+            Dim ConfigurationFile As String = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath
+            Dim ConfigurationDirectory As DirectoryInfo = New FileInfo(ConfigurationFile).Directory.Parent
+            For Each VersionDirectory As DirectoryInfo In ConfigurationDirectory.GetDirectories()
+                If File.Exists(Path.Combine(VersionDirectory.FullName, "user.config")) And VersionDirectory.Name <> ApplicationVersion Then
+                    SettingsUpgraded = True
+                    Exit For
+                End If
+            Next
+
+            Log.Print("Upgrading settings")
             My.Settings.Upgrade()
             My.Settings.CallUpgrade = False
-            Log.Print("Loaded settings.")
         End If
-
-        Log.Print(String.Format("Current Launcher: '{0}'", My.Settings.Launcher))
 
         Splash.StepProgress()
 
@@ -131,7 +141,19 @@ Partial Class MainWindow
 
         Splash.StepProgress()
 
+        ' TODO: Change 'Properties' to 'Settings'
         Splash.ShowStatus("Splash.Status.LoadingProps", "Loading Properties...")
+
+        If SettingsUpgraded Then MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.SettingsUpgrade"), MCBackup.Language.Dictionary("Message.Caption.Information"), MessageBoxButton.OK, MessageBoxImage.Information)
+
+        If My.Settings.Launcher <> Game.Launcher.Minecraft And
+           My.Settings.Launcher <> Game.Launcher.Technic And
+           My.Settings.Launcher <> Game.Launcher.FeedTheBeast And
+           My.Settings.Launcher <> Game.Launcher.ATLauncher Then
+            My.Settings.Launcher = Game.Launcher.Minecraft
+        End If
+
+        Log.Print(String.Format("Current Launcher: '{0}'", My.Settings.Launcher))
 
         Splash.StepProgress()
 
@@ -179,7 +201,7 @@ Partial Class MainWindow
         Splash.StepProgress()
 
         If String.IsNullOrEmpty(My.Settings.MinecraftFolderLocation) Then
-            If IO.File.Exists(AppData & "\.minecraft\launcher.jar") Then
+            If IO.Directory.Exists(AppData & "\.minecraft\saves") And IO.Directory.Exists(AppData & "\.minecraft\versions") Then
                 My.Settings.MinecraftFolderLocation = AppData & "\.minecraft"
                 My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
             End If
