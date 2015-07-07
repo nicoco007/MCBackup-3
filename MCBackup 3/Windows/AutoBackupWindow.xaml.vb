@@ -54,8 +54,6 @@ Public Class AutoBackupWindow
     Private Sub AutoBackupWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
         ReloadSaves()
         LoadLanguage()
-        'PrefixTextBox.Text = My.Settings.AutoBkpPrefix
-        'SuffixTextBox.Text = My.Settings.AutoBkpSuffix
     End Sub
 
     Private Sub AutoBackupWindow_Closing(sender As Object, e As ComponentModel.CancelEventArgs) Handles MyBase.Closing
@@ -129,7 +127,7 @@ Public Class AutoBackupWindow
         If Minutes = 0 And Seconds = 0 Then
             Log.Print("Starting automated backup...")
 
-            Dim Name As String = BackupName.Process(My.Settings.DefaultAutoBackupName, MCBackup.Language.Dictionary("Localization.DirectoryName"))
+            Dim Name As String = BackupName.Process(My.Settings.DefaultAutoBackupName, DirectCast(SavesListView.SelectedItem, SaveInfoListViewItem).Name)
 
             If Regex.IsMatch(Name, "[\/:*?""<>|]") Then
                 MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.IllegalCharacters"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
