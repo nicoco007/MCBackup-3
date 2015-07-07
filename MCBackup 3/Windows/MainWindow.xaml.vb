@@ -612,7 +612,7 @@ Partial Class MainWindow
                               DescriptionTextBox.Text = IIf(String.IsNullOrEmpty(Description), MCBackup.Language.Dictionary("MainWindow.Sidebar.Description.NoDesc"), Description)
                           End Sub)
 
-        ' Removed until fix is found
+        ' TODO: Fix Substrate issues!
         'If Type = "save" Then
         '    Dispatcher.Invoke(Sub()
         '                          SidebarPlayerHealth.Visibility = Windows.Visibility.Visible
@@ -760,7 +760,7 @@ Partial Class MainWindow
             ' Create the target directory to prevent exceptions while getting the completion percentage
             My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation & "\" & BackupInfo.Name)
 
-            Dim TotalBytes As Double = GetFolderSize(BackupInfo.Description)
+            Dim TotalBytes As Double = GetFolderSize(BackupInfo.Location)
             Dim BytesCopied As Double = 0
 
             ' Start copying the source directory asynchronously to the target directory
@@ -836,7 +836,7 @@ Partial Class MainWindow
             InfoJson.Add(New JProperty("Type", BackupInfo.Type))
             InfoJson.Add(New JProperty("Description", BackupInfo.Description))
             InfoJson.Add(New JProperty("Group", BackupInfo.Group))
-            InfoJson.Add(New JProperty("Launcher", BackupInfo.Launcher))
+            InfoJson.Add(New JProperty("Launcher", BackupInfo.Launcher.ToString()))
             InfoJson.Add(New JProperty("Modpack", BackupInfo.Modpack))
 
             Using SW As New StreamWriter(My.Settings.BackupsFolderLocation & "\" & BackupInfo.Name & "\info.json") ' Create information file (stores description, type, folder name, group name, launcher and modpack)
@@ -871,6 +871,8 @@ Partial Class MainWindow
 
                                       AddHandler MCMapProcess.OutputDataReceived, AddressOf MCMap_DataReceived
                                       AddHandler MCMapProcess.ErrorDataReceived, AddressOf MCMap_DataReceived
+
+                                      Progress.Maximum = 100
 
                                       With MCMapProcess
                                           .Start()
@@ -930,10 +932,9 @@ Partial Class MainWindow
         End If
 
         If e.Data.Contains("[") And e.Data.Contains("]") Then
-            Dim PercentComplete As Double = (e.Data.Substring(1).Remove(e.Data.IndexOf(".") - 1) / 4) + (StepNumber * 25)
+            Dim PercentComplete As Double = Convert.ToDouble((e.Data.Substring(1).Remove(e.Data.IndexOf(".") - 1) / 4) + (StepNumber * 25), New CultureInfo("en-US"))
 
-            Dispatcher.Invoke(Sub()
-                                  Progress.Value = PercentComplete
+            Dispatcher.Invoke(Sub() Progress.Value = PercentComplete
                                   StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), PercentComplete)
                                   Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.CreatingThumb"), ApplicationVersion, PercentComplete)
                               End Sub)
@@ -1193,17 +1194,12 @@ Partial Class MainWindow
 
 #Region "Functions"
     Private Function GetFolderSize(FolderPath As String)
-        Dim FSO As New Scripting.FileSystemObject
-        If Not Directory.Exists(FolderPath) Then
-            Log.Print(String.Format("Directory '{0}' does not exist.", FolderPath))
-            Return 0
-        End If
-        Dim Size = FSO.GetFolder(FolderPath).Size ' Get FolderPath's size
-        If Size <> Nothing Then
-            Return Size
-        Else
-            Return 0
-        End If
+        Try
+            Dim FSO As New Scripting.FileSystemObject
+            Return FSO.GetFolder(FolderPath).Size ' Get FolderPath's size
+        Catch ex As Exception
+            Dispatcher.Invoke(Sub() ErrorReportDialog.Show(String.Format("Could not find size of '{0}'", FolderPath), ex))
+        End Try
         Return 0
     End Function
 
@@ -1212,7 +1208,7 @@ Partial Class MainWindow
             Dim FSO As New Scripting.FileSystemObject
             Return FSO.GetFolder(FolderPath).DateCreated ' Get FolderPath's date of creation
         Catch ex As Exception
-            Dispatcher.Invoke(Sub() ErrorReportDialog.Show(String.Format("Could not find {0}'s creation date:", FolderPath), ex))
+            Dispatcher.Invoke(Sub() ErrorReportDialog.Show(String.Format("Could not find creation date of '{0}'", FolderPath), ex))
         End Try
         Return Nothing
     End Function
@@ -1310,8 +1306,8 @@ Partial Class MainWindow
         Do Until Int(PercentComplete) <= 0
             Dim CurrentSize As Double = 0
             For Each Directory As String In ItemsToDelete
-                If IO.Directory.Exists(My.Settings.BackupsFolderLocation & "\" & Directory) Then
-                    CurrentSize += GetFolderSize(My.Settings.BackupsFolderLocation & "\" & Directory)
+                If IO.Directory.Exists(Path.Combine(My.Settings.BackupsFolderLocation, Directory)) Then
+                    CurrentSize += GetFolderSize(Path.Combine(My.Settings.BackupsFolderLocation, Directory))
                 End If
             Next
 
