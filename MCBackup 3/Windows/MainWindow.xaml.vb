@@ -934,7 +934,8 @@ Partial Class MainWindow
         If e.Data.Contains("[") And e.Data.Contains("]") Then
             Dim PercentComplete As Double = Convert.ToDouble((e.Data.Substring(1).Remove(e.Data.IndexOf(".") - 1) / 4) + (StepNumber * 25), New CultureInfo("en-US"))
 
-            Dispatcher.Invoke(Sub() Progress.Value = PercentComplete
+            Dispatcher.Invoke(Sub()
+                                  Progress.Value = PercentComplete
                                   StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), PercentComplete)
                                   Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.CreatingThumb"), ApplicationVersion, PercentComplete)
                               End Sub)
