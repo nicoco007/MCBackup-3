@@ -141,7 +141,6 @@ Partial Class MainWindow
 
         Splash.StepProgress()
 
-        ' TODO: Change 'Properties' to 'Settings'
         Splash.ShowStatus("Splash.Status.LoadingProps", "Loading Settings...")
 
         If SettingsUpgraded Then MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.SettingsUpgrade"), MCBackup.Language.Dictionary("Message.Caption.Information"), MessageBoxButton.OK, MessageBoxImage.Information)
