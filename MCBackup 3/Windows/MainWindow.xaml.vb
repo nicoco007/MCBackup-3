@@ -14,18 +14,18 @@
 '   ║                      limitations under the License.                       ║
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
 
+Imports System.ComponentModel
+Imports System.Configuration
+Imports System.Globalization
 Imports System.IO
 Imports System.Net
-Imports System.Windows.Threading
-Imports System.ComponentModel
-Imports System.Globalization
-Imports System.Threading
-Imports Substrate
-Imports MahApps.Metro
 Imports System.Text
-Imports Newtonsoft.Json.Linq
+Imports System.Threading
+Imports System.Windows.Threading
+Imports MahApps.Metro
 Imports Newtonsoft.Json
-Imports System.Configuration
+Imports Newtonsoft.Json.Linq
+Imports Substrate
 
 Partial Class MainWindow
 
@@ -33,9 +33,9 @@ Partial Class MainWindow
     Private AppData As String = Environ("APPDATA")
 
     Public BackupInfo As New BackupInfo
-    Public RestoreInfo(2) As String
+    Public RestoreInfo As New RestoreInfo
 
-    Private FolderBrowserDialog As New System.Windows.Forms.FolderBrowserDialog
+    Private FolderBrowserDialog As New Forms.FolderBrowserDialog
 
     Private BackupThread As Thread
     Private DeleteForRestoreThread As Thread
@@ -43,10 +43,10 @@ Partial Class MainWindow
     Private DeleteThread As Thread
 
     Public StartupPath As String = Directory.GetCurrentDirectory()
-    Public ApplicationVersion As String = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()
+    Public ApplicationVersion As String = Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()
     Public LatestVersion As String
 
-    Public WithEvents NotifyIcon As New System.Windows.Forms.NotifyIcon
+    Public WithEvents NotifyIcon As New Forms.NotifyIcon
 
     Public AutoBackupWindow As New AutoBackupWindow
     Public NotificationIconWindow As New NotificationIconWindow
@@ -962,16 +962,17 @@ Partial Class MainWindow
             EnableUI(False)
             Cancel = False
             Log.Print("Starting Restore")
-            RestoreInfo(0) = ListView.SelectedItems(0).Name ' Set place 0 of RestoreInfo array to the backup name
+            RestoreInfo.BackupName = ListView.SelectedItems(0).Name ' Set place 0 of RestoreInfo array to the backup name
 
             Dim BaseFolderName As String = "", Launcher As Game.Launcher = Game.Launcher.Minecraft, Modpack As String = ""
 
             Dim InfoJson As JObject
 
-            Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0) & "\info.json")
+            ' TODO: Add try/catch here!
+            Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & RestoreInfo.BackupName & "\info.json")
                 InfoJson = JsonConvert.DeserializeObject(SR.ReadToEnd)
                 BaseFolderName = InfoJson("OriginalName")
-                RestoreInfo(2) = InfoJson("Type")
+                RestoreInfo.BackupType = InfoJson("Type")
 
                 Dim Temp As Object = InfoJson("Launcher")
                 If IsNumeric(Temp) Then
@@ -1004,31 +1005,31 @@ Partial Class MainWindow
                 Exit Sub
             End If
 
-            Select Case RestoreInfo(2)
+            Select Case RestoreInfo.BackupType
                 Case "save"
                     Select Case My.Settings.Launcher
                         Case Game.Launcher.Minecraft
-                            RestoreInfo(1) = My.Settings.SavesFolderLocation & "\" & BaseFolderName
+                            RestoreInfo.RestoreLocation = My.Settings.SavesFolderLocation & "\" & BaseFolderName
                         Case Game.Launcher.Technic
-                            RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\modpacks\" & Modpack & "\saves\" & BaseFolderName
+                            RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\modpacks\" & Modpack & "\saves\" & BaseFolderName
                         Case Game.Launcher.FeedTheBeast
-                            RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\" & Modpack & "\minecraft\saves\" & BaseFolderName
+                            RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\" & Modpack & "\minecraft\saves\" & BaseFolderName
                         Case Game.Launcher.ATLauncher
-                            RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\Instances\" & Modpack & "\saves\" & BaseFolderName
+                            RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\Instances\" & Modpack & "\saves\" & BaseFolderName
                     End Select
                 Case "version"
                     Select Case My.Settings.Launcher
                         Case Game.Launcher.Minecraft
-                            RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\versions\" & BaseFolderName
+                            RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\versions\" & BaseFolderName
                         Case Game.Launcher.Technic
-                            RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\modpacks\" & BaseFolderName
+                            RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\modpacks\" & BaseFolderName
                         Case Game.Launcher.FeedTheBeast
-                            RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\" & BaseFolderName
+                            RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\" & BaseFolderName
                         Case Game.Launcher.ATLauncher
-                            RestoreInfo(1) = My.Settings.MinecraftFolderLocation & "\Instances\" & BaseFolderName
+                            RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\Instances\" & BaseFolderName
                     End Select
                 Case "everything"
-                    RestoreInfo(1) = My.Settings.MinecraftFolderLocation
+                    RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation
             End Select
 
             Dim t As New Thread(AddressOf Restore)
@@ -1039,24 +1040,24 @@ Partial Class MainWindow
     Private Sub Restore()
         Try
             ' Only delete folder contents if folder exists AND it's size is not zero.
-            If Directory.Exists(RestoreInfo(1)) Then
-                If GetFolderSize(RestoreInfo(1)) <> 0 Then
+            If Directory.Exists(RestoreInfo.RestoreLocation) Then
+                If GetFolderSize(RestoreInfo.RestoreLocation) <> 0 Then
                     ' Set initial size variable
-                    Dim InitialSize As Double = GetFolderSize(RestoreInfo(1))
+                    Dim InitialSize As Double = GetFolderSize(RestoreInfo.RestoreLocation)
 
                     Dispatcher.Invoke(Sub()
                                           Progress.Maximum = InitialSize
                                       End Sub)
 
                     ' Start removal async
-                    DeleteForRestoreThread = New DirectoryInfo(RestoreInfo(1)).DeleteContentsAsync
+                    DeleteForRestoreThread = New DirectoryInfo(RestoreInfo.RestoreLocation).DeleteContentsAsync
 
                     Try
                         Do Until DeleteForRestoreThread.IsAlive = False
                             ' Set bytes remaining to current folder size
                             Dim BytesRemaining As Double = 0
 
-                            BytesRemaining = GetFolderSize(RestoreInfo(1))
+                            BytesRemaining = GetFolderSize(RestoreInfo.RestoreLocation)
 
                             ' Determine percent removed (inverted) by dividing bytes remaining by initial size, and multiplying by 100
                             Dim PercentRemoved As Decimal = BytesRemaining / InitialSize * 100
@@ -1094,10 +1095,10 @@ Partial Class MainWindow
             'Exit Sub
 
             ' Create the target directory to prevent exceptions while getting the completion percentage
-            My.Computer.FileSystem.CreateDirectory(RestoreInfo(1))
+            My.Computer.FileSystem.CreateDirectory(RestoreInfo.RestoreLocation)
 
             ' Start copying the source directory asynchronously to the target directory
-            RestoreThread = FileSystemOperations.Directory.CopyAsync(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0), RestoreInfo(1), True)
+            RestoreThread = FileSystemOperations.Directory.CopyAsync(My.Settings.BackupsFolderLocation & "\" & RestoreInfo.BackupName, RestoreInfo.RestoreLocation, True)
 
             ' Reset & start the backup stopwatch
             RestoreStopWatch.Reset()
@@ -1105,7 +1106,7 @@ Partial Class MainWindow
 
             ' Set variables
             Dim PercentComplete As Double = 0
-            Dim TotalBytes As Double = GetFolderSize(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0))
+            Dim TotalBytes As Double = GetFolderSize(My.Settings.BackupsFolderLocation & "\" & RestoreInfo.BackupName)
             Dim BytesCopied As Double = 0
 
             Dispatcher.Invoke(Sub()
@@ -1115,11 +1116,11 @@ Partial Class MainWindow
             ' Do until percent complete is equal to or over 100
             Do Until TotalBytes = BytesCopied
                 ' Calculate percent complete by dividing target location by source location, and multiply by 100
-                PercentComplete = GetFolderSize(RestoreInfo(1)) / GetFolderSize(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0)) * 100
+                PercentComplete = GetFolderSize(RestoreInfo.RestoreLocation) / GetFolderSize(My.Settings.BackupsFolderLocation & "\" & RestoreInfo.BackupName) * 100
 
                 ' Determine speed in megabytes per second (MB/s) by dividing bytes copied by seconds elapsed (in decimal for more accuracy), and dividing by 1048576.
-                TotalBytes = GetFolderSize(My.Settings.BackupsFolderLocation & "\" & RestoreInfo(0))
-                BytesCopied = GetFolderSize(RestoreInfo(1))
+                TotalBytes = GetFolderSize(My.Settings.BackupsFolderLocation & "\" & RestoreInfo.BackupName)
+                BytesCopied = GetFolderSize(RestoreInfo.RestoreLocation)
                 Dim Speed As Double = Math.Round((BytesCopied / 1048576) / (RestoreStopWatch.ElapsedMilliseconds / 1000), 2) ' 1024 (1K bytes) × 1024 = 1048576 (1M bytes)
 
                 Dim TimeLeft As New TimeSpan(0)
@@ -1169,8 +1170,8 @@ Partial Class MainWindow
             RestoreStopWatch.Stop()
 
             ' Delete info/thumb files from restored backup
-            If My.Computer.FileSystem.FileExists(RestoreInfo(1) & "\info.json") Then My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\info.json")
-            If My.Computer.FileSystem.FileExists(RestoreInfo(1) & "\thumb.png") Then My.Computer.FileSystem.DeleteFile(RestoreInfo(1) & "\thumb.png")
+            If My.Computer.FileSystem.FileExists(RestoreInfo.RestoreLocation & "\info.json") Then My.Computer.FileSystem.DeleteFile(RestoreInfo.RestoreLocation & "\info.json")
+            If My.Computer.FileSystem.FileExists(RestoreInfo.RestoreLocation & "\thumb.png") Then My.Computer.FileSystem.DeleteFile(RestoreInfo.RestoreLocation & "\thumb.png")
 
             Dispatcher.Invoke(Sub()
                                   StatusLabel.Content = MCBackup.Language.Dictionary("Status.RestoreComplete")
@@ -1197,6 +1198,8 @@ Partial Class MainWindow
         Try
             Dim FSO As New Scripting.FileSystemObject
             Return FSO.GetFolder(FolderPath).Size ' Get FolderPath's size
+        Catch ex As DirectoryNotFoundException
+            Log.Print("Directory was not found, returning zero instead.", Log.Level.Debug)
         Catch ex As Exception
             Dispatcher.Invoke(Sub() ErrorReportDialog.Show(String.Format("Could not find size of '{0}'", FolderPath), ex))
         End Try
@@ -1324,6 +1327,7 @@ Partial Class MainWindow
         Dispatcher.Invoke(Sub()
                               StatusLabel.Content = MCBackup.Language.Dictionary("Status.DeleteComplete")
                               Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
+                              MCBackup.Progress.Value = 0
                               EnableUI(True)
                           End Sub)
     End Sub
@@ -1944,86 +1948,5 @@ Public Class TaggedTabItem
     Sub New(Text As String, Tag As Object)
         Me.Text = Text
         Me.Tag = Tag
-    End Sub
-End Class
-
-Public Class BackupInfo
-    Private _Name As String
-    Public Property Name As String
-        Get
-            Return _Name
-        End Get
-        Set(value As String)
-            _Name = value
-        End Set
-    End Property
-
-    Private _Location As String
-    Public Property Location As String
-        Get
-            Return _Location
-        End Get
-        Set(value As String)
-            _Location = value
-        End Set
-    End Property
-
-    Private _Description As String
-    Public Property Description As String
-        Get
-            Return _Description
-        End Get
-        Set(value As String)
-            _Description = value
-        End Set
-    End Property
-
-    Private _Type As String
-    Public Property Type As String
-        Get
-            Return _Type
-        End Get
-        Set(value As String)
-            _Type = value
-        End Set
-    End Property
-
-    Private _Group As String
-    Public Property Group As String
-        Get
-            Return _Group
-        End Get
-        Set(value As String)
-            _Group = value
-        End Set
-    End Property
-
-    Private _Launcher As Game.Launcher
-    Public Property Launcher As Game.Launcher
-        Get
-            Return _Launcher
-        End Get
-        Set(value As Game.Launcher)
-            _Launcher = value
-        End Set
-    End Property
-
-    Private _Modpack As String
-    Public Property Modpack As String
-        Get
-            Return _Modpack
-        End Get
-        Set(value As String)
-            _Modpack = value
-        End Set
-    End Property
-
-    Public Sub BackupInfo(Name As String, Description As String, Location As String, Type As String, Group As String, Launcher As Game.Launcher, Modpack As String)
-        Me.Name = Name
-        Me.Description = Description
-        Me.Location = Location
-        Me.Type = Type
-        Me.Group = Group
-        Me.Launcher = Launcher
     End Sub
 End Class
