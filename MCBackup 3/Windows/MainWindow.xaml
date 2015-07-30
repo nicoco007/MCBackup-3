@@ -19,7 +19,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-    Title="MCBackup" Height="600" Width="980" MinHeight="600" MinWidth="980" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" Icon="pack://application:,,,/Resources/icon.ico" TitlebarIcon="pack://application:,,,/Resources/icon.png" WindowTransitionsEnabled="False" ShowMaxRestoreButton="False">
+    Title="MCBackup" Height="600" Width="980" MinHeight="600" MinWidth="980" ResizeMode="CanResize" WindowStartupLocation="CenterScreen" Icon="pack://application:,,,/Resources/icon.ico" TitlebarIcon="pack://application:,,,/Resources/icon.png" WindowTransitionsEnabled="False" ShowMaxRestoreButton="False">
     <Controls:MetroWindow.WindowCommands>
         <Controls:WindowCommands>
             <TextBox x:Name="SearchTextBox" Width="200" Margin="2" Foreground="Gray" Text="Search..."/>
