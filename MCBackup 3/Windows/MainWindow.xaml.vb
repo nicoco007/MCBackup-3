@@ -69,6 +69,8 @@ Partial Class MainWindow
 
         Log.SPrint("")
         Log.SPrint("---------- Starting MCBackup v{0} @ {1} ----------", ApplicationVersion, Log.DebugTimeStamp())
+        Log.Print(Game.Launcher.Minecraft.GetStringValue())
+        Log.Print(Game.Launcher.FeedTheBeast.GetStringValue())
         Log.Print("OS Name: " & Log.GetWindowsVersion())
         Log.Print("OS Version: " & Environment.OSVersion.Version.Major & "." & Environment.OSVersion.Version.Minor)
         Log.Print("Architecture: " & Log.GetWindowsArch())
@@ -80,12 +82,14 @@ Partial Class MainWindow
             ' Check if other configuration files exist
             Dim ConfigurationFile As String = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath
             Dim ConfigurationDirectory As DirectoryInfo = New FileInfo(ConfigurationFile).Directory.Parent
-            For Each VersionDirectory As DirectoryInfo In ConfigurationDirectory.GetDirectories()
-                If File.Exists(Path.Combine(VersionDirectory.FullName, "user.config")) And VersionDirectory.Name <> ApplicationVersion Then
-                    SettingsUpgraded = True
-                    Exit For
-                End If
-            Next
+            If ConfigurationDirectory.Exists() Then
+                For Each VersionDirectory As DirectoryInfo In ConfigurationDirectory.GetDirectories()
+                    If File.Exists(Path.Combine(VersionDirectory.FullName, "user.config")) And VersionDirectory.Name <> ApplicationVersion Then
+                        SettingsUpgraded = True
+                        Exit For
+                    End If
+                Next
+            End If
 
             Log.Print("Upgrading settings")
             My.Settings.Upgrade()
@@ -130,8 +134,8 @@ Partial Class MainWindow
 
         NotifyIcon.Text = "MCBackup " & ApplicationVersion
         NotifyIcon.Icon = New System.Drawing.Icon(Application.GetResourceStream(New Uri("pack://application:,,,/Resources/icon.ico")).Stream)
-        Dim ContextMenu As New System.Windows.Forms.ContextMenu
-        Dim ExitToolbarMenuItem As New System.Windows.Forms.MenuItem
+        Dim ContextMenu As New Forms.ContextMenu
+        Dim ExitToolbarMenuItem As New Forms.MenuItem
         ExitToolbarMenuItem.Text = MCBackup.Language.FindString("NotifyIcon.ContextMenu.ExitItem.Text", My.Settings.Language & ".lang")
         AddHandler ExitToolbarMenuItem.Click, AddressOf ExitToolbarMenuItem_Click
 
@@ -144,13 +148,6 @@ Partial Class MainWindow
         Splash.ShowStatus("Splash.Status.LoadingProps", "Loading Settings...")
 
         If SettingsUpgraded Then MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.SettingsUpgrade"), MCBackup.Language.Dictionary("Message.Caption.Information"), MessageBoxButton.OK, MessageBoxImage.Information)
-
-        If My.Settings.Launcher <> Game.Launcher.Minecraft And
-           My.Settings.Launcher <> Game.Launcher.Technic And
-           My.Settings.Launcher <> Game.Launcher.FeedTheBeast And
-           My.Settings.Launcher <> Game.Launcher.ATLauncher Then
-            My.Settings.Launcher = Game.Launcher.Minecraft
-        End If
 
         Log.Print(String.Format("Current Launcher: '{0}'", My.Settings.Launcher))
 
@@ -895,6 +892,7 @@ Partial Class MainWindow
                                       StatusLabel.Content = MCBackup.Language.Dictionary("Status.BackupComplete")
                                       Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
                                       StatusLabel.Refresh()
+                                      Progress.Maximum = 100
                                       Progress.Value = 100
                                   End Sub)
 
@@ -943,6 +941,7 @@ Partial Class MainWindow
                                   EnableUI(True)
                                   RefreshBackupsList()
                                   ReloadBackupGroups()
+                                  Progress.Maximum = 100
                                   Progress.Value = 100
                                   StatusLabel.Content = MCBackup.Language.Dictionary("Status.BackupComplete")
                                   Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
@@ -962,79 +961,84 @@ Partial Class MainWindow
             EnableUI(False)
             Cancel = False
             Log.Print("Starting Restore")
-            RestoreInfo.BackupName = ListView.SelectedItems(0).Name ' Set place 0 of RestoreInfo array to the backup name
+            RestoreInfo.BackupName = ListView.SelectedItems(0).Name
 
-            Dim BaseFolderName As String = "", Launcher As Game.Launcher = Game.Launcher.Minecraft, Modpack As String = ""
+            Dim BaseFolderName As String = "",
+                Launcher As Game.Launcher = Game.Launcher.Minecraft,
+                Modpack As String = "",
+                InfoJson As JObject
 
-            Dim InfoJson As JObject
-
-            ' TODO: Add try/catch here!
-            Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & RestoreInfo.BackupName & "\info.json")
-                InfoJson = JsonConvert.DeserializeObject(SR.ReadToEnd)
-                BaseFolderName = InfoJson("OriginalName")
-                RestoreInfo.BackupType = InfoJson("Type")
-
-                Dim Temp As Object = InfoJson("Launcher")
-                If IsNumeric(Temp) Then
-                    If Temp > [Enum].GetValues(GetType(Game.Launcher)).Cast(Of Game.Launcher).Last() Or Temp < 0 Then
-                        Launcher = Game.Launcher.Minecraft
-                    Else
-                        Launcher = Temp
-                    End If
-                Else
-                    Select Case Temp
-                        Case "minecraft"
-                            Launcher = Game.Launcher.Minecraft
-                        Case "technic"
-                            Launcher = Game.Launcher.Technic
-                        Case "ftb"
-                            Launcher = Game.Launcher.FeedTheBeast
-                        Case "atlauncher"
-                            Launcher = Game.Launcher.ATLauncher
-                        Case Else
-                            Launcher = Game.Launcher.Minecraft
-                    End Select
-                End If
-
-                Modpack = InfoJson("Modpack")
-            End Using
-
-            If Launcher <> My.Settings.Launcher Then
-                MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.IncompatibleBackupConfig"), Launcher.ToString()), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
-                EnableUI(True)
+            If Not File.Exists(My.Settings.BackupsFolderLocation & "\" & RestoreInfo.BackupName & "\info.json") Then
+                MetroMessageBox.Show(MCBackup.Language.Dictionary(""))
                 Exit Sub
             End If
 
-            Select Case RestoreInfo.BackupType
-                Case "save"
-                    Select Case My.Settings.Launcher
-                        Case Game.Launcher.Minecraft
-                            RestoreInfo.RestoreLocation = My.Settings.SavesFolderLocation & "\" & BaseFolderName
-                        Case Game.Launcher.Technic
-                            RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\modpacks\" & Modpack & "\saves\" & BaseFolderName
-                        Case Game.Launcher.FeedTheBeast
-                            RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\" & Modpack & "\minecraft\saves\" & BaseFolderName
-                        Case Game.Launcher.ATLauncher
-                            RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\Instances\" & Modpack & "\saves\" & BaseFolderName
-                    End Select
-                Case "version"
-                    Select Case My.Settings.Launcher
-                        Case Game.Launcher.Minecraft
-                            RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\versions\" & BaseFolderName
-                        Case Game.Launcher.Technic
-                            RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\modpacks\" & BaseFolderName
-                        Case Game.Launcher.FeedTheBeast
-                            RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\" & BaseFolderName
-                        Case Game.Launcher.ATLauncher
-                            RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\Instances\" & BaseFolderName
-                    End Select
-                Case "everything"
-                    RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation
-            End Select
+            Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & RestoreInfo.BackupName & "\info.json")
+                    InfoJson = JsonConvert.DeserializeObject(SR.ReadToEnd)
+                    BaseFolderName = InfoJson("OriginalName")
+                    RestoreInfo.BackupType = InfoJson("Type")
 
-            Dim t As New Thread(AddressOf Restore)
-            t.Start()
-        End If
+                    Dim Temp As Object = InfoJson("Launcher")
+                    If IsNumeric(Temp) Then
+                        If Temp > [Enum].GetValues(GetType(Game.Launcher)).Cast(Of Game.Launcher).Last() Or Temp < 0 Then
+                            Launcher = Game.Launcher.Minecraft
+                        Else
+                            Launcher = Temp
+                        End If
+                    Else
+                        Select Case Temp
+                            Case "minecraft"
+                                Launcher = Game.Launcher.Minecraft
+                            Case "technic"
+                                Launcher = Game.Launcher.Technic
+                            Case "ftb"
+                                Launcher = Game.Launcher.FeedTheBeast
+                            Case "atlauncher"
+                                Launcher = Game.Launcher.ATLauncher
+                            Case Else
+                                Launcher = Game.Launcher.Minecraft
+                        End Select
+                    End If
+
+                    Modpack = InfoJson("Modpack")
+                End Using
+
+                If Launcher <> My.Settings.Launcher Then
+                    MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.IncompatibleBackupConfig"), Launcher.ToString()), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                    EnableUI(True)
+                    Exit Sub
+                End If
+
+                Select Case RestoreInfo.BackupType
+                    Case "save"
+                        Select Case My.Settings.Launcher
+                            Case Game.Launcher.Minecraft
+                                RestoreInfo.RestoreLocation = My.Settings.SavesFolderLocation & "\" & BaseFolderName
+                            Case Game.Launcher.Technic
+                                RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\modpacks\" & Modpack & "\saves\" & BaseFolderName
+                            Case Game.Launcher.FeedTheBeast
+                                RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\" & Modpack & "\minecraft\saves\" & BaseFolderName
+                            Case Game.Launcher.ATLauncher
+                                RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\Instances\" & Modpack & "\saves\" & BaseFolderName
+                        End Select
+                    Case "version"
+                        Select Case My.Settings.Launcher
+                            Case Game.Launcher.Minecraft
+                                RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\versions\" & BaseFolderName
+                            Case Game.Launcher.Technic
+                                RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\modpacks\" & BaseFolderName
+                            Case Game.Launcher.FeedTheBeast
+                                RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\" & BaseFolderName
+                            Case Game.Launcher.ATLauncher
+                                RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\Instances\" & BaseFolderName
+                        End Select
+                    Case "everything"
+                        RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation
+                End Select
+
+                Dim t As New Thread(AddressOf Restore)
+                t.Start()
+            End If
     End Sub
 
     Private Sub Restore()
@@ -1176,6 +1180,7 @@ Partial Class MainWindow
             Dispatcher.Invoke(Sub()
                                   StatusLabel.Content = MCBackup.Language.Dictionary("Status.RestoreComplete")
                                   Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
+                                  Progress.Maximum = 100
                                   Progress.Value = 100
                                   EnableUI(True)
                                   RefreshBackupsList()
@@ -1580,13 +1585,10 @@ Partial Class MainWindow
         Me.Close()
     End Sub
 
-    Private Sub NotifyIcon_Click(sender As Object, e As EventArgs) Handles NotifyIcon.MouseMove
-
-    End Sub
-
-    Private Sub NotifyIcon_DoubleClick(sender As Object, e As EventArgs) Handles NotifyIcon.DoubleClick, NotifyIcon.BalloonTipClicked
+    Private Sub NotifyIcon_Click(sender As Object, e As EventArgs) Handles NotifyIcon.DoubleClick, NotifyIcon.BalloonTipClicked
         Me.Show()
         Me.Activate()
+        Me.Focus()
         If AutoBackupWindowWasShown Then
             AutoBackupWindow.Show()
             AutoBackupWindow.Activate()
@@ -1619,7 +1621,10 @@ Partial Class MainWindow
 
                             e.Cancel = True
                         Case Forms.DialogResult.No
-                            ' Do nothing
+                            If ThreadIsNotNothingAndAlive(BackupThread) Or ProcessIsNotNothingAndRunning(MCMapProcess) Or ThreadIsNotNothingAndAlive(DeleteForRestoreThread) Or ThreadIsNotNothingAndAlive(RestoreThread) Or ThreadIsNotNothingAndAlive(DeleteThread) Then
+                                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.MCBackupIsWorking"), MCBackup.Language.Dictionary("Message.Caption.MCBackupIsWorking"), MessageBoxButton.OK, MessageBoxImage.Question)
+                                e.Cancel = True
+                            End If
                         Case Forms.DialogResult.Cancel
                             e.Cancel = True
                         Case Else
@@ -1637,16 +1642,14 @@ Partial Class MainWindow
 
                         Log.Print("Closing to tray")
 
-                        My.Settings.CloseToTray = True
-
                         e.Cancel = True
+                    Else
+                        If ThreadIsNotNothingAndAlive(BackupThread) Or ProcessIsNotNothingAndRunning(MCMapProcess) Or ThreadIsNotNothingAndAlive(DeleteForRestoreThread) Or ThreadIsNotNothingAndAlive(RestoreThread) Or ThreadIsNotNothingAndAlive(DeleteThread) Then
+                            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.MCBackupIsWorking"), MCBackup.Language.Dictionary("Message.Caption.MCBackupIsWorking"), MessageBoxButton.OK, MessageBoxImage.Question)
+                            e.Cancel = True
+                        End If
                     End If
                 End If
-            End If
-
-            If ThreadIsNotNothingAndAlive(BackupThread) Or ProcessIsNotNothingAndRunning(MCMapProcess) Or ThreadIsNotNothingAndAlive(DeleteForRestoreThread) Or ThreadIsNotNothingAndAlive(RestoreThread) Or ThreadIsNotNothingAndAlive(DeleteThread) Then
-                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.MCBackupIsWorking"), MCBackup.Language.Dictionary("Message.Caption.MCBackupIsWorking"), MessageBoxButton.OK, MessageBoxImage.Question)
-                e.Cancel = True
             End If
 
             If e.Cancel Then Exit Sub

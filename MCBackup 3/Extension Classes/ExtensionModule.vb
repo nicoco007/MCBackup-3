@@ -13,7 +13,9 @@
 '   ║     See the License for the specific language governing permissions and   ║
 '   ║                      limitations under the License.                       ║
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
+Imports System.Reflection
 Imports System.Windows.Threading
+Imports MCBackup.Game
 
 Module ExtensionModule
     Private EmptyDelegate As Action = Sub()
@@ -43,5 +45,22 @@ Module ExtensionModule
                                                   End Sub)
         Thread.Start()
         Return Thread
+    End Function
+
+    <System.Runtime.CompilerServices.Extension> Public Function GetStringValue(TheEnum As Game.Launcher) As String
+        If TheEnum >= 0 Then
+            Dim MemberInfo As MemberInfo() = TheEnum.GetType().GetMember(TheEnum.ToString)
+            If MemberInfo IsNot Nothing And MemberInfo.Length > 0 Then
+                Dim Attr As StringValue = Attribute.GetCustomAttribute(MemberInfo(0), GetType(StringValue))
+                If Attr IsNot Nothing Then
+                    Return Attr.Name
+                Else
+                    Return TheEnum.ToString()
+                End If
+            Else
+                Return TheEnum.ToString()
+            End If
+        End If
+        Return Nothing
     End Function
 End Module

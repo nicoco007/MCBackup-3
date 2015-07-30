@@ -14,67 +14,32 @@
 '   ║                      limitations under the License.                       ║
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
 
+Imports System.Reflection
+
 Public Class Game
-    <Serializable()>
-    Public Class Launcher
-        Implements IEquatable(Of Launcher)
+    Public Enum Launcher
+        Minecraft
+        Technic
+        <StringValue("Feed the Beast")> FeedTheBeast
+        ATLauncher
+    End Enum
 
-        Public Shared ReadOnly Minecraft As New Launcher(0, "Minecraft")
-        Public Shared ReadOnly Technic As New Launcher(1, "Technic")
-        Public Shared ReadOnly FeedTheBeast As New Launcher(2, "Feed the Beast")
-        Public Shared ReadOnly ATLauncher As New Launcher(3, "ATLauncher")
-
-        Private _id As Integer
-        Private Property id As Integer
+    <AttributeUsage(AttributeTargets.Field)>
+    Public Class StringValue
+        Inherits Attribute
+        Private _Name As String
+        Public Property Name As String
             Get
-                Return _id
-            End Get
-            Set(value As Integer)
-                _id = value
-            End Set
-        End Property
-
-        Private _name As String
-        Private Property name As String
-            Get
-                Return _name
+                Return _Name
             End Get
             Set(value As String)
-                _name = value
+                _Name = value
             End Set
         End Property
 
-        Public Sub New()
-            Me.id = 0
-            Me.name = "Minecraft"
+        Public Sub New(Name As String)
+            _Name = Name
         End Sub
-
-        Public Sub New(id As Integer, name As String)
-            Me.id = id
-            Me.name = name
-        End Sub
-
-        Public Overrides Function ToString() As String
-            Return Me.name
-        End Function
-
-        Private Overloads Function Equals(other As Launcher) As Boolean Implements IEquatable(Of Launcher).Equals
-            If Me Is Nothing Or other Is Nothing Then Return False
-
-            Return Me.id = other.id
-        End Function
-
-        Public Shared Operator =(launcher1 As Launcher, launcher2 As Launcher)
-            If launcher1 Is Nothing Or launcher2 Is Nothing Then Return False
-
-            Return launcher1.Equals(launcher2)
-        End Operator
-
-        Public Shared Operator <>(launcher1 As Launcher, launcher2 As Launcher)
-            If launcher1 Is Nothing Or launcher2 Is Nothing Then Return True
-
-            Return Not launcher1.Equals(launcher2)
-        End Operator
     End Class
 
     Public Class Images
@@ -82,19 +47,19 @@ Public Class Game
             Inherits Image
             Public Sub New(Margin As Thickness, State As State)
                 Select Case State
-                    Case Images.State.Full
+                    Case State.Full
                         Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/heart_full.png"))
-                    Case Images.State.Half
+                    Case State.Half
                         Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/heart_half.png"))
-                    Case Images.State.Empty
+                    Case State.Empty
                         Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/heart_empty.png"))
                 End Select
 
                 Me.Width = 9
                 Me.Height = 9
-                Me.HorizontalAlignment = Windows.HorizontalAlignment.Left
-                Me.VerticalAlignment = Windows.VerticalAlignment.Stretch
-                Me.Stretch = Windows.Media.Stretch.None
+                Me.HorizontalAlignment = HorizontalAlignment.Left
+                Me.VerticalAlignment = VerticalAlignment.Stretch
+                Me.Stretch = Stretch.None
                 Me.Margin = Margin
             End Sub
         End Class
@@ -103,19 +68,19 @@ Public Class Game
             Inherits Image
             Public Sub New(Margin As Thickness, State As State)
                 Select Case State
-                    Case Images.State.Full
+                    Case State.Full
                         Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/hunger_full.png"))
-                    Case Images.State.Half
+                    Case State.Half
                         Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/hunger_half.png"))
-                    Case Images.State.Empty
+                    Case State.Empty
                         Me.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/NBTInfo/hunger_empty.png"))
                 End Select
 
                 Me.Width = 9
                 Me.Height = 9
-                Me.HorizontalAlignment = Windows.HorizontalAlignment.Left
-                Me.VerticalAlignment = Windows.VerticalAlignment.Stretch
-                Me.Stretch = Windows.Media.Stretch.None
+                Me.HorizontalAlignment = HorizontalAlignment.Left
+                Me.VerticalAlignment = VerticalAlignment.Stretch
+                Me.Stretch = Stretch.None
                 Me.Margin = Margin
             End Sub
         End Class
