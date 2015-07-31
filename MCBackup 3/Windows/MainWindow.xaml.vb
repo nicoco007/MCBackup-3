@@ -1701,25 +1701,45 @@ Partial Class MainWindow
     End Sub
 #End Region
 
-#Region "Search Text Box"
+#Region "Filter Text Box"
+    Dim PreventUpdate As Boolean = False
+    Dim WithEvents FilterTimer As New DispatcherTimer With {.Interval = TimeSpan.FromMilliseconds(300)}
+
     Private Sub SearchTextBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles SearchTextBox.TextChanged
-        If Me.IsLoaded Then
+        If Not PreventUpdate Then
+            FilterTimer.Stop()
+            FilterTimer.Start()
+        End If
+    End Sub
+
+    Private Sub SearchTextBox_KeyDown(sender As Object, e As KeyEventArgs) Handles SearchTextBox.KeyDown
+        If e.Key = Key.Enter Then
             RefreshBackupsList()
+            FilterTimer.Stop()
         End If
     End Sub
 
     Private Sub SearchTextBox_LostFocus(sender As Object, e As RoutedEventArgs) Handles SearchTextBox.LostFocus
         If String.IsNullOrEmpty(SearchTextBox.Text) Then
+            PreventUpdate = True
             SearchTextBox.Text = MCBackup.Language.Dictionary("MainWindow.Search")
             SearchTextBox.Foreground = New SolidColorBrush(Colors.Gray)
+            PreventUpdate = False
         End If
     End Sub
 
     Private Sub SearchTextBox_GotFocus(sender As Object, e As RoutedEventArgs) Handles SearchTextBox.GotFocus
         If SearchTextBox.Text = MCBackup.Language.Dictionary("MainWindow.Search") Then
+            PreventUpdate = True
             SearchTextBox.Text = ""
             SearchTextBox.Foreground = New SolidColorBrush(Colors.Black)
+            PreventUpdate = False
         End If
+    End Sub
+
+    Private Sub FilterTimer_Tick(sender As Object, e As EventArgs) Handles FilterTimer.Tick
+        RefreshBackupsList()
+        FilterTimer.Stop()
     End Sub
 #End Region
 
