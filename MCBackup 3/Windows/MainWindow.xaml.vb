@@ -77,14 +77,15 @@ Partial Class MainWindow
         Log.Print(".NET Framework Version: " & Environment.Version.Major & "." & Environment.Version.Minor)
 
         Dim SettingsUpgraded As Boolean = False
+        Dim ConfigurationFile As String = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath
+        Debug.Print("Configuration file: " + ConfigurationFile)
 
         If My.Settings.CallUpgrade Then
             ' Check if other configuration files exist
-            Dim ConfigurationFile As String = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath
             Dim ConfigurationDirectory As DirectoryInfo = New FileInfo(ConfigurationFile).Directory.Parent
             If ConfigurationDirectory.Exists() Then
                 For Each VersionDirectory As DirectoryInfo In ConfigurationDirectory.GetDirectories()
-                    If File.Exists(Path.Combine(VersionDirectory.FullName, "user.config")) And VersionDirectory.Name <> ApplicationVersion Then
+                    If File.Exists(Path.Combine(VersionDirectory.FullName, "user.config")) And VersionDirectory.Name <> ApplicationVersion.ToString() Then
                         SettingsUpgraded = True
                         Exit For
                     End If
@@ -149,8 +150,7 @@ Partial Class MainWindow
 
         If SettingsUpgraded Then MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.SettingsUpgrade"), MCBackup.Language.Dictionary("Message.Caption.Information"), MessageBoxButton.OK, MessageBoxImage.Information)
 
-        Log.Print(String.Format("Current Launcher: '{0}'", My.Settings.Launcher))
-
+        Log.Print(String.Format("Current Launcher: '{0}'", My.Settings.Launcher.GetStringValue()))
         Splash.StepProgress()
 
         Me.ListView.Background = New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, 255, 255, 255))
@@ -286,7 +286,7 @@ Partial Class MainWindow
     Private Items
 
     Public Sub RefreshBackupsList()
-        If Not BGW.IsBusy Then
+        If Not BGW.IsBusy And Me.IsLoaded Then
             If Dispatcher.CheckAccess Then
                 Items = New List(Of ListViewBackupItem)
                 EnableUI(False)
