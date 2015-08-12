@@ -306,7 +306,7 @@ Partial Class MainWindow
                               If Not SearchTextBox.Text = MCBackup.Language.Dictionary("MainWindow.Search") Then
                                   Search = SearchTextBox.Text
                               End If
-                              Group = DirectCast(GroupsTabControl.SelectedItem, TaggedTabItem).Tag
+                              Group = TryCast(GroupsTabControl.SelectedItem, TaggedTabItem).Tag
                           End Sub)
         Dim Directory As New IO.DirectoryInfo(My.Settings.BackupsFolderLocation) ' Create a DirectoryInfo variable for the backups folder
 
@@ -742,6 +742,8 @@ Partial Class MainWindow
                 Exit Sub
             End If
         End If
+        StatusLabel.Content = MCBackup.Language.Dictionary("Status.StartingBackup")
+        Progress.Value = 0
         Log.Print("Starting new backup (Name: '{0}'; Description: '{1}'; Path: '{2}'; Type: '{3}'", BackupInfo.Name, BackupInfo.Description, BackupInfo.Location, BackupInfo.Type)
         EnableUI(False)
         Cancel = False
@@ -963,6 +965,8 @@ Partial Class MainWindow
             Log.Print("Starting Restore")
             RestoreInfo.BackupName = ListView.SelectedItems(0).Name
 
+            ListView.SelectedIndex = -1
+
             Dim BaseFolderName As String = "",
                 Launcher As Game.Launcher = Game.Launcher.Minecraft,
                 Modpack As String = "",
@@ -974,71 +978,71 @@ Partial Class MainWindow
             End If
 
             Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & RestoreInfo.BackupName & "\info.json")
-                    InfoJson = JsonConvert.DeserializeObject(SR.ReadToEnd)
-                    BaseFolderName = InfoJson("OriginalName")
-                    RestoreInfo.BackupType = InfoJson("Type")
+                InfoJson = JsonConvert.DeserializeObject(SR.ReadToEnd)
+                BaseFolderName = InfoJson("OriginalName")
+                RestoreInfo.BackupType = InfoJson("Type")
 
-                    Dim Temp As Object = InfoJson("Launcher")
-                    If IsNumeric(Temp) Then
-                        If Temp > [Enum].GetValues(GetType(Game.Launcher)).Cast(Of Game.Launcher).Last() Or Temp < 0 Then
-                            Launcher = Game.Launcher.Minecraft
-                        Else
-                            Launcher = Temp
-                        End If
+                Dim Temp As Object = InfoJson("Launcher")
+                If IsNumeric(Temp) Then
+                    If Temp > [Enum].GetValues(GetType(Game.Launcher)).Cast(Of Game.Launcher).Last() Or Temp < 0 Then
+                        Launcher = Game.Launcher.Minecraft
                     Else
-                        Select Case Temp
-                            Case "minecraft"
-                                Launcher = Game.Launcher.Minecraft
-                            Case "technic"
-                                Launcher = Game.Launcher.Technic
-                            Case "ftb"
-                                Launcher = Game.Launcher.FeedTheBeast
-                            Case "atlauncher"
-                                Launcher = Game.Launcher.ATLauncher
-                            Case Else
-                                Launcher = Game.Launcher.Minecraft
-                        End Select
+                        Launcher = Temp
                     End If
-
-                    Modpack = InfoJson("Modpack")
-                End Using
-
-                If Launcher <> My.Settings.Launcher Then
-                    MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.IncompatibleBackupConfig"), Launcher.ToString()), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
-                    EnableUI(True)
-                    Exit Sub
+                Else
+                    Select Case Temp
+                        Case "minecraft"
+                            Launcher = Game.Launcher.Minecraft
+                        Case "technic"
+                            Launcher = Game.Launcher.Technic
+                        Case "ftb"
+                            Launcher = Game.Launcher.FeedTheBeast
+                        Case "atlauncher"
+                            Launcher = Game.Launcher.ATLauncher
+                        Case Else
+                            Launcher = Game.Launcher.Minecraft
+                    End Select
                 End If
 
-                Select Case RestoreInfo.BackupType
-                    Case "save"
-                        Select Case My.Settings.Launcher
-                            Case Game.Launcher.Minecraft
-                                RestoreInfo.RestoreLocation = My.Settings.SavesFolderLocation & "\" & BaseFolderName
-                            Case Game.Launcher.Technic
-                                RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\modpacks\" & Modpack & "\saves\" & BaseFolderName
-                            Case Game.Launcher.FeedTheBeast
-                                RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\" & Modpack & "\minecraft\saves\" & BaseFolderName
-                            Case Game.Launcher.ATLauncher
-                                RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\Instances\" & Modpack & "\saves\" & BaseFolderName
-                        End Select
-                    Case "version"
-                        Select Case My.Settings.Launcher
-                            Case Game.Launcher.Minecraft
-                                RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\versions\" & BaseFolderName
-                            Case Game.Launcher.Technic
-                                RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\modpacks\" & BaseFolderName
-                            Case Game.Launcher.FeedTheBeast
-                                RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\" & BaseFolderName
-                            Case Game.Launcher.ATLauncher
-                                RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\Instances\" & BaseFolderName
-                        End Select
-                    Case "everything"
-                        RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation
-                End Select
+                Modpack = InfoJson("Modpack")
+            End Using
 
-                Dim t As New Thread(AddressOf Restore)
-                t.Start()
+            If Launcher <> My.Settings.Launcher Then
+                MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.IncompatibleBackupConfig"), Launcher.ToString()), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                EnableUI(True)
+                Exit Sub
             End If
+
+            Select Case RestoreInfo.BackupType
+                Case "save"
+                    Select Case My.Settings.Launcher
+                        Case Game.Launcher.Minecraft
+                            RestoreInfo.RestoreLocation = My.Settings.SavesFolderLocation & "\" & BaseFolderName
+                        Case Game.Launcher.Technic
+                            RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\modpacks\" & Modpack & "\saves\" & BaseFolderName
+                        Case Game.Launcher.FeedTheBeast
+                            RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\" & Modpack & "\minecraft\saves\" & BaseFolderName
+                        Case Game.Launcher.ATLauncher
+                            RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\Instances\" & Modpack & "\saves\" & BaseFolderName
+                    End Select
+                Case "version"
+                    Select Case My.Settings.Launcher
+                        Case Game.Launcher.Minecraft
+                            RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\versions\" & BaseFolderName
+                        Case Game.Launcher.Technic
+                            RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\modpacks\" & BaseFolderName
+                        Case Game.Launcher.FeedTheBeast
+                            RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\" & BaseFolderName
+                        Case Game.Launcher.ATLauncher
+                            RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\Instances\" & BaseFolderName
+                    End Select
+                Case "everything"
+                    RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation
+            End Select
+
+            Dim t As New Thread(AddressOf Restore)
+            t.Start()
+        End If
     End Sub
 
     Private Sub Restore()

@@ -122,6 +122,7 @@ Public Class Language
         Dictionary.Add("Status.RefreshingBackupsList", FindString("Status.RefreshingBackupsList"))
         Dictionary.Add("Status.RevertingChanges", FindString("Status.RevertingChanges"))
         Dictionary.Add("Status.MovingBackups", FindString("Status.MovingBackups"))
+        Dictionary.Add("Status.StartingBackup", FindString("Status.StartingBackup"))
 
         ' = Messages =
         Dictionary.Add("Message.Caption.Information", FindString("Message.Caption.Information"))
