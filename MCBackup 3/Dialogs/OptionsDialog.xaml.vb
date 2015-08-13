@@ -111,6 +111,9 @@ Partial Public Class Options
         LoadLanguage()
 
         ThemeShadeComboBox.SelectedItem = ThemeShadeComboBox.Items.OfType(Of TaggedComboBoxItem)().FirstOrDefault(Function(Item) Item.Tag = My.Settings.ThemeShade)
+
+        YAlignComboBox.SelectedIndex = My.Settings.BackgroundImageYAlign
+
         ListViewTextColorIntensitySlider.Value = My.Settings.ListViewTextColorIntensity
 
         DefaultBackupNameTextBox.Text = My.Settings.DefaultBackupName
@@ -151,7 +154,7 @@ Partial Public Class Options
     Private Sub BackgroundImageBrowseButton_Click(sender As Object, e As RoutedEventArgs) Handles BackgroundImageBrowseButton.Click
         If OpenFileDialog.ShowDialog = Forms.DialogResult.OK Then
             My.Settings.BackgroundImageLocation = OpenFileDialog.FileName
-            MainWindow.AjustBackground()
+            MainWindow.AdjustBackground()
         End If
     End Sub
 
@@ -179,7 +182,7 @@ Partial Public Class Options
                     Brush.Stretch = Stretch.UniformToFill
             End Select
             My.Settings.BackgroundImageStretch = Brush.Stretch
-            MainWindow.AjustBackground()
+            MainWindow.AdjustBackground()
         Catch ex As Exception
             Log.Print(ex.Message, Log.Level.Severe)
         End Try
@@ -288,6 +291,7 @@ Partial Public Class Options
         SampleTextY1.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SampleText")
         SampleTextR1.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SampleText")
 
+        ' Theme colors
         ThemeComboBox.Items.Clear()
 
         Dim Names = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.Themes").Split(";")
@@ -300,6 +304,7 @@ Partial Public Class Options
             End If
         Next
 
+        ' Theme shades
         ThemeShadeComboBox.Items.Clear()
         ThemeShadeComboBox.Items.Add(New TaggedComboBoxItem(MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.ThemeShades.Light"), "BaseLight"))
         ThemeShadeComboBox.Items.Add(New TaggedComboBoxItem(MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.ThemeShades.Dark"), "BaseDark"))
@@ -738,6 +743,13 @@ Partial Public Class Options
                 ThemeChanged = True
             End If
             My.Settings.ThemeShade = SelectedTag
+        End If
+    End Sub
+
+    Private Sub YAlignComboBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles YAlignComboBox.SelectionChanged
+        If Me.IsLoaded Then
+            My.Settings.BackgroundImageYAlign = YAlignComboBox.SelectedIndex
+            MainWindow.AdjustBackground()
         End If
     End Sub
 End Class

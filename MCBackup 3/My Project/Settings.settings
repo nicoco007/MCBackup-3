@@ -105,5 +105,11 @@
     <Setting Name="ThemeShade" Type="System.String" Scope="User">
       <Value Profile="(Default)">BaseLight</Value>
     </Setting>
+    <Setting Name="BackgroundImageXAlign" Type="System.Windows.Media.AlignmentX" Scope="User">
+      <Value Profile="(Default)">Center</Value>
+    </Setting>
+    <Setting Name="BackgroundImageYAlign" Type="System.Windows.Media.AlignmentY" Scope="User">
+      <Value Profile="(Default)">Center</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

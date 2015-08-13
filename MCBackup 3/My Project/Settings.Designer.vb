@@ -459,6 +459,30 @@ Partial Friend NotInheritable Class MySettings
             Me("ThemeShade") = value
         End Set
     End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("Center")>  _
+    Public Property BackgroundImageXAlign() As Global.System.Windows.Media.AlignmentX
+        Get
+            Return CType(Me("BackgroundImageXAlign"),Global.System.Windows.Media.AlignmentX)
+        End Get
+        Set
+            Me("BackgroundImageXAlign") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("Center")>  _
+    Public Property BackgroundImageYAlign() As Global.System.Windows.Media.AlignmentY
+        Get
+            Return CType(Me("BackgroundImageYAlign"),Global.System.Windows.Media.AlignmentY)
+        End Get
+        Set
+            Me("BackgroundImageYAlign") = value
+        End Set
+    End Property
 End Class
 
 Namespace My

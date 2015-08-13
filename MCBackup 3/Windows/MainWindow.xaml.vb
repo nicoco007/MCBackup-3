@@ -55,6 +55,8 @@ Partial Class MainWindow
     Private Cancel As Boolean = False
 
     Public AutoBackupWindowWasShown As Boolean = False
+
+    Public BackgroundImageBitmap As BitmapImage
 #End Region
 
 #Region "Load"
@@ -164,7 +166,8 @@ Partial Class MainWindow
         Splash.StepProgress()
 
         If Not My.Settings.BackgroundImageLocation = "" And My.Computer.FileSystem.FileExists(My.Settings.BackgroundImageLocation) Then
-            AjustBackground()
+            BackgroundImageBitmap = New BitmapImage(New Uri(My.Settings.BackgroundImageLocation))
+            AdjustBackground()
         End If
 
         Splash.StepProgress()
@@ -1401,14 +1404,14 @@ Partial Class MainWindow
             AutoBackupWindow.Hide()
             Me.Left = Me.Left + (AutoBackupWindow.Width / 2)
             AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " >>"
-            AjustBackground()
+            AdjustBackground()
         Else
             Me.Left = Me.Left - (AutoBackupWindow.Width / 2)
             AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " <<"
             AutoBackupWindow.Top = Me.Top
             AutoBackupWindow.Left = Me.Left + Me.Width + 5
             AutoBackupWindow.Show()
-            AjustBackground()
+            AdjustBackground()
         End If
     End Sub
 
@@ -1420,7 +1423,7 @@ Partial Class MainWindow
     Private Sub Main_SizeChanged(sender As Object, e As SizeChangedEventArgs) Handles MyBase.SizeChanged
         Main_LocationChanged(sender, Nothing)
         AutoBackupWindow.Height = Me.Height
-        AjustBackground(False)
+        AdjustBackground(False)
     End Sub
 
     Private Sub Main_LocationChanged(sender As Object, e As EventArgs) Handles MyBase.LocationChanged
@@ -1600,7 +1603,7 @@ Partial Class MainWindow
         If AutoBackupWindowWasShown Then
             AutoBackupWindow.Show()
             AutoBackupWindow.Activate()
-            AjustBackground()
+            AdjustBackground()
         End If
     End Sub
 #End Region
@@ -1955,25 +1958,31 @@ Partial Class MainWindow
         Return DateTime.Now.ToString("yyyy-MM-dd (hh\hmm\mss\s)")
     End Function
 
-    Public Sub AjustBackground(Optional UpdateMainWindow As Boolean = True)
+    Public Sub AdjustBackground(Optional UpdateMainWindow As Boolean = True)
         If Not (String.IsNullOrEmpty(My.Settings.BackgroundImageLocation)) And File.Exists(My.Settings.BackgroundImageLocation) Then
             If AutoBackupWindow.IsVisible Then
-                Dim Bitmap = New BitmapImage(New Uri(My.Settings.BackgroundImageLocation))
                 Dim MainWindowPercentage = Me.Width / (Me.AutoBackupWindow.Width + Me.Width)
 
-                Dim Brush As New ImageBrush(New CroppedBitmap(Bitmap, New Int32Rect(0, 0, Bitmap.PixelWidth * MainWindowPercentage, Bitmap.PixelHeight)))
-                Brush.Stretch = My.Settings.BackgroundImageStretch
-                Brush.AlignmentX = AlignmentX.Right
-                Me.Background = Brush
+                Dim MainBrush As ImageBrush = New ImageBrush(New CroppedBitmap(BackgroundImageBitmap, New Int32Rect(0, 0, BackgroundImageBitmap.PixelWidth * MainWindowPercentage, BackgroundImageBitmap.PixelHeight)))
+                Dim AutoBackupBrush As ImageBrush = New ImageBrush(New CroppedBitmap(BackgroundImageBitmap, New Int32Rect(BackgroundImageBitmap.PixelWidth * MainWindowPercentage, 0, BackgroundImageBitmap.PixelWidth - BackgroundImageBitmap.PixelWidth * MainWindowPercentage, BackgroundImageBitmap.PixelHeight)))
 
-                Dim Brush2 As New ImageBrush(New CroppedBitmap(Bitmap, New Int32Rect(Bitmap.PixelWidth * MainWindowPercentage, 0, Bitmap.PixelWidth - Bitmap.PixelWidth * MainWindowPercentage, Bitmap.PixelHeight)))
-                Brush2.Stretch = My.Settings.BackgroundImageStretch
-                Brush2.AlignmentX = AlignmentX.Left
-                AutoBackupWindow.Background = Brush2
+                MainBrush.AlignmentX = AlignmentX.Right
+                AutoBackupBrush.AlignmentX = AlignmentX.Left
+
+                MainBrush.Stretch = My.Settings.BackgroundImageStretch
+                AutoBackupBrush.Stretch = My.Settings.BackgroundImageStretch
+
+                MainBrush.AlignmentY = My.Settings.BackgroundImageYAlign
+                AutoBackupBrush.AlignmentY = My.Settings.BackgroundImageYAlign
+
+                Me.Background = MainBrush
+                AutoBackupWindow.Background = AutoBackupBrush
             Else
                 If UpdateMainWindow Then
-                    Dim Brush As New ImageBrush(New BitmapImage(New Uri(My.Settings.BackgroundImageLocation)))
+                    Dim Brush As New ImageBrush(BackgroundImageBitmap)
                     Brush.Stretch = My.Settings.BackgroundImageStretch
+                    Brush.AlignmentX = My.Settings.BackgroundImageXAlign
+                    Brush.AlignmentY = My.Settings.BackgroundImageYAlign
                     Me.Background = Brush
                 End If
             End If
