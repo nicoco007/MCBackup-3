@@ -148,7 +148,7 @@ Public Class MetroMessageBox
 
     Public Shared Sub ShowImage(Image As MessageBoxImage)
         If Image > 0 Then
-            MsgBox.Message.Margin = New Thickness(42, 10, 10, 44)
+            MsgBox.Message.Margin = New Thickness(52, 20, 20, 54)
         End If
 
         Select Case Image

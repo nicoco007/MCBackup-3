@@ -62,7 +62,7 @@ Partial Class MainWindow
         InitializeComponent()
 
         Application.CloseAction = Application.AppCloseAction.Force
-        ThemeManager.ChangeAppStyle(My.Application, ThemeManager.GetAccent(My.Settings.Theme), ThemeManager.GetAppTheme("BaseLight"))
+        ThemeManager.ChangeAppStyle(My.Application, ThemeManager.GetAccent(My.Settings.Theme), ThemeManager.GetAppTheme(My.Settings.ThemeShade))
 
         Splash.Show()
         Splash.ShowStatus("Splash.Status.Starting", "Starting...")
@@ -153,8 +153,11 @@ Partial Class MainWindow
         Log.Print(String.Format("Current Launcher: '{0}'", My.Settings.Launcher.GetStringValue()))
         Splash.StepProgress()
 
-        Me.ListView.Background = New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, 255, 255, 255))
-        Me.Sidebar.Background = New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, 255, 255, 255))
+        Dim DefaultBackground As SolidColorBrush = DirectCast(FindResource("ControlBackgroundBrush"), SolidColorBrush)
+        Dim InterfaceOpacityBackground As New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, DefaultBackground.Color.R, DefaultBackground.Color.G, DefaultBackground.Color.B))
+
+        Me.ListView.Background = InterfaceOpacityBackground
+        Me.Sidebar.Background = InterfaceOpacityBackground
 
         StatusLabel.Foreground = New SolidColorBrush(My.Settings.StatusLabelColor)
 

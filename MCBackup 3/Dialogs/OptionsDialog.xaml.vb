@@ -30,6 +30,7 @@ Imports System.ComponentModel
 Partial Public Class Options
     Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
     Private OpenFileDialog As New System.Windows.Forms.OpenFileDialog
+    Private ThemeChanged As Boolean = False
 
     Public Sub New()
         InitializeComponent()
@@ -135,8 +136,12 @@ Partial Public Class Options
 
     Private Sub ListViewOpacitySlider_ValueChanged(sender As Object, e As RoutedPropertyChangedEventArgs(Of Double))
         If Me.IsLoaded Then
-            Main.ListView.Opacity = ListViewOpacitySlider.Value / 100
-            Main.Sidebar.Background = New SolidColorBrush(Color.FromArgb(ListViewOpacitySlider.Value * 2.55, 255, 255, 255))
+            Dim DefaultBackground As SolidColorBrush = DirectCast(FindResource("ControlBackgroundBrush"), SolidColorBrush)
+            Dim InterfaceOpacityBackground As New SolidColorBrush(Color.FromArgb(ListViewOpacitySlider.Value * 2.55, DefaultBackground.Color.R, DefaultBackground.Color.G, DefaultBackground.Color.B))
+
+            Main.ListView.Background = InterfaceOpacityBackground
+            Main.Sidebar.Background = InterfaceOpacityBackground
+
             OpacityPercentLabel.Content = Math.Round(ListViewOpacitySlider.Value, 0).ToString & "%"
         End If
     End Sub
@@ -151,7 +156,7 @@ Partial Public Class Options
     End Sub
 
     Private Sub BackgroundImageRemoveButton_Click(sender As Object, e As RoutedEventArgs) Handles BackgroundImageRemoveButton.Click
-        Main.Background = New SolidColorBrush(Color.FromArgb(255, 240, 240, 240))
+        Main.Background = DirectCast(FindResource("WindowBackgroundBrush"), SolidColorBrush)
         My.Settings.BackgroundImageLocation = ""
     End Sub
 
@@ -179,8 +184,14 @@ Partial Public Class Options
         End Try
     End Sub
 
-    Private Sub SaveButton_Click(sender As Object, e As RoutedEventArgs) Handles CloseButton.Click
+    Private Sub CloseButton_Click(sender As Object, e As RoutedEventArgs) Handles CloseButton.Click
         Me.Close()
+
+        If ThemeChanged AndAlso MetroMessageBox.Show("Changing the theme requires a restart? Restart program now?", "Restart required", MessageBoxButton.YesNo, MessageBoxImage.Information) = MessageBoxResult.Yes Then
+            Application.CloseAction = Application.AppCloseAction.Close
+            Main.Close()
+            Process.Start(Application.ResourceAssembly.Location)
+        End If
     End Sub
 
     Private Sub Window_Unloaded(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
@@ -196,6 +207,7 @@ Partial Public Class Options
         Log.Print("Minecraft folder location set to " & My.Settings.MinecraftFolderLocation)
         Log.Print("Saves folder location set to " & My.Settings.SavesFolderLocation)
         Log.Print("Backups folder location set to " & My.Settings.BackupsFolderLocation)
+
         My.Settings.InterfaceOpacity = ListViewOpacitySlider.Value
         My.Settings.CheckForUpdates = CheckForUpdatesCheckBox.IsChecked
         My.Settings.ShowBalloonTips = ShowBalloonTipsCheckBox.IsChecked
@@ -210,7 +222,7 @@ Partial Public Class Options
         Else
             My.Settings.SaveCloseState = False
         End If
-        'Log.Print("Saving settings...")
+
         My.Settings.Save()
         Main.RefreshBackupsList()
         ReloadBackupGroups()
@@ -349,8 +361,10 @@ Partial Public Class Options
     Private Sub ThemeComboBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles ThemeComboBox.SelectionChanged
         If Not ThemeComboBox.SelectedItem Is Nothing Then
             Dim SelectedTag = DirectCast(ThemeComboBox.SelectedItem, TaggedComboBoxItem).Tag
-            My.Settings.Theme = ThemeComboBox.SelectedItem.Tag.ToString
-            ThemeManager.ChangeAppStyle(My.Application, ThemeManager.GetAccent(My.Settings.Theme), ThemeManager.GetAppTheme("BaseLight"))
+            If SelectedTag <> My.Settings.Theme Then
+                ThemeChanged = True
+            End If
+            My.Settings.Theme = SelectedTag
         End If
     End Sub
 
