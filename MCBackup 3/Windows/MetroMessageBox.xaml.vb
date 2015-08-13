@@ -153,28 +153,28 @@ Public Class MetroMessageBox
 
         Select Case Image
             Case MessageBoxImage.Asterisk
-                MsgBox.Image.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/msgbox.asterisk.png"))
+                MsgBox.Image.Source = System.Drawing.SystemIcons.Asterisk.ToImageSource()
                 System.Media.SystemSounds.Asterisk.Play()
             Case MessageBoxImage.Error
-                MsgBox.Image.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/msgbox.error.png"))
+                MsgBox.Image.Source = System.Drawing.SystemIcons.Error.ToImageSource()
                 System.Media.SystemSounds.Hand.Play()
             Case MessageBoxImage.Exclamation
-                MsgBox.Image.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/msgbox.exclamation.png"))
+                MsgBox.Image.Source = System.Drawing.SystemIcons.Exclamation.ToImageSource()
                 System.Media.SystemSounds.Exclamation.Play()
             Case MessageBoxImage.Hand
-                MsgBox.Image.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/msgbox.hand.png"))
+                MsgBox.Image.Source = System.Drawing.SystemIcons.Hand.ToImageSource()
                 System.Media.SystemSounds.Hand.Play()
             Case MessageBoxImage.Information
-                MsgBox.Image.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/msgbox.info.png"))
+                MsgBox.Image.Source = System.Drawing.SystemIcons.Information.ToImageSource()
                 System.Media.SystemSounds.Asterisk.Play()
             Case MessageBoxImage.Question
-                MsgBox.Image.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/msgbox.question.png"))
+                MsgBox.Image.Source = System.Drawing.SystemIcons.Question.ToImageSource()
                 System.Media.SystemSounds.Question.Play()
             Case MessageBoxImage.Stop
-                MsgBox.Image.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/msgbox.stop.png"))
+                MsgBox.Image.Source = System.Drawing.SystemIcons.Hand.ToImageSource()
                 System.Media.SystemSounds.Hand.Play()
             Case MessageBoxImage.Warning
-                MsgBox.Image.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/msgbox.warning.png"))
+                MsgBox.Image.Source = System.Drawing.SystemIcons.Warning.ToImageSource()
                 System.Media.SystemSounds.Exclamation.Play()
         End Select
     End Sub

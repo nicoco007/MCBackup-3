@@ -13,6 +13,7 @@
 '   ║     See the License for the specific language governing permissions and   ║
 '   ║                      limitations under the License.                       ║
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
+Imports System.Drawing
 Imports System.Reflection
 Imports System.Windows.Threading
 Imports MCBackup.Game
@@ -62,5 +63,12 @@ Module ExtensionModule
             End If
         End If
         Return Nothing
+    End Function
+
+    <System.Runtime.CompilerServices.Extension> Public Function ToImageSource(Icon As Icon) As ImageSource
+        Dim Bitmap As Bitmap = Icon.ToBitmap()
+        Dim Hbitmap As IntPtr = Bitmap.GetHbitmap()
+
+        Return System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(Hbitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
     End Function
 End Module
