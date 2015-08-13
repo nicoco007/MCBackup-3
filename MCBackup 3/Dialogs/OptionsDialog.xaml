@@ -100,7 +100,7 @@
                             <Label x:Name="SampleTextG1" Content="Sample Text" Margin="0,36,210,0" Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Right" Width="90" Padding="2" HorizontalContentAlignment="Right"/>
                         </Grid>
                     </GroupBox>
-                    <GroupBox x:Name="GeneralAppearanceGroupBox" Header="General Appearance" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Canvas.Left="10" Canvas.Top="10" Height="202" Width="648">
+                    <GroupBox x:Name="GeneralAppearanceGroupBox" Header="General Appearance" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Canvas.Left="10" Canvas.Top="10" Height="203" Width="648">
                         <Grid>
                             <Label x:Name="ListViewOpacityLabel" Content="Interface Opacity" HorizontalContentAlignment="Right" Margin="0,5,491,0" Height="26" VerticalAlignment="Top"/>
                             <Slider x:Name="ListViewOpacitySlider" ValueChanged="ListViewOpacitySlider_ValueChanged" Maximum="100" Minimum="50" Value="75" Margin="154,9,39,0" Height="18" VerticalAlignment="Top"/>
@@ -115,15 +115,15 @@
                                 <ComboBoxItem Content="Zoom"/>
                             </ComboBox>
                             <Label x:Name="SizeModeLabel" Content="Size Mode" HorizontalContentAlignment="Right" Margin="0,76,491,0" Height="26" VerticalAlignment="Top"/>
-                            <Label x:Name="ThemeLabel" Content="Theme" HorizontalContentAlignment="Right" Margin="1,136,490,0" Height="26" VerticalAlignment="Top"/>
-                            <ComboBox x:Name="ThemeComboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="121" IsReadOnly="True" Margin="154,136,0,0">
+                            <Label x:Name="ThemeLabel" Content="Theme" HorizontalContentAlignment="Right" Margin="0,138,491,0" Height="26" VerticalAlignment="Top"/>
+                            <ComboBox x:Name="ThemeComboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="121" IsReadOnly="True" Margin="154,138,0,0">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Name}" Tag="{Binding Tag}"/>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
-                            <ComboBox x:Name="ThemeShadeComboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="121" IsReadOnly="True" Margin="280,136,0,0">
+                            <ComboBox x:Name="ThemeShadeComboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="121" IsReadOnly="True" Margin="280,138,0,0">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Name}" Tag="{Binding Tag}"/>

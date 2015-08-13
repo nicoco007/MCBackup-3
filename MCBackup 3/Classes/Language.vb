@@ -247,6 +247,10 @@ Public Class Language
         Dictionary.Add("OptionsWindow.AppearancePanel.ThemeLabel.Content", FindString("OptionsWindow.AppearancePanel.ThemeLabel.Content"))
         Dictionary.Add("OptionsWindow.AppearancePanel.SampleText", FindString("OptionsWindow.AppearancePanel.SampleText"))
 
+        Dictionary.Add("OptionsWindow.AppearancePanel.VerticalAlign.Top", FindString("OptionsWindow.AppearancePanel.VerticalAlign.Top"))
+        Dictionary.Add("OptionsWindow.AppearancePanel.VerticalAlign.Center", FindString("OptionsWindow.AppearancePanel.VerticalAlign.Center"))
+        Dictionary.Add("OptionsWindow.AppearancePanel.VerticalAlign.Bottom", FindString("OptionsWindow.AppearancePanel.VerticalAlign.Bottom"))
+
         Dictionary.Add("OptionsWindow.AppearancePanel.Themes", FindString("OptionsWindow.AppearancePanel.Themes"))
         Dictionary.Add("OptionsWindow.AppearancePanel.ThemeTags", FindString("OptionsWindow.AppearancePanel.ThemeTags"))
         Dictionary.Add("OptionsWindow.AppearancePanel.ThemeShades.Light", FindString("OptionsWindow.AppearancePanel.ThemeShades.Light"))

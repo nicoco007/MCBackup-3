@@ -1981,7 +1981,7 @@ Partial Class MainWindow
                 If UpdateMainWindow Then
                     Dim Brush As New ImageBrush(BackgroundImageBitmap)
                     Brush.Stretch = My.Settings.BackgroundImageStretch
-                    Brush.AlignmentX = My.Settings.BackgroundImageXAlign
+                    'Brush.AlignmentX = My.Settings.BackgroundImageXAlign
                     Brush.AlignmentY = My.Settings.BackgroundImageYAlign
                     Me.Background = Brush
                 End If
