@@ -22,7 +22,7 @@
     Title="MCBackup" Height="600" Width="980" MinHeight="600" MinWidth="980" ResizeMode="CanResize" WindowStartupLocation="CenterScreen" Icon="pack://application:,,,/Resources/icon.ico" WindowTransitionsEnabled="False" ShowMaxRestoreButton="False" Background="{DynamicResource WindowBackgroundBrush}">
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
-            <TextBox x:Name="SearchTextBox" Width="200" Margin="2" Foreground="Gray" Text="Search..."/>
+            <TextBox x:Name="SearchTextBox" Width="200" Margin="2" Foreground="Gray" Text="Search..." Background="#FFFFFFFF"/>
             <Button x:Name="FileToolbarButton" Content="File" ContextMenuService.Placement="Bottom">
                 <Button.ContextMenu>
                     <ContextMenu x:Name="FileContextMenu">

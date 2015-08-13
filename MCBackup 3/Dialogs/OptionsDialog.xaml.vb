@@ -109,6 +109,7 @@ Partial Public Class Options
 
         LoadLanguage()
 
+        ThemeShadeComboBox.SelectedItem = ThemeShadeComboBox.Items.OfType(Of TaggedComboBoxItem)().FirstOrDefault(Function(Item) Item.Tag = My.Settings.ThemeShade)
         ListViewTextColorIntensitySlider.Value = My.Settings.ListViewTextColorIntensity
 
         DefaultBackupNameTextBox.Text = My.Settings.DefaultBackupName
@@ -299,6 +300,10 @@ Partial Public Class Options
             End If
         Next
 
+        ThemeShadeComboBox.Items.Clear()
+        ThemeShadeComboBox.Items.Add(New TaggedComboBoxItem(MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.ThemeShades.Light"), "BaseLight"))
+        ThemeShadeComboBox.Items.Add(New TaggedComboBoxItem(MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.ThemeShades.Dark"), "BaseDark"))
+
         ' Folders
         InstallTypeGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.InstallTypeGroupBox.Header")
         MinecraftInstallationRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.MinecraftInstallationRadioButton.Text")
@@ -359,7 +364,7 @@ Partial Public Class Options
     End Sub
 
     Private Sub ThemeComboBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles ThemeComboBox.SelectionChanged
-        If Not ThemeComboBox.SelectedItem Is Nothing Then
+        If Not ThemeComboBox.SelectedItem Is Nothing And Window.IsLoaded Then
             Dim SelectedTag = DirectCast(ThemeComboBox.SelectedItem, TaggedComboBoxItem).Tag
             If SelectedTag <> My.Settings.Theme Then
                 ThemeChanged = True
@@ -480,14 +485,6 @@ Partial Public Class Options
             End If
         End If
         My.Settings.SendAnonymousData = SendAnonymousDataCheckBox.IsChecked
-    End Sub
-
-    Private Sub SelectItemUsingTag(TabControl As TabControl, Tag As String)
-        For Each TabItem As TabItem In TabControl.Items
-            If TabItem.Tag = Tag Then
-                TabControl.SelectedItem = TabItem
-            End If
-        Next
     End Sub
 
     Private Sub InstallationType_SelectionChanged(sender As Object, e As RoutedEventArgs)
@@ -732,5 +729,15 @@ Partial Public Class Options
         Animation.Duration = New Duration(TimeSpan.FromMilliseconds(250))
 
         Me.BeginAnimation(FrameworkElement.HeightProperty, Animation)
+    End Sub
+
+    Private Sub ThemeShadeComboBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles ThemeShadeComboBox.SelectionChanged
+        If Not ThemeShadeComboBox.SelectedItem Is Nothing And Window.IsLoaded Then
+            Dim SelectedTag = DirectCast(ThemeShadeComboBox.SelectedItem, TaggedComboBoxItem).Tag
+            If SelectedTag <> My.Settings.ThemeShade Then
+                ThemeChanged = True
+            End If
+            My.Settings.ThemeShade = SelectedTag
+        End If
     End Sub
 End Class

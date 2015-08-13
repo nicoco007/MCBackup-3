@@ -246,6 +246,8 @@ Public Class Language
 
         Dictionary.Add("OptionsWindow.AppearancePanel.Themes", FindString("OptionsWindow.AppearancePanel.Themes"))
         Dictionary.Add("OptionsWindow.AppearancePanel.ThemeTags", FindString("OptionsWindow.AppearancePanel.ThemeTags"))
+        Dictionary.Add("OptionsWindow.AppearancePanel.ThemeShades.Light", FindString("OptionsWindow.AppearancePanel.ThemeShades.Light"))
+        Dictionary.Add("OptionsWindow.AppearancePanel.ThemeShades.Dark", FindString("OptionsWindow.AppearancePanel.ThemeShades.Dark"))
 
         Dictionary.Add("OptionsWindow.FoldersTab.InstallTypeGroupBox.Header", FindString("OptionsWindow.FoldersTab.InstallTypeGroupBox.Header"))
         Dictionary.Add("OptionsWindow.FoldersTab.MinecraftInstallationRadioButton.Text", FindString("OptionsWindow.FoldersTab.MinecraftInstallationRadioButton.Text"))

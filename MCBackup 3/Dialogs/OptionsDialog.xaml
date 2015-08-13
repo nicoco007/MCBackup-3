@@ -123,6 +123,13 @@
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
+                            <ComboBox x:Name="ThemeShadeComboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" IsReadOnly="True" Margin="279,108,0,0">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Name}" Tag="{Binding Tag}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
                         </Grid>
                     </GroupBox>
                 </Grid>
