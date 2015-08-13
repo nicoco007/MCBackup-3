@@ -132,6 +132,8 @@ Public Class Language
         Dictionary.Add("Message.Caption.InvalidBackups", FindString("Message.Caption.InvalidBackups"))
         Dictionary.Add("Message.Caption.MCBackupIsWorking", FindString("Message.Caption.MCBackupIsWorking"))
         Dictionary.Add("Message.Caption.Copied", FindString("Message.Caption.Copied"))
+        Dictionary.Add("Message.Caption.RestartRequired", FindString("Message.Caption.RestartRequired"))
+
         Dictionary.Add("Message.NoMinecraftInstallError", FindString("Message.NoMinecraftInstallError"))
         Dictionary.Add("Message.RestoreAreYouSure", FindString("Message.RestoreAreYouSure"))
         Dictionary.Add("Message.DeleteAreYouSure", FindString("Message.DeleteAreYouSure"))
@@ -160,6 +162,7 @@ Public Class Language
         Dictionary.Add("Message.ExceptionOccured", FindString("Message.ExceptionOccured"))
         Dictionary.Add("Message.IllegalCharacters", FindString("Message.IllegalCharacters"))
         Dictionary.Add("Message.SettingsUpgrade", FindString("Message.SettingsUpgrade"))
+        Dictionary.Add("Message.RestartAfterThemeChange", FindString("Message.RestartAfterThemeChange"))
 
         ' = Balloon Tips =
         Dictionary.Add("BalloonTip.Title.BackupError", FindString("BalloonTip.Title.BackupError"))

@@ -28,7 +28,8 @@ Imports System.Windows.Media.Animation
 Imports System.ComponentModel
 
 Partial Public Class Options
-    Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
+    Private MainWindow As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
+    Private AutoBackupWindow = DirectCast(Application.Current.Windows.OfType(Of AutoBackupWindow).FirstOrDefault(), AutoBackupWindow)
     Private OpenFileDialog As New System.Windows.Forms.OpenFileDialog
     Private ThemeChanged As Boolean = False
 
@@ -95,7 +96,7 @@ Partial Public Class Options
     End Sub
 
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
-        Dim LanguageDirectory As New IO.DirectoryInfo(Main.StartupPath & "\language")
+        Dim LanguageDirectory As New IO.DirectoryInfo(MainWindow.StartupPath & "\language")
         Dim LanguageFiles As IO.FileInfo() = LanguageDirectory.GetFiles()
         Dim LanguageFile As IO.FileInfo
 
@@ -132,7 +133,7 @@ Partial Public Class Options
             BackupGroupsListBox.Items.Add(Group)
         Next
 
-        Main.ReloadBackupGroups()
+        MainWindow.ReloadBackupGroups()
     End Sub
 
     Private Sub ListViewOpacitySlider_ValueChanged(sender As Object, e As RoutedPropertyChangedEventArgs(Of Double))
@@ -140,8 +141,8 @@ Partial Public Class Options
             Dim DefaultBackground As SolidColorBrush = DirectCast(FindResource("ControlBackgroundBrush"), SolidColorBrush)
             Dim InterfaceOpacityBackground As New SolidColorBrush(Color.FromArgb(ListViewOpacitySlider.Value * 2.55, DefaultBackground.Color.R, DefaultBackground.Color.G, DefaultBackground.Color.B))
 
-            Main.ListView.Background = InterfaceOpacityBackground
-            Main.Sidebar.Background = InterfaceOpacityBackground
+            MainWindow.ListView.Background = InterfaceOpacityBackground
+            MainWindow.Sidebar.Background = InterfaceOpacityBackground
 
             OpacityPercentLabel.Content = Math.Round(ListViewOpacitySlider.Value, 0).ToString & "%"
         End If
@@ -149,15 +150,14 @@ Partial Public Class Options
 
     Private Sub BackgroundImageBrowseButton_Click(sender As Object, e As RoutedEventArgs) Handles BackgroundImageBrowseButton.Click
         If OpenFileDialog.ShowDialog = Forms.DialogResult.OK Then
-            Dim Brush As New ImageBrush(New BitmapImage(New Uri(OpenFileDialog.FileName)))
-            Brush.Stretch = My.Settings.BackgroundImageStretch
-            Main.Background = Brush
             My.Settings.BackgroundImageLocation = OpenFileDialog.FileName
+            MainWindow.AjustBackground()
         End If
     End Sub
 
     Private Sub BackgroundImageRemoveButton_Click(sender As Object, e As RoutedEventArgs) Handles BackgroundImageRemoveButton.Click
-        Main.Background = DirectCast(FindResource("WindowBackgroundBrush"), SolidColorBrush)
+        MainWindow.Background = DirectCast(FindResource("WindowBackgroundBrush"), SolidColorBrush)
+        AutoBackupWindow.Background = DirectCast(FindResource("WindowBackgroundBrush"), SolidColorBrush)
         My.Settings.BackgroundImageLocation = ""
     End Sub
 
@@ -178,8 +178,8 @@ Partial Public Class Options
                 Case 3
                     Brush.Stretch = Stretch.UniformToFill
             End Select
-            My.Settings.BackgroundImageStretch = Int(Brush.Stretch)
-            Main.Background = Brush
+            My.Settings.BackgroundImageStretch = Brush.Stretch
+            MainWindow.AjustBackground()
         Catch ex As Exception
             Log.Print(ex.Message, Log.Level.Severe)
         End Try
@@ -188,9 +188,9 @@ Partial Public Class Options
     Private Sub CloseButton_Click(sender As Object, e As RoutedEventArgs) Handles CloseButton.Click
         Me.Close()
 
-        If ThemeChanged AndAlso MetroMessageBox.Show("Changing the theme requires a restart? Restart program now?", "Restart required", MessageBoxButton.YesNo, MessageBoxImage.Information) = MessageBoxResult.Yes Then
+        If ThemeChanged AndAlso MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.RestartAfterThemeChange"), MCBackup.Language.Dictionary("Message.Caption.RestartRequired"), MessageBoxButton.YesNo, MessageBoxImage.Information) = MessageBoxResult.Yes Then
             Application.CloseAction = Application.AppCloseAction.Close
-            Main.Close()
+            MainWindow.Close()
             Process.Start(Application.ResourceAssembly.Location)
         End If
     End Sub
@@ -225,7 +225,7 @@ Partial Public Class Options
         End If
 
         My.Settings.Save()
-        Main.RefreshBackupsList()
+        MainWindow.RefreshBackupsList()
         ReloadBackupGroups()
     End Sub
 
@@ -236,9 +236,9 @@ Partial Public Class Options
             LoadLanguage()
             DefaultBackupNameTextBox.Text = MCBackup.Language.Dictionary("Localization.DefaultBackupName")
             DefaultAutoBackupNameTextBox.Text = MCBackup.Language.Dictionary("Localization.DefaultAutoBackupName")
-            Main.LoadLanguage()
+            MainWindow.LoadLanguage()
             ReloadBackupGroups()
-            Main.AutoBackupWindow.LoadLanguage()
+            AutoBackupWindow.LoadLanguage()
         End If
     End Sub
 
@@ -339,7 +339,7 @@ Partial Public Class Options
         BlueColorLabel.Text = CInt(BlueColorSlider.Value)
         My.Settings.StatusLabelColor = Color.FromRgb(RedColorSlider.Value, GreenColorSlider.Value, BlueColorSlider.Value)
         ColorRectangle.Fill = New SolidColorBrush(My.Settings.StatusLabelColor)
-        Main.StatusLabel.Foreground = New SolidColorBrush(My.Settings.StatusLabelColor)
+        MainWindow.StatusLabel.Foreground = New SolidColorBrush(My.Settings.StatusLabelColor)
 
         Dim RedGradient = New LinearGradientBrush()
         RedGradient.StartPoint = New Point(0, 0)
@@ -427,7 +427,7 @@ Partial Public Class Options
 
             Process.Start(Application.ResourceAssembly.Location)
             Application.CloseAction = Application.AppCloseAction.Force
-            Main.Close()
+            MainWindow.Close()
         End If
     End Sub
 
@@ -515,7 +515,7 @@ Partial Public Class Options
                 SavesFolderTextBox.Text = ""
             End If
 
-            Main.AutoBackupWindow.ReloadSaves()
+            AutoBackupWindow.ReloadSaves()
         End If
     End Sub
 
@@ -566,7 +566,7 @@ Partial Public Class Options
                 SavesFolderTextBox.Text = ""
             End If
 
-            Main.AutoBackupWindow.ReloadSaves()
+            AutoBackupWindow.ReloadSaves()
         End If
     End Sub
 

@@ -164,9 +164,7 @@ Partial Class MainWindow
         Splash.StepProgress()
 
         If Not My.Settings.BackgroundImageLocation = "" And My.Computer.FileSystem.FileExists(My.Settings.BackgroundImageLocation) Then
-            Dim Brush As New ImageBrush(New BitmapImage(New Uri(My.Settings.BackgroundImageLocation)))
-            Brush.Stretch = My.Settings.BackgroundImageStretch
-            Me.Background = Brush
+            AjustBackground()
         End If
 
         Splash.StepProgress()
@@ -662,7 +660,7 @@ Partial Class MainWindow
             RenameButton.Content = MCBackup.Language.Dictionary("MainWindow.RenameButton.Content")
             CullButton.Content = MCBackup.Language.Dictionary("MainWindow.CullButton.Content")
             ListViewMoveToGroupItem.Header = MCBackup.Language.Dictionary("MainWindow.MoveToGroupButton.Text")
-            AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " >>"
+            AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & IIf(AutoBackupWindow.IsVisible, " <<", " >>")
 
             NameColumnHeader.Content = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(0).Header")
             DateCreatedColumnHeader.Content = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(1).Header")
@@ -1403,12 +1401,14 @@ Partial Class MainWindow
             AutoBackupWindow.Hide()
             Me.Left = Me.Left + (AutoBackupWindow.Width / 2)
             AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " >>"
+            AjustBackground()
         Else
             Me.Left = Me.Left - (AutoBackupWindow.Width / 2)
             AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " <<"
             AutoBackupWindow.Top = Me.Top
             AutoBackupWindow.Left = Me.Left + Me.Width + 5
             AutoBackupWindow.Show()
+            AjustBackground()
         End If
     End Sub
 
@@ -1420,6 +1420,7 @@ Partial Class MainWindow
     Private Sub Main_SizeChanged(sender As Object, e As SizeChangedEventArgs) Handles MyBase.SizeChanged
         Main_LocationChanged(sender, Nothing)
         AutoBackupWindow.Height = Me.Height
+        AjustBackground(False)
     End Sub
 
     Private Sub Main_LocationChanged(sender As Object, e As EventArgs) Handles MyBase.LocationChanged
@@ -1599,6 +1600,7 @@ Partial Class MainWindow
         If AutoBackupWindowWasShown Then
             AutoBackupWindow.Show()
             AutoBackupWindow.Activate()
+            AjustBackground()
         End If
     End Sub
 #End Region
@@ -1952,6 +1954,31 @@ Partial Class MainWindow
     Public Shared Function GetBackupTimeStamp()
         Return DateTime.Now.ToString("yyyy-MM-dd (hh\hmm\mss\s)")
     End Function
+
+    Public Sub AjustBackground(Optional UpdateMainWindow As Boolean = True)
+        If Not (String.IsNullOrEmpty(My.Settings.BackgroundImageLocation)) And File.Exists(My.Settings.BackgroundImageLocation) Then
+            If AutoBackupWindow.IsVisible Then
+                Dim Bitmap = New BitmapImage(New Uri(My.Settings.BackgroundImageLocation))
+                Dim MainWindowPercentage = Me.Width / (Me.AutoBackupWindow.Width + Me.Width)
+
+                Dim Brush As New ImageBrush(New CroppedBitmap(Bitmap, New Int32Rect(0, 0, Bitmap.PixelWidth * MainWindowPercentage, Bitmap.PixelHeight)))
+                Brush.Stretch = My.Settings.BackgroundImageStretch
+                Brush.AlignmentX = AlignmentX.Right
+                Me.Background = Brush
+
+                Dim Brush2 As New ImageBrush(New CroppedBitmap(Bitmap, New Int32Rect(Bitmap.PixelWidth * MainWindowPercentage, 0, Bitmap.PixelWidth - Bitmap.PixelWidth * MainWindowPercentage, Bitmap.PixelHeight)))
+                Brush2.Stretch = My.Settings.BackgroundImageStretch
+                Brush2.AlignmentX = AlignmentX.Left
+                AutoBackupWindow.Background = Brush2
+            Else
+                If UpdateMainWindow Then
+                    Dim Brush As New ImageBrush(New BitmapImage(New Uri(My.Settings.BackgroundImageLocation)))
+                    Brush.Stretch = My.Settings.BackgroundImageStretch
+                    Me.Background = Brush
+                End If
+            End If
+        End If
+    End Sub
 End Class
 
 Public Class TaggedTabItem
