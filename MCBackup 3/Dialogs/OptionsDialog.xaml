@@ -57,7 +57,7 @@
             </TabItem>
             <TabItem x:Name="AppearanceTabItem" Header="Appearance">
                 <Grid x:Name="AppearanceGrid" Height="343" VerticalAlignment="Top">
-                    <GroupBox x:Name="StatusTextColorGroupBox" Header="Status Text Color" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Canvas.Left="10" Canvas.Top="193" Height="115" Width="320">
+                    <GroupBox x:Name="StatusTextColorGroupBox" Header="Status Text Color" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" Canvas.Left="10" Canvas.Top="193" Height="115" Width="320" Foreground="{DynamicResource MetroWindowTextBrushKey}">
                         <Grid>
                             <Rectangle x:Name="RedRect" Width="192" HorizontalAlignment="Left" Margin="6,4,0,0" Height="14" VerticalAlignment="Top">
                                 <Rectangle.Fill>
@@ -67,7 +67,7 @@
                                     </LinearGradientBrush>
                                 </Rectangle.Fill>
                             </Rectangle>
-                            <Slider x:Name="RedColorSlider" Style="{StaticResource ColorSelectionSlider}" Width="202" Maximum="255" HorizontalAlignment="Left" Margin="1,2,0,0" Height="18" VerticalAlignment="Top" IsMoveToPointEnabled="True"/>
+                            <Slider x:Name="RedColorSlider" Width="202" Maximum="255" HorizontalAlignment="Left" Margin="1,2,0,0" Height="18" VerticalAlignment="Top" IsMoveToPointEnabled="True" Style="{DynamicResource ColorSelectionSlider}"/>
                             <Rectangle x:Name="GreenRect" Width="192" HorizontalAlignment="Left" Margin="6,31,0,0" Height="14" VerticalAlignment="Top">
                                 <Rectangle.Fill>
                                     <LinearGradientBrush EndPoint="1,0" StartPoint="0,0">
@@ -76,7 +76,7 @@
                                     </LinearGradientBrush>
                                 </Rectangle.Fill>
                             </Rectangle>
-                            <Slider x:Name="GreenColorSlider" Style="{StaticResource ColorSelectionSlider}" Width="202" Maximum="255" HorizontalAlignment="Left" Margin="1,29,0,0" Height="18" VerticalAlignment="Top" IsMoveToPointEnabled="True"/>
+                            <Slider x:Name="GreenColorSlider" Width="202" Maximum="255" HorizontalAlignment="Left" Margin="1,29,0,0" Height="18" VerticalAlignment="Top" IsMoveToPointEnabled="True" Style="{DynamicResource ColorSelectionSlider}"/>
                             <Rectangle x:Name="BlueRect" Width="192" HorizontalAlignment="Left" Margin="6,58,0,0" Height="14" VerticalAlignment="Top">
                                 <Rectangle.Fill>
                                     <LinearGradientBrush EndPoint="1,0" StartPoint="0,0">
@@ -85,7 +85,7 @@
                                     </LinearGradientBrush>
                                 </Rectangle.Fill>
                             </Rectangle>
-                            <Slider x:Name="BlueColorSlider" Style="{StaticResource ColorSelectionSlider}" Width="202" Maximum="255" HorizontalAlignment="Left" Margin="1,56,0,0" Height="18" VerticalAlignment="Top" IsMoveToPointEnabled="True"/>
+                            <Slider x:Name="BlueColorSlider" Width="202" Maximum="255" HorizontalAlignment="Left" Margin="1,56,0,0" Height="18" VerticalAlignment="Top" IsMoveToPointEnabled="True" Style="{DynamicResource ColorSelectionSlider}"/>
                             <TextBox CommandManager.PreviewExecuted="ColorLabel_PreviewExecuted" x:Name="RedColorLabel" Text="255" Margin="208,-2,0,0" HorizontalAlignment="Left" Width="29" Height="26" VerticalAlignment="Top"/>
                             <TextBox CommandManager.PreviewExecuted="ColorLabel_PreviewExecuted" x:Name="GreenColorLabel" Text="255" Margin="208,0,0,25" Height="26" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="29"/>
                             <TextBox CommandManager.PreviewExecuted="ColorLabel_PreviewExecuted" x:Name="BlueColorLabel" Text="255" Margin="208,52,0,-2" Height="26" VerticalAlignment="Top" HorizontalAlignment="Left" Width="29"/>

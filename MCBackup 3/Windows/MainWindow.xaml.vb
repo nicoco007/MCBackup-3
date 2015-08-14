@@ -62,9 +62,17 @@ Partial Class MainWindow
 #Region "Load"
     Public Sub New()
         InitializeComponent()
+    End Sub
 
+    Private Sub Window_Loaded(sender As Object, et As EventArgs) Handles Window.Loaded
         Application.CloseAction = Application.AppCloseAction.Force
-        ThemeManager.ChangeAppStyle(My.Application, ThemeManager.GetAccent(My.Settings.Theme), ThemeManager.GetAppTheme(My.Settings.ThemeShade))
+
+        UpdateTheme()
+        'Dim DefaultBackground As SolidColorBrush = DirectCast(FindResource("ControlBackgroundBrush"), SolidColorBrush)
+        'Dim InterfaceOpacityBackground As New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, DefaultBackground.Color.R, DefaultBackground.Color.G, DefaultBackground.Color.B))
+
+        'Me.ListView.Background = InterfaceOpacityBackground
+        'Me.Sidebar.Background = InterfaceOpacityBackground
 
         Splash.Show()
         Splash.ShowStatus("Splash.Status.Starting", "Starting...")
@@ -154,12 +162,6 @@ Partial Class MainWindow
 
         Log.Print(String.Format("Current Launcher: '{0}'", My.Settings.Launcher.GetStringValue()))
         Splash.StepProgress()
-
-        Dim DefaultBackground As SolidColorBrush = DirectCast(FindResource("ControlBackgroundBrush"), SolidColorBrush)
-        Dim InterfaceOpacityBackground As New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, DefaultBackground.Color.R, DefaultBackground.Color.G, DefaultBackground.Color.B))
-
-        Me.ListView.Background = InterfaceOpacityBackground
-        Me.Sidebar.Background = InterfaceOpacityBackground
 
         StatusLabel.Foreground = New SolidColorBrush(My.Settings.StatusLabelColor)
 
@@ -290,7 +292,7 @@ Partial Class MainWindow
     Private Items
 
     Public Sub RefreshBackupsList()
-        If Not BGW.IsBusy And Me.IsLoaded Then
+        If Me.IsLoaded And GroupsTabControl.SelectedIndex <> -1 And Not BGW.IsBusy Then
             If Dispatcher.CheckAccess Then
                 Items = New List(Of ListViewBackupItem)
                 EnableUI(False)
@@ -1987,6 +1989,18 @@ Partial Class MainWindow
                 End If
             End If
         End If
+    End Sub
+
+    Public Sub UpdateTheme()
+        ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(My.Settings.Theme), ThemeManager.GetAppTheme(My.Settings.ThemeShade))
+
+        Dim DefaultBackground As SolidColorBrush = DirectCast(FindResource("ControlBackgroundBrush"), SolidColorBrush)
+        Dim InterfaceOpacityBackground As New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, DefaultBackground.Color.R, DefaultBackground.Color.G, DefaultBackground.Color.B))
+
+        Me.ListView.Background = InterfaceOpacityBackground
+        Me.Sidebar.Background = InterfaceOpacityBackground
+        AutoBackupWindow.MinutesNumUpDown.Background = InterfaceOpacityBackground
+        AutoBackupWindow.SavesListView.Background = InterfaceOpacityBackground
     End Sub
 End Class
 

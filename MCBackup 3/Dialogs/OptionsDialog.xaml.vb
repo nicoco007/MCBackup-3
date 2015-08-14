@@ -14,24 +14,17 @@
 '   ║                      limitations under the License.                       ║
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
 
-Imports System.Linq
-Imports System.Security.Permissions
-Imports System.Security
 Imports MahApps.Metro
 Imports System.Windows.Interop
-Imports System.Windows.Threading
 Imports System.IO
 Imports System.Text.RegularExpressions
-Imports System.Text
-Imports System.Globalization
 Imports System.Windows.Media.Animation
 Imports System.ComponentModel
 
 Partial Public Class Options
     Private MainWindow As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
-    Private AutoBackupWindow = DirectCast(Application.Current.Windows.OfType(Of AutoBackupWindow).FirstOrDefault(), AutoBackupWindow)
-    Private OpenFileDialog As New System.Windows.Forms.OpenFileDialog
-    Private ThemeChanged As Boolean = False
+    Private AutoBackupWindow As AutoBackupWindow = Application.Current.Windows.OfType(Of AutoBackupWindow).FirstOrDefault()
+    Private OpenFileDialog As New Forms.OpenFileDialog
 
     Public Sub New()
         InitializeComponent()
@@ -142,6 +135,8 @@ Partial Public Class Options
 
             MainWindow.ListView.Background = InterfaceOpacityBackground
             MainWindow.Sidebar.Background = InterfaceOpacityBackground
+            AutoBackupWindow.MinutesNumUpDown.Background = InterfaceOpacityBackground
+            AutoBackupWindow.SavesListView.Background = InterfaceOpacityBackground
 
             OpacityPercentLabel.Content = Math.Round(ListViewOpacitySlider.Value, 0).ToString & "%"
         End If
@@ -156,8 +151,8 @@ Partial Public Class Options
     End Sub
 
     Private Sub BackgroundImageRemoveButton_Click(sender As Object, e As RoutedEventArgs) Handles BackgroundImageRemoveButton.Click
-        MainWindow.Background = DirectCast(FindResource("WindowBackgroundBrush"), SolidColorBrush)
-        AutoBackupWindow.Background = DirectCast(FindResource("WindowBackgroundBrush"), SolidColorBrush)
+        MainWindow.ClearValue(BackgroundProperty)
+        AutoBackupWindow.ClearValue(BackgroundProperty)
         My.Settings.BackgroundImageLocation = ""
     End Sub
 
@@ -187,12 +182,6 @@ Partial Public Class Options
 
     Private Sub CloseButton_Click(sender As Object, e As RoutedEventArgs) Handles CloseButton.Click
         Me.Close()
-
-        If ThemeChanged AndAlso MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.RestartAfterThemeChange"), MCBackup.Language.Dictionary("Message.Caption.RestartRequired"), MessageBoxButton.YesNo, MessageBoxImage.Information) = MessageBoxResult.Yes Then
-            Application.CloseAction = Application.AppCloseAction.Close
-            MainWindow.Close()
-            Process.Start(Application.ResourceAssembly.Location)
-        End If
     End Sub
 
     Private Sub Window_Unloaded(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
@@ -374,11 +363,8 @@ Partial Public Class Options
 
     Private Sub ThemeComboBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles ThemeComboBox.SelectionChanged
         If Not ThemeComboBox.SelectedItem Is Nothing And Window.IsLoaded Then
-            Dim SelectedTag = DirectCast(ThemeComboBox.SelectedItem, TaggedComboBoxItem).Tag
-            If SelectedTag <> My.Settings.Theme Then
-                ThemeChanged = True
-            End If
-            My.Settings.Theme = SelectedTag
+            My.Settings.Theme = DirectCast(ThemeComboBox.SelectedItem, TaggedComboBoxItem).Tag
+            MainWindow.UpdateTheme()
         End If
     End Sub
 
@@ -742,11 +728,8 @@ Partial Public Class Options
 
     Private Sub ThemeShadeComboBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles ThemeShadeComboBox.SelectionChanged
         If Not ThemeShadeComboBox.SelectedItem Is Nothing And Window.IsLoaded Then
-            Dim SelectedTag = DirectCast(ThemeShadeComboBox.SelectedItem, TaggedComboBoxItem).Tag
-            If SelectedTag <> My.Settings.ThemeShade Then
-                ThemeChanged = True
-            End If
-            My.Settings.ThemeShade = SelectedTag
+            My.Settings.ThemeShade = DirectCast(ThemeShadeComboBox.SelectedItem, TaggedComboBoxItem).Tag
+            MainWindow.UpdateTheme()
         End If
     End Sub
 
