@@ -35,7 +35,7 @@ Public Class ErrorReportDialog
 
         Try
             If MCBackup.Language.IsLoaded Then
-                ErrorReportDialog.MessageLabel.Content = New TextblockEx(String.Format(MCBackup.Language.Dictionary("Message.ExceptionOccured") & Message, Exception.GetType))
+                ErrorReportDialog.MessageLabel.Text = String.Format(MCBackup.Language.Dictionary("Message.ExceptionOccured") & Message, Exception.GetType)
 
                 Dim StackTrace As String = New StackTrace(Exception, True).ToString
                 Log.Print(StackTrace)
@@ -44,11 +44,12 @@ Public Class ErrorReportDialog
                 ErrorReportDialog.Title = MCBackup.Language.Dictionary("Message.Caption.Error")
                 ErrorReportDialog.ContinueButton.Content = MCBackup.Language.Dictionary("ErrorWindow.ContinueButton.Content")
                 ErrorReportDialog.CopyToClipboardButton.Content = MCBackup.Language.Dictionary("ErrorWindow.CopyToClipboardButton.Content")
-                ErrorReportDialog.ContactMessage.Content = MCBackup.Language.Dictionary("ErrorWindow.ContactMessage")
+                ErrorReportDialog.ContactMessage.Text = MCBackup.Language.Dictionary("ErrorWindow.ContactMessage")
+                ErrorReportDialog.ReportBugButton.Content = MCBackup.Language.Dictionary("MainWindow.Toolbar.HelpContextMenu.Items(0).Header")
                 System.Media.SystemSounds.Hand.Play()
                 ErrorReportDialog.ShowDialog()
             Else
-                ErrorReportDialog.MessageLabel.Content = New TextblockEx(String.Format("An exception of type {0} occured: " & Message, Exception.GetType))
+                ErrorReportDialog.MessageLabel.Text = String.Format("An exception of type {0} occured: " & Message, Exception.GetType)
 
                 Dim StackTrace As String = New StackTrace(Exception, True).ToString
                 Log.Print(StackTrace)
@@ -79,6 +80,10 @@ Public Class ErrorReportDialog
 
     Private Sub ContinueButton_Click(sender As Object, e As RoutedEventArgs) Handles ContinueButton.Click
         Me.Close()
+    End Sub
+
+    Private Sub ReportBugButton_Click(sender As Object, e As RoutedEventArgs) Handles ReportBugButton.Click
+        Process.Start("http://go.nicoco007.com/fwlink/?LinkID=5000")
     End Sub
 End Class
 

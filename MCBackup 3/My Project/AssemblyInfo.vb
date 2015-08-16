@@ -55,7 +55,12 @@ Imports System.Windows
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
+<<<<<<< HEAD
 <Assembly: AssemblyVersion("3.8.0.0")>
 <Assembly: AssemblyFileVersion("3.8.0.0")>
+=======
+<Assembly: AssemblyVersion("3.7.7.0")>
+<Assembly: AssemblyFileVersion("3.7.7.0")>
+>>>>>>> master
 
 <Assembly: NeutralResourcesLanguageAttribute("en-CA")> 
