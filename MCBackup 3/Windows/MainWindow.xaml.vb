@@ -1763,14 +1763,17 @@ Partial Class MainWindow
                 ListViewRestoreItem.IsEnabled = False
                 ListViewDeleteItem.IsEnabled = True
                 ListViewRenameItem.IsEnabled = False
+                ListViewOpenInExplorerItem.IsEnabled = False
             Case 1
                 ListViewRestoreItem.IsEnabled = True
                 ListViewDeleteItem.IsEnabled = True
                 ListViewRenameItem.IsEnabled = True
+                ListViewOpenInExplorerItem.IsEnabled = True
             Case 0
                 ListViewRestoreItem.IsEnabled = False
                 ListViewDeleteItem.IsEnabled = False
                 ListViewRenameItem.IsEnabled = False
+                ListViewOpenInExplorerItem.IsEnabled = False
         End Select
     End Sub
 
