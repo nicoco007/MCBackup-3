@@ -55,14 +55,24 @@ Partial Class MainWindow
     Private Cancel As Boolean = False
 
     Public AutoBackupWindowWasShown As Boolean = False
+
+    Public BackgroundImageBitmap As BitmapImage
 #End Region
 
 #Region "Load"
     Public Sub New()
         InitializeComponent()
+    End Sub
 
+    Private Sub Window_Loaded(sender As Object, et As EventArgs) Handles Window.Loaded
         Application.CloseAction = Application.AppCloseAction.Force
-        ThemeManager.ChangeAppStyle(My.Application, ThemeManager.GetAccent(My.Settings.Theme), ThemeManager.GetAppTheme("BaseLight"))
+
+        UpdateTheme()
+        'Dim DefaultBackground As SolidColorBrush = DirectCast(FindResource("ControlBackgroundBrush"), SolidColorBrush)
+        'Dim InterfaceOpacityBackground As New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, DefaultBackground.Color.R, DefaultBackground.Color.G, DefaultBackground.Color.B))
+
+        'Me.ListView.Background = InterfaceOpacityBackground
+        'Me.Sidebar.Background = InterfaceOpacityBackground
 
         Splash.Show()
         Splash.ShowStatus("Splash.Status.Starting", "Starting...")
@@ -153,17 +163,13 @@ Partial Class MainWindow
         Log.Print(String.Format("Current Launcher: '{0}'", My.Settings.Launcher.GetStringValue()))
         Splash.StepProgress()
 
-        Me.ListView.Background = New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, 255, 255, 255))
-        Me.Sidebar.Background = New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, 255, 255, 255))
-
         StatusLabel.Foreground = New SolidColorBrush(My.Settings.StatusLabelColor)
 
         Splash.StepProgress()
 
         If Not My.Settings.BackgroundImageLocation = "" And My.Computer.FileSystem.FileExists(My.Settings.BackgroundImageLocation) Then
-            Dim Brush As New ImageBrush(New BitmapImage(New Uri(My.Settings.BackgroundImageLocation)))
-            Brush.Stretch = My.Settings.BackgroundImageStretch
-            Me.Background = Brush
+            BackgroundImageBitmap = New BitmapImage(New Uri(My.Settings.BackgroundImageLocation))
+            AdjustBackground()
         End If
 
         Splash.StepProgress()
@@ -286,7 +292,7 @@ Partial Class MainWindow
     Private Items
 
     Public Sub RefreshBackupsList()
-        If Not BGW.IsBusy And Me.IsLoaded Then
+        If Me.IsLoaded And GroupsTabControl.SelectedIndex <> -1 And Not BGW.IsBusy Then
             If Dispatcher.CheckAccess Then
                 Items = New List(Of ListViewBackupItem)
                 EnableUI(False)
@@ -659,7 +665,7 @@ Partial Class MainWindow
             RenameButton.Content = MCBackup.Language.Dictionary("MainWindow.RenameButton.Content")
             CullButton.Content = MCBackup.Language.Dictionary("MainWindow.CullButton.Content")
             ListViewMoveToGroupItem.Header = MCBackup.Language.Dictionary("MainWindow.MoveToGroupButton.Text")
-            AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " >>"
+            AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & IIf(AutoBackupWindow.IsVisible, " <<", " >>")
 
             NameColumnHeader.Content = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(0).Header")
             DateCreatedColumnHeader.Content = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(1).Header")
@@ -1399,12 +1405,14 @@ Partial Class MainWindow
             AutoBackupWindow.Hide()
             Me.Left = Me.Left + (AutoBackupWindow.Width / 2)
             AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " >>"
+            AdjustBackground()
         Else
             Me.Left = Me.Left - (AutoBackupWindow.Width / 2)
             AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " <<"
             AutoBackupWindow.Top = Me.Top
             AutoBackupWindow.Left = Me.Left + Me.Width + 5
             AutoBackupWindow.Show()
+            AdjustBackground()
         End If
     End Sub
 
@@ -1416,6 +1424,7 @@ Partial Class MainWindow
     Private Sub Main_SizeChanged(sender As Object, e As SizeChangedEventArgs) Handles MyBase.SizeChanged
         Main_LocationChanged(sender, Nothing)
         AutoBackupWindow.Height = Me.Height
+        AdjustBackground(False)
     End Sub
 
     Private Sub Main_LocationChanged(sender As Object, e As EventArgs) Handles MyBase.LocationChanged
@@ -1595,6 +1604,7 @@ Partial Class MainWindow
         If AutoBackupWindowWasShown Then
             AutoBackupWindow.Show()
             AutoBackupWindow.Activate()
+            AdjustBackground()
         End If
     End Sub
 #End Region
@@ -1753,14 +1763,17 @@ Partial Class MainWindow
                 ListViewRestoreItem.IsEnabled = False
                 ListViewDeleteItem.IsEnabled = True
                 ListViewRenameItem.IsEnabled = False
+                ListViewOpenInExplorerItem.IsEnabled = False
             Case 1
                 ListViewRestoreItem.IsEnabled = True
                 ListViewDeleteItem.IsEnabled = True
                 ListViewRenameItem.IsEnabled = True
+                ListViewOpenInExplorerItem.IsEnabled = True
             Case 0
                 ListViewRestoreItem.IsEnabled = False
                 ListViewDeleteItem.IsEnabled = False
                 ListViewRenameItem.IsEnabled = False
+                ListViewOpenInExplorerItem.IsEnabled = False
         End Select
     End Sub
 
@@ -1948,6 +1961,49 @@ Partial Class MainWindow
     Public Shared Function GetBackupTimeStamp()
         Return DateTime.Now.ToString("yyyy-MM-dd (hh\hmm\mss\s)")
     End Function
+
+    Public Sub AdjustBackground(Optional UpdateMainWindow As Boolean = True)
+        If Not (String.IsNullOrEmpty(My.Settings.BackgroundImageLocation)) And File.Exists(My.Settings.BackgroundImageLocation) Then
+            If AutoBackupWindow.IsVisible Then
+                Dim MainWindowPercentage = Me.Width / (Me.AutoBackupWindow.Width + Me.Width)
+
+                Dim MainBrush As ImageBrush = New ImageBrush(New CroppedBitmap(BackgroundImageBitmap, New Int32Rect(0, 0, BackgroundImageBitmap.PixelWidth * MainWindowPercentage, BackgroundImageBitmap.PixelHeight)))
+                Dim AutoBackupBrush As ImageBrush = New ImageBrush(New CroppedBitmap(BackgroundImageBitmap, New Int32Rect(BackgroundImageBitmap.PixelWidth * MainWindowPercentage, 0, BackgroundImageBitmap.PixelWidth - BackgroundImageBitmap.PixelWidth * MainWindowPercentage, BackgroundImageBitmap.PixelHeight)))
+
+                MainBrush.AlignmentX = AlignmentX.Right
+                AutoBackupBrush.AlignmentX = AlignmentX.Left
+
+                MainBrush.Stretch = My.Settings.BackgroundImageStretch
+                AutoBackupBrush.Stretch = My.Settings.BackgroundImageStretch
+
+                MainBrush.AlignmentY = My.Settings.BackgroundImageYAlign
+                AutoBackupBrush.AlignmentY = My.Settings.BackgroundImageYAlign
+
+                Me.Background = MainBrush
+                AutoBackupWindow.Background = AutoBackupBrush
+            Else
+                If UpdateMainWindow Then
+                    Dim Brush As New ImageBrush(BackgroundImageBitmap)
+                    Brush.Stretch = My.Settings.BackgroundImageStretch
+                    'Brush.AlignmentX = My.Settings.BackgroundImageXAlign
+                    Brush.AlignmentY = My.Settings.BackgroundImageYAlign
+                    Me.Background = Brush
+                End If
+            End If
+        End If
+    End Sub
+
+    Public Sub UpdateTheme()
+        ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(My.Settings.Theme), ThemeManager.GetAppTheme(My.Settings.ThemeShade))
+
+        Dim DefaultBackground As SolidColorBrush = DirectCast(FindResource("ControlBackgroundBrush"), SolidColorBrush)
+        Dim InterfaceOpacityBackground As New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, DefaultBackground.Color.R, DefaultBackground.Color.G, DefaultBackground.Color.B))
+
+        Me.ListView.Background = InterfaceOpacityBackground
+        Me.Sidebar.Background = InterfaceOpacityBackground
+        AutoBackupWindow.MinutesNumUpDown.Background = InterfaceOpacityBackground
+        AutoBackupWindow.SavesListView.Background = InterfaceOpacityBackground
+    End Sub
 End Class
 
 Public Class TaggedTabItem

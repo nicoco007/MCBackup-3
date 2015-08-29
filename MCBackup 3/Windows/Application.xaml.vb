@@ -14,6 +14,8 @@
 '   ║                      limitations under the License.                       ║
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
 
+Imports MahApps.Metro
+
 Class Application
     Public Enum AppCloseAction
         Ask

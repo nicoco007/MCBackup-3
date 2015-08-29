@@ -437,14 +437,50 @@ Partial Friend NotInheritable Class MySettings
     
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-     Global.System.Configuration.DefaultSettingValueAttribute("<?xml version=""1.0"" encoding=""utf-16""?>"&Global.Microsoft.VisualBasic.ChrW(10)&"<ArrayOfString xmlns:xsi=""http://www.w3.o"& _ 
-        "rg/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" />")>  _
+     Global.System.Configuration.DefaultSettingValueAttribute("<?xml version=""1.0"" encoding=""utf-16""?>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"<ArrayOfString xmlns:xsi=""http://www.w3."& _ 
+        "org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" />")>  _
     Public Property BackupGroups() As Global.System.Collections.Specialized.StringCollection
         Get
             Return CType(Me("BackupGroups"),Global.System.Collections.Specialized.StringCollection)
         End Get
         Set
             Me("BackupGroups") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("BaseLight")>  _
+    Public Property ThemeShade() As String
+        Get
+            Return CType(Me("ThemeShade"),String)
+        End Get
+        Set
+            Me("ThemeShade") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("Center")>  _
+    Public Property BackgroundImageXAlign() As Global.System.Windows.Media.AlignmentX
+        Get
+            Return CType(Me("BackgroundImageXAlign"),Global.System.Windows.Media.AlignmentX)
+        End Get
+        Set
+            Me("BackgroundImageXAlign") = value
+        End Set
+    End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("Center")>  _
+    Public Property BackgroundImageYAlign() As Global.System.Windows.Media.AlignmentY
+        Get
+            Return CType(Me("BackgroundImageYAlign"),Global.System.Windows.Media.AlignmentY)
+        End Get
+        Set
+            Me("BackgroundImageYAlign") = value
         End Set
     End Property
 End Class

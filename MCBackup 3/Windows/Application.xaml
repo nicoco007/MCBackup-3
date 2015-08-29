@@ -29,59 +29,57 @@ ShutdownMode="OnMainWindowClose">
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <SolidColorBrush x:Key="ThumbBackgroundBrush" Color="#FF404040"/>
-            <SolidColorBrush x:Key="ThumbBorderBrush" Color="#FFB0B0B0"/>
-            <SolidColorBrush x:Key="ThumbBackgroundBrushActive" Color="#FF0000FF"/>
-            <SolidColorBrush x:Key="ThumbBorderBrushActive" Color="#FFFFFFFF"/>
             
-            <Style x:Key="ColorSelectionSliderThumb" TargetType="{x:Type Thumb}">
-                <Setter Property="Background" Value="{StaticResource ThumbBackgroundBrush}"/>
-                <Setter Property="BorderBrush" Value="{StaticResource ThumbBorderBrush}"/>
-                
-                <Setter Property="OverridesDefaultStyle" Value="True"/>
-                
+            <!-- style for FlatButton that changes color to AccentColor -->
+            <Style x:Key="AccentMetroFlatButton" TargetType="{x:Type Button}">
+                <Setter Property="Background" Value="{DynamicResource AccentColorBrush}" />
+                <Setter Property="FontSize" Value="{DynamicResource FlatButtonFontSize}" />
+                <Setter Property="Padding" Value="10,5,10,5" />
+                <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Template">
                     <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type Thumb}">
-                            <Grid>
-                                <Polygon Points="0,18 5,10 10,18" Stroke="{TemplateBinding BorderBrush}" Fill="{TemplateBinding Background}"/>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="{StaticResource ThumbBackgroundBrushActive}"/>
-                        <Setter Property="BorderBrush" Value="{StaticResource ThumbBorderBrushActive}"/>
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-
-            <Style x:Key="ColorSelectionSlider" TargetType="{x:Type Slider}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type Slider}">
-                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                                <Grid>
-                                    <Track x:Name="PART_Track" Grid.Row="1">
-                                        <Track.Thumb>
-                                            <Thumb x:Name="Thumb" Style="{StaticResource ColorSelectionSliderThumb}"/>
-                                    </Track.Thumb>
-                                </Track>
-                            </Grid>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border x:Name="Border"
+                                Margin="0"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              Margin="{TemplateBinding Padding}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              RecognizesAccessKey="True" />
                             </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsPressed"
+                                     Value="True">
+                                    <Setter Property="Background"
+                                        Value="{DynamicResource AccentColorBrush3}"
+                                        TargetName="Border" />
+                                    <Setter Property="Foreground"
+                                        Value="{DynamicResource FlatButtonPressedForegroundBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled"
+                                     Value="False">
+                                    <Setter Property="Foreground"
+                                        Value="{DynamicResource GrayBrush2}" />
+                                </Trigger>
+                                <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                    <Setter Property="Background"
+                                        Value="{DynamicResource AccentColorBrush2}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
             </Style>
 
-            <Style TargetType="RadioButton"
-           x:Key="MetroToggleButton">
+            <!-- change RadioButton to FlatButton style -->
+            <Style TargetType="RadioButton" x:Key="MetroToggleButton">
                 <Setter Property="Background"
                 Value="{DynamicResource FlatButtonBackgroundBrush}" />
                 <Setter Property="Foreground"
@@ -135,6 +133,109 @@ ShutdownMode="OnMainWindowClose">
                 </Setter>
             </Style>
 
+            <!-- Color selection slider (like in Paint) -->
+            <SolidColorBrush x:Key="ThumbBackgroundBrush" Color="#FF777777"/>
+            <SolidColorBrush x:Key="ThumbBorderBrush" Color="#FF000000"/>
+            <SolidColorBrush x:Key="ThumbBackgroundBrushHover" Color="#FFBBBBBB"/>
+            <SolidColorBrush x:Key="ThumbBorderBrushHover" Color="#FF000000"/>
+            <SolidColorBrush x:Key="ThumbBackgroundBrushActive" Color="#FF222222"/>
+            <SolidColorBrush x:Key="ThumbBorderBrushActive" Color="#FF000000"/>
+
+            <Style x:Key="ColorSelectionSliderThumb" TargetType="{x:Type Thumb}">
+                <Setter Property="Background" Value="{StaticResource ThumbBackgroundBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource ThumbBorderBrush}"/>
+
+                <Setter Property="OverridesDefaultStyle" Value="True"/>
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Thumb}">
+                            <Grid>
+                                <Polygon Points="0,18 5,10 10,18" Stroke="{TemplateBinding BorderBrush}" Fill="{TemplateBinding Background}"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{StaticResource ThumbBackgroundBrushHover}"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource ThumbBorderBrushHover}"/>
+                    </Trigger>
+                    <Trigger Property="IsDragging" Value="True">
+                        <Setter Property="Background" Value="{StaticResource ThumbBackgroundBrushActive}"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource ThumbBorderBrushActive}"/>
+                    </Trigger>
+                </Style.Triggers>
+                    
+            </Style>
+
+            <Style x:Key="ColorSelectionSlider" TargetType="{x:Type Slider}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Slider}">
+                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                <Grid>
+                                    <Track x:Name="PART_Track" Grid.Row="1">
+                                        <Track.Thumb>
+                                            <Thumb x:Name="Thumb" Style="{StaticResource ColorSelectionSliderThumb}"/>
+                                        </Track.Thumb>
+                                    </Track>
+                                </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+        <!--
+            <SolidColorBrush x:Key="ThumbBackgroundBrush" Color="#FF404040"/>
+            <SolidColorBrush x:Key="ThumbBorderBrush" Color="#FFB0B0B0"/>
+            <SolidColorBrush x:Key="ThumbBackgroundBrushActive" Color="#FF0000FF"/>
+            <SolidColorBrush x:Key="ThumbBorderBrushActive" Color="#FFFFFFFF"/>
+            
+            <Style x:Key="ColorSelectionSliderThumb" TargetType="{x:Type Thumb}">
+                <Setter Property="Background" Value="{StaticResource ThumbBackgroundBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource ThumbBorderBrush}"/>
+                
+                <Setter Property="OverridesDefaultStyle" Value="True"/>
+                
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Thumb}">
+                            <Grid>
+                                <Polygon Points="0,18 5,10 10,18" Stroke="{TemplateBinding BorderBrush}" Fill="{TemplateBinding Background}"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{StaticResource ThumbBackgroundBrushActive}"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource ThumbBorderBrushActive}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="ColorSelectionSlider" TargetType="{x:Type Slider}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Slider}">
+                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                <Grid>
+                                    <Track x:Name="PART_Track" Grid.Row="1">
+                                        <Track.Thumb>
+                                            <Thumb x:Name="Thumb" Style="{StaticResource ColorSelectionSliderThumb}"/>
+                                    </Track.Thumb>
+                                </Track>
+                            </Grid>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             <Style TargetType="TabItem"
            x:Key="SmallTabItem">
                 <Setter Property="FocusVisualStyle"
@@ -161,7 +262,6 @@ ShutdownMode="OnMainWindowClose">
                 Value="{DynamicResource BlackBrush}" />
                 <Setter Property="SnapsToDevicePixels"
                 Value="True" />
-                <!-- special property for header font size -->
                 <Setter Property="Controls:ControlsHelper.HeaderFontSize"
                 Value="12" />
                 <Setter Property="Template">
@@ -267,6 +367,6 @@ ShutdownMode="OnMainWindowClose">
                     </Setter.Value>
                 </Setter>
             </Style>
-        </ResourceDictionary>
+        </ResourceDictionary>-->
     </Application.Resources>
 </Application>

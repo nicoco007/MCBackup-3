@@ -132,6 +132,8 @@ Public Class Language
         Dictionary.Add("Message.Caption.InvalidBackups", FindString("Message.Caption.InvalidBackups"))
         Dictionary.Add("Message.Caption.MCBackupIsWorking", FindString("Message.Caption.MCBackupIsWorking"))
         Dictionary.Add("Message.Caption.Copied", FindString("Message.Caption.Copied"))
+        Dictionary.Add("Message.Caption.RestartRequired", FindString("Message.Caption.RestartRequired"))
+
         Dictionary.Add("Message.NoMinecraftInstallError", FindString("Message.NoMinecraftInstallError"))
         Dictionary.Add("Message.RestoreAreYouSure", FindString("Message.RestoreAreYouSure"))
         Dictionary.Add("Message.DeleteAreYouSure", FindString("Message.DeleteAreYouSure"))
@@ -160,6 +162,7 @@ Public Class Language
         Dictionary.Add("Message.ExceptionOccured", FindString("Message.ExceptionOccured"))
         Dictionary.Add("Message.IllegalCharacters", FindString("Message.IllegalCharacters"))
         Dictionary.Add("Message.SettingsUpgrade", FindString("Message.SettingsUpgrade"))
+        Dictionary.Add("Message.RestartAfterThemeChange", FindString("Message.RestartAfterThemeChange"))
 
         ' = Balloon Tips =
         Dictionary.Add("BalloonTip.Title.BackupError", FindString("BalloonTip.Title.BackupError"))
@@ -244,8 +247,14 @@ Public Class Language
         Dictionary.Add("OptionsWindow.AppearancePanel.ThemeLabel.Content", FindString("OptionsWindow.AppearancePanel.ThemeLabel.Content"))
         Dictionary.Add("OptionsWindow.AppearancePanel.SampleText", FindString("OptionsWindow.AppearancePanel.SampleText"))
 
+        Dictionary.Add("OptionsWindow.AppearancePanel.VerticalAlign.Top", FindString("OptionsWindow.AppearancePanel.VerticalAlign.Top"))
+        Dictionary.Add("OptionsWindow.AppearancePanel.VerticalAlign.Center", FindString("OptionsWindow.AppearancePanel.VerticalAlign.Center"))
+        Dictionary.Add("OptionsWindow.AppearancePanel.VerticalAlign.Bottom", FindString("OptionsWindow.AppearancePanel.VerticalAlign.Bottom"))
+
         Dictionary.Add("OptionsWindow.AppearancePanel.Themes", FindString("OptionsWindow.AppearancePanel.Themes"))
         Dictionary.Add("OptionsWindow.AppearancePanel.ThemeTags", FindString("OptionsWindow.AppearancePanel.ThemeTags"))
+        Dictionary.Add("OptionsWindow.AppearancePanel.ThemeShades.Light", FindString("OptionsWindow.AppearancePanel.ThemeShades.Light"))
+        Dictionary.Add("OptionsWindow.AppearancePanel.ThemeShades.Dark", FindString("OptionsWindow.AppearancePanel.ThemeShades.Dark"))
 
         Dictionary.Add("OptionsWindow.FoldersTab.InstallTypeGroupBox.Header", FindString("OptionsWindow.FoldersTab.InstallTypeGroupBox.Header"))
         Dictionary.Add("OptionsWindow.FoldersTab.MinecraftInstallationRadioButton.Text", FindString("OptionsWindow.FoldersTab.MinecraftInstallationRadioButton.Text"))

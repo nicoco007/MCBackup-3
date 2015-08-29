@@ -102,5 +102,14 @@
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" /&gt;</Value>
     </Setting>
+    <Setting Name="ThemeShade" Type="System.String" Scope="User">
+      <Value Profile="(Default)">BaseLight</Value>
+    </Setting>
+    <Setting Name="BackgroundImageXAlign" Type="System.Windows.Media.AlignmentX" Scope="User">
+      <Value Profile="(Default)">Center</Value>
+    </Setting>
+    <Setting Name="BackgroundImageYAlign" Type="System.Windows.Media.AlignmentY" Scope="User">
+      <Value Profile="(Default)">Center</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

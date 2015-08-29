@@ -65,6 +65,7 @@ Public Class AutoBackupWindow
         Catch
         End Try
         MainWindow.Focus()
+        MainWindow.AdjustBackground()
     End Sub
 
     Private Sub AutoBackupWindow_LocationChanged(sender As Object, e As EventArgs) Handles MyBase.LocationChanged
