@@ -443,22 +443,18 @@ Partial Class MainWindow
         End If
 
         Select Case My.Settings.ListViewGroupBy
-            Case "OriginalName"
+            Case BackupsListView.GroupBy.OriginalName
                 ListViewGroupByNameItem_Click(Nothing, Nothing)
-            Case "Type"
+            Case BackupsListView.GroupBy.Type
                 ListViewGroupByTypeItem_Click(Nothing, Nothing)
-            Case "Nothing"
-                ListViewGroupByNothingItem_Click(Nothing, Nothing)
             Case Else
                 ListViewGroupByNothingItem_Click(Nothing, Nothing)
         End Select
 
         Select Case My.Settings.ListViewSortBy
-            Case "Name"
+            Case BackupsListView.SortBy.Name
                 ListViewSortByNameItem_Click(Nothing, Nothing)
-            Case "DateCreated"
-                ListViewSortByDateCreatedItem_Click(Nothing, Nothing)
-            Case "Type"
+            Case BackupsListView.SortBy.Type
                 ListViewSortByTypeItem_Click(Nothing, Nothing)
             Case Else
                 ListViewSortByDateCreatedItem_Click(Nothing, Nothing)
@@ -1438,6 +1434,7 @@ Partial Class MainWindow
 #End Region
 
 #Region "ListView Context Menu"
+#Region "Sorting"
     Private CurrentColumn As GridViewColumnHeader = Nothing
     Private SortAdorner As SortAdorner = Nothing
 
@@ -1472,14 +1469,17 @@ Partial Class MainWindow
             ListViewSortByNameItem.IsChecked = True
             ListViewSortByDateCreatedItem.IsChecked = False
             ListViewSortByTypeItem.IsChecked = False
+            My.Settings.ListViewSortBy = BackupsListView.SortBy.Name
         ElseIf ClickedColumn Is DateCreatedColumnHeader Then
             ListViewSortByNameItem.IsChecked = False
             ListViewSortByDateCreatedItem.IsChecked = True
             ListViewSortByTypeItem.IsChecked = False
+            My.Settings.ListViewSortBy = BackupsListView.SortBy.DateCreated
         ElseIf ClickedColumn Is TypeColumnHeader Then
             ListViewSortByNameItem.IsChecked = False
             ListViewSortByDateCreatedItem.IsChecked = False
             ListViewSortByTypeItem.IsChecked = True
+            My.Settings.ListViewSortBy = BackupsListView.SortBy.Type
         End If
     End Sub
 
@@ -1490,7 +1490,7 @@ Partial Class MainWindow
         Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
         View.GroupDescriptions.Clear()
         View.GroupDescriptions.Add(New PropertyGroupDescription("OriginalName"))
-        My.Settings.ListViewGroupBy = "OriginalName"
+        My.Settings.ListViewGroupBy = BackupsListView.GroupBy.OriginalName
     End Sub
 
     Private Sub ListViewGroupByTypeItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewGroupByTypeItem.Click
@@ -1500,7 +1500,7 @@ Partial Class MainWindow
         Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
         View.GroupDescriptions.Clear()
         View.GroupDescriptions.Add(New PropertyGroupDescription("Type"))
-        My.Settings.ListViewGroupBy = "Type"
+        My.Settings.ListViewGroupBy = BackupsListView.GroupBy.Type
     End Sub
 
     Private Sub ListViewGroupByNothingItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewGroupByNothingItem.Click
@@ -1509,7 +1509,7 @@ Partial Class MainWindow
         ListViewGroupByNothingItem.IsChecked = True
         Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
         View.GroupDescriptions.Clear()
-        My.Settings.ListViewGroupBy = "Nothing"
+        My.Settings.ListViewGroupBy = BackupsListView.GroupBy.Nothing
     End Sub
 
     Private Sub ListViewSortByNameItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewSortByNameItem.Click
@@ -1526,6 +1526,8 @@ Partial Class MainWindow
         ListViewSortByNameItem.IsChecked = True
         ListViewSortByDateCreatedItem.IsChecked = False
         ListViewSortByTypeItem.IsChecked = False
+
+        My.Settings.ListViewSortBy = BackupsListView.SortBy.Name
     End Sub
 
     Private Sub ListViewSortByDateCreatedItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewSortByDateCreatedItem.Click
@@ -1542,6 +1544,8 @@ Partial Class MainWindow
         ListViewSortByNameItem.IsChecked = False
         ListViewSortByDateCreatedItem.IsChecked = True
         ListViewSortByTypeItem.IsChecked = False
+
+        My.Settings.ListViewSortBy = BackupsListView.SortBy.DateCreated
     End Sub
 
     Private Sub ListViewSortByTypeItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewSortByTypeItem.Click
@@ -1558,6 +1562,8 @@ Partial Class MainWindow
         ListViewSortByNameItem.IsChecked = False
         ListViewSortByDateCreatedItem.IsChecked = False
         ListViewSortByTypeItem.IsChecked = True
+
+        My.Settings.ListViewSortBy = BackupsListView.SortBy.Type
     End Sub
 
     Private Sub ListViewSortAscendingItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewSortAscendingItem.Click
@@ -1573,6 +1579,8 @@ Partial Class MainWindow
 
         ListViewSortAscendingItem.IsChecked = True
         ListViewSortDescendingItem.IsChecked = False
+
+
     End Sub
 
     Private Sub ListViewSortDescendingItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewSortDescendingItem.Click
@@ -1589,6 +1597,7 @@ Partial Class MainWindow
         ListViewSortAscendingItem.IsChecked = False
         ListViewSortDescendingItem.IsChecked = True
     End Sub
+#End Region
 #End Region
 
 #Region "Tray Icon"
@@ -1609,7 +1618,7 @@ Partial Class MainWindow
     End Sub
 #End Region
 
-#Region "Close to Tray"
+#Region "Close To Tray"
     Private Sub Main_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
         Me.Focus()
 
@@ -1628,7 +1637,7 @@ Partial Class MainWindow
                                 My.Settings.FirstCloseToTray = False
                             End If
 
-                            Log.Print("Closing to tray")
+                            Log.Print("Closing To tray")
 
                             My.Settings.CloseToTray = True
 
@@ -1653,7 +1662,7 @@ Partial Class MainWindow
                             My.Settings.FirstCloseToTray = False
                         End If
 
-                        Log.Print("Closing to tray")
+                        Log.Print("Closing To tray")
 
                         e.Cancel = True
                     Else
@@ -1674,8 +1683,6 @@ Partial Class MainWindow
             My.Settings.ListViewWidth = GridListViewColumn.Width
 
             Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
-            My.Settings.ListViewSortBy = View.SortDescriptions(0).PropertyName
-            My.Settings.ListViewSortByDirection = View.SortDescriptions(0).Direction
 
             If Not Me.WindowState = Windows.WindowState.Maximized Then My.Settings.WindowSize = New Size(Me.Width, Me.Height)
 
@@ -1683,7 +1690,7 @@ Partial Class MainWindow
 
             My.Settings.Save()
 
-            Log.Print("Someone is closing me!")
+            Log.Print("Someone Is closing me!")
         End If
     End Sub
 #End Region
@@ -1917,7 +1924,7 @@ Partial Class MainWindow
                              End Sub)
 
         For Each Item As ListViewBackupItem In SelectedItems
-            Log.Print("Rewriting info.json file for backup '{0}'.", Log.Level.Info, Item.Name)
+            Log.Print("Rewriting info.json file For backup '{0}'.", Log.Level.Info, Item.Name)
 
             Try
                 Dim InfoJson As JObject

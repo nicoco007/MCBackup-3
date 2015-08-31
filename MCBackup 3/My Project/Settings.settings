@@ -53,10 +53,10 @@
     <Setting Name="ListViewTextColorIntensity" Type="System.String" Scope="User">
       <Value Profile="(Default)">125</Value>
     </Setting>
-    <Setting Name="ListViewGroupBy" Type="System.String" Scope="User">
+    <Setting Name="ListViewGroupBy" Type="MCBackup.BackupsListView.GroupBy" Scope="User">
       <Value Profile="(Default)">Type</Value>
     </Setting>
-    <Setting Name="ListViewSortBy" Type="System.String" Scope="User">
+    <Setting Name="ListViewSortBy" Type="MCBackup.BackupsListView.SortBy" Scope="User">
       <Value Profile="(Default)">DateCreated</Value>
     </Setting>
     <Setting Name="ListViewSortByDirection" Type="System.ComponentModel.ListSortDirection" Scope="User">

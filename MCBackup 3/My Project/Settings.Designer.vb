@@ -259,9 +259,9 @@ Partial Friend NotInheritable Class MySettings
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.Configuration.DefaultSettingValueAttribute("Type")>  _
-    Public Property ListViewGroupBy() As String
+    Public Property ListViewGroupBy() As MCBackup.BackupsListView.GroupBy
         Get
-            Return CType(Me("ListViewGroupBy"),String)
+            Return CType(Me("ListViewGroupBy"),MCBackup.BackupsListView.GroupBy)
         End Get
         Set
             Me("ListViewGroupBy") = value
@@ -271,9 +271,9 @@ Partial Friend NotInheritable Class MySettings
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.Configuration.DefaultSettingValueAttribute("DateCreated")>  _
-    Public Property ListViewSortBy() As String
+    Public Property ListViewSortBy() As MCBackup.BackupsListView.SortBy
         Get
-            Return CType(Me("ListViewSortBy"),String)
+            Return CType(Me("ListViewSortBy"),MCBackup.BackupsListView.SortBy)
         End Get
         Set
             Me("ListViewSortBy") = value
