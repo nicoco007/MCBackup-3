@@ -834,7 +834,7 @@ Partial Class MainWindow
             InfoJson.Add(New JProperty("Type", BackupInfo.Type))
             InfoJson.Add(New JProperty("Description", BackupInfo.Description))
             InfoJson.Add(New JProperty("Group", BackupInfo.Group))
-            InfoJson.Add(New JProperty("Launcher", BackupInfo.Launcher.ToString()))
+            InfoJson.Add(New JProperty("Launcher", BackupInfo.Launcher))
             InfoJson.Add(New JProperty("Modpack", BackupInfo.Modpack))
 
             Using SW As New StreamWriter(My.Settings.BackupsFolderLocation & "\" & BackupInfo.Name & "\info.json") ' Create information file (stores description, type, folder name, group name, launcher and modpack)
@@ -1204,14 +1204,16 @@ Partial Class MainWindow
 #Region "Functions"
     Private Function GetFolderSize(FolderPath As String)
         Try
-            Dim FSO As New Scripting.FileSystemObject
-            Return FSO.GetFolder(FolderPath).Size ' Get FolderPath's size
+            Dim TotalSize As Long
+            For Each File As FileInfo In New DirectoryInfo(FolderPath).GetFiles("*", SearchOption.AllDirectories)
+                TotalSize += File.Length
+            Next
+            Return TotalSize
         Catch ex As DirectoryNotFoundException
-            Log.Print("Directory was not found, returning zero instead.", Log.Level.Debug)
+            Return 0
         Catch ex As Exception
             Dispatcher.Invoke(Sub() ErrorReportDialog.Show(String.Format("Could not find size of '{0}'", FolderPath), ex))
         End Try
-        Return 0
     End Function
 
     Public Function GetFolderDateCreated(FolderPath As String) As DateTime
