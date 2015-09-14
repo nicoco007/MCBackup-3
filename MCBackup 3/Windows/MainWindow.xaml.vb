@@ -55,14 +55,24 @@ Partial Class MainWindow
     Private Cancel As Boolean = False
 
     Public AutoBackupWindowWasShown As Boolean = False
+
+    Public BackgroundImageBitmap As BitmapImage
 #End Region
 
 #Region "Load"
     Public Sub New()
         InitializeComponent()
+    End Sub
 
+    Private Sub Window_Loaded(sender As Object, et As EventArgs) Handles Window.Loaded
         Application.CloseAction = Application.AppCloseAction.Force
-        ThemeManager.ChangeAppStyle(My.Application, ThemeManager.GetAccent(My.Settings.Theme), ThemeManager.GetAppTheme("BaseLight"))
+
+        UpdateTheme()
+        'Dim DefaultBackground As SolidColorBrush = DirectCast(FindResource("ControlBackgroundBrush"), SolidColorBrush)
+        'Dim InterfaceOpacityBackground As New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, DefaultBackground.Color.R, DefaultBackground.Color.G, DefaultBackground.Color.B))
+
+        'Me.ListView.Background = InterfaceOpacityBackground
+        'Me.Sidebar.Background = InterfaceOpacityBackground
 
         Splash.Show()
         Splash.ShowStatus("Splash.Status.Starting", "Starting...")
@@ -153,17 +163,13 @@ Partial Class MainWindow
         Log.Print(String.Format("Current Launcher: '{0}'", My.Settings.Launcher.GetStringValue()))
         Splash.StepProgress()
 
-        Me.ListView.Background = New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, 255, 255, 255))
-        Me.Sidebar.Background = New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, 255, 255, 255))
-
         StatusLabel.Foreground = New SolidColorBrush(My.Settings.StatusLabelColor)
 
         Splash.StepProgress()
 
         If Not My.Settings.BackgroundImageLocation = "" And My.Computer.FileSystem.FileExists(My.Settings.BackgroundImageLocation) Then
-            Dim Brush As New ImageBrush(New BitmapImage(New Uri(My.Settings.BackgroundImageLocation)))
-            Brush.Stretch = My.Settings.BackgroundImageStretch
-            Me.Background = Brush
+            BackgroundImageBitmap = New BitmapImage(New Uri(My.Settings.BackgroundImageLocation))
+            AdjustBackground()
         End If
 
         Splash.StepProgress()
@@ -286,7 +292,7 @@ Partial Class MainWindow
     Private Items
 
     Public Sub RefreshBackupsList()
-        If Not BGW.IsBusy And Me.IsLoaded Then
+        If Me.IsLoaded And GroupsTabControl.SelectedIndex <> -1 And Not BGW.IsBusy Then
             If Dispatcher.CheckAccess Then
                 Items = New List(Of ListViewBackupItem)
                 EnableUI(False)
@@ -437,22 +443,18 @@ Partial Class MainWindow
         End If
 
         Select Case My.Settings.ListViewGroupBy
-            Case "OriginalName"
+            Case BackupsListView.GroupBy.OriginalName
                 ListViewGroupByNameItem_Click(Nothing, Nothing)
-            Case "Type"
+            Case BackupsListView.GroupBy.Type
                 ListViewGroupByTypeItem_Click(Nothing, Nothing)
-            Case "Nothing"
-                ListViewGroupByNothingItem_Click(Nothing, Nothing)
             Case Else
                 ListViewGroupByNothingItem_Click(Nothing, Nothing)
         End Select
 
         Select Case My.Settings.ListViewSortBy
-            Case "Name"
+            Case BackupsListView.SortBy.Name
                 ListViewSortByNameItem_Click(Nothing, Nothing)
-            Case "DateCreated"
-                ListViewSortByDateCreatedItem_Click(Nothing, Nothing)
-            Case "Type"
+            Case BackupsListView.SortBy.Type
                 ListViewSortByTypeItem_Click(Nothing, Nothing)
             Case Else
                 ListViewSortByDateCreatedItem_Click(Nothing, Nothing)
@@ -659,7 +661,7 @@ Partial Class MainWindow
             RenameButton.Content = MCBackup.Language.Dictionary("MainWindow.RenameButton.Content")
             CullButton.Content = MCBackup.Language.Dictionary("MainWindow.CullButton.Content")
             ListViewMoveToGroupItem.Header = MCBackup.Language.Dictionary("MainWindow.MoveToGroupButton.Text")
-            AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " >>"
+            AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & IIf(AutoBackupWindow.IsVisible, " <<", " >>")
 
             NameColumnHeader.Content = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(0).Header")
             DateCreatedColumnHeader.Content = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(1).Header")
@@ -1402,12 +1404,14 @@ Partial Class MainWindow
             AutoBackupWindow.Hide()
             Me.Left = Me.Left + (AutoBackupWindow.Width / 2)
             AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " >>"
+            AdjustBackground()
         Else
             Me.Left = Me.Left - (AutoBackupWindow.Width / 2)
             AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " <<"
             AutoBackupWindow.Top = Me.Top
             AutoBackupWindow.Left = Me.Left + Me.Width + 5
             AutoBackupWindow.Show()
+            AdjustBackground()
         End If
     End Sub
 
@@ -1419,6 +1423,7 @@ Partial Class MainWindow
     Private Sub Main_SizeChanged(sender As Object, e As SizeChangedEventArgs) Handles MyBase.SizeChanged
         Main_LocationChanged(sender, Nothing)
         AutoBackupWindow.Height = Me.Height
+        AdjustBackground(False)
     End Sub
 
     Private Sub Main_LocationChanged(sender As Object, e As EventArgs) Handles MyBase.LocationChanged
@@ -1432,6 +1437,7 @@ Partial Class MainWindow
 #End Region
 
 #Region "ListView Context Menu"
+#Region "Sorting"
     Private CurrentColumn As GridViewColumnHeader = Nothing
     Private SortAdorner As SortAdorner = Nothing
 
@@ -1466,14 +1472,17 @@ Partial Class MainWindow
             ListViewSortByNameItem.IsChecked = True
             ListViewSortByDateCreatedItem.IsChecked = False
             ListViewSortByTypeItem.IsChecked = False
+            My.Settings.ListViewSortBy = BackupsListView.SortBy.Name
         ElseIf ClickedColumn Is DateCreatedColumnHeader Then
             ListViewSortByNameItem.IsChecked = False
             ListViewSortByDateCreatedItem.IsChecked = True
             ListViewSortByTypeItem.IsChecked = False
+            My.Settings.ListViewSortBy = BackupsListView.SortBy.DateCreated
         ElseIf ClickedColumn Is TypeColumnHeader Then
             ListViewSortByNameItem.IsChecked = False
             ListViewSortByDateCreatedItem.IsChecked = False
             ListViewSortByTypeItem.IsChecked = True
+            My.Settings.ListViewSortBy = BackupsListView.SortBy.Type
         End If
     End Sub
 
@@ -1484,7 +1493,7 @@ Partial Class MainWindow
         Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
         View.GroupDescriptions.Clear()
         View.GroupDescriptions.Add(New PropertyGroupDescription("OriginalName"))
-        My.Settings.ListViewGroupBy = "OriginalName"
+        My.Settings.ListViewGroupBy = BackupsListView.GroupBy.OriginalName
     End Sub
 
     Private Sub ListViewGroupByTypeItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewGroupByTypeItem.Click
@@ -1494,7 +1503,7 @@ Partial Class MainWindow
         Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
         View.GroupDescriptions.Clear()
         View.GroupDescriptions.Add(New PropertyGroupDescription("Type"))
-        My.Settings.ListViewGroupBy = "Type"
+        My.Settings.ListViewGroupBy = BackupsListView.GroupBy.Type
     End Sub
 
     Private Sub ListViewGroupByNothingItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewGroupByNothingItem.Click
@@ -1503,7 +1512,7 @@ Partial Class MainWindow
         ListViewGroupByNothingItem.IsChecked = True
         Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
         View.GroupDescriptions.Clear()
-        My.Settings.ListViewGroupBy = "Nothing"
+        My.Settings.ListViewGroupBy = BackupsListView.GroupBy.Nothing
     End Sub
 
     Private Sub ListViewSortByNameItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewSortByNameItem.Click
@@ -1520,6 +1529,8 @@ Partial Class MainWindow
         ListViewSortByNameItem.IsChecked = True
         ListViewSortByDateCreatedItem.IsChecked = False
         ListViewSortByTypeItem.IsChecked = False
+
+        My.Settings.ListViewSortBy = BackupsListView.SortBy.Name
     End Sub
 
     Private Sub ListViewSortByDateCreatedItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewSortByDateCreatedItem.Click
@@ -1536,6 +1547,8 @@ Partial Class MainWindow
         ListViewSortByNameItem.IsChecked = False
         ListViewSortByDateCreatedItem.IsChecked = True
         ListViewSortByTypeItem.IsChecked = False
+
+        My.Settings.ListViewSortBy = BackupsListView.SortBy.DateCreated
     End Sub
 
     Private Sub ListViewSortByTypeItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewSortByTypeItem.Click
@@ -1552,6 +1565,8 @@ Partial Class MainWindow
         ListViewSortByNameItem.IsChecked = False
         ListViewSortByDateCreatedItem.IsChecked = False
         ListViewSortByTypeItem.IsChecked = True
+
+        My.Settings.ListViewSortBy = BackupsListView.SortBy.Type
     End Sub
 
     Private Sub ListViewSortAscendingItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewSortAscendingItem.Click
@@ -1567,6 +1582,8 @@ Partial Class MainWindow
 
         ListViewSortAscendingItem.IsChecked = True
         ListViewSortDescendingItem.IsChecked = False
+
+
     End Sub
 
     Private Sub ListViewSortDescendingItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewSortDescendingItem.Click
@@ -1584,6 +1601,7 @@ Partial Class MainWindow
         ListViewSortDescendingItem.IsChecked = True
     End Sub
 #End Region
+#End Region
 
 #Region "Tray Icon"
     Private Sub ExitToolbarMenuItem_Click(sender As Object, e As EventArgs)
@@ -1598,11 +1616,12 @@ Partial Class MainWindow
         If AutoBackupWindowWasShown Then
             AutoBackupWindow.Show()
             AutoBackupWindow.Activate()
+            AdjustBackground()
         End If
     End Sub
 #End Region
 
-#Region "Close to Tray"
+#Region "Close To Tray"
     Private Sub Main_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
         Me.Focus()
 
@@ -1621,7 +1640,7 @@ Partial Class MainWindow
                                 My.Settings.FirstCloseToTray = False
                             End If
 
-                            Log.Print("Closing to tray")
+                            Log.Print("Closing To tray")
 
                             My.Settings.CloseToTray = True
 
@@ -1646,7 +1665,7 @@ Partial Class MainWindow
                             My.Settings.FirstCloseToTray = False
                         End If
 
-                        Log.Print("Closing to tray")
+                        Log.Print("Closing To tray")
 
                         e.Cancel = True
                     Else
@@ -1667,8 +1686,6 @@ Partial Class MainWindow
             My.Settings.ListViewWidth = GridListViewColumn.Width
 
             Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
-            My.Settings.ListViewSortBy = View.SortDescriptions(0).PropertyName
-            My.Settings.ListViewSortByDirection = View.SortDescriptions(0).Direction
 
             If Not Me.WindowState = Windows.WindowState.Maximized Then My.Settings.WindowSize = New Size(Me.Width, Me.Height)
 
@@ -1676,7 +1693,7 @@ Partial Class MainWindow
 
             My.Settings.Save()
 
-            Log.Print("Someone is closing me!")
+            Log.Print("Someone Is closing me!")
         End If
     End Sub
 #End Region
@@ -1756,14 +1773,17 @@ Partial Class MainWindow
                 ListViewRestoreItem.IsEnabled = False
                 ListViewDeleteItem.IsEnabled = True
                 ListViewRenameItem.IsEnabled = False
+                ListViewOpenInExplorerItem.IsEnabled = False
             Case 1
                 ListViewRestoreItem.IsEnabled = True
                 ListViewDeleteItem.IsEnabled = True
                 ListViewRenameItem.IsEnabled = True
+                ListViewOpenInExplorerItem.IsEnabled = True
             Case 0
                 ListViewRestoreItem.IsEnabled = False
                 ListViewDeleteItem.IsEnabled = False
                 ListViewRenameItem.IsEnabled = False
+                ListViewOpenInExplorerItem.IsEnabled = False
         End Select
     End Sub
 
@@ -1907,7 +1927,7 @@ Partial Class MainWindow
                              End Sub)
 
         For Each Item As ListViewBackupItem In SelectedItems
-            Log.Print("Rewriting info.json file for backup '{0}'.", Log.Level.Info, Item.Name)
+            Log.Print("Rewriting info.json file For backup '{0}'.", Log.Level.Info, Item.Name)
 
             Try
                 Dim InfoJson As JObject
@@ -1951,6 +1971,49 @@ Partial Class MainWindow
     Public Shared Function GetBackupTimeStamp()
         Return DateTime.Now.ToString("yyyy-MM-dd (hh\hmm\mss\s)")
     End Function
+
+    Public Sub AdjustBackground(Optional UpdateMainWindow As Boolean = True)
+        If Not (String.IsNullOrEmpty(My.Settings.BackgroundImageLocation)) And File.Exists(My.Settings.BackgroundImageLocation) Then
+            If AutoBackupWindow.IsVisible Then
+                Dim MainWindowPercentage = Me.Width / (Me.AutoBackupWindow.Width + Me.Width)
+
+                Dim MainBrush As ImageBrush = New ImageBrush(New CroppedBitmap(BackgroundImageBitmap, New Int32Rect(0, 0, BackgroundImageBitmap.PixelWidth * MainWindowPercentage, BackgroundImageBitmap.PixelHeight)))
+                Dim AutoBackupBrush As ImageBrush = New ImageBrush(New CroppedBitmap(BackgroundImageBitmap, New Int32Rect(BackgroundImageBitmap.PixelWidth * MainWindowPercentage, 0, BackgroundImageBitmap.PixelWidth - BackgroundImageBitmap.PixelWidth * MainWindowPercentage, BackgroundImageBitmap.PixelHeight)))
+
+                MainBrush.AlignmentX = AlignmentX.Right
+                AutoBackupBrush.AlignmentX = AlignmentX.Left
+
+                MainBrush.Stretch = My.Settings.BackgroundImageStretch
+                AutoBackupBrush.Stretch = My.Settings.BackgroundImageStretch
+
+                MainBrush.AlignmentY = My.Settings.BackgroundImageYAlign
+                AutoBackupBrush.AlignmentY = My.Settings.BackgroundImageYAlign
+
+                Me.Background = MainBrush
+                AutoBackupWindow.Background = AutoBackupBrush
+            Else
+                If UpdateMainWindow Then
+                    Dim Brush As New ImageBrush(BackgroundImageBitmap)
+                    Brush.Stretch = My.Settings.BackgroundImageStretch
+                    'Brush.AlignmentX = My.Settings.BackgroundImageXAlign
+                    Brush.AlignmentY = My.Settings.BackgroundImageYAlign
+                    Me.Background = Brush
+                End If
+            End If
+        End If
+    End Sub
+
+    Public Sub UpdateTheme()
+        ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(My.Settings.Theme), ThemeManager.GetAppTheme(My.Settings.ThemeShade))
+
+        Dim DefaultBackground As SolidColorBrush = DirectCast(FindResource("ControlBackgroundBrush"), SolidColorBrush)
+        Dim InterfaceOpacityBackground As New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, DefaultBackground.Color.R, DefaultBackground.Color.G, DefaultBackground.Color.B))
+
+        Me.ListView.Background = InterfaceOpacityBackground
+        Me.Sidebar.Background = InterfaceOpacityBackground
+        AutoBackupWindow.MinutesNumUpDown.Background = InterfaceOpacityBackground
+        AutoBackupWindow.SavesListView.Background = InterfaceOpacityBackground
+    End Sub
 End Class
 
 Public Class TaggedTabItem

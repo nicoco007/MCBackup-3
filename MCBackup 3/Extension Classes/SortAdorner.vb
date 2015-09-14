@@ -30,7 +30,7 @@ Public Class SortAdorner
 
         drawingContext.PushTransform(New TranslateTransform(AdornedElement.RenderSize.Width - 15, (AdornedElement.RenderSize.Height - 5) \ 2))
 
-        drawingContext.DrawGeometry(Brushes.Black, Nothing, If(Direction = ListSortDirection.Ascending, _AscGeometry, _DescGeometry))
+        drawingContext.DrawGeometry(FindResource("TextBrush"), Nothing, If(Direction = ListSortDirection.Ascending, _AscGeometry, _DescGeometry))
 
         drawingContext.Pop()
     End Sub

@@ -14,22 +14,17 @@
 '   ║                      limitations under the License.                       ║
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
 
-Imports System.Linq
-Imports System.Security.Permissions
-Imports System.Security
 Imports MahApps.Metro
 Imports System.Windows.Interop
-Imports System.Windows.Threading
 Imports System.IO
 Imports System.Text.RegularExpressions
-Imports System.Text
-Imports System.Globalization
 Imports System.Windows.Media.Animation
 Imports System.ComponentModel
 
 Partial Public Class Options
-    Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
-    Private OpenFileDialog As New System.Windows.Forms.OpenFileDialog
+    Private MainWindow As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
+    Private AutoBackupWindow As AutoBackupWindow = Application.Current.Windows.OfType(Of AutoBackupWindow).FirstOrDefault()
+    Private OpenFileDialog As New Forms.OpenFileDialog
 
     Public Sub New()
         InitializeComponent()
@@ -94,7 +89,7 @@ Partial Public Class Options
     End Sub
 
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
-        Dim LanguageDirectory As New IO.DirectoryInfo(Main.StartupPath & "\language")
+        Dim LanguageDirectory As New IO.DirectoryInfo(MainWindow.StartupPath & "\language")
         Dim LanguageFiles As IO.FileInfo() = LanguageDirectory.GetFiles()
         Dim LanguageFile As IO.FileInfo
 
@@ -130,28 +125,34 @@ Partial Public Class Options
             BackupGroupsListBox.Items.Add(Group)
         Next
 
-        Main.ReloadBackupGroups()
+        MainWindow.ReloadBackupGroups()
     End Sub
 
     Private Sub ListViewOpacitySlider_ValueChanged(sender As Object, e As RoutedPropertyChangedEventArgs(Of Double))
         If Me.IsLoaded Then
-            Main.ListView.Opacity = ListViewOpacitySlider.Value / 100
-            Main.Sidebar.Background = New SolidColorBrush(Color.FromArgb(ListViewOpacitySlider.Value * 2.55, 255, 255, 255))
+            Dim DefaultBackground As SolidColorBrush = DirectCast(FindResource("ControlBackgroundBrush"), SolidColorBrush)
+            Dim InterfaceOpacityBackground As New SolidColorBrush(Color.FromArgb(ListViewOpacitySlider.Value * 2.55, DefaultBackground.Color.R, DefaultBackground.Color.G, DefaultBackground.Color.B))
+
+            MainWindow.ListView.Background = InterfaceOpacityBackground
+            MainWindow.Sidebar.Background = InterfaceOpacityBackground
+            AutoBackupWindow.MinutesNumUpDown.Background = InterfaceOpacityBackground
+            AutoBackupWindow.SavesListView.Background = InterfaceOpacityBackground
+
             OpacityPercentLabel.Content = Math.Round(ListViewOpacitySlider.Value, 0).ToString & "%"
         End If
     End Sub
 
     Private Sub BackgroundImageBrowseButton_Click(sender As Object, e As RoutedEventArgs) Handles BackgroundImageBrowseButton.Click
         If OpenFileDialog.ShowDialog = Forms.DialogResult.OK Then
-            Dim Brush As New ImageBrush(New BitmapImage(New Uri(OpenFileDialog.FileName)))
-            Brush.Stretch = My.Settings.BackgroundImageStretch
-            Main.Background = Brush
             My.Settings.BackgroundImageLocation = OpenFileDialog.FileName
+            MainWindow.BackgroundImageBitmap = New BitmapImage(New Uri(OpenFileDialog.FileName))
+            MainWindow.AdjustBackground()
         End If
     End Sub
 
     Private Sub BackgroundImageRemoveButton_Click(sender As Object, e As RoutedEventArgs) Handles BackgroundImageRemoveButton.Click
-        Main.Background = New SolidColorBrush(Color.FromArgb(255, 240, 240, 240))
+        MainWindow.ClearValue(BackgroundProperty)
+        AutoBackupWindow.ClearValue(BackgroundProperty)
         My.Settings.BackgroundImageLocation = ""
     End Sub
 
@@ -172,14 +173,14 @@ Partial Public Class Options
                 Case 3
                     Brush.Stretch = Stretch.UniformToFill
             End Select
-            My.Settings.BackgroundImageStretch = Int(Brush.Stretch)
-            Main.Background = Brush
+            My.Settings.BackgroundImageStretch = Brush.Stretch
+            MainWindow.AdjustBackground()
         Catch ex As Exception
             Log.Print(ex.Message, Log.Level.Severe)
         End Try
     End Sub
 
-    Private Sub SaveButton_Click(sender As Object, e As RoutedEventArgs) Handles CloseButton.Click
+    Private Sub CloseButton_Click(sender As Object, e As RoutedEventArgs) Handles CloseButton.Click
         Me.Close()
     End Sub
 
@@ -196,6 +197,7 @@ Partial Public Class Options
         Log.Print("Minecraft folder location set to " & My.Settings.MinecraftFolderLocation)
         Log.Print("Saves folder location set to " & My.Settings.SavesFolderLocation)
         Log.Print("Backups folder location set to " & My.Settings.BackupsFolderLocation)
+
         My.Settings.InterfaceOpacity = ListViewOpacitySlider.Value
         My.Settings.CheckForUpdates = CheckForUpdatesCheckBox.IsChecked
         My.Settings.ShowBalloonTips = ShowBalloonTipsCheckBox.IsChecked
@@ -210,9 +212,9 @@ Partial Public Class Options
         Else
             My.Settings.SaveCloseState = False
         End If
-        'Log.Print("Saving settings...")
+
         My.Settings.Save()
-        Main.RefreshBackupsList()
+        MainWindow.RefreshBackupsList()
         ReloadBackupGroups()
     End Sub
 
@@ -223,9 +225,9 @@ Partial Public Class Options
             LoadLanguage()
             DefaultBackupNameTextBox.Text = MCBackup.Language.Dictionary("Localization.DefaultBackupName")
             DefaultAutoBackupNameTextBox.Text = MCBackup.Language.Dictionary("Localization.DefaultAutoBackupName")
-            Main.LoadLanguage()
+            MainWindow.LoadLanguage()
             ReloadBackupGroups()
-            Main.AutoBackupWindow.LoadLanguage()
+            AutoBackupWindow.LoadLanguage()
         End If
     End Sub
 
@@ -275,6 +277,13 @@ Partial Public Class Options
         SampleTextY1.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SampleText")
         SampleTextR1.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SampleText")
 
+        YAlignComboBox.Items.Clear()
+        YAlignComboBox.Items.Add(MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.VerticalAlign.Top"))
+        YAlignComboBox.Items.Add(MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.VerticalAlign.Center"))
+        YAlignComboBox.Items.Add(MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.VerticalAlign.Bottom"))
+        YAlignComboBox.SelectedIndex = My.Settings.BackgroundImageYAlign
+
+        ' Theme colors
         ThemeComboBox.Items.Clear()
 
         Dim Names = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.Themes").Split(";")
@@ -286,6 +295,12 @@ Partial Public Class Options
                 ThemeComboBox.SelectedIndex = i
             End If
         Next
+
+        ' Theme shades
+        ThemeShadeComboBox.Items.Clear()
+        ThemeShadeComboBox.Items.Add(New TaggedComboBoxItem(MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.ThemeShades.Light"), "BaseLight"))
+        ThemeShadeComboBox.Items.Add(New TaggedComboBoxItem(MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.ThemeShades.Dark"), "BaseDark"))
+        ThemeShadeComboBox.SelectedItem = ThemeShadeComboBox.Items.OfType(Of TaggedComboBoxItem)().FirstOrDefault(Function(Item) Item.Tag = My.Settings.ThemeShade)
 
         ' Folders
         InstallTypeGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.InstallTypeGroupBox.Header")
@@ -322,7 +337,7 @@ Partial Public Class Options
         BlueColorLabel.Text = CInt(BlueColorSlider.Value)
         My.Settings.StatusLabelColor = Color.FromRgb(RedColorSlider.Value, GreenColorSlider.Value, BlueColorSlider.Value)
         ColorRectangle.Fill = New SolidColorBrush(My.Settings.StatusLabelColor)
-        Main.StatusLabel.Foreground = New SolidColorBrush(My.Settings.StatusLabelColor)
+        MainWindow.StatusLabel.Foreground = New SolidColorBrush(My.Settings.StatusLabelColor)
 
         Dim RedGradient = New LinearGradientBrush()
         RedGradient.StartPoint = New Point(0, 0)
@@ -347,10 +362,9 @@ Partial Public Class Options
     End Sub
 
     Private Sub ThemeComboBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles ThemeComboBox.SelectionChanged
-        If Not ThemeComboBox.SelectedItem Is Nothing Then
-            Dim SelectedTag = DirectCast(ThemeComboBox.SelectedItem, TaggedComboBoxItem).Tag
-            My.Settings.Theme = ThemeComboBox.SelectedItem.Tag.ToString
-            ThemeManager.ChangeAppStyle(My.Application, ThemeManager.GetAccent(My.Settings.Theme), ThemeManager.GetAppTheme("BaseLight"))
+        If Not ThemeComboBox.SelectedItem Is Nothing And Window.IsLoaded Then
+            My.Settings.Theme = DirectCast(ThemeComboBox.SelectedItem, TaggedComboBoxItem).Tag
+            MainWindow.UpdateTheme()
         End If
     End Sub
 
@@ -408,7 +422,7 @@ Partial Public Class Options
 
             Process.Start(Application.ResourceAssembly.Location)
             Application.CloseAction = Application.AppCloseAction.Force
-            Main.Close()
+            MainWindow.Close()
         End If
     End Sub
 
@@ -468,14 +482,6 @@ Partial Public Class Options
         My.Settings.SendAnonymousData = SendAnonymousDataCheckBox.IsChecked
     End Sub
 
-    Private Sub SelectItemUsingTag(TabControl As TabControl, Tag As String)
-        For Each TabItem As TabItem In TabControl.Items
-            If TabItem.Tag = Tag Then
-                TabControl.SelectedItem = TabItem
-            End If
-        Next
-    End Sub
-
     Private Sub InstallationType_SelectionChanged(sender As Object, e As RoutedEventArgs)
         If Not Me.IsLoaded Then Exit Sub
 
@@ -504,7 +510,7 @@ Partial Public Class Options
                 SavesFolderTextBox.Text = ""
             End If
 
-            Main.AutoBackupWindow.ReloadSaves()
+            AutoBackupWindow.ReloadSaves()
         End If
     End Sub
 
@@ -555,7 +561,7 @@ Partial Public Class Options
                 SavesFolderTextBox.Text = ""
             End If
 
-            Main.AutoBackupWindow.ReloadSaves()
+            AutoBackupWindow.ReloadSaves()
         End If
     End Sub
 
@@ -718,5 +724,19 @@ Partial Public Class Options
         Animation.Duration = New Duration(TimeSpan.FromMilliseconds(250))
 
         Me.BeginAnimation(FrameworkElement.HeightProperty, Animation)
+    End Sub
+
+    Private Sub ThemeShadeComboBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles ThemeShadeComboBox.SelectionChanged
+        If Not ThemeShadeComboBox.SelectedItem Is Nothing And Window.IsLoaded Then
+            My.Settings.ThemeShade = DirectCast(ThemeShadeComboBox.SelectedItem, TaggedComboBoxItem).Tag
+            MainWindow.UpdateTheme()
+        End If
+    End Sub
+
+    Private Sub YAlignComboBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles YAlignComboBox.SelectionChanged
+        If Me.IsLoaded And YAlignComboBox.SelectedIndex > -1 Then
+            My.Settings.BackgroundImageYAlign = YAlignComboBox.SelectedIndex
+            MainWindow.AdjustBackground()
+        End If
     End Sub
 End Class
