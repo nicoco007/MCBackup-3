@@ -834,7 +834,7 @@ Partial Class MainWindow
             InfoJson.Add(New JProperty("Type", BackupInfo.Type))
             InfoJson.Add(New JProperty("Description", BackupInfo.Description))
             InfoJson.Add(New JProperty("Group", BackupInfo.Group))
-            InfoJson.Add(New JProperty("Launcher", BackupInfo.Launcher))
+            InfoJson.Add(New JProperty("Launcher", BackupInfo.Launcher.ToString()))
             InfoJson.Add(New JProperty("Modpack", BackupInfo.Modpack))
 
             Using SW As New StreamWriter(My.Settings.BackupsFolderLocation & "\" & BackupInfo.Name & "\info.json") ' Create information file (stores description, type, folder name, group name, launcher and modpack)
@@ -1007,7 +1007,7 @@ Partial Class MainWindow
                 Modpack = InfoJson("Modpack")
             End Using
 
-            If Launcher <> My.Settings.Launcher Then
+            If Launcher.ToString() <> My.Settings.Launcher.ToString() Then
                 MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.IncompatibleBackupConfig"), Launcher.ToString()), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
                 EnableUI(True)
                 Exit Sub
