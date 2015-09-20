@@ -86,7 +86,7 @@ Public Class AutoBackupWindow
             Timer.Stop()
             TimeLabel.Content = "00:00"
             MainWindow.NotificationIconWindow.AutoBackupLabel.Content = "Automatic Backup is not running."
-            MainWindow.NotificationIconWindow.AutoBackupTimeLabel.Visibility = Windows.Visibility.Collapsed
+            MainWindow.NotificationIconWindow.AutoBackupTimeLabel.Visibility = Visibility.Collapsed
 
             StartButton.Content = MCBackup.Language.Dictionary("AutoBackupWindow.StartButton.Content.Start")
             TimerStarted = False
@@ -96,7 +96,7 @@ Public Class AutoBackupWindow
             RefreshButton.IsEnabled = True
         Else
             MainWindow.NotificationIconWindow.AutoBackupLabel.Content = "Time until next automatic backup:"
-            MainWindow.NotificationIconWindow.AutoBackupTimeLabel.Visibility = Windows.Visibility.Visible
+            MainWindow.NotificationIconWindow.AutoBackupTimeLabel.Visibility = Visibility.Visible
 
             Minutes = MinutesNumUpDown.Value
             Seconds = 0

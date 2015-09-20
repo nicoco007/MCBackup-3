@@ -101,9 +101,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BackupManager.vb" />
     <Compile Include="Classes\BackupInfo.vb" />
     <Compile Include="Classes\BackupsListView.vb" />
     <Compile Include="Classes\RestoreInfo.vb" />
+    <Compile Include="EventArgs\BackupCompletedEventArgs.vb" />
+    <Compile Include="EventArgs\BackupEventArgs.vb" />
+    <Compile Include="EventArgs\BackupProgressChangedEventArgs.vb" />
     <Compile Include="Windows\AutoBackupWindow.xaml.vb">
       <DependentUpon>AutoBackupWindow.xaml</DependentUpon>
     </Compile>
