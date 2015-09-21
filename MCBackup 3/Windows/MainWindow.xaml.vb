@@ -60,12 +60,15 @@ Partial Class MainWindow
     ' New threading stuff
     Private BackupThread As Thread
 
-    Private Manager As BackupManager
+    Private Manager As New BackupManager()
 #End Region
 
 #Region "Load"
     Public Sub New()
         InitializeComponent()
+
+        AddHandler Manager.BackupProgressChanged, AddressOf BackupManager_BackupProgressChanged
+        AddHandler Manager.BackupCompleted, AddressOf BackupManager_BackupCompleted
     End Sub
 
     Private Sub Window_Loaded(sender As Object, e As EventArgs) Handles Window.Loaded
@@ -635,6 +638,7 @@ Partial Class MainWindow
             Dispatcher.Invoke(Sub()
                                   SidebarPlayerHealth.Visibility = Visibility.Visible
                                   SidebarPlayerHunger.Visibility = Visibility.Visible
+
                                   SidebarPlayerHealthGrid.Children.Clear()
                                   SidebarPlayerHungerGrid.Children.Clear()
                                   Try
@@ -642,6 +646,9 @@ Partial Class MainWindow
 
                                       ' TODO: find a way to read from playername.dat file
                                       If World.Level.Player IsNot Nothing Then
+                                          SidebarPlayerHealthGrid.ToolTip = World.Level.Player.Health.ToString() + "\20"
+                                          SidebarPlayerHungerGrid.ToolTip = World.Level.Player.HungerLevel.ToString() + "\20"
+
                                           For i As Integer = 0 To World.Level.Player.Health \ 2 - 1
                                               SidebarPlayerHealthGrid.Children.Add(New Game.Images.Health(New Thickness(SidebarPlayerHealthGrid.Children.Count * 10, 0, 0, 0), Game.Images.State.Full))
                                           Next
@@ -753,79 +760,107 @@ Partial Class MainWindow
 
 #Region "Backup"
     Private Sub BackupButton_Click(sender As Object, e As EventArgs) Handles BackupButton.Click
+
+        ' Create new instance of BackupDialog to prompt user to select what to backup
         Dim BackupDialog As New BackupDialog
+
+        ' Set backup owner to this window, so dialog is centered
         BackupDialog.Owner = Me
+
+        ' Show dialog
         BackupDialog.ShowDialog()
+
     End Sub
 
     Public Sub StartBackup()
+        ' Disable UI buttons
         EnableUI(False)
 
-        Manager = New BackupManager()
-
-        AddHandler Manager.BackupProgressChanged, AddressOf BackupManager_BackupProgressChanged
-        AddHandler Manager.BackupCompleted, AddressOf BackupManager_BackupCompleted
-
+        ' Start backup using BackupManager
         Manager.BackupAsync(BackupInfo.Name, BackupInfo.Location, BackupInfo.Type, BackupInfo.Description, BackupInfo.Group, BackupInfo.Launcher, BackupInfo.Modpack)
     End Sub
 
     Private Sub BackupManager_BackupProgressChanged(sender As Object, e As BackupProgressChangedEventArgs)
         Progress.Maximum = 100
+
+        ' Report progress depending on status
         Select Case e.Status
             Case BackupStatus.Running
+
+                ' Set progress style to indeterminate and value to current progress percentage
                 Progress.IsIndeterminate = False
                 Progress.Value = e.ProgressPercentage
 
-                Dim TimeLeftString As String
-
-                'If e.EstimatedTimeRemaining.Hours > 0 Then
-                'TimeLeftString = String.Format(MCBackup.Language.Dictionary("TimeLeft.HoursMinutesSeconds"), e.EstimatedTimeRemaining.Hours, e.EstimatedTimeRemaining.Minutes, Math.Round(e.EstimatedTimeRemaining.Seconds / 60) * 10)
-                'Else
-                If e.EstimatedTimeRemaining.TotalMinutes >= 1 Then
-                    TimeLeftString = String.Format(MCBackup.Language.Dictionary("TimeLeft.MinutesSeconds"), Math.Floor(e.EstimatedTimeRemaining.TotalMinutes), Math.Round(e.EstimatedTimeRemaining.Seconds / 60) * 10)
-                ElseIf e.EstimatedTimeRemaining.Seconds > 5 Then
-                    TimeLeftString = String.Format(MCBackup.Language.Dictionary("TimeLeft.Seconds"), Math.Round(e.EstimatedTimeRemaining.Seconds / 6) * 10)
-                Else
-                    TimeLeftString = MCBackup.Language.Dictionary("TimeLeft.LessThanFive")
-                End If
-
-                StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), e.ProgressPercentage, IIf(Single.IsNaN(e.TransferRate), e.TransferRate / 1048576, 0), TimeLeftString)
+                ' Set status label & window title text to reflect status & progress
+                StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), e.ProgressPercentage, IIf(Single.IsNaN(e.TransferRate), 0, e.TransferRate / 1048576), Manager.EstimatedTimeSpanToString(e.EstimatedTimeRemaining))
                 Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.Backup"), ApplicationVersion, e.ProgressPercentage)
+
             Case BackupStatus.RevertingChanges
+
+                ' Set progress style to indeterminate and value to current progress percentage
                 Progress.IsIndeterminate = True
                 Progress.Value = 0
+
+                ' Set status label & window title text to reflect status
+                StatusLabel.Content = MCBackup.Language.Dictionary("Status.RevertingChanges")
+                Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.RevertingChanges"))
+
             Case BackupStatus.CreatingThumbnail
+
+                ' Set progress style to indeterminate and value to current progress percentage
                 Progress.IsIndeterminate = False
                 Progress.Value = e.ProgressPercentage
+
+                ' Set status label & window title text to reflect status & progress
                 StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), e.ProgressPercentage)
                 Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.CreatingThumb"), ApplicationVersion, e.ProgressPercentage)
+
         End Select
     End Sub
 
     Private Sub BackupManager_BackupCompleted(sender As Object, e As BackupCompletedEventArgs)
         ProgressBar.Value = 100
 
+        ' Check if an error occured
         If e.Error IsNot Nothing Then
+
+            ' Show error balloon tip
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupError"), MCBackup.Language.Dictionary("BalloonTip.BackupError"), System.Windows.Forms.ToolTipIcon.Error)
-            Dispatcher.Invoke(Sub() ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Backup"), e.Error))
+
+            ' Show error report dialog
+            ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Backup"), e.Error)
+
+        Else
+
+            ' Show backup completed balloon tip
+            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupComplete"), MCBackup.Language.Dictionary("BalloonTip.BackupComplete"), System.Windows.Forms.ToolTipIcon.Info)
+
         End If
 
         ' Send +1 to StatCounter
         If My.Settings.SendAnonymousData Then
+
+            ' Create new webclient
             Dim WebClient As New WebClient
+
+            ' Download web page (and therefore send +1) using webclient
             WebClient.DownloadDataAsync(New Uri("http://c.statcounter.com/9820848/0/90ee98bc/1/"))
+
         End If
 
-        If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupComplete"), MCBackup.Language.Dictionary("BalloonTip.BackupComplete"), System.Windows.Forms.ToolTipIcon.Info)
-
+        ' Reload backup groups & refresh backups list
         ReloadBackupGroups()
         RefreshBackupsList()
 
+        ' Set status to ready
         StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
         Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
-        StatusLabel.Refresh()
+
+        ' Set progress to 100%
         Progress.Maximum = 100
         Progress.Value = 100
+
+        ' Re-enable UI
         EnableUI(True)
     End Sub
 #End Region
@@ -1518,7 +1553,7 @@ Partial Class MainWindow
 
                             e.Cancel = True
                         Case Forms.DialogResult.No
-                            If Manager.IsBusy Or ThreadIsNotNothingAndAlive(BackupThread) Or ThreadIsNotNothingAndAlive(DeleteForRestoreThread) Or ThreadIsNotNothingAndAlive(RestoreThread) Or ThreadIsNotNothingAndAlive(DeleteThread) Then
+                            If Manager.IsBusy Or ThreadIsNotNothingAndAlive(DeleteForRestoreThread) Or ThreadIsNotNothingAndAlive(RestoreThread) Or ThreadIsNotNothingAndAlive(DeleteThread) Then
                                 MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.MCBackupIsWorking"), MCBackup.Language.Dictionary("Message.Caption.MCBackupIsWorking"), MessageBoxButton.OK, MessageBoxImage.Question)
                                 e.Cancel = True
                             End If
@@ -1541,7 +1576,7 @@ Partial Class MainWindow
 
                         e.Cancel = True
                     Else
-                        If Manager.IsBusy Or ThreadIsNotNothingAndAlive(BackupThread) Or ThreadIsNotNothingAndAlive(DeleteForRestoreThread) Or ThreadIsNotNothingAndAlive(RestoreThread) Or ThreadIsNotNothingAndAlive(DeleteThread) Then
+                        If Manager.IsBusy Or ThreadIsNotNothingAndAlive(DeleteForRestoreThread) Or ThreadIsNotNothingAndAlive(RestoreThread) Or ThreadIsNotNothingAndAlive(DeleteThread) Then
                             MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.MCBackupIsWorking"), MCBackup.Language.Dictionary("Message.Caption.MCBackupIsWorking"), MessageBoxButton.OK, MessageBoxImage.Question)
                             e.Cancel = True
                         End If
@@ -1683,17 +1718,6 @@ Partial Class MainWindow
 
     Private Sub CancelButton_Click(sender As Object, e As RoutedEventArgs) Handles CancelButton.Click
         Manager.Cancel()
-
-        If BackupThread IsNot Nothing Then
-            If BackupThread.IsAlive Then
-                If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.CancelBackup"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
-                    If BackupThread.IsAlive Then
-                        BackupThread.Abort()
-                        Cancel = True
-                    End If
-                End If
-            End If
-        End If
 
         If DeleteForRestoreThread IsNot Nothing Then
             If DeleteForRestoreThread.IsAlive Then

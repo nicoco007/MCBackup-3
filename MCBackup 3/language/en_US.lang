@@ -239,6 +239,7 @@ Exception.Rename=An error occurred while trying to rename the backup.
 TimeLeft.LessThanFive=less than 5 seconds remaining
 TimeLeft.Seconds=about {0} seconds remaining
 TimeLeft.MinutesSeconds=about {0} minutes and {1} seconds remaining
+TimeLeft.HoursMinutesSeconds=about {0} hours, {1} minutes and {0} seconds remaining
 UpdateDialog.Title=New Version Available!
 UpdateDialog.Label1.Text=A new version of MCBackup is available!
 UpdateDialog.CurrentVersionLabel.Text=Current Version: {0}

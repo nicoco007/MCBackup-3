@@ -174,11 +174,11 @@
                             <TextBlock x:Name="SidebarOriginalNameContent" Padding="0,5,0,5" VerticalAlignment="Bottom" Text="&lt;Original Name&gt;" Margin="99,0,0,0"/>
                         </Grid>
                         <Grid Name="SidebarPlayerHealth" Visibility="Collapsed" DockPanel.Dock="Top">
-                            <TextBlock x:Name="SidebarPlayerHealthLabel" Text="Player Health:" Foreground="#FF5A6779" Padding="5,5,0,5"  Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="99"/>
+                            <TextBlock x:Name="SidebarPlayerHealthLabel" Text="Player Health:" Foreground="{DynamicResource GrayBrush2}" Padding="5,5,0,5"  Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="99"/>
                             <Grid x:Name="SidebarPlayerHealthGrid"  VerticalAlignment="Bottom" Height="21" Margin="99,0,0,0"/>
                         </Grid>
                         <Grid Name="SidebarPlayerHunger" Visibility="Collapsed" DockPanel.Dock="Top">
-                            <TextBlock x:Name="SidebarPlayerHungerLabel" Text="Player Hunger:" Foreground="#FF5A6779" Padding="5,5,0,5" Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="99"/>
+                            <TextBlock x:Name="SidebarPlayerHungerLabel" Text="Player Hunger:" Foreground="{DynamicResource GrayBrush2}" Padding="5,5,0,5" Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="99"/>
                             <Grid x:Name="SidebarPlayerHungerGrid" VerticalAlignment="Bottom" Height="21" Margin="99,0,0,0"/>
                         </Grid>
                         <Grid DockPanel.Dock="Top">

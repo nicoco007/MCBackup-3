@@ -336,6 +336,7 @@ Public Class Language
         Dictionary.Add("TimeLeft.LessThanFive", FindString("TimeLeft.LessThanFive"))
         Dictionary.Add("TimeLeft.Seconds", FindString("TimeLeft.Seconds"))
         Dictionary.Add("TimeLeft.MinutesSeconds", FindString("TimeLeft.MinutesSeconds"))
+        Dictionary.Add("TimeLeft.HoursMinutesSeconds", FindString("TimeLeft.HoursMinutesSeconds"))
 
         ' = Update Dialog =
         Dictionary.Add("UpdateDialog.Title", FindString("UpdateDialog.Title"))
