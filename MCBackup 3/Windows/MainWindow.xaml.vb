@@ -616,8 +616,9 @@ Partial Class MainWindow
             OriginalFolderName = InfoJson("OriginalName")
             Description = InfoJson("Description")
         Catch ex As Exception
-            Log.Print(ex.Message, Log.Level.Severe)
+            Log.Print("Could not read info.json! " + ex.Message, Log.Level.Severe)
         End Try
+
         Dispatcher.Invoke(Sub()
                               SidebarOriginalNameContent.Text = OriginalFolderName
                               SidebarOriginalNameContent.ToolTip = OriginalFolderName

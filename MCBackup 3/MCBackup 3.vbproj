@@ -105,6 +105,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AsyncFileSystemManager.vb" />
     <Compile Include="BackupManager.vb" />
     <Compile Include="Classes\BackupInfo.vb" />
     <Compile Include="Classes\BackupsListView.vb" />
@@ -114,6 +115,8 @@
     <Compile Include="EventArgs\BackupProgressChangedEventArgs.vb" />
     <Compile Include="EventArgs\CompressCompletedEventArgs.vb" />
     <Compile Include="EventArgs\CompressDirectoryEventArgs.vb" />
+    <Compile Include="EventArgs\DeleteDirectoryCompletedEventArgs.vb" />
+    <Compile Include="EventArgs\DeleteDirectoryProgressChangedEventArgs.vb" />
     <Compile Include="EventArgs\ExtractProgressChangedEventArgs.vb" />
     <Compile Include="EventArgs\CompressProgressChangedEventArgs.vb" />
     <Compile Include="EventArgs\DeleteDirectoryEventArgs.vb" />

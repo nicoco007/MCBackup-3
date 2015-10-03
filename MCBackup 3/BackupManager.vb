@@ -374,47 +374,52 @@ Public NotInheritable Class BackupManager
 
         RestoreAsyncOperation = AsyncOperationManager.CreateOperation(Nothing)
 
-        RestoreThread = New Thread(AddressOf RestoreThreadStart)
-        RestoreThread.Start(New RestoreEventArgs(backupName, restoreLocation, backupType))
+        If Directory.Exists(restoreLocation) Then
+
+            Dim FileSystemManager As New AsyncFileSystemManager()
+
+            AddHandler FileSystemManager.DeleteDirectoryProgressChanged, Sub(sender, e)
+
+                                                                             RestoreAsyncOperation.Post(RestoreProgressChangedCallback, New RestoreProgressChangedEventArgs(RestoreStatus.RemovingOldFiles, e.ProgressPercentage))
+
+                                                                         End Sub
+
+            AddHandler FileSystemManager.DeleteDirectoryCompleted, Sub(sender, e)
+
+                                                                       Try
+
+                                                                           RestoreThread = New Thread(AddressOf RestoreThreadStart)
+                                                                           RestoreThread.Start(New RestoreEventArgs(backupName, restoreLocation, backupType))
+
+                                                                       Catch ex As Exception
+
+                                                                           RestoreAsyncOperation.PostOperationCompleted(RestoreCompletedCallback, New RestoreCompletedEventArgs(ex, _CancellationPending))
+
+                                                                       End Try
+
+                                                                   End Sub
+
+            FileSystemManager.DeleteDirectoryAsync(restoreLocation, FileIO.DeleteDirectoryOption.DeleteAllContents)
+
+        Else
+
+            Try
+
+                RestoreThread = New Thread(AddressOf RestoreThreadStart)
+                RestoreThread.Start(New RestoreEventArgs(backupName, restoreLocation, backupType))
+
+            Catch ex As Exception
+
+                RestoreAsyncOperation.PostOperationCompleted(RestoreCompletedCallback, New RestoreCompletedEventArgs(ex, _CancellationPending))
+
+            End Try
+
+        End If
 
     End Sub
 
     Private Sub RestoreThreadStart(e As RestoreEventArgs)
 
-        If Directory.Exists(e.RestoreLocation) Then
-
-            Dim TotalSize As Long = GetDirectorySize(e.RestoreLocation)
-            Dim CurrentSize As Long = TotalSize
-
-            Try
-
-                DeleteDirectoryAsync(e.RestoreLocation, FileIO.DeleteDirectoryOption.DeleteAllContents)
-
-                While CurrentSize <> 0
-
-                    Dim PercentComplete As Single = 100 - CurrentSize / TotalSize * 100
-
-                    RestoreAsyncOperation.Post(RestoreProgressChangedCallback, New RestoreProgressChangedEventArgs(RestoreStatus.RemovingOldFiles, PercentComplete))
-
-                    CurrentSize = GetDirectorySize(e.RestoreLocation)
-
-                    If _CancellationPending Then
-
-                        Return
-
-                    End If
-
-                End While
-
-                Thread.Sleep(2000)
-
-            Catch ex As Exception
-
-                RestoreAsyncOperation.PostOperationCompleted(RestoreCompletedCallback, New RestoreCompletedEventArgs(ex, False))
-
-            End Try
-
-        End If
         Dim BackupPath As String = Path.Combine(My.Settings.BackupsFolderLocation, e.BackupName, "backup.zip")
 
         If File.Exists(BackupPath) Then
