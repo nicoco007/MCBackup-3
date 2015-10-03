@@ -1,4 +1,8 @@
-﻿Public Class RestoreInfo
+﻿Imports MCBackup.BackupManager
+
+Public Class RestoreEventArgs
+    Inherits ComponentModel.CancelEventArgs
+
     Private _BackupName As String
     Public Property BackupName As String
         Get
@@ -19,13 +23,20 @@
         End Set
     End Property
 
-    Private _BackupType As BackupManager.BackupTypes
-    Public Property BackupType As BackupManager.BackupTypes
+    Private _BackupType As BackupTypes
+    Public Property BackupType As BackupTypes
         Get
             Return _BackupType
         End Get
-        Set(value As BackupManager.BackupTypes)
+        Set(value As BackupTypes)
             _BackupType = value
         End Set
     End Property
+
+    Public Sub New(backupName As String, restoreLocation As String, backupType As BackupTypes)
+        Me._BackupName = backupName
+        Me._RestoreLocation = restoreLocation
+        Me._BackupType = backupType
+    End Sub
+
 End Class

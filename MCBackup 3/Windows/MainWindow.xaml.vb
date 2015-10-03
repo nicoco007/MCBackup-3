@@ -51,7 +51,7 @@ Partial Class MainWindow
     Public NotificationIconWindow As New NotificationIconWindow
     Private Splash As New Splash
 
-    Private Cancel As Boolean = False
+    'Private Cancel As Boolean = False
 
     Public AutoBackupWindowWasShown As Boolean = False
 
@@ -69,6 +69,8 @@ Partial Class MainWindow
 
         AddHandler Manager.BackupProgressChanged, AddressOf BackupManager_BackupProgressChanged
         AddHandler Manager.BackupCompleted, AddressOf BackupManager_BackupCompleted
+        AddHandler Manager.RestoreProgressChanged, AddressOf BackupManager_RestoreProgressChanged
+        AddHandler Manager.RestoreCompleted, AddressOf BackupManager_RestoreCompleted
     End Sub
 
     Private Sub Window_Loaded(sender As Object, e As EventArgs) Handles Window.Loaded
@@ -377,13 +379,13 @@ Partial Class MainWindow
                 If Not IsNumeric(InfoJson("Type")) Then
                     Select Case InfoJson("Type")
                         Case "save"
-                            InfoJson("Type") = BackupType.World
+                            InfoJson("Type") = BackupTypes.World
                         Case "version"
-                            InfoJson("Type") = BackupType.Version
+                            InfoJson("Type") = BackupTypes.Version
                         Case "everything"
-                            InfoJson("Type") = BackupType.Full
+                            InfoJson("Type") = BackupTypes.Full
                         Case Else
-                            InfoJson("Type") = BackupType.World
+                            InfoJson("Type") = BackupTypes.World
                     End Select
 
                     Using SW As New StreamWriter(Folder.FullName + "\info.json")
@@ -392,11 +394,11 @@ Partial Class MainWindow
                 End If
 
                 Select Case CInt(InfoJson("Type"))
-                    Case BackupType.World
+                    Case BackupTypes.World
                         Type = MCBackup.Language.Dictionary("BackupTypes.Save")
-                    Case BackupType.Version
+                    Case BackupTypes.Version
                         Type = MCBackup.Language.Dictionary("BackupTypes.Version")
-                    Case BackupType.Full
+                    Case BackupTypes.Full
                         Type = MCBackup.Language.Dictionary("BackupTypes.Everything")
                 End Select
 
@@ -449,6 +451,7 @@ Partial Class MainWindow
             If Result = MessageBoxResult.Yes Then
                 Dispatcher.Invoke(Sub()
                                       Progress.IsIndeterminate = False
+                                      EnableUI(False)
                                       StartDelete(DirectoriesToDelete)
                                   End Sub)
             End If
@@ -602,7 +605,7 @@ Partial Class MainWindow
                               End If
                           End Sub)
 
-        Dim Type As BackupType = BackupType.World, OriginalFolderName As String = "-", Description As String = ""
+        Dim Type As BackupTypes = BackupTypes.World, OriginalFolderName As String = "-", Description As String = ""
 
         Try
             Dim InfoJson As JObject
@@ -620,13 +623,13 @@ Partial Class MainWindow
                               SidebarOriginalNameContent.ToolTip = OriginalFolderName
 
                               Select Case Type
-                                  Case BackupType.World
+                                  Case BackupTypes.World
                                       SidebarTypeContent.Text = MCBackup.Language.Dictionary("BackupTypes.Save")
                                       SidebarTypeContent.ToolTip = MCBackup.Language.Dictionary("BackupTypes.Save")
-                                  Case BackupType.Version
+                                  Case BackupTypes.Version
                                       SidebarTypeContent.Text = MCBackup.Language.Dictionary("BackupTypes.Version")
                                       SidebarTypeContent.ToolTip = MCBackup.Language.Dictionary("BackupTypes.Version")
-                                  Case BackupType.Full
+                                  Case BackupTypes.Full
                                       SidebarTypeContent.Text = MCBackup.Language.Dictionary("BackupTypes.Everything")
                                       SidebarTypeContent.ToolTip = MCBackup.Language.Dictionary("BackupTypes.Everything")
                               End Select
@@ -634,18 +637,16 @@ Partial Class MainWindow
                               DescriptionTextBox.Text = IIf(String.IsNullOrEmpty(Description), MCBackup.Language.Dictionary("MainWindow.Sidebar.Description.NoDesc"), Description)
                           End Sub)
 
-        If Type = BackupType.World Then
+        If Type = BackupTypes.World AndAlso SelectedItem IsNot Nothing AndAlso File.Exists(Path.Combine(My.Settings.BackupsFolderLocation, SelectedItem.Name, "level.dat")) Then
             Dispatcher.Invoke(Sub()
-                                  SidebarPlayerHealth.Visibility = Visibility.Visible
-                                  SidebarPlayerHunger.Visibility = Visibility.Visible
-
                                   SidebarPlayerHealthGrid.Children.Clear()
                                   SidebarPlayerHungerGrid.Children.Clear()
+
                                   Try
                                       Dim World As NbtWorld = NbtWorld.Open(My.Settings.BackupsFolderLocation & "\" & SelectedItem.Name)
 
                                       ' TODO: find a way to read from playername.dat file
-                                      If World.Level.Player IsNot Nothing Then
+                                      If World IsNot Nothing AndAlso World.Level IsNot Nothing AndAlso World.Level.Player IsNot Nothing Then
                                           SidebarPlayerHealthGrid.ToolTip = World.Level.Player.Health.ToString() + "\20"
                                           SidebarPlayerHungerGrid.ToolTip = World.Level.Player.HungerLevel.ToString() + "\20"
 
@@ -668,9 +669,9 @@ Partial Class MainWindow
                                           For i As Integer = 0 To (20 - World.Level.Player.HungerLevel) \ 2 - 1
                                               SidebarPlayerHungerGrid.Children.Add(New Game.Images.Hunger(New Thickness(90 - SidebarPlayerHungerGrid.Children.Count * 10, 0, 0, 0), Game.Images.State.Empty))
                                           Next
-                                      Else
-                                          SidebarPlayerHealth.Visibility = Visibility.Collapsed
-                                          SidebarPlayerHunger.Visibility = Visibility.Collapsed
+
+                                          SidebarPlayerHealth.Visibility = Visibility.Visible
+                                          SidebarPlayerHunger.Visibility = Visibility.Visible
                                       End If
                                   Catch ex As Exception
                                       Dispatcher.Invoke(Sub() ErrorReportDialog.Show("An error occured while trying to load world info.", ex))
@@ -785,6 +786,13 @@ Partial Class MainWindow
 
         ' Report progress depending on status
         Select Case e.Status
+            Case BackupStatus.Starting
+
+                Progress.IsIndeterminate = True
+                Progress.Value = 0
+
+                StatusLabel.Content = "Starting..."
+
             Case BackupStatus.Running
 
                 ' Set progress style to indeterminate and value to current progress percentage
@@ -803,7 +811,7 @@ Partial Class MainWindow
 
                 ' Set status label & window title text to reflect status
                 StatusLabel.Content = MCBackup.Language.Dictionary("Status.RevertingChanges")
-                Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.RevertingChanges"))
+                Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.RevertingChanges"), ApplicationVersion)
 
             Case BackupStatus.CreatingThumbnail
 
@@ -871,7 +879,7 @@ Partial Class MainWindow
     Private Sub RestoreButton_Click(sender As Object, e As EventArgs) Handles RestoreButton.Click, ListViewRestoreItem.Click
         If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.RestoreAreYouSure"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = Forms.DialogResult.Yes Then
             EnableUI(False)
-            Cancel = False
+            'Cancel = False
             Log.Print("Starting Restore")
             RestoreInfo.BackupName = ListView.SelectedItems(0).Name
 
@@ -890,7 +898,7 @@ Partial Class MainWindow
             Using SR As New StreamReader(My.Settings.BackupsFolderLocation & "\" & RestoreInfo.BackupName & "\info.json")
                 InfoJson = JsonConvert.DeserializeObject(SR.ReadToEnd)
                 BaseFolderName = InfoJson("OriginalName")
-                RestoreInfo.BackupType = InfoJson("Type")
+                RestoreInfo.BackupType = CInt(InfoJson("Type"))
 
                 Dim Temp As Object = InfoJson("Launcher")
                 If IsNumeric(Temp) Then
@@ -899,7 +907,7 @@ Partial Class MainWindow
                     Else
                         Launcher = Temp
                     End If
-                Else
+                ElseIf Not String.IsNullOrEmpty(Temp)
                     Select Case Temp.ToString().ToLower()
                         Case "minecraft"
                             Launcher = Game.Launcher.Minecraft
@@ -913,6 +921,8 @@ Partial Class MainWindow
                         Case Else
                             Launcher = Game.Launcher.Minecraft
                     End Select
+                Else
+                    Launcher = Game.Launcher.Minecraft
                 End If
 
                 Modpack = InfoJson("Modpack")
@@ -925,7 +935,7 @@ Partial Class MainWindow
             End If
 
             Select Case RestoreInfo.BackupType
-                Case "save"
+                Case BackupTypes.World
                     Select Case My.Settings.Launcher
                         Case Game.Launcher.Minecraft
                             RestoreInfo.RestoreLocation = My.Settings.SavesFolderLocation & "\" & BaseFolderName
@@ -936,7 +946,7 @@ Partial Class MainWindow
                         Case Game.Launcher.ATLauncher
                             RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\Instances\" & Modpack & "\saves\" & BaseFolderName
                     End Select
-                Case "version"
+                Case BackupTypes.Version
                     Select Case My.Settings.Launcher
                         Case Game.Launcher.Minecraft
                             RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\versions\" & BaseFolderName
@@ -947,168 +957,40 @@ Partial Class MainWindow
                         Case Game.Launcher.ATLauncher
                             RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\Instances\" & BaseFolderName
                     End Select
-                Case "everything"
+                Case BackupTypes.Full
                     RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation
             End Select
 
-            Dim t As New Thread(AddressOf Restore)
-            t.Start()
+            Manager.RestoreAsync(RestoreInfo.BackupName, RestoreInfo.RestoreLocation, RestoreInfo.BackupType)
         End If
     End Sub
 
-    Private Sub Restore()
-        Try
-            ' Only delete folder contents if folder exists AND it's size is not zero.
-            If Directory.Exists(RestoreInfo.RestoreLocation) Then
-                If GetFolderSize(RestoreInfo.RestoreLocation) <> 0 Then
-                    ' Set initial size variable
-                    Dim InitialSize As Double = GetFolderSize(RestoreInfo.RestoreLocation)
+    Private Sub BackupManager_RestoreProgressChanged(sender As Object, e As RestoreProgressChangedEventArgs)
 
-                    Dispatcher.Invoke(Sub()
-                                          Progress.Maximum = InitialSize
-                                      End Sub)
+        Progress.Maximum = 100
+        Progress.Value = e.ProgressPercentage
 
-                    ' Start removal async
-                    DeleteForRestoreThread = New DirectoryInfo(RestoreInfo.RestoreLocation).DeleteContentsAsync
+        StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), e.ProgressPercentage, e.TransferRate / 1048576, Manager.EstimatedTimeSpanToString(e.EstimatedTimeRemaining))
+        Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.Restore"), ApplicationVersion, e.ProgressPercentage)
 
-                    Try
-                        Do Until DeleteForRestoreThread.IsAlive = False
-                            ' Set bytes remaining to current folder size
-                            Dim BytesRemaining As Double = 0
+    End Sub
 
-                            BytesRemaining = GetFolderSize(RestoreInfo.RestoreLocation)
+    Private Sub BackupManager_RestoreCompleted(sender As Object, e As RestoreCompletedEventArgs)
 
-                            ' Determine percent removed (inverted) by dividing bytes remaining by initial size, and multiplying by 100
-                            Dim PercentRemoved As Decimal = BytesRemaining / InitialSize * 100
+        If e.Error IsNot Nothing Then
 
-                            Dispatcher.Invoke(Sub()
-                                                  ' Show percent complete and message
-                                                  StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.RemovingOldContent"), 100 - PercentRemoved)
-                                                  Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.Delete"), ApplicationVersion, 100 - PercentRemoved)
-                                                  Progress.Value = BytesRemaining
-                                              End Sub)
+            ErrorReportDialog.Show(e.Error.Message, e.Error)
 
-                            If Cancel And DeleteForRestoreThread.IsAlive = False Then
-                                Dispatcher.Invoke(Sub()
-                                                      RestoreStopWatch.Stop()
-                                                      Progress.Value = 0
-                                                      Progress.IsIndeterminate = False
-                                                      StatusLabel.Content = MCBackup.Language.Dictionary("Status.CanceledAndReady")
-                                                      Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
-                                                      EnableUI(True)
-                                                      RefreshBackupsList()
-                                                      ReloadBackupGroups()
-                                                  End Sub)
-                                Exit Sub
-                            End If
+        End If
 
-                            Thread.Sleep(200)
-                        Loop
-                    Catch ex As Exception
-                        Me.Dispatcher.Invoke(Sub() ErrorReportDialog.Show("An error occured while trying to delete the folder.", ex))
-                        Exit Sub
-                    End Try
-                End If
-            End If
+        StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
+        Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
+        Progress.Maximum = 100
+        Progress.Value = 100
+        EnableUI(True)
+        RefreshBackupsList()
+        ReloadBackupGroups()
 
-            'Exit Sub
-
-            ' Create the target directory to prevent exceptions while getting the completion percentage
-            My.Computer.FileSystem.CreateDirectory(RestoreInfo.RestoreLocation)
-
-            ' Start copying the source directory asynchronously to the target directory
-            RestoreThread = FileSystemOperations.Directory.CopyAsync(My.Settings.BackupsFolderLocation & "\" & RestoreInfo.BackupName, RestoreInfo.RestoreLocation, True)
-
-            ' Reset & start the backup stopwatch
-            RestoreStopWatch.Reset()
-            RestoreStopWatch.Start()
-
-            ' Set variables
-            Dim PercentComplete As Double = 0
-            Dim TotalBytes As Double = GetFolderSize(My.Settings.BackupsFolderLocation & "\" & RestoreInfo.BackupName)
-            Dim BytesCopied As Double = 0
-
-            Dispatcher.Invoke(Sub()
-                                  Progress.Maximum = TotalBytes
-                              End Sub)
-
-            ' Do until percent complete is equal to or over 100
-            Do Until TotalBytes = BytesCopied
-                ' Calculate percent complete by dividing target location by source location, and multiply by 100
-                PercentComplete = GetFolderSize(RestoreInfo.RestoreLocation) / GetFolderSize(My.Settings.BackupsFolderLocation & "\" & RestoreInfo.BackupName) * 100
-
-                ' Determine speed in megabytes per second (MB/s) by dividing bytes copied by seconds elapsed (in decimal for more accuracy), and dividing by 1048576.
-                TotalBytes = GetFolderSize(My.Settings.BackupsFolderLocation & "\" & RestoreInfo.BackupName)
-                BytesCopied = GetFolderSize(RestoreInfo.RestoreLocation)
-                Dim Speed As Double = Math.Round((BytesCopied / 1048576) / (RestoreStopWatch.ElapsedMilliseconds / 1000), 2) ' 1024 (1K bytes) × 1024 = 1048576 (1M bytes)
-
-                Dim TimeLeft As New TimeSpan(0)
-
-                ' Determine time remaining using (TimeElapsed / BytesCopied) * BytesRemaining and round to the nearest 5
-                If BytesCopied > 0 Then
-                    TimeLeft = TimeSpan.FromSeconds(Math.Round((RestoreStopWatch.ElapsedMilliseconds / 1000) / BytesCopied * (TotalBytes - BytesCopied) / 5) * 5)
-                End If
-
-                Dim TimeLeftString As String
-
-                If TimeLeft.TotalSeconds > 60 Then
-                    TimeLeftString = String.Format(MCBackup.Language.Dictionary("TimeLeft.MinutesSeconds"), TimeLeft.TotalMinutes, TimeLeft.TotalSeconds)
-                ElseIf TimeLeft.TotalSeconds > 5 Then
-                    TimeLeftString = String.Format(MCBackup.Language.Dictionary("TimeLeft.Seconds"), TimeLeft.TotalSeconds)
-                Else
-                    TimeLeftString = MCBackup.Language.Dictionary("TimeLeft.LessThanFive")
-                End If
-
-                Dispatcher.Invoke(Sub()
-                                      ' Display percent complete on progress bar and restoring message
-                                      StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), PercentComplete, Speed, TimeLeftString)
-                                      Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.Restore"), ApplicationVersion, PercentComplete)
-                                      Progress.Value = BytesCopied
-                                      ProgressBar.Refresh()
-                                  End Sub)
-
-                ' Cancel if cancel variable is true and backup thread has been killed
-                If Cancel And RestoreThread.IsAlive = False Then
-                    Dispatcher.Invoke(Sub()
-                                          RestoreStopWatch.Stop()
-                                          Progress.Value = 0
-                                          Progress.IsIndeterminate = False
-                                          StatusLabel.Content = MCBackup.Language.Dictionary("Status.CanceledAndReady")
-                                          Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
-                                          EnableUI(True)
-                                          RefreshBackupsList()
-                                          ReloadBackupGroups()
-                                      End Sub)
-                    Exit Sub
-                End If
-
-                Thread.Sleep(200)
-            Loop
-
-            ' Stop backup stopwatch
-            RestoreStopWatch.Stop()
-
-            ' Delete info/thumb files from restored backup
-            If My.Computer.FileSystem.FileExists(RestoreInfo.RestoreLocation & "\info.json") Then My.Computer.FileSystem.DeleteFile(RestoreInfo.RestoreLocation & "\info.json")
-            If My.Computer.FileSystem.FileExists(RestoreInfo.RestoreLocation & "\thumb.png") Then My.Computer.FileSystem.DeleteFile(RestoreInfo.RestoreLocation & "\thumb.png")
-
-            Dispatcher.Invoke(Sub()
-                                  StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
-                                  Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
-                                  Progress.Maximum = 100
-                                  Progress.Value = 100
-                                  EnableUI(True)
-                                  RefreshBackupsList()
-                                  ReloadBackupGroups()
-                              End Sub)
-
-            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RestoreComplete"), MCBackup.Language.Dictionary("BalloonTip.RestoreComplete"), System.Windows.Forms.ToolTipIcon.Info)
-            Log.Print("Restore Complete")
-        Catch ex As Exception
-            Log.Print(ex.Message, Log.Level.Severe)
-            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RestoreError"), MCBackup.Language.Dictionary("BalloonTip.RestoreError"), System.Windows.Forms.ToolTipIcon.Error)
-            Me.Dispatcher.Invoke(Sub() ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Restore"), ex))
-        End Try
     End Sub
 #End Region
 
@@ -1124,6 +1006,8 @@ Partial Class MainWindow
             Return 0
         Catch ex As Exception
             Dispatcher.Invoke(Sub() ErrorReportDialog.Show(String.Format("Could not find size of '{0}'", FolderPath), ex))
+
+            Return 0
         End Try
     End Function
 
@@ -1553,7 +1437,7 @@ Partial Class MainWindow
 
                             e.Cancel = True
                         Case Forms.DialogResult.No
-                            If Manager.IsBusy Or ThreadIsNotNothingAndAlive(DeleteForRestoreThread) Or ThreadIsNotNothingAndAlive(RestoreThread) Or ThreadIsNotNothingAndAlive(DeleteThread) Then
+                            If Manager.IsBusy Or ThreadIsNotNothingAndAlive(DeleteThread) Then
                                 MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.MCBackupIsWorking"), MCBackup.Language.Dictionary("Message.Caption.MCBackupIsWorking"), MessageBoxButton.OK, MessageBoxImage.Question)
                                 e.Cancel = True
                             End If
@@ -1576,7 +1460,7 @@ Partial Class MainWindow
 
                         e.Cancel = True
                     Else
-                        If Manager.IsBusy Or ThreadIsNotNothingAndAlive(DeleteForRestoreThread) Or ThreadIsNotNothingAndAlive(RestoreThread) Or ThreadIsNotNothingAndAlive(DeleteThread) Then
+                        If Manager.IsBusy Or ThreadIsNotNothingAndAlive(DeleteThread) Then
                             MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.MCBackupIsWorking"), MCBackup.Language.Dictionary("Message.Caption.MCBackupIsWorking"), MessageBoxButton.OK, MessageBoxImage.Question)
                             e.Cancel = True
                         End If
@@ -1719,34 +1603,11 @@ Partial Class MainWindow
     Private Sub CancelButton_Click(sender As Object, e As RoutedEventArgs) Handles CancelButton.Click
         Manager.Cancel()
 
-        If DeleteForRestoreThread IsNot Nothing Then
-            If DeleteForRestoreThread.IsAlive Then
-                If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.CancelRestore"), MCBackup.Language.Dictionary("Message.Caption.Warning"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
-                    If DeleteForRestoreThread.IsAlive Then
-                        DeleteForRestoreThread.Abort()
-                        Cancel = True
-                    End If
-                End If
-            End If
-        End If
-
-        If RestoreThread IsNot Nothing Then
-            If RestoreThread.IsAlive Then
-                If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.CancelRestore"), MCBackup.Language.Dictionary("Message.Caption.Warning"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
-                    If RestoreThread.IsAlive Then
-                        RestoreThread.Abort()
-                        Cancel = True
-                    End If
-                End If
-            End If
-        End If
-
         If DeleteThread IsNot Nothing Then
             If DeleteThread.IsAlive Then
                 If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.CancelDelete"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
                     If DeleteThread.IsAlive Then
                         DeleteThread.Abort()
-                        Cancel = True
                     End If
                 End If
             End If

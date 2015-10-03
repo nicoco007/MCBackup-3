@@ -173,7 +173,7 @@ Public Class BackupDialog
                     Case Game.Launcher.ATLauncher
                         Main.BackupInfo.Location = My.Settings.MinecraftFolderLocation & "\Instances\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
                 End Select
-                Main.BackupInfo.Type = "save"
+                Main.BackupInfo.Type = BackupManager.BackupTypes.World
             Case 1
                 Select Case My.Settings.Launcher
                     Case Game.Launcher.Minecraft
@@ -185,10 +185,10 @@ Public Class BackupDialog
                     Case Game.Launcher.ATLauncher
                         Main.BackupInfo.Location = My.Settings.MinecraftFolderLocation & "\Instances\" & VersionsListView.SelectedItem
                 End Select
-                Main.BackupInfo.Type = "version"
+                Main.BackupInfo.Type = BackupManager.BackupTypes.Version
             Case 2
                 Main.BackupInfo.Location = My.Settings.MinecraftFolderLocation
-                Main.BackupInfo.Type = "everything"
+                Main.BackupInfo.Type = BackupManager.BackupTypes.Full
         End Select
 
         Dim OriginalFolderName As String

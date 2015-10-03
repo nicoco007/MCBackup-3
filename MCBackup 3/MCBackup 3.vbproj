@@ -56,6 +56,10 @@
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ionic.Zip, Version=1.9.6.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetZip.1.9.6\lib\net20\Ionic.Zip.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MahApps.Metro, Version=1.1.2.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.1.2.0\lib\net40\MahApps.Metro.dll</HintPath>
       <Private>True</Private>
@@ -108,6 +112,16 @@
     <Compile Include="EventArgs\BackupCompletedEventArgs.vb" />
     <Compile Include="EventArgs\BackupEventArgs.vb" />
     <Compile Include="EventArgs\BackupProgressChangedEventArgs.vb" />
+    <Compile Include="EventArgs\CompressCompletedEventArgs.vb" />
+    <Compile Include="EventArgs\CompressDirectoryEventArgs.vb" />
+    <Compile Include="EventArgs\ExtractProgressChangedEventArgs.vb" />
+    <Compile Include="EventArgs\CompressProgressChangedEventArgs.vb" />
+    <Compile Include="EventArgs\DeleteDirectoryEventArgs.vb" />
+    <Compile Include="EventArgs\ExtractCompletedEventArgs.vb" />
+    <Compile Include="EventArgs\ExtractEventArgs.vb" />
+    <Compile Include="EventArgs\RestoreCompletedEventArgs.vb" />
+    <Compile Include="EventArgs\RestoreEventArgs.vb" />
+    <Compile Include="EventArgs\RestoreProgressChangedEventArgs.vb" />
     <Compile Include="Windows\AutoBackupWindow.xaml.vb">
       <DependentUpon>AutoBackupWindow.xaml</DependentUpon>
     </Compile>
@@ -163,6 +177,7 @@
     <Compile Include="Dialogs\UpdateDialog.xaml.vb">
       <DependentUpon>UpdateDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Zipper.vb" />
     <Page Include="Dialogs\AboutDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

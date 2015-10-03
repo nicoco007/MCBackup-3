@@ -2,6 +2,7 @@
 Imports System.Globalization
 Imports System.IO
 Imports System.Threading
+Imports System.Windows.Threading
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 
@@ -10,6 +11,7 @@ Public NotInheritable Class BackupManager
     ''' Status of the backup currently running.
     ''' </summary>
     Public Enum BackupStatus
+        Starting
         Running
         RevertingChanges
         CreatingThumbnail
@@ -18,10 +20,15 @@ Public NotInheritable Class BackupManager
     ''' <summary>
     ''' Type of backup to create. This can be a world, a version, or the whole Minecraft installation.
     ''' </summary>
-    Public Enum BackupType
+    Public Enum BackupTypes
         World
         Version
         Full
+    End Enum
+
+    Public Enum RestoreStatus
+        RemovingOldFiles
+        Restoring
     End Enum
 
 #Region "Delegates"
@@ -38,18 +45,30 @@ Public NotInheritable Class BackupManager
     ''' <param name="sender">The source of the event.</param>
     ''' <param name="e">A BackupCompletedEventArgs that contains the event data.</param>
     Public Delegate Sub BackupCompletedEventHandler(sender As Object, e As BackupCompletedEventArgs)
+
+    Public Delegate Sub RestoreProgressChangedEventHandler(sender As Object, e As RestoreProgressChangedEventArgs)
+
+    Public Delegate Sub RestoreCompletedEventHandler(sender As Object, e As RestoreCompletedEventArgs)
 #End Region
 
     ' Threads
-    Private BackupThread As Thread = Nothing
-    Private BackupProgressThread As Thread = Nothing
+    Private PostBackupThread As Thread = Nothing
+
+    Private RestoreThread As Thread = Nothing
+    Private PreRestoreThread As Thread = Nothing
+
+    Private DeleteDirectoryThread As Thread = Nothing
 
     ' Async Operations
     Private BackupAsyncOperation As AsyncOperation = Nothing
+    Private RestoreAsyncOperation As AsyncOperation = Nothing
 
     ' Async Operation Callbacks
     Private BackupProgressChangedCallback As SendOrPostCallback
     Private BackupCompletedCallback As SendOrPostCallback
+
+    Private RestoreProgressChangedCallback As SendOrPostCallback
+    Private RestoreCompletedCallback As SendOrPostCallback
 
 #Region "Events"
     ''' <summary>
@@ -61,25 +80,30 @@ Public NotInheritable Class BackupManager
     ''' Occurs when backup is complete.
     ''' </summary>
     Public Event BackupCompleted As BackupCompletedEventHandler
+
+    Public Event RestoreProgressChanged As RestoreProgressChangedEventHandler
+
+    Public Event RestoreCompleted As RestoreCompletedEventHandler
 #End Region
 
     ' Exceptions
     Private BackupError As Exception
+    Private RestoreError As Exception
 
 #Region "Properties"
-    Private Busy As Boolean = False
+    Private _IsBusy As Boolean = False
 
     Public ReadOnly Property IsBusy As Boolean
         Get
-            Return Busy
+            Return _IsBusy
         End Get
     End Property
 
-    Private CancelPending As Boolean = False
+    Private _CancellationPending As Boolean = False
 
     Public ReadOnly Property CancellationPending As Boolean
         Get
-            Return CancelPending
+            Return _CancellationPending
         End Get
     End Property
 #End Region
@@ -87,22 +111,25 @@ Public NotInheritable Class BackupManager
     Public Sub New()
 
         ' Set callbacks
-        BackupProgressChangedCallback = New SendOrPostCallback(AddressOf PostBackupProgressChanged)
-        BackupCompletedCallback = New SendOrPostCallback(AddressOf PostBackupCompleted)
+        BackupProgressChangedCallback = New SendOrPostCallback(AddressOf SendBackupProgressChanged)
+        BackupCompletedCallback = New SendOrPostCallback(AddressOf SendBackupCompleted)
+
+        RestoreProgressChangedCallback = New SendOrPostCallback(AddressOf SendRestoreProgressChanged)
+        RestoreCompletedCallback = New SendOrPostCallback(AddressOf SendRestoreCompleted)
 
     End Sub
 
     Public Sub Cancel()
 
         ' Set CancelPending to True
-        CancelPending = True
+        _CancellationPending = True
 
     End Sub
 
     Public Sub BackupAsync(name As String, path As String, type As String, description As String, group As String, launcher As Game.Launcher, modpack As String)
 
         ' Check if BackupManager is busy
-        If Busy Then
+        If _IsBusy Then
 
             ' Throw exception if BackupManager is busy
             Throw New InvalidOperationException("BackupManager is busy!")
@@ -110,106 +137,94 @@ Public NotInheritable Class BackupManager
         End If
 
         ' Set busy to True and CancelPending to false
-        Busy = True
-        CancelPending = False
+        _IsBusy = True
+        _CancellationPending = False
 
         ' Create new AsyncOperation for backup
         BackupAsyncOperation = AsyncOperationManager.CreateOperation(Nothing)
 
-        ' Create BackupEventArgs
-        Dim arguments As New BackupEventArgs(name, path, type, description, group, launcher, modpack)
+        SendBackupProgressChanged(New BackupProgressChangedEventArgs(BackupStatus.Starting))
 
-        ' Create new backup thread and start it
-        BackupThread = New Thread(AddressOf BackupThreadStart)
-        BackupThread.Start(arguments)
-
-        ' Create new backup progress thread and start it
-        BackupProgressThread = New Thread(AddressOf BackupProgressThreadStart)
-        BackupProgressThread.Start(arguments)
-    End Sub
-
-    Private Sub BackupThreadStart(e As BackupEventArgs)
-
-        ' Wrap in try loop in case of exception
-        Try
-
-            ' Create backup
-            My.Computer.FileSystem.CopyDirectory(e.Path, My.Settings.BackupsFolderLocation + "\" + e.Name, True)
-
-        Catch ex As ThreadAbortException
-
-            ' ThreadAbortException only occurs when Thread.Abort() is called, which means the operation was cancelled
-            Log.Print("Thread aborted successfully.")
-
-        Catch ex As Exception
-
-            ' If any other exception is caught, set BackupError to that exception
-            BackupError = ex
-
-        End Try
-
-    End Sub
-
-    Private Sub BackupProgressThreadStart(args As BackupEventArgs)
-
-        ' Create variables
-        Dim TotalBytes As Long = GetDirectorySize(args.Path)
-        Dim BytesCopied As Long = 0
-        Dim Progress As Single = 0
-        Dim TransferRate As Single = 0
-        Dim EstimatedRemainingTime As TimeSpan
-
-        ' Create new stopwatch
+        Dim zipper As New Zipper()
+        Dim progress As Single
+        Dim EstimatedTimeRemaining As TimeSpan = TimeSpan.FromSeconds(0)
         Dim Stopwatch As New Stopwatch()
+        Dim TransferRate As Single
+
+        AddHandler zipper.CompressProgressChanged, Sub(s, args)
+
+                                                       ' If cancellation is pending, stop compression and exit method
+                                                       If _CancellationPending Then
+
+                                                           zipper.CancelCompress()
+
+                                                           Return
+
+                                                       End If
+
+                                                       ' Check if bytes copied is more than 0 to prevent division by zero error
+                                                       If args.BytesCompressed > 0 Then
+
+                                                           ' Set estimated time remaining
+                                                           EstimatedTimeRemaining = TimeSpan.FromMilliseconds(Stopwatch.ElapsedMilliseconds / args.BytesCompressed * (args.TotalBytes - args.BytesCompressed))
+
+                                                       End If
+
+                                                       ' Set progress
+                                                       progress = (args.BytesCompressed / args.TotalBytes) * 100
+
+                                                       ' Set transfer rate (bytes per second)
+                                                       TransferRate = args.BytesCompressed / Stopwatch.Elapsed.TotalSeconds
+
+                                                       ' Post backup progress callback with current progress data
+                                                       BackupAsyncOperation.Post(BackupProgressChangedCallback, New BackupProgressChangedEventArgs(BackupStatus.Running, progress, EstimatedTimeRemaining, TransferRate))
+
+                                                   End Sub
+
+        AddHandler zipper.CompressCompleted, Sub(s, args)
+
+                                                 ' Stop stopwatch
+                                                 Stopwatch.Stop()
+
+                                                 ' Check if an error occured or was cancelled
+                                                 If args.Error IsNot Nothing Then
+
+                                                     ' Send error to backup completed callback
+                                                     BackupAsyncOperation.PostOperationCompleted(BackupCompletedCallback, New BackupCompletedEventArgs(args.Error, False))
+
+                                                 Else
+
+                                                     ' Create BackupEventArgs
+                                                     Dim arguments As New BackupEventArgs(name, path, type, description, group, launcher, modpack)
+
+                                                     ' Start post backup thread
+                                                     PostBackupThread = New Thread(AddressOf PostBackupThreadStart)
+                                                     PostBackupThread.Start(arguments)
+
+                                                 End If
+
+                                             End Sub
+
+        Directory.CreateDirectory(IO.Path.Combine(My.Settings.BackupsFolderLocation, name))
+
         Stopwatch.Start()
 
-        ' While copy is in progress and cancel is not pending
-        While Progress < 100 And CancelPending = False
+        zipper.CompressDirectoryAsync(path, IO.Path.Combine(My.Settings.BackupsFolderLocation, name, "backup.zip"))
+    End Sub
 
-            ' Set bytes copied to current copied directory size
-            BytesCopied = GetDirectorySize(My.Settings.BackupsFolderLocation + "\" + args.Name)
+    Private Sub PostBackupThreadStart(args As BackupEventArgs)
 
-            ' Check if bytes copied is more than 0 to prevent division by zero error
-            If BytesCopied > 0 Then
+        ' Check if backup was cancelled
+        If _CancellationPending Then
 
-                ' Set estimated time remaining
-                EstimatedRemainingTime = TimeSpan.FromMilliseconds(Stopwatch.ElapsedMilliseconds / BytesCopied * (TotalBytes - BytesCopied))
-
-            End If
-
-            ' Set progress
-            Progress = (BytesCopied / TotalBytes) * 100
-
-            ' Set transfer rate (bytes per second)
-            TransferRate = BytesCopied / Stopwatch.Elapsed.Seconds
-
-            ' Post backup progress callback with current progress data
-            BackupAsyncOperation.Post(BackupProgressChangedCallback, New BackupProgressChangedEventArgs(BackupStatus.Running, Progress, EstimatedRemainingTime, TransferRate))
-
-            ' Make thread sleep to avoid overflow exceptions
-            Thread.Sleep(100)
-        End While
-
-        ' Stop stopwatch
-        Stopwatch.Stop()
-
-        ' Check if cancellation was pending
-        If CancelPending Then
-
-            ' Abort copy if operation was cancelled
-            BackupThread.Abort()
-
-            ' Post reverting changes to progress callback
+            ' Post reverting changes as progress
             BackupAsyncOperation.Post(BackupProgressChangedCallback, New BackupProgressChangedEventArgs(BackupStatus.RevertingChanges))
 
             ' Delete backup
-            My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation + "\" + args.Name, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            My.Computer.FileSystem.DeleteDirectory(Path.Combine(My.Settings.BackupsFolderLocation, args.Name), FileIO.DeleteDirectoryOption.DeleteAllContents)
 
-            ' Post operation completed to backup completed callback
-            BackupAsyncOperation.PostOperationCompleted(BackupCompletedCallback, New BackupCompletedEventArgs(BackupError, True))
-
-            ' Set busy to false
-            Busy = False
+            ' Post operation completed
+            BackupAsyncOperation.PostOperationCompleted(BackupCompletedCallback, New BackupCompletedEventArgs(Nothing, True))
 
             ' Exit method
             Return
@@ -217,7 +232,13 @@ Public NotInheritable Class BackupManager
         End If
 
         ' Check if backup is a world, user wants thumbnails to be created and mcmap exists
-        If args.Type = BackupType.World And My.Settings.CreateThumbOnWorld And File.Exists("mcmap/mcmap.exe") Then
+        If args.Type = BackupTypes.World And My.Settings.CreateThumbOnWorld And File.Exists("mcmap/mcmap.exe") And File.Exists(Path.Combine(args.Path, "level.dat")) Then
+
+            ' Set progress to creating thumbnail
+            BackupAsyncOperation.Post(BackupProgressChangedCallback, New BackupProgressChangedEventArgs(BackupStatus.CreatingThumbnail, 0))
+
+            ' Copy level data over so it can be read by Substrate when the backup is selected
+            My.Computer.FileSystem.CopyFile(Path.Combine(args.Path, "level.dat"), Path.Combine(My.Settings.BackupsFolderLocation, args.Name, "level.dat"))
 
             ' Create MCMap process
             Dim MCMapProcess As New Process()
@@ -226,7 +247,7 @@ Public NotInheritable Class BackupManager
             With MCMapProcess.StartInfo
 
                 ' Set filename to mcmap executable
-                .FileName = Chr(34) & "mcmap\mcmap.exe" & Chr(34)
+                .FileName = """mcmap\mcmap.exe"""
 
                 ' Set working directory to mcmap directory
                 .WorkingDirectory = "mcmap\"
@@ -245,8 +266,10 @@ Public NotInheritable Class BackupManager
                 .RedirectStandardError = True
             End With
 
+            ' Create external step number variable
             Dim StepNumber As Integer
 
+            ' Create method for receiving MCMap output
             Dim handler = Sub(sender As Object, e As DataReceivedEventArgs)
 
                               ' Return if data is not set
@@ -302,46 +325,227 @@ Public NotInheritable Class BackupManager
                 .WaitForExit()
             End With
 
-            ' Write info.json file
-            WriteInfoJson(args)
-
-            ' Post operation completed to backup completed callback
-            BackupAsyncOperation.PostOperationCompleted(BackupCompletedCallback, New BackupCompletedEventArgs(BackupError, False))
-
-            ' Set busy to false
-            Busy = False
-
-        Else
-
-            ' Write info.json file
-            WriteInfoJson(args)
-
-            ' Post operation completed to backup completed callback
-            BackupAsyncOperation.PostOperationCompleted(BackupCompletedCallback, New BackupCompletedEventArgs(BackupError, False))
-
-            ' Set busy to false
-            Busy = False
-
         End If
+
+        ' Write info.json file
+        WriteInfoJson(args)
+
+        ' Post operation completed to backup completed callback
+        BackupAsyncOperation.PostOperationCompleted(BackupCompletedCallback, New BackupCompletedEventArgs(BackupError, False))
     End Sub
 
-    Private Sub PostBackupProgressChanged(args As Object)
+    ''' <summary>
+    ''' Called using BackupAsyncOperation to update progress on the calling thread.
+    ''' </summary>
+    ''' <param name="args">Event arguments.</param>
+    Private Sub SendBackupProgressChanged(args As Object)
 
         ' Raise backup progress changed event
         RaiseEvent BackupProgressChanged(Me, DirectCast(args, BackupProgressChangedEventArgs))
 
     End Sub
 
-    Private Sub PostBackupCompleted(args As Object)
+    ''' <summary>
+    ''' Called by BackupAsyncOperation after all backup related operations have been completed.
+    ''' </summary>
+    ''' <param name="args">Event arguments.</param>
+    Private Sub SendBackupCompleted(args As Object)
+
+        ' Reset everything to default values
+        _IsBusy = False
+        _CancellationPending = False
+        BackupAsyncOperation = Nothing
 
         ' Raise backup completed event
         RaiseEvent BackupCompleted(Me, DirectCast(args, BackupCompletedEventArgs))
 
     End Sub
 
+    Public Sub RestoreAsync(backupName As String, restoreLocation As String, backupType As BackupTypes)
+
+        If Me._IsBusy Then
+
+            Throw New InvalidOperationException("Backup Manager is busy!")
+
+        End If
+
+        Me._IsBusy = True
+        Me._CancellationPending = False
+
+        RestoreAsyncOperation = AsyncOperationManager.CreateOperation(Nothing)
+
+        RestoreThread = New Thread(AddressOf RestoreThreadStart)
+        RestoreThread.Start(New RestoreEventArgs(backupName, restoreLocation, backupType))
+
+    End Sub
+
+    Private Sub RestoreThreadStart(e As RestoreEventArgs)
+
+        If Directory.Exists(e.RestoreLocation) Then
+
+            Dim TotalSize As Long = GetDirectorySize(e.RestoreLocation)
+            Dim CurrentSize As Long = TotalSize
+
+            Try
+
+                DeleteDirectoryAsync(e.RestoreLocation, FileIO.DeleteDirectoryOption.DeleteAllContents)
+
+                While CurrentSize <> 0
+
+                    Dim PercentComplete As Single = 100 - CurrentSize / TotalSize * 100
+
+                    RestoreAsyncOperation.Post(RestoreProgressChangedCallback, New RestoreProgressChangedEventArgs(RestoreStatus.RemovingOldFiles, PercentComplete))
+
+                    CurrentSize = GetDirectorySize(e.RestoreLocation)
+
+                    If _CancellationPending Then
+
+                        Return
+
+                    End If
+
+                End While
+
+                Thread.Sleep(2000)
+
+            Catch ex As Exception
+
+                RestoreAsyncOperation.PostOperationCompleted(RestoreCompletedCallback, New RestoreCompletedEventArgs(ex, False))
+
+            End Try
+
+        End If
+        Dim BackupPath As String = Path.Combine(My.Settings.BackupsFolderLocation, e.BackupName, "backup.zip")
+
+        If File.Exists(BackupPath) Then
+
+            Dim zipper As New Zipper()
+
+            Dim stopwatch As New Stopwatch()
+            Dim estimatedTimeRemaining As TimeSpan = TimeSpan.FromSeconds(0)
+            Dim progress As Single
+            Dim transferRate As Single
+
+            AddHandler zipper.ExtractProgressChanged, Sub(s, args)
+
+                                                          ' If cancellation is pending, stop compression and exit method
+                                                          If _CancellationPending Then
+
+                                                              zipper.CancelExtract()
+
+                                                              Return
+
+                                                          End If
+
+                                                          ' Check if bytes copied is more than 0 to prevent division by zero error
+                                                          If args.BytesExtracted > 0 Then
+
+                                                              ' Set estimated time remaining
+                                                              estimatedTimeRemaining = TimeSpan.FromMilliseconds(stopwatch.ElapsedMilliseconds / args.BytesExtracted * (args.TotalBytes - args.BytesExtracted))
+
+                                                          End If
+
+                                                          ' Set progress
+                                                          progress = (args.BytesExtracted / args.TotalBytes) * 100
+
+                                                          ' Set transfer rate (bytes per second)
+                                                          transferRate = args.BytesExtracted / stopwatch.Elapsed.TotalSeconds
+
+                                                          ' Post backup progress callback with current progress data
+                                                          RestoreAsyncOperation.Post(RestoreProgressChangedCallback, New RestoreProgressChangedEventArgs(RestoreStatus.Restoring, progress, estimatedTimeRemaining, transferRate))
+
+                                                      End Sub
+
+            AddHandler zipper.ExtractCompleted, Sub(s, args)
+
+                                                    RestoreAsyncOperation.PostOperationCompleted(RestoreCompletedCallback, New RestoreCompletedEventArgs(Nothing, _CancellationPending))
+
+                                                End Sub
+
+            stopwatch.Start()
+
+            zipper.ExtractAsync(BackupPath, e.RestoreLocation)
+
+        Else
+
+
+
+        End If
+
+    End Sub
+
+    ' TODO: AsyncOps with delete & copy, move to other class
+    Private Sub DeleteDirectoryAsync(directory As String, onDirectoryNotEmpty As FileIO.DeleteDirectoryOption)
+
+        DeleteDirectoryThread = New Thread(AddressOf DeleteDirectory)
+        DeleteDirectoryThread.Start(directory)
+
+    End Sub
+
+    Private Sub DeleteDirectory(directory As String, Optional toplevel As Boolean = True)
+
+        Dim DirectoryInfo As New DirectoryInfo(directory)
+
+        For Each Subdirectory As DirectoryInfo In DirectoryInfo.GetDirectories()
+
+            DeleteDirectory(Subdirectory.FullName, False)
+
+        Next
+
+        For Each File As FileInfo In DirectoryInfo.GetFiles()
+
+            File.Delete()
+
+            If _CancellationPending Then
+
+                Exit For
+
+            End If
+
+        Next
+
+        If _CancellationPending Then
+
+            If toplevel Then
+
+                RestoreAsyncOperation.PostOperationCompleted(RestoreCompletedCallback, New RestoreCompletedEventArgs(Nothing, True))
+
+            End If
+
+            Return
+
+        End If
+
+        IO.Directory.Delete(directory)
+
+    End Sub
+
+    Private Sub SendRestoreProgressChanged(e As RestoreProgressChangedEventArgs)
+
+        RaiseEvent RestoreProgressChanged(Me, e)
+
+    End Sub
+
+    Private Sub SendRestoreCompleted(e As RestoreCompletedEventArgs)
+
+        _IsBusy = False
+        _CancellationPending = False
+        RestoreAsyncOperation = Nothing
+
+        RaiseEvent RestoreCompleted(Me, e)
+
+    End Sub
+
+    ''' <summary>
+    ''' Writes backup information to a JSON encoded file.
+    ''' </summary>
+    ''' <param name="e">A BackupEventArgs that contains the backup's information</param>
     Private Sub WriteInfoJson(e As BackupEventArgs)
+
+        ' Create new JObject
         Dim InfoJson As New JObject
 
+        ' Add backup information to JObject
         InfoJson.Add(New JProperty("OriginalName", New DirectoryInfo(e.Path).Name))
         InfoJson.Add(New JProperty("Type", e.Type))
         InfoJson.Add(New JProperty("Description", e.Description))
@@ -349,11 +553,21 @@ Public NotInheritable Class BackupManager
         InfoJson.Add(New JProperty("Launcher", e.Launcher))
         InfoJson.Add(New JProperty("Modpack", e.Modpack))
 
+        ' Write to info.json file
         Using SW As New StreamWriter(My.Settings.BackupsFolderLocation + "\" + e.Name + "\info.json")
+
+            ' Write JSON to file
             SW.Write(JsonConvert.SerializeObject(InfoJson))
+
         End Using
+
     End Sub
 
+    ''' <summary>
+    ''' Gets the size of a directory based on the files it contains.
+    ''' </summary>
+    ''' <param name="directory">Path of the directory.</param>
+    ''' <returns>The directory's size, in bytes.</returns>
     Private Function GetDirectorySize(directory As String) As Long
         If IO.Directory.Exists(directory) Then
             Dim Bytes As Long = 0
@@ -368,13 +582,18 @@ Public NotInheritable Class BackupManager
         End If
     End Function
 
+    ''' <summary>
+    ''' Creates an estimated time remaining string from language settings and time span.
+    ''' </summary>
+    ''' <param name="span">Time to convert to text.</param>
+    ''' <returns>A string describing the estimated time left.</returns>
     Public Function EstimatedTimeSpanToString(span As TimeSpan)
         If span.Hours > 0 Then
-            Return String.Format(MCBackup.Language.Dictionary("TimeLeft.HoursMinutesSeconds"), Math.Floor(span.TotalHours), span.Minutes, Math.Round(span.Seconds / 60) * 10)
+            Return String.Format(MCBackup.Language.Dictionary("TimeLeft.HoursMinutesSeconds"), Math.Floor(span.TotalHours), span.Minutes, Math.Round(span.Seconds / 10) * 10)
         ElseIf span.TotalMinutes >= 1 Then
-            Return String.Format(MCBackup.Language.Dictionary("TimeLeft.MinutesSeconds"), Math.Floor(span.TotalMinutes), Math.Round(span.Seconds / 60) * 10)
+            Return String.Format(MCBackup.Language.Dictionary("TimeLeft.MinutesSeconds"), Math.Floor(span.TotalMinutes), Math.Round(span.Seconds / 10) * 10)
         ElseIf span.Seconds > 5 Then
-            Return String.Format(MCBackup.Language.Dictionary("TimeLeft.Seconds"), Math.Round(span.Seconds / 6) * 10)
+            Return String.Format(MCBackup.Language.Dictionary("TimeLeft.Seconds"), Math.Round(span.Seconds / 10) * 10)
         Else
             Return MCBackup.Language.Dictionary("TimeLeft.LessThanFive")
         End If

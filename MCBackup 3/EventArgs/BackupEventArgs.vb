@@ -33,12 +33,12 @@ Public Class BackupEventArgs
         End Set
     End Property
 
-    Private _Type As String
-    Public Property Type As String
+    Private _Type As BackupManager.BackupTypes
+    Public Property Type As BackupManager.BackupTypes
         Get
             Return _Type
         End Get
-        Set(value As String)
+        Set(value As BackupManager.BackupTypes)
             _Type = value
         End Set
     End Property
