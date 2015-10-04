@@ -66,15 +66,7 @@ Public Class AsyncFileSystemManager
         ' Create thread
         Dim DeleteDirectoryThread As New Thread(Sub()
 
-                                                    Try
-
-                                                        My.Computer.FileSystem.DeleteDirectory(directory, onDirectoryNotEmpty)
-
-                                                    Catch ex As Exception
-
-                                                        err = ex
-
-                                                    End Try
+                                                    My.Computer.FileSystem.DeleteDirectory(directory, FileIO.UIOption.OnlyErrorDialogs, FileIO.RecycleOption.DeletePermanently, FileIO.UICancelOption.DoNothing)
 
                                                 End Sub)
 
@@ -86,12 +78,22 @@ Public Class AsyncFileSystemManager
                                                                     ' Get current size of directory to delete
                                                                     Dim currentSize As Long = GetDirectorySize(directory)
 
-                                                                    ' Get progress (subtract from 100 since progress is inverted)
-                                                                    Dim progressPercentage As Single = 100 - currentSize / totalSize * 100
+                                                                    Dim progressPercentage As Single = 0
 
-                                                                    ' Post progress changed
-                                                                    DeleteDirectoryAsyncOperation.Post(DeleteDirectoryProgressChangedCallback, New DeleteDirectoryProgressChangedEventArgs(progressPercentage))
+                                                                    ' Make sure we are not dividing by 0
+                                                                    If totalSize <> 0 And currentSize <> 0 Then
 
+                                                                        ' Get progress (subtract from 100 since progress is inverted)
+                                                                        progressPercentage = 100 - currentSize / totalSize * 100
+
+                                                                        ' Post progress changed
+                                                                        DeleteDirectoryAsyncOperation.Post(DeleteDirectoryProgressChangedCallback, New DeleteDirectoryProgressChangedEventArgs(progressPercentage))
+
+                                                                    Else
+
+                                                                        Log.Print("Division by zero prevented during delete directory operation - may be caused by empty directory", Log.Level.Warning)
+
+                                                                    End If
                                                                 End While
 
                                                                 ' Abort thread if cancellation was pending
@@ -113,6 +115,7 @@ Public Class AsyncFileSystemManager
         DeleteDirectoryProgressThread.Start()
 
     End Sub
+
     Private Sub SendDeleteDirectoryProgressChanged(e As DeleteDirectoryProgressChangedEventArgs)
 
         ' Raise progress changed event
@@ -143,30 +146,39 @@ Public Class AsyncFileSystemManager
             ' Create bytes variable
             Dim bytes As Long = 0
 
-            ' Enumerate through files in directory
-            For Each file As String In IO.Directory.EnumerateFiles(directory, "*", SearchOption.AllDirectories)
+            Try
 
-                ' Wrap in try loop in case of exception
-                Try
+                ' Enumerate through files in directory
+                For Each file As String In IO.Directory.EnumerateFiles(directory, "*", SearchOption.AllDirectories)
 
-                    ' Check if file still exists
-                    If IO.File.Exists(file) Then
+                    ' Wrap in try loop in case of exception
+                    Try
 
-                        ' Add file size to bytes variable
-                        bytes += New FileInfo(file).Length
+                        ' Check if file still exists
+                        If IO.File.Exists(file) Then
 
-                    End If
+                            ' Add file size to bytes variable
+                            bytes += New FileInfo(file).Length
 
-                Catch ex As IOException
-                    ' Catch IOException (usually file doesn't exist anymore)
-                Catch ex As UnauthorizedAccessException
-                    ' Catch UnauthorizedAccessException (file is trying to be read while being deleted)
-                End Try
+                        End If
 
-            Next
+                    Catch ex As IOException
+                        ' Catch IOException (usually file doesn't exist anymore)
+                    Catch ex As UnauthorizedAccessException
+                        ' Catch UnauthorizedAccessException (file is trying to be read while being deleted)
+                    End Try
+
+                Next
+
+            Catch ex As IOException
+                Log.Print("File enumeration failed: " + ex.Message, Log.Level.Warning)
+            Catch ex As UnauthorizedAccessException
+                Log.Print("File enumeration failed: " + ex.Message, Log.Level.Warning)
+            End Try
 
             ' Return byte count
             Return bytes
+
         Else
 
             ' Return 0 if directory doesn't exist

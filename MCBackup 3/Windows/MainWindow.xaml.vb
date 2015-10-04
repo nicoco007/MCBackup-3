@@ -135,6 +135,7 @@ Partial Class MainWindow
         End Select
 
         Splash.StepProgress()
+
         Try
             If String.IsNullOrEmpty(My.Settings.Language) Then
                 My.Settings.Language = DefaultLanguage
@@ -977,12 +978,12 @@ Partial Class MainWindow
             Case RestoreStatus.RemovingOldFiles
 
                 StatusLabel.Content = MCBackup.Language.GetString("Status.RemovingOldContent", e.ProgressPercentage)
-                Me.Title = "MCBackup {0} - " & MCBackup.Language.GetString("MainWindow.Title.RemovingOldContent", ApplicationVersion, e.ProgressPercentage)
+                Me.Title = "MCBackup {0} - " + MCBackup.Language.GetString("MainWindow.Title.RemovingOldContent", ApplicationVersion, e.ProgressPercentage)
 
             Case RestoreStatus.Restoring
 
                 StatusLabel.Content = MCBackup.Language.GetString("Status.Restoring", e.ProgressPercentage, e.TransferRate / 1048576, Manager.EstimatedTimeSpanToString(e.EstimatedTimeRemaining))
-                Me.Title = "MCBackup {0} - " & MCBackup.Language.GetString("MainWindow.Title.Restore", ApplicationVersion, e.ProgressPercentage)
+                Me.Title = "MCBackup {0} - " + MCBackup.Language.GetString("MainWindow.Title.Restore", ApplicationVersion, e.ProgressPercentage)
 
         End Select
 
