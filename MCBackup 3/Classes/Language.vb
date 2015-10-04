@@ -76,12 +76,23 @@ Public Class Language
 
     End Sub
 
+    ''' <summary>
+    ''' Retrieves a translated string.
+    ''' </summary>
+    ''' <param name="identifier">The identifier of the translated string.</param>
+    ''' <returns>The translated string.</returns>
     Public Shared Function GetString(identifier As String)
 
         Return GetString(identifier, Nothing)
 
     End Function
 
+    ''' <summary>
+    ''' Retrieves a translated string.
+    ''' </summary>
+    ''' <param name="identifier">The identifier of the translated string.</param>
+    ''' <param name="args">String.Format arguments</param>
+    ''' <returns>The translated string.</returns>
     Public Shared Function GetString(identifier As String, ParamArray args() As Object)
 
         If Dictionary.Keys.Contains(identifier) Then
@@ -106,29 +117,37 @@ Public Class Language
 
     End Function
 
-    Public Shared Function FindString(Identifier As String, LanguageFile As String)
-        Using SR As New StreamReader(Directory.GetCurrentDirectory & "\language\" & LanguageFile)
-            Dim LineNumber As Integer = 0
-            While SR.Peek <> -1
-                LineNumber += 1
-                Dim Line As String = SR.ReadLine
-                If Line.StartsWith(Identifier & "=") And Not Line.StartsWith("#") Then
-                    Dim ReturnString = Line.Substring(Identifier.Length + 1)
+    Public Shared Function FindString(identifier As String, languageFile As String)
 
-                    If String.IsNullOrEmpty(ReturnString) Then
-                        Log.Print("[Language] Error at line " & LineNumber & ": Entry is empty!", Log.Level.Warning)
-                        ErrorOccured = True
-                        Exit While
-                    End If
+        Using sr As New StreamReader(Directory.GetCurrentDirectory & "\language\" & languageFile)
 
-                    Return ReturnString.Replace("\n", vbNewLine)
+            Dim lineNumber As Integer = 0
+
+            While sr.Peek <> -1
+
+                lineNumber += 1
+
+                Dim line As String = sr.ReadLine()
+
+                If line.Contains("//") Then
+
+                    line = line.Remove(line.IndexOf("//"))
+
                 End If
+
+                Dim parts As String() = line.Split("=")
+
+                If line.StartsWith(identifier + "=") Then
+
+                    Return line.Substring(line.IndexOf("=") + 1)
+
+                End If
+
             End While
+
         End Using
-        If Regex.Matches(Identifier, "\.").Count > 1 Then
-            Return Identifier.Split(".")(Identifier.Split(".").Count - 2) & "." & Identifier.Split(".").Last
-        Else
-            Return Identifier
-        End If
+
+        Return Nothing
+
     End Function
 End Class
