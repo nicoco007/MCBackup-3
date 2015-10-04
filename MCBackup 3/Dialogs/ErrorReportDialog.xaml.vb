@@ -35,17 +35,17 @@ Public Class ErrorReportDialog
 
         Try
             If MCBackup.Language.IsLoaded Then
-                ErrorReportDialog.MessageLabel.Text = String.Format(MCBackup.Language.Dictionary("Message.ExceptionOccured") & Message, Exception.GetType)
+                ErrorReportDialog.MessageLabel.Text = String.Format(MCBackup.Language.GetString("Message.ExceptionOccured") & Message, Exception.GetType)
 
                 Dim StackTrace As String = New StackTrace(Exception, True).ToString
                 Log.Print(StackTrace)
                 ErrorReportDialog.ErrorTextBlock.Text = Exception.Message & vbNewLine & StackTrace
 
-                ErrorReportDialog.Title = MCBackup.Language.Dictionary("Message.Caption.Error")
-                ErrorReportDialog.ContinueButton.Content = MCBackup.Language.Dictionary("ErrorWindow.ContinueButton.Content")
-                ErrorReportDialog.CopyToClipboardButton.Content = MCBackup.Language.Dictionary("ErrorWindow.CopyToClipboardButton.Content")
-                ErrorReportDialog.ContactMessage.Text = MCBackup.Language.Dictionary("ErrorWindow.ContactMessage")
-                ErrorReportDialog.ReportBugButton.Content = MCBackup.Language.Dictionary("MainWindow.Toolbar.HelpContextMenu.Items(0).Header")
+                ErrorReportDialog.Title = MCBackup.Language.GetString("Message.Caption.Error")
+                ErrorReportDialog.ContinueButton.Content = MCBackup.Language.GetString("ErrorWindow.ContinueButton.Content")
+                ErrorReportDialog.CopyToClipboardButton.Content = MCBackup.Language.GetString("ErrorWindow.CopyToClipboardButton.Content")
+                ErrorReportDialog.ContactMessage.Text = MCBackup.Language.GetString("ErrorWindow.ContactMessage")
+                ErrorReportDialog.ReportBugButton.Content = MCBackup.Language.GetString("MainWindow.Toolbar.HelpContextMenu.Items(0).Header")
                 System.Media.SystemSounds.Hand.Play()
                 ErrorReportDialog.ShowDialog()
             Else
@@ -72,7 +72,7 @@ Public Class ErrorReportDialog
     Private Sub CopyToClipboardButton_Click(sender As Object, e As RoutedEventArgs) Handles CopyToClipboardButton.Click
         Clipboard.SetData(DataFormats.Text, Me.ErrorTextBlock.Text)
         Try
-            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.CopiedToClipboard"), MCBackup.Language.Dictionary("Message.Caption.Copied"), MessageBoxButton.OK, MessageBoxImage.Information)
+            MetroMessageBox.Show(MCBackup.Language.GetString("Message.CopiedToClipboard"), MCBackup.Language.GetString("Message.Caption.Copied"), MessageBoxButton.OK, MessageBoxImage.Information)
         Catch ex As Exception
             MetroMessageBox.Show("Copied to clipboard.", "Copied", MessageBoxButton.OK, MessageBoxImage.Information)
         End Try

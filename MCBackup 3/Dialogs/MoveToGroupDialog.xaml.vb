@@ -28,7 +28,7 @@ Public Class MoveToGroupDialog
     End Sub
 
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs) Handles Window.Loaded
-        GroupsListBox.Items.Add(MCBackup.Language.Dictionary("Groups.None"))
+        GroupsListBox.Items.Add(MCBackup.Language.GetString("Groups.None"))
 
         For Each Group As String In My.Settings.BackupGroups
             GroupsListBox.Items.Add(Group)
@@ -38,8 +38,8 @@ Public Class MoveToGroupDialog
     End Sub
 
     Private Sub LoadLanguage()
-        Me.Title = MCBackup.Language.Dictionary("MoveToGroupDialog.Title")
-        MoveButton.Content = MCBackup.Language.Dictionary("MoveToGroupDialog.MoveButton.Text")
+        Me.Title = MCBackup.Language.GetString("MoveToGroupDialog.Title")
+        MoveButton.Content = MCBackup.Language.GetString("MoveToGroupDialog.MoveButton.Text")
     End Sub
 
     Private Sub MoveButton_Click(sender As Object, e As RoutedEventArgs) Handles MoveButton.Click

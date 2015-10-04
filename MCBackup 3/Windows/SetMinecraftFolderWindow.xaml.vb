@@ -24,7 +24,7 @@ Public Class SetMinecraftFolderWindow
                 Case Game.Launcher.Minecraft
                     Debug.Print(FSD.FolderName & "\launcher.jar")
                     If Not IO.File.Exists(FSD.FolderName & "\launcher.jar") Then
-                        If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.ConfirmInvalidMinecraftFolder"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.No Then
+                        If MetroMessageBox.Show(MCBackup.Language.GetString("Message.ConfirmInvalidMinecraftFolder"), MCBackup.Language.GetString("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.No Then
                             Exit Sub
                         End If
                     End If
@@ -57,7 +57,7 @@ Public Class SetMinecraftFolderWindow
 
     Private Sub SaveButton_Click(sender As Object, e As RoutedEventArgs) Handles SaveButton.Click
         If BaseFolderTextBox.Text = "" Then
-            If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.PleaseSelectFolder"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OKCancel, MessageBoxImage.Error) = MessageBoxResult.Cancel Then
+            If MetroMessageBox.Show(MCBackup.Language.GetString("Message.PleaseSelectFolder"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OKCancel, MessageBoxImage.Error) = MessageBoxResult.Cancel Then
                 Application.Current.Shutdown()
             End If
         End If
@@ -69,15 +69,15 @@ Public Class SetMinecraftFolderWindow
     End Sub
 
     Private Sub LoadLanguage()
-        Me.Title = MCBackup.Language.Dictionary("SetMinecraftFolderWindow.Title")
-        MinecraftInstallationRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.MinecraftInstallationRadioButton.Text")
-        TechnicInstallationRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.TechnicInstallationRadioButton.Text")
-        FTBInstallationRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.FtbInstallationRadioButton.Text")
-        ATLauncherInstallationRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.AtLauncherInstallationRadioButton.Text")
+        Me.Title = MCBackup.Language.GetString("SetMinecraftFolderWindow.Title")
+        MinecraftInstallationRadioButton.Content = MCBackup.Language.GetString("OptionsWindow.FoldersTab.MinecraftInstallationRadioButton.Text")
+        TechnicInstallationRadioButton.Content = MCBackup.Language.GetString("OptionsWindow.FoldersTab.TechnicInstallationRadioButton.Text")
+        FTBInstallationRadioButton.Content = MCBackup.Language.GetString("OptionsWindow.FoldersTab.FtbInstallationRadioButton.Text")
+        ATLauncherInstallationRadioButton.Content = MCBackup.Language.GetString("OptionsWindow.FoldersTab.AtLauncherInstallationRadioButton.Text")
 
-        BaseFolderLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.BaseFolderLabel.Text")
-        BaseFolderBrowseButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.BrowseButton.Text")
+        BaseFolderLabel.Content = MCBackup.Language.GetString("OptionsWindow.FoldersTab.BaseFolderLabel.Text")
+        BaseFolderBrowseButton.Content = MCBackup.Language.GetString("OptionsWindow.FoldersTab.BrowseButton.Text")
 
-        SaveButton.Content = MCBackup.Language.Dictionary("SetMinecraftFolderWindow.SaveButton.Text")
+        SaveButton.Content = MCBackup.Language.GetString("SetMinecraftFolderWindow.SaveButton.Text")
     End Sub
 End Class

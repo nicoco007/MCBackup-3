@@ -135,11 +135,11 @@ Public Class BackupDialog
         CustomNameTextBox.Width = 449 - CustomNameRadioButton.ActualWidth
         CustomNameOutputTextBlock.Width = 449 - CustomNameRadioButton.ActualWidth
 
-        GroupsComboBox.Items.Add(MCBackup.Language.Dictionary("Groups.None"))
+        GroupsComboBox.Items.Add(MCBackup.Language.GetString("Groups.None"))
         For Each Group As String In My.Settings.BackupGroups
             GroupsComboBox.Items.Add(Group)
         Next
-        GroupsComboBox.Items.Add(MCBackup.Language.Dictionary("Groups.EditGroups"))
+        GroupsComboBox.Items.Add(MCBackup.Language.GetString("Groups.EditGroups"))
 
         GroupsComboBox.SelectedIndex = 0
     End Sub
@@ -152,12 +152,12 @@ Public Class BackupDialog
 
     Private Sub StartButton_Click(sender As Object, e As EventArgs) Handles StartButton.Click
         If SavesListView.SelectedItems.Count = 0 And BackupTypeTabControl.SelectedIndex = 0 Then
-            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.ChooseSave"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            MetroMessageBox.Show(MCBackup.Language.GetString("Message.ChooseSave"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             Exit Sub
         End If
 
         If VersionsListView.SelectedItems.Count = 0 And BackupTypeTabControl.SelectedIndex = 1 Then
-            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.ChooseVersion"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            MetroMessageBox.Show(MCBackup.Language.GetString("Message.ChooseVersion"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             Exit Sub
         End If
 
@@ -210,7 +210,7 @@ Public Class BackupDialog
             Name = BackupName.Process(My.Settings.DefaultBackupName, OriginalFolderName)
         Else
             If String.IsNullOrEmpty(CustomNameTextBox.Text) Then
-                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.EnterValidName"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
+                MetroMessageBox.Show(MCBackup.Language.GetString("Message.EnterValidName"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
                 Exit Sub
             Else
                 Name = BackupName.Process(CustomNameTextBox.Text, OriginalFolderName)
@@ -218,7 +218,7 @@ Public Class BackupDialog
         End If
 
         If Regex.IsMatch(Name, "[\/:*?""<>|]") Then
-            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.IllegalCharacters"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
+            MetroMessageBox.Show(MCBackup.Language.GetString("Message.IllegalCharacters"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
             Exit Sub
         End If
 
@@ -242,32 +242,32 @@ Public Class BackupDialog
     End Function
 
     Private Sub LoadLanguage()
-        Me.Title = MCBackup.Language.Dictionary("BackupWindow.Title")
-        BackupDetailsGroupBox.Header = MCBackup.Language.Dictionary("BackupWindow.BackupDetailsGroupBox.Header")
-        BackupNameGroupBox.Header = MCBackup.Language.Dictionary("BackupWindow.BackupNameGroupBox.Header")
-        DefaultNameRadioButton.Content = MCBackup.Language.Dictionary("BackupWindow.DefaultNameRadioButton.Content")
-        CustomNameRadioButton.Content = MCBackup.Language.Dictionary("BackupWindow.CustomNameRadioButton.Content")
-        CustomNameOutputTextBlock.Content = MCBackup.Language.Dictionary("Localization.Output")
-        ShortDescriptionLabel.Content = MCBackup.Language.Dictionary("BackupWindow.ShortDescriptionLabel.Content")
-        SavesListViewGridView.Columns(0).Header = MCBackup.Language.Dictionary("BackupWindow.ListBox.Columns(0).Header")
-        StartButton.Content = MCBackup.Language.Dictionary("BackupWindow.StartButton.Content")
-        CancelButton.Content = MCBackup.Language.Dictionary("BackupWindow.CancelButton.Content")
-        GroupLabel.Content = MCBackup.Language.Dictionary("BackupWindow.GroupLabel.Text")
-        BackupWorldTab.Header = MCBackup.Language.Dictionary("BackupWindow.BackupWorldTab.Header")
-        SaveNameColumn.Header = MCBackup.Language.Dictionary("BackupWindow.SaveNameColumn.Header")
-        SaveLocationColumn.Header = MCBackup.Language.Dictionary("BackupWindow.SaveLocationColumn.Header")
+        Me.Title = MCBackup.Language.GetString("BackupWindow.Title")
+        BackupDetailsGroupBox.Header = MCBackup.Language.GetString("BackupWindow.BackupDetailsGroupBox.Header")
+        BackupNameGroupBox.Header = MCBackup.Language.GetString("BackupWindow.BackupNameGroupBox.Header")
+        DefaultNameRadioButton.Content = MCBackup.Language.GetString("BackupWindow.DefaultNameRadioButton.Content")
+        CustomNameRadioButton.Content = MCBackup.Language.GetString("BackupWindow.CustomNameRadioButton.Content")
+        CustomNameOutputTextBlock.Content = MCBackup.Language.GetString("Localization.Output")
+        ShortDescriptionLabel.Content = MCBackup.Language.GetString("BackupWindow.ShortDescriptionLabel.Content")
+        SavesListViewGridView.Columns(0).Header = MCBackup.Language.GetString("BackupWindow.ListBox.Columns(0).Header")
+        StartButton.Content = MCBackup.Language.GetString("BackupWindow.StartButton.Content")
+        CancelButton.Content = MCBackup.Language.GetString("BackupWindow.CancelButton.Content")
+        GroupLabel.Content = MCBackup.Language.GetString("BackupWindow.GroupLabel.Text")
+        BackupWorldTab.Header = MCBackup.Language.GetString("BackupWindow.BackupWorldTab.Header")
+        SaveNameColumn.Header = MCBackup.Language.GetString("BackupWindow.SaveNameColumn.Header")
+        SaveLocationColumn.Header = MCBackup.Language.GetString("BackupWindow.SaveLocationColumn.Header")
         Select Case My.Settings.Launcher
             Case Game.Launcher.Minecraft
-                BackupVersionTab.Header = MCBackup.Language.Dictionary("BackupWindow.BackupVersionTab.Header.Minecraft")
+                BackupVersionTab.Header = MCBackup.Language.GetString("BackupWindow.BackupVersionTab.Header.Minecraft")
             Case Game.Launcher.Technic
-                BackupVersionTab.Header = MCBackup.Language.Dictionary("BackupWindow.BackupVersionTab.Header.Technic")
+                BackupVersionTab.Header = MCBackup.Language.GetString("BackupWindow.BackupVersionTab.Header.Technic")
             Case Game.Launcher.FeedTheBeast
-                BackupVersionTab.Header = MCBackup.Language.Dictionary("BackupWindow.BackupVersionTab.Header.FeedTheBeast")
+                BackupVersionTab.Header = MCBackup.Language.GetString("BackupWindow.BackupVersionTab.Header.FeedTheBeast")
             Case Game.Launcher.ATLauncher
-                BackupVersionTab.Header = MCBackup.Language.Dictionary("BackupWindow.BackupVersionTab.Header.ATLauncher")
+                BackupVersionTab.Header = MCBackup.Language.GetString("BackupWindow.BackupVersionTab.Header.ATLauncher")
         End Select
-        VersionNameColumn.Header = MCBackup.Language.Dictionary("BackupWindow.VersionNameColumn.Header")
-        BackupEverythingTab.Header = MCBackup.Language.Dictionary("BackupWindow.BackupEverythingTab.Header")
+        VersionNameColumn.Header = MCBackup.Language.GetString("BackupWindow.VersionNameColumn.Header")
+        BackupEverythingTab.Header = MCBackup.Language.GetString("BackupWindow.BackupEverythingTab.Header")
     End Sub
 
     Private Sub CancelButton_Click(sender As Object, e As RoutedEventArgs) Handles CancelButton.Click
@@ -286,12 +286,12 @@ Public Class BackupDialog
 
     Private Sub Window_ContentRendered(sender As Object, e As EventArgs) Handles Window.ContentRendered
         If SavesListView.Items.Count = 0 Then
-            MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.NoSavesWarning"), My.Settings.Launcher.ToString()), MCBackup.Language.Dictionary("Message.Caption.Warning"), MessageBoxButton.OK, MessageBoxImage.Warning)
+            MetroMessageBox.Show(String.Format(MCBackup.Language.GetString("Message.NoSavesWarning"), My.Settings.Launcher.ToString()), MCBackup.Language.GetString("Message.Caption.Warning"), MessageBoxButton.OK, MessageBoxImage.Warning)
         End If
     End Sub
 
     Private Sub CustomNameTextBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles CustomNameTextBox.TextChanged
-        Dim Name As String = BackupName.Process(CustomNameTextBox.Text, MCBackup.Language.Dictionary("Localization.DirectoryName"))
+        Dim Name As String = BackupName.Process(CustomNameTextBox.Text, MCBackup.Language.GetString("Localization.DirectoryName"))
 
         If Regex.IsMatch(Name, "[\/:*?""<>|]") Then
             CustomNameTextBox.Background = New SolidColorBrush(Color.FromArgb(100, 255, 0, 0))
@@ -300,7 +300,7 @@ Public Class BackupDialog
             CustomNameTextBox.Background = New SolidColorBrush(Colors.White)
         End If
 
-        CustomNameOutputTextBlock.Content = New ViewboxEx(MCBackup.Language.Dictionary("Localization.Output") & Name, Stretch.Uniform, StretchDirection.DownOnly)
+        CustomNameOutputTextBlock.Content = New ViewboxEx(MCBackup.Language.GetString("Localization.Output") & Name, Stretch.Uniform, StretchDirection.DownOnly)
     End Sub
 End Class
 

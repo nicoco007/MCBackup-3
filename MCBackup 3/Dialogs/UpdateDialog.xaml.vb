@@ -27,14 +27,14 @@ Public Class UpdateDialog
     End Sub
 
     Private Sub UpdateDialog_Loaded(sender As Object, e As RoutedEventArgs)
-        Me.Title = MCBackup.Language.Dictionary("UpdateDialog.Title")
-        Label1.Content = MCBackup.Language.Dictionary("UpdateDialog.Label1.Text")
-        CurrentVersionLabel.Content = String.Format(MCBackup.Language.Dictionary("UpdateDialog.CurrentVersionLabel.Text"), Main.ApplicationVersion)
-        LatestVersionLabel.Content = String.Format(MCBackup.Language.Dictionary("UpdateDialog.LatestVersionLabel.Text"), Main.LatestVersion)
-        Label2.Content = MCBackup.Language.Dictionary("UpdateDialog.Label2.Text")
-        YesButton.Content = MCBackup.Language.Dictionary("MetroMsgBox.Button.Yes")
-        NoButton.Content = MCBackup.Language.Dictionary("MetroMsgBox.Button.No")
-        ShowChangelogButton.Content = MCBackup.Language.Dictionary("UpdateDialog.ShowChangelogButton.Text")
+        Me.Title = MCBackup.Language.GetString("UpdateDialog.Title")
+        Label1.Content = MCBackup.Language.GetString("UpdateDialog.Label1.Text")
+        CurrentVersionLabel.Content = String.Format(MCBackup.Language.GetString("UpdateDialog.CurrentVersionLabel.Text"), Main.ApplicationVersion)
+        LatestVersionLabel.Content = String.Format(MCBackup.Language.GetString("UpdateDialog.LatestVersionLabel.Text"), Main.LatestVersion)
+        Label2.Content = MCBackup.Language.GetString("UpdateDialog.Label2.Text")
+        YesButton.Content = MCBackup.Language.GetString("MetroMsgBox.Button.Yes")
+        NoButton.Content = MCBackup.Language.GetString("MetroMsgBox.Button.No")
+        ShowChangelogButton.Content = MCBackup.Language.GetString("UpdateDialog.ShowChangelogButton.Text")
     End Sub
 
     Private Sub Button_Click(sender As Object, e As RoutedEventArgs)

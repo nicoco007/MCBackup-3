@@ -28,7 +28,7 @@ Partial Public Class Options
 
     Public Sub New()
         InitializeComponent()
-        OpenFileDialog.Filter = MCBackup.Language.Dictionary("OptionsWindow.AllSupportedImages") & " (*bmp, *.jpg, *.jpeg, *.png)|*bmp;*.gif;*.png;*.jpg;*.jpeg|BMP (*.bmp)|*.bmp|JPEG (*.jpg, *.jpeg)|*.jpg;*.jpeg|PNG (*.png)|*.png"
+        OpenFileDialog.Filter = MCBackup.Language.GetString("OptionsWindow.AllSupportedImages") & " (*bmp, *.jpg, *.jpeg, *.png)|*bmp;*.gif;*.png;*.jpg;*.jpeg|BMP (*.bmp)|*.bmp|JPEG (*.jpg, *.jpeg)|*.jpg;*.jpeg|PNG (*.png)|*.png"
 
         ListViewOpacitySlider.Value = My.Settings.InterfaceOpacity
         OpacityPercentLabel.Content = Int(ListViewOpacitySlider.Value).ToString & "%"
@@ -185,11 +185,11 @@ Partial Public Class Options
     End Sub
 
     Private Sub Window_Unloaded(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
-        Dim DefaultBackupName As String = BackupName.Process(DefaultBackupNameTextBox.Text, MCBackup.Language.Dictionary("Localization.DirectoryName"))
-        Dim DefaultAutoBackupName As String = BackupName.Process(DefaultAutoBackupNameTextBox.Text, MCBackup.Language.Dictionary("Localization.DirectoryName"))
+        Dim DefaultBackupName As String = BackupName.Process(DefaultBackupNameTextBox.Text, MCBackup.Language.GetString("Localization.DirectoryName"))
+        Dim DefaultAutoBackupName As String = BackupName.Process(DefaultAutoBackupNameTextBox.Text, MCBackup.Language.GetString("Localization.DirectoryName"))
 
         If Regex.IsMatch(DefaultBackupName, "[\/:*?""<>|]") Or Regex.IsMatch(DefaultAutoBackupName, "[\/:*?""<>|]") Then
-            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.IllegalCharacters"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
+            MetroMessageBox.Show(MCBackup.Language.GetString("Message.IllegalCharacters"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
             e.Cancel = True
             Exit Sub
         End If
@@ -223,8 +223,8 @@ Partial Public Class Options
             MCBackup.Language.Load(LanguagesComboBox.SelectedItem.Tag)
             My.Settings.Language = IO.Path.GetFileNameWithoutExtension(LanguagesComboBox.SelectedItem.Tag)
             LoadLanguage()
-            DefaultBackupNameTextBox.Text = MCBackup.Language.Dictionary("Localization.DefaultBackupName")
-            DefaultAutoBackupNameTextBox.Text = MCBackup.Language.Dictionary("Localization.DefaultAutoBackupName")
+            DefaultBackupNameTextBox.Text = MCBackup.Language.GetString("Localization.DefaultBackupName")
+            DefaultAutoBackupNameTextBox.Text = MCBackup.Language.GetString("Localization.DefaultAutoBackupName")
             MainWindow.LoadLanguage()
             ReloadBackupGroups()
             AutoBackupWindow.LoadLanguage()
@@ -232,64 +232,64 @@ Partial Public Class Options
     End Sub
 
     Private Sub LoadLanguage()
-        Me.Title = MCBackup.Language.Dictionary("OptionsWindow.Title")
+        Me.Title = MCBackup.Language.GetString("OptionsWindow.Title")
 
-        CloseButton.Content = MCBackup.Language.Dictionary("OptionsWindow.CloseButton.Content")
-        ResetButton.Content = MCBackup.Language.Dictionary("OptionsWindow.ResetButton.Content")
+        CloseButton.Content = MCBackup.Language.GetString("OptionsWindow.CloseButton.Content")
+        ResetButton.Content = MCBackup.Language.GetString("OptionsWindow.ResetButton.Content")
 
-        GeneralTabItem.Header = MCBackup.Language.Dictionary("OptionsWindow.Tabs.General")
-        AppearanceTabItem.Header = MCBackup.Language.Dictionary("OptionsWindow.Tabs.Appearance")
-        FoldersTabItem.Header = MCBackup.Language.Dictionary("OptionsWindow.Tabs.Folders")
-        GroupsTabItem.Header = MCBackup.Language.Dictionary("OptionsWindow.Tabs.Groups")
-        AdvancedTabItem.Header = MCBackup.Language.Dictionary("OptionsWindow.Tabs.Advanced")
+        GeneralTabItem.Header = MCBackup.Language.GetString("OptionsWindow.Tabs.General")
+        AppearanceTabItem.Header = MCBackup.Language.GetString("OptionsWindow.Tabs.Appearance")
+        FoldersTabItem.Header = MCBackup.Language.GetString("OptionsWindow.Tabs.Folders")
+        GroupsTabItem.Header = MCBackup.Language.GetString("OptionsWindow.Tabs.Groups")
+        AdvancedTabItem.Header = MCBackup.Language.GetString("OptionsWindow.Tabs.Advanced")
 
         ' General Tab
-        GeneralOptionsGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.GeneralOptionsGroupBox.Header")
-        CloseToTrayOptionsGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.CloseToTrayOptionsGroupBox.Header")
-        LanguageGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.LanguageGroupBox.Header")
+        GeneralOptionsGroupBox.Header = MCBackup.Language.GetString("OptionsWindow.GeneralPanel.GeneralOptionsGroupBox.Header")
+        CloseToTrayOptionsGroupBox.Header = MCBackup.Language.GetString("OptionsWindow.GeneralPanel.CloseToTrayOptionsGroupBox.Header")
+        LanguageGroupBox.Header = MCBackup.Language.GetString("OptionsWindow.GeneralPanel.LanguageGroupBox.Header")
 
-        ShowBalloonTipsCheckBox.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.ShowBalloonTipsCheckBox.Content")
-        ShowDeleteConfirmationCheckBox.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.ShowDeleteConfirmationCheckBox.Content")
-        CheckForUpdatesCheckBox.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.CheckForUpdatesCheckBox.Content")
-        CreateThumbOnWorldCheckBox.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.CreateThumbOnWorldCheckBox.Content")
-        AlwaysCloseCheckBox.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.AlwaysCloseCheckBox.Content")
-        CloseToTrayRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.CloseToTrayRadioButton.Content")
-        CloseCompletelyRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.CloseCompletelyRadioButton.Content")
-        'AlwaysCloseNoteTextBlock.Text = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text")
-        SendAnonymousDataCheckBox.Content = MCBackup.Language.Dictionary("OptionsWindow.GeneralPanel.SendAnonymousDataCheckBox.Content")
+        ShowBalloonTipsCheckBox.Content = MCBackup.Language.GetString("OptionsWindow.GeneralPanel.ShowBalloonTipsCheckBox.Content")
+        ShowDeleteConfirmationCheckBox.Content = MCBackup.Language.GetString("OptionsWindow.GeneralPanel.ShowDeleteConfirmationCheckBox.Content")
+        CheckForUpdatesCheckBox.Content = MCBackup.Language.GetString("OptionsWindow.GeneralPanel.CheckForUpdatesCheckBox.Content")
+        CreateThumbOnWorldCheckBox.Content = MCBackup.Language.GetString("OptionsWindow.GeneralPanel.CreateThumbOnWorldCheckBox.Content")
+        AlwaysCloseCheckBox.Content = MCBackup.Language.GetString("OptionsWindow.GeneralPanel.AlwaysCloseCheckBox.Content")
+        CloseToTrayRadioButton.Content = MCBackup.Language.GetString("OptionsWindow.GeneralPanel.CloseToTrayRadioButton.Content")
+        CloseCompletelyRadioButton.Content = MCBackup.Language.GetString("OptionsWindow.GeneralPanel.CloseCompletelyRadioButton.Content")
+        'AlwaysCloseNoteTextBlock.Text = MCBackup.Language.GetString("OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text")
+        SendAnonymousDataCheckBox.Content = MCBackup.Language.GetString("OptionsWindow.GeneralPanel.SendAnonymousDataCheckBox.Content")
 
         ' Appearance 
-        GeneralAppearanceGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.GeneralAppearanceGroupBox.Header")
-        StatusTextColorGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.StatusTextColorGroupBox.Header")
-        ListViewTextColorIntensityGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.ListViewTextColorIntensityGroupBox.Header")
+        GeneralAppearanceGroupBox.Header = MCBackup.Language.GetString("OptionsWindow.AppearancePanel.GeneralAppearanceGroupBox.Header")
+        StatusTextColorGroupBox.Header = MCBackup.Language.GetString("OptionsWindow.AppearancePanel.StatusTextColorGroupBox.Header")
+        ListViewTextColorIntensityGroupBox.Header = MCBackup.Language.GetString("OptionsWindow.AppearancePanel.ListViewTextColorIntensityGroupBox.Header")
 
-        ListViewOpacityLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.ListViewOpacityLabel.Content")
-        BackgroundImageLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.BackgroundImageLabel.Content")
-        SizeModeLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SizeModeLabel.Content")
-        SizeModeComboBox.Items(0).Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(0).Content")
-        SizeModeComboBox.Items(1).Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(1).Content")
-        SizeModeComboBox.Items(2).Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(2).Content")
-        SizeModeComboBox.Items(3).Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content")
-        BackgroundImageBrowseButton.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content")
-        BackgroundImageRemoveButton.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content")
-        ThemeLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.ThemeLabel.Content")
-        SampleTextG1.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SampleText")
-        SampleTextY1.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SampleText")
-        SampleTextR1.Content = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.SampleText")
+        ListViewOpacityLabel.Content = MCBackup.Language.GetString("OptionsWindow.AppearancePanel.ListViewOpacityLabel.Content")
+        BackgroundImageLabel.Content = MCBackup.Language.GetString("OptionsWindow.AppearancePanel.BackgroundImageLabel.Content")
+        SizeModeLabel.Content = MCBackup.Language.GetString("OptionsWindow.AppearancePanel.SizeModeLabel.Content")
+        SizeModeComboBox.Items(0).Content = MCBackup.Language.GetString("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(0).Content")
+        SizeModeComboBox.Items(1).Content = MCBackup.Language.GetString("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(1).Content")
+        SizeModeComboBox.Items(2).Content = MCBackup.Language.GetString("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(2).Content")
+        SizeModeComboBox.Items(3).Content = MCBackup.Language.GetString("OptionsWindow.AppearancePanel.SizeModeComboBox.Items(3).Content")
+        BackgroundImageBrowseButton.Content = MCBackup.Language.GetString("OptionsWindow.AppearancePanel.BackgroundImageBrowseButton.Content")
+        BackgroundImageRemoveButton.Content = MCBackup.Language.GetString("OptionsWindow.AppearancePanel.BackgroundImageRemoveButton.Content")
+        ThemeLabel.Content = MCBackup.Language.GetString("OptionsWindow.AppearancePanel.ThemeLabel.Content")
+        SampleTextG1.Content = MCBackup.Language.GetString("OptionsWindow.AppearancePanel.SampleText")
+        SampleTextY1.Content = MCBackup.Language.GetString("OptionsWindow.AppearancePanel.SampleText")
+        SampleTextR1.Content = MCBackup.Language.GetString("OptionsWindow.AppearancePanel.SampleText")
 
         YAlignComboBox.Items.Clear()
-        YAlignComboBox.Items.Add(MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.VerticalAlign.Top"))
-        YAlignComboBox.Items.Add(MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.VerticalAlign.Center"))
-        YAlignComboBox.Items.Add(MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.VerticalAlign.Bottom"))
+        YAlignComboBox.Items.Add(MCBackup.Language.GetString("OptionsWindow.AppearancePanel.VerticalAlign.Top"))
+        YAlignComboBox.Items.Add(MCBackup.Language.GetString("OptionsWindow.AppearancePanel.VerticalAlign.Center"))
+        YAlignComboBox.Items.Add(MCBackup.Language.GetString("OptionsWindow.AppearancePanel.VerticalAlign.Bottom"))
         YAlignComboBox.SelectedIndex = My.Settings.BackgroundImageYAlign
 
         ' Theme colors
         ThemeComboBox.Items.Clear()
 
-        Dim Names = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.Themes").Split(";")
-        Dim Tags = MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.ThemeTags").Split(";")
+        Dim Names As String() = MCBackup.Language.GetString("OptionsWindow.AppearancePanel.Themes").Split(";")
+        Dim Tags As String() = MCBackup.Language.GetString("OptionsWindow.AppearancePanel.ThemeTags").Split(";")
 
-        For i As Integer = 0 To Names.Count - 1
+        For i As Integer = 0 To Names.Length - 1
             ThemeComboBox.Items.Add(New TaggedComboBoxItem(Names(i), Tags(i)))
             If Tags(i) = My.Settings.Theme Then
                 ThemeComboBox.SelectedIndex = i
@@ -298,37 +298,37 @@ Partial Public Class Options
 
         ' Theme shades
         ThemeShadeComboBox.Items.Clear()
-        ThemeShadeComboBox.Items.Add(New TaggedComboBoxItem(MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.ThemeShades.Light"), "BaseLight"))
-        ThemeShadeComboBox.Items.Add(New TaggedComboBoxItem(MCBackup.Language.Dictionary("OptionsWindow.AppearancePanel.ThemeShades.Dark"), "BaseDark"))
+        ThemeShadeComboBox.Items.Add(New TaggedComboBoxItem(MCBackup.Language.GetString("OptionsWindow.AppearancePanel.ThemeShades.Light"), "BaseLight"))
+        ThemeShadeComboBox.Items.Add(New TaggedComboBoxItem(MCBackup.Language.GetString("OptionsWindow.AppearancePanel.ThemeShades.Dark"), "BaseDark"))
         ThemeShadeComboBox.SelectedItem = ThemeShadeComboBox.Items.OfType(Of TaggedComboBoxItem)().FirstOrDefault(Function(Item) Item.Tag = My.Settings.ThemeShade)
 
         ' Folders
-        InstallTypeGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.InstallTypeGroupBox.Header")
-        MinecraftInstallationRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.MinecraftInstallationRadioButton.Text")
-        TechnicInstallationRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.TechnicInstallationRadioButton.Text")
-        FTBInstallationRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.FtbInstallationRadioButton.Text")
-        ATLauncherInstallationRadioButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.AtLauncherInstallationRadioButton.Text")
-        BaseFolderLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.BaseFolderLabel.Text")
-        BaseFolderBrowseButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.BrowseButton.Text")
-        GeneralFoldersGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.GeneralFoldersGroupBox.Header")
-        SavesFolderLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.SavesFolderLabel.Text")
-        SavesFolderBrowseButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.BrowseButton.Text")
-        BackupsFolderLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.BackupsFolderLabel.Text")
-        BackupsFolderBrowseButton.Content = MCBackup.Language.Dictionary("OptionsWindow.FoldersTab.BrowseButton.Text")
+        InstallTypeGroupBox.Header = MCBackup.Language.GetString("OptionsWindow.FoldersTab.InstallTypeGroupBox.Header")
+        MinecraftInstallationRadioButton.Content = MCBackup.Language.GetString("OptionsWindow.FoldersTab.MinecraftInstallationRadioButton.Text")
+        TechnicInstallationRadioButton.Content = MCBackup.Language.GetString("OptionsWindow.FoldersTab.TechnicInstallationRadioButton.Text")
+        FTBInstallationRadioButton.Content = MCBackup.Language.GetString("OptionsWindow.FoldersTab.FtbInstallationRadioButton.Text")
+        ATLauncherInstallationRadioButton.Content = MCBackup.Language.GetString("OptionsWindow.FoldersTab.AtLauncherInstallationRadioButton.Text")
+        BaseFolderLabel.Content = MCBackup.Language.GetString("OptionsWindow.FoldersTab.BaseFolderLabel.Text")
+        BaseFolderBrowseButton.Content = MCBackup.Language.GetString("OptionsWindow.FoldersTab.BrowseButton.Text")
+        GeneralFoldersGroupBox.Header = MCBackup.Language.GetString("OptionsWindow.FoldersTab.GeneralFoldersGroupBox.Header")
+        SavesFolderLabel.Content = MCBackup.Language.GetString("OptionsWindow.FoldersTab.SavesFolderLabel.Text")
+        SavesFolderBrowseButton.Content = MCBackup.Language.GetString("OptionsWindow.FoldersTab.BrowseButton.Text")
+        BackupsFolderLabel.Content = MCBackup.Language.GetString("OptionsWindow.FoldersTab.BackupsFolderLabel.Text")
+        BackupsFolderBrowseButton.Content = MCBackup.Language.GetString("OptionsWindow.FoldersTab.BrowseButton.Text")
 
         ' Groups
-        AddNewGroupGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.GroupsTab.AddNewGroupGroupBox.Header")
-        OtherOptionsGroupBox.Header = MCBackup.Language.Dictionary("OptionsWindow.GroupsTab.OtherOptionsGroupBox.Header")
-        DeleteGroupButton.Content = MCBackup.Language.Dictionary("OptionsWindow.GroupsTab.DeleteGroupButton.Text")
-        RenameGroupButton.Content = MCBackup.Language.Dictionary("OptionsWindow.GroupsTab.RenameGroupButton.Text")
-        MoveGroupUpButton.Content = New ViewboxEx(MCBackup.Language.Dictionary("OptionsWindow.GroupsTab.MoveGroupUpButton.Text"), Stretch.Uniform, StretchDirection.DownOnly)
-        MoveGroupDownButton.Content = New ViewboxEx(MCBackup.Language.Dictionary("OptionsWindow.GroupsTab.MoveGroupDownButton.Text"), Stretch.Uniform, StretchDirection.DownOnly)
+        AddNewGroupGroupBox.Header = MCBackup.Language.GetString("OptionsWindow.GroupsTab.AddNewGroupGroupBox.Header")
+        OtherOptionsGroupBox.Header = MCBackup.Language.GetString("OptionsWindow.GroupsTab.OtherOptionsGroupBox.Header")
+        DeleteGroupButton.Content = MCBackup.Language.GetString("OptionsWindow.GroupsTab.DeleteGroupButton.Text")
+        RenameGroupButton.Content = MCBackup.Language.GetString("OptionsWindow.GroupsTab.RenameGroupButton.Text")
+        MoveGroupUpButton.Content = New ViewboxEx(MCBackup.Language.GetString("OptionsWindow.GroupsTab.MoveGroupUpButton.Text"), Stretch.Uniform, StretchDirection.DownOnly)
+        MoveGroupDownButton.Content = New ViewboxEx(MCBackup.Language.GetString("OptionsWindow.GroupsTab.MoveGroupDownButton.Text"), Stretch.Uniform, StretchDirection.DownOnly)
 
         ' Advanced
-        DefaultBackupNameLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.AdvancedTab.DefaultBackupNameLabel.Text")
-        DefaultAutoBackupNameLabel.Content = MCBackup.Language.Dictionary("OptionsWindow.AdvancedTab.DefaultAutoBackupNameLabel.Text")
-        IgnoreSystemLocalizationCheckBox.Content = MCBackup.Language.Dictionary("OptionsWindow.AdvancedTab.IgnoreSystemLocalizationCheckBox.Text")
-        PlaceholdersLink.Text = MCBackup.Language.Dictionary("OptionsWindow.AdvancedTab.PlaceholdersLink.Text")
+        DefaultBackupNameLabel.Content = MCBackup.Language.GetString("OptionsWindow.AdvancedTab.DefaultBackupNameLabel.Text")
+        DefaultAutoBackupNameLabel.Content = MCBackup.Language.GetString("OptionsWindow.AdvancedTab.DefaultAutoBackupNameLabel.Text")
+        IgnoreSystemLocalizationCheckBox.Content = MCBackup.Language.GetString("OptionsWindow.AdvancedTab.IgnoreSystemLocalizationCheckBox.Text")
+        PlaceholdersLink.Text = MCBackup.Language.GetString("OptionsWindow.AdvancedTab.PlaceholdersLink.Text")
     End Sub
 
     Private Sub ColorSlider_ValueChanged(sender As Object, e As RoutedPropertyChangedEventArgs(Of Double)) Handles RedColorSlider.ValueChanged, GreenColorSlider.ValueChanged, BlueColorSlider.ValueChanged
@@ -417,7 +417,7 @@ Partial Public Class Options
     End Sub
 
     Private Sub ResetButton_Click(sender As Object, e As RoutedEventArgs) Handles ResetButton.Click
-        If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.ResetSettings"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.Yes Then
+        If MetroMessageBox.Show(MCBackup.Language.GetString("Message.ResetSettings"), MCBackup.Language.GetString("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.Yes Then
             My.Settings.Reset()
 
             Process.Start(Application.ResourceAssembly.Location)
@@ -466,7 +466,7 @@ Partial Public Class Options
     End Sub
 
     Private Sub DeleteGroupButton_Click(sender As Object, e As RoutedEventArgs) Handles DeleteGroupButton.Click
-        If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.AreYouSureDeleteGroup"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.Yes Then
+        If MetroMessageBox.Show(MCBackup.Language.GetString("Message.AreYouSureDeleteGroup"), MCBackup.Language.GetString("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.Yes Then
             My.Settings.BackupGroups.RemoveAt(BackupGroupsListBox.SelectedIndex)
             ReloadBackupGroups()
         End If
@@ -475,7 +475,7 @@ Partial Public Class Options
 
     Private Sub SendAnonymousDataCheckBox_Checked(sender As Object, e As RoutedEventArgs) Handles SendAnonymousDataCheckBox.Checked
         If Not SendAnonymousDataCheckBox.IsChecked Then
-            If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.DisableAnonymousStats"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.No Then
+            If MetroMessageBox.Show(MCBackup.Language.GetString("Message.DisableAnonymousStats"), MCBackup.Language.GetString("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.No Then
                 SendAnonymousDataCheckBox.IsChecked = True
             End If
         End If
@@ -573,7 +573,7 @@ Partial Public Class Options
                 My.Settings.SavesFolderLocation = FSD.FolderName
                 SavesFolderTextBox.Text = My.Settings.SavesFolderLocation
             Else
-                If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.InvalidSavesFolder"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OKCancel, MessageBoxImage.Error) = MessageBoxResult.OK Then
+                If MetroMessageBox.Show(MCBackup.Language.GetString("Message.InvalidSavesFolder"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OKCancel, MessageBoxImage.Error) = MessageBoxResult.OK Then
                     SavesFolderBrowseButton_Click(sender, e)
                 End If
             End If
@@ -591,7 +591,7 @@ Partial Public Class Options
                 BackupsFolderTextBox.Text = My.Settings.BackupsFolderLocation
             Catch ex As Exception
                 Log.Print("Could not set backups folder: " & ex.Message, Log.Level.Severe)
-                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.CouldNotSetBackupsFolder"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                MetroMessageBox.Show(MCBackup.Language.GetString("Message.CouldNotSetBackupsFolder"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             End Try
         End If
     End Sub
@@ -654,7 +654,7 @@ Partial Public Class Options
 
     Private Sub TextBlock_MouseUp(sender As Object, e As MouseButtonEventArgs)
         TryCast(sender, TextBlock).Foreground = New SolidColorBrush(Color.FromArgb(255, 0, 0, 255))
-        If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.OpenWebpage"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.OKCancel, MessageBoxImage.Information) = MessageBoxResult.OK Then
+        If MetroMessageBox.Show(MCBackup.Language.GetString("Message.OpenWebpage"), MCBackup.Language.GetString("Message.Caption.AreYouSure"), MessageBoxButton.OKCancel, MessageBoxImage.Information) = MessageBoxResult.OK Then
             Process.Start("http://go.nicoco007.com/fwlink/?LinkID=1002")
         End If
     End Sub
@@ -665,7 +665,7 @@ Partial Public Class Options
 
     Private Sub DefaultBackupNameTextBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles DefaultBackupNameTextBox.TextChanged
         If Me.IsLoaded Then
-            Dim Name As String = BackupName.Process(DefaultBackupNameTextBox.Text, MCBackup.Language.Dictionary("Localization.DirectoryName"))
+            Dim Name As String = BackupName.Process(DefaultBackupNameTextBox.Text, MCBackup.Language.GetString("Localization.DirectoryName"))
 
             If Regex.IsMatch(Name, "[\/:*?""<>|]") Then
                 DefaultBackupNameTextBox.Background = New SolidColorBrush(Color.FromArgb(100, 255, 0, 0))
@@ -674,13 +674,13 @@ Partial Public Class Options
                 DefaultBackupNameTextBox.Background = New SolidColorBrush(Colors.White)
             End If
 
-            BackupNameOutputLabel.Text = MCBackup.Language.Dictionary("Localization.Output") & Name
+            BackupNameOutputLabel.Text = MCBackup.Language.GetString("Localization.Output") & Name
         End If
     End Sub
 
     Private Sub DefaultAutoBackupNameTextBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles DefaultAutoBackupNameTextBox.TextChanged
         If Me.IsLoaded Then
-            Dim Name As String = BackupName.Process(DefaultAutoBackupNameTextBox.Text, MCBackup.Language.Dictionary("Localization.DirectoryName"))
+            Dim Name As String = BackupName.Process(DefaultAutoBackupNameTextBox.Text, MCBackup.Language.GetString("Localization.DirectoryName"))
 
             If Regex.IsMatch(Name, "[\/:*?""<>|]") Then
                 DefaultAutoBackupNameTextBox.Background = New SolidColorBrush(Color.FromArgb(100, 255, 0, 0))
@@ -689,7 +689,7 @@ Partial Public Class Options
                 DefaultAutoBackupNameTextBox.Background = New SolidColorBrush(Colors.White)
             End If
 
-            AutoBackupNameOutputLabel.Text = MCBackup.Language.Dictionary("Localization.Output") & Name
+            AutoBackupNameOutputLabel.Text = MCBackup.Language.GetString("Localization.Output") & Name
         End If
     End Sub
 

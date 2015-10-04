@@ -140,8 +140,8 @@ Partial Class MainWindow
                 My.Settings.Language = DefaultLanguage
             End If
             MCBackup.Language.Load(My.Settings.Language & ".lang")
-            If String.IsNullOrEmpty(My.Settings.DefaultBackupName) Then My.Settings.DefaultBackupName = MCBackup.Language.Dictionary("Localization.DefaultBackupName")
-            If String.IsNullOrEmpty(My.Settings.DefaultAutoBackupName) Then My.Settings.DefaultAutoBackupName = MCBackup.Language.Dictionary("Localization.DefaultAutoBackupName")
+            If String.IsNullOrEmpty(My.Settings.DefaultBackupName) Then My.Settings.DefaultBackupName = MCBackup.Language.GetString("Localization.DefaultBackupName")
+            If String.IsNullOrEmpty(My.Settings.DefaultAutoBackupName) Then My.Settings.DefaultAutoBackupName = MCBackup.Language.GetString("Localization.DefaultAutoBackupName")
         Catch ex As Exception
             ErrorReportDialog.Show("Could not load language file " & My.Settings.Language & ".lang! MCBackup will now exit.", ex)
             My.Settings.Language = DefaultLanguage
@@ -167,7 +167,7 @@ Partial Class MainWindow
 
         Splash.ShowStatus("Splash.Status.LoadingProps", "Loading Settings...")
 
-        If SettingsUpgraded Then MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.SettingsUpgrade"), MCBackup.Language.Dictionary("Message.Caption.Information"), MessageBoxButton.OK, MessageBoxImage.Information)
+        If SettingsUpgraded Then MetroMessageBox.Show(MCBackup.Language.GetString("Message.SettingsUpgrade"), MCBackup.Language.GetString("Message.Caption.Information"), MessageBoxButton.OK, MessageBoxImage.Information)
 
         Log.Print(String.Format("Current Launcher: '{0}'", My.Settings.Launcher.GetStringValue()))
         Splash.StepProgress()
@@ -194,7 +194,7 @@ Partial Class MainWindow
         End If
 
         If Not My.Computer.FileSystem.DirectoryExists(My.Settings.BackupsFolderLocation) Then
-            If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.BackupsFolderNotFound"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OKCancel) = MessageBoxResult.OK Then
+            If MetroMessageBox.Show(MCBackup.Language.GetString("Message.BackupsFolderNotFound"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OKCancel) = MessageBoxResult.OK Then
                 My.Settings.BackupsFolderLocation = StartupPath & "\backups"
                 My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation)
             Else
@@ -219,7 +219,7 @@ Partial Class MainWindow
         End If
 
         If Not Directory.Exists(My.Settings.MinecraftFolderLocation) Then
-            If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.NoMinecraftInstallError"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OKCancel, MessageBoxImage.Error) = MessageBoxResult.OK Then
+            If MetroMessageBox.Show(MCBackup.Language.GetString("Message.NoMinecraftInstallError"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OKCancel, MessageBoxImage.Error) = MessageBoxResult.OK Then
                 Dim SetMinecraftFolderWindow As New SetMinecraftFolderWindow
                 SetMinecraftFolderWindow.ShowDialog()
             Else
@@ -306,8 +306,8 @@ Partial Class MainWindow
                 Items = New List(Of ListViewBackupItem)
                 EnableUI(False)
                 Progress.IsIndeterminate = True
-                StatusLabel.Content = MCBackup.Language.Dictionary("Status.RefreshingBackupsList")
-                Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.RefreshingBackupsList"), ApplicationVersion)
+                StatusLabel.Content = MCBackup.Language.GetString("Status.RefreshingBackupsList")
+                Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.RefreshingBackupsList", ApplicationVersion)
                 BGW.RunWorkerAsync()
             Else
                 Dispatcher.Invoke(Sub() RefreshBackupsList())
@@ -318,7 +318,7 @@ Partial Class MainWindow
     Private Sub BGW_DoWork() Handles BGW.DoWork
         Dim Search As String = "", Group As String = ""
         Dispatcher.Invoke(Sub()
-                              If Not SearchTextBox.Text = MCBackup.Language.Dictionary("MainWindow.Search") Then
+                              If Not SearchTextBox.Text = MCBackup.Language.GetString("MainWindow.Search") Then
                                   Search = SearchTextBox.Text
                               End If
                               Group = TryCast(GroupsTabControl.SelectedItem, TaggedTabItem).Tag
@@ -395,11 +395,11 @@ Partial Class MainWindow
 
                 Select Case CInt(InfoJson("Type"))
                     Case BackupTypes.World
-                        Type = MCBackup.Language.Dictionary("BackupTypes.Save")
+                        Type = MCBackup.Language.GetString("BackupTypes.Save")
                     Case BackupTypes.Version
-                        Type = MCBackup.Language.Dictionary("BackupTypes.Version")
+                        Type = MCBackup.Language.GetString("BackupTypes.Version")
                     Case BackupTypes.Full
-                        Type = MCBackup.Language.Dictionary("BackupTypes.Everything")
+                        Type = MCBackup.Language.GetString("BackupTypes.Everything")
                 End Select
 
                 Dim BackupDateCreated As DateTime = GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString)
@@ -408,29 +408,29 @@ Partial Class MainWindow
                 If Group = "" And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
                     If BackupDateCreated.AddDays(14) < DateTime.Today Then
                         Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.Dictionary("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), InfoJson("OriginalName"), Type))
+                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), InfoJson("OriginalName"), Type))
                                           End Sub)
                     ElseIf BackupDateCreated.AddDays(7) < DateTime.Today Then
                         Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.Dictionary("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
+                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
                                           End Sub)
                     Else
                         Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.Dictionary("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
+                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
                                           End Sub)
                     End If
                 ElseIf InfoJson("Group") = Group And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
                     If BackupDateCreated.AddDays(14) < DateTime.Today Then
                         Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.Dictionary("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), InfoJson("OriginalName"), Type))
+                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), InfoJson("OriginalName"), Type))
                                           End Sub)
                     ElseIf BackupDateCreated.AddDays(7) < DateTime.Today Then
                         Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.Dictionary("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
+                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
                                           End Sub)
                     Else
                         Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.Dictionary("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
+                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
                                           End Sub)
                     End If
                 End If
@@ -446,7 +446,7 @@ Partial Class MainWindow
             Next
             Dim Result As MessageBoxResult
             Dispatcher.Invoke(Sub()
-                                  Result = MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.DeleteInvalidBackups"), SB.ToString), MCBackup.Language.Dictionary("Message.Caption.InvalidBackups"), MessageBoxButton.YesNo, MessageBoxImage.Question)
+                                  Result = MetroMessageBox.Show(MCBackup.Language.GetString("Message.DeleteInvalidBackups", SB.ToString), MCBackup.Language.GetString("Message.Caption.InvalidBackups"), MessageBoxButton.YesNo, MessageBoxImage.Question)
                               End Sub)
             If Result = MessageBoxResult.Yes Then
                 Dispatcher.Invoke(Sub()
@@ -461,7 +461,7 @@ Partial Class MainWindow
     Private Sub BGW_RunWorkerCompleted() Handles BGW.RunWorkerCompleted
         ListView.ItemsSource = Items
         ListView.SelectedIndex = -1
-        SidebarTitle.Text = String.Format(MCBackup.Language.Dictionary("MainWindow.Sidebar.NumberElements"), Items.Count)
+        SidebarTitle.Text = MCBackup.Language.GetString("MainWindow.Sidebar.NumberElements", Items.Count)
 
         If ListView.Items.Count = 0 Then
             NoBackupsOverlay.Visibility = Visibility.Visible
@@ -498,7 +498,7 @@ Partial Class MainWindow
         ListView_SelectionChanged(New Object, New EventArgs)
 
         Progress.IsIndeterminate = False
-        StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
+        StatusLabel.Content = MCBackup.Language.GetString("Status.Ready")
         Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
         EnableUI(True)
     End Sub
@@ -510,8 +510,8 @@ Partial Class MainWindow
                 RenameButton.IsEnabled = False ' Don't allow anything when no items are selected
                 DeleteButton.IsEnabled = False
 
-                SidebarTitle.Text = String.Format(MCBackup.Language.Dictionary("MainWindow.Sidebar.NumberElements"), ListView.Items.Count)        'Show total number of elements
-                SidebarTitle.ToolTip = String.Format(MCBackup.Language.Dictionary("MainWindow.Sidebar.NumberElements"), ListView.Items.Count)
+                SidebarTitle.Text = MCBackup.Language.GetString("MainWindow.Sidebar.NumberElements", ListView.Items.Count)        'Show total number of elements
+                SidebarTitle.ToolTip = MCBackup.Language.GetString("MainWindow.Sidebar.NumberElements", ListView.Items.Count)
 
                 ListViewRestoreItem.IsEnabled = False
                 ListViewDeleteItem.IsEnabled = False         'Disable ContextMenu items
@@ -520,11 +520,11 @@ Partial Class MainWindow
 
                 ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/nothumb.png"))
                 SidebarOriginalNameContent.Text = "-"
-                SidebarOriginalNameContent.ToolTip = MCBackup.Language.Dictionary("MainWindow.Sidebar.NoBackupSelected")
+                SidebarOriginalNameContent.ToolTip = MCBackup.Language.GetString("MainWindow.Sidebar.NoBackupSelected")
                 SidebarTypeContent.Text = "-"
-                SidebarTypeContent.ToolTip = MCBackup.Language.Dictionary("MainWindow.Sidebar.NoBackupSelected")
+                SidebarTypeContent.ToolTip = MCBackup.Language.GetString("MainWindow.Sidebar.NoBackupSelected")
 
-                DescriptionTextBox.Text = MCBackup.Language.Dictionary("MainWindow.Sidebar.Description.NoItem")
+                DescriptionTextBox.Text = MCBackup.Language.GetString("MainWindow.Sidebar.Description.NoItem")
 
                 SidebarPlayerHealth.Visibility = Visibility.Collapsed
                 SidebarPlayerHunger.Visibility = Visibility.Collapsed
@@ -543,8 +543,8 @@ Partial Class MainWindow
                 RenameButton.IsEnabled = False ' Only allow deletion if more than 1 item is selected
                 DeleteButton.IsEnabled = True
 
-                SidebarTitle.Text = String.Format(MCBackup.Language.Dictionary("MainWindow.Sidebar.NumberElementsSelected"), ListView.SelectedItems.Count)   'Set sidebar title to number of selected items
-                SidebarTitle.ToolTip = String.Format(MCBackup.Language.Dictionary("MainWindow.Sidebar.NumberElementsSelected"), ListView.SelectedItems.Count)
+                SidebarTitle.Text = MCBackup.Language.GetString("MainWindow.Sidebar.NumberElementsSelected", ListView.SelectedItems.Count)   'Set sidebar title to number of selected items
+                SidebarTitle.ToolTip = MCBackup.Language.GetString("MainWindow.Sidebar.NumberElementsSelected", ListView.SelectedItems.Count)
 
                 ListViewRestoreItem.IsEnabled = False
                 ListViewDeleteItem.IsEnabled = True
@@ -625,17 +625,17 @@ Partial Class MainWindow
 
                               Select Case Type
                                   Case BackupTypes.World
-                                      SidebarTypeContent.Text = MCBackup.Language.Dictionary("BackupTypes.Save")
-                                      SidebarTypeContent.ToolTip = MCBackup.Language.Dictionary("BackupTypes.Save")
+                                      SidebarTypeContent.Text = MCBackup.Language.GetString("BackupTypes.Save")
+                                      SidebarTypeContent.ToolTip = MCBackup.Language.GetString("BackupTypes.Save")
                                   Case BackupTypes.Version
-                                      SidebarTypeContent.Text = MCBackup.Language.Dictionary("BackupTypes.Version")
-                                      SidebarTypeContent.ToolTip = MCBackup.Language.Dictionary("BackupTypes.Version")
+                                      SidebarTypeContent.Text = MCBackup.Language.GetString("BackupTypes.Version")
+                                      SidebarTypeContent.ToolTip = MCBackup.Language.GetString("BackupTypes.Version")
                                   Case BackupTypes.Full
-                                      SidebarTypeContent.Text = MCBackup.Language.Dictionary("BackupTypes.Everything")
-                                      SidebarTypeContent.ToolTip = MCBackup.Language.Dictionary("BackupTypes.Everything")
+                                      SidebarTypeContent.Text = MCBackup.Language.GetString("BackupTypes.Everything")
+                                      SidebarTypeContent.ToolTip = MCBackup.Language.GetString("BackupTypes.Everything")
                               End Select
 
-                              DescriptionTextBox.Text = IIf(String.IsNullOrEmpty(Description), MCBackup.Language.Dictionary("MainWindow.Sidebar.Description.NoDesc"), Description)
+                              DescriptionTextBox.Text = IIf(String.IsNullOrEmpty(Description), MCBackup.Language.GetString("MainWindow.Sidebar.Description.NoDesc"), Description)
                           End Sub)
 
         If Type = BackupTypes.World AndAlso SelectedItem IsNot Nothing AndAlso File.Exists(Path.Combine(My.Settings.BackupsFolderLocation, SelectedItem.Name, "level.dat")) Then
@@ -648,8 +648,8 @@ Partial Class MainWindow
 
                                       ' TODO: find a way to read from playername.dat file
                                       If World IsNot Nothing AndAlso World.Level IsNot Nothing AndAlso World.Level.Player IsNot Nothing Then
-                                          SidebarPlayerHealthGrid.ToolTip = World.Level.Player.Health.ToString() + "\20"
-                                          SidebarPlayerHungerGrid.ToolTip = World.Level.Player.HungerLevel.ToString() + "\20"
+                                          SidebarPlayerHealthGrid.ToolTip = World.Level.Player.Health.ToString() + "/20"
+                                          SidebarPlayerHungerGrid.ToolTip = World.Level.Player.HungerLevel.ToString() + "/20"
 
                                           For i As Integer = 0 To World.Level.Player.Health \ 2 - 1
                                               SidebarPlayerHealthGrid.Children.Add(New Game.Images.Health(New Thickness(SidebarPlayerHealthGrid.Children.Count * 10, 0, 0, 0), Game.Images.State.Full))
@@ -688,63 +688,63 @@ Partial Class MainWindow
 
     Public Sub LoadLanguage()
         Try
-            BackupButton.Content = MCBackup.Language.Dictionary("MainWindow.BackupButton.Content")
-            RestoreButton.Content = MCBackup.Language.Dictionary("MainWindow.RestoreButton.Content")
-            DeleteButton.Content = MCBackup.Language.Dictionary("MainWindow.DeleteButton.Content")
-            RenameButton.Content = MCBackup.Language.Dictionary("MainWindow.RenameButton.Content")
-            CullButton.Content = MCBackup.Language.Dictionary("MainWindow.CullButton.Content")
-            ListViewMoveToGroupItem.Header = MCBackup.Language.Dictionary("MainWindow.MoveToGroupButton.Text")
-            AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & IIf(AutoBackupWindow.IsVisible, " <<", " >>")
+            BackupButton.Content = MCBackup.Language.GetString("MainWindow.BackupButton.Content")
+            RestoreButton.Content = MCBackup.Language.GetString("MainWindow.RestoreButton.Content")
+            DeleteButton.Content = MCBackup.Language.GetString("MainWindow.DeleteButton.Content")
+            RenameButton.Content = MCBackup.Language.GetString("MainWindow.RenameButton.Content")
+            CullButton.Content = MCBackup.Language.GetString("MainWindow.CullButton.Content")
+            ListViewMoveToGroupItem.Header = MCBackup.Language.GetString("MainWindow.MoveToGroupButton.Text")
+            AutomaticBackupButton.Content = MCBackup.Language.GetString("MainWindow.AutomaticBackupButton.Content") & IIf(AutoBackupWindow.IsVisible, " <<", " >>")
 
-            NameColumnHeader.Content = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(0).Header")
-            DateCreatedColumnHeader.Content = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(1).Header")
-            TypeColumnHeader.Content = MCBackup.Language.Dictionary("MainWindow.ListView.Columns(2).Header")
+            NameColumnHeader.Content = MCBackup.Language.GetString("MainWindow.ListView.Columns(0).Header")
+            DateCreatedColumnHeader.Content = MCBackup.Language.GetString("MainWindow.ListView.Columns(1).Header")
+            TypeColumnHeader.Content = MCBackup.Language.GetString("MainWindow.ListView.Columns(2).Header")
 
-            SidebarOriginalNameLabel.Text = MCBackup.Language.Dictionary("MainWindow.Sidebar.OriginalNameLabel.Text")
-            SidebarTypeLabel.Text = MCBackup.Language.Dictionary("MainWindow.Sidebar.TypeLabel.Text")
-            SidebarDescriptionLabel.Text = MCBackup.Language.Dictionary("MainWindow.Sidebar.DescriptionLabel.Text")
-            SidebarPlayerHealthLabel.Text = MCBackup.Language.Dictionary("MainWindow.Sidebar.PlayerHealthLabel.Text")
-            SidebarPlayerHungerLabel.Text = MCBackup.Language.Dictionary("MainWindow.Sidebar.PlayerHungerLabel.Text")
+            SidebarOriginalNameLabel.Text = MCBackup.Language.GetString("MainWindow.Sidebar.OriginalNameLabel.Text")
+            SidebarTypeLabel.Text = MCBackup.Language.GetString("MainWindow.Sidebar.TypeLabel.Text")
+            SidebarDescriptionLabel.Text = MCBackup.Language.GetString("MainWindow.Sidebar.DescriptionLabel.Text")
+            SidebarPlayerHealthLabel.Text = MCBackup.Language.GetString("MainWindow.Sidebar.PlayerHealthLabel.Text")
+            SidebarPlayerHungerLabel.Text = MCBackup.Language.GetString("MainWindow.Sidebar.PlayerHungerLabel.Text")
 
-            FileToolbarButton.Content = MCBackup.Language.Dictionary("MainWindow.Toolbar.FileButton.Text")
-            FileContextMenu.Items(0).Header = MCBackup.Language.Dictionary("MainWindow.Toolbar.FileContextMenu.Items(0).Header")
-            EditToolbarButton.Content = MCBackup.Language.Dictionary("MainWindow.Toolbar.EditButton.Text")
-            EditContextMenu.Items(0).Header = MCBackup.Language.Dictionary("MainWindow.Toolbar.EditContextMenu.Items(0).Header")
-            EditContextMenu.Items(1).Header = MCBackup.Language.Dictionary("MainWindow.Toolbar.EditContextMenu.Items(1).Header")
-            ToolsToolbarButton.Content = MCBackup.Language.Dictionary("MainWindow.Toolbar.ToolsButton.Text")
-            ToolsContextMenu.Items(0).Header = MCBackup.Language.Dictionary("MainWindow.Toolbar.ToolsContextMenu.Items(0).Header")
-            HelpToolbarButton.Content = MCBackup.Language.Dictionary("MainWindow.Toolbar.HelpButton.Text")
-            HelpContextMenu.Items(0).Header = MCBackup.Language.Dictionary("MainWindow.Toolbar.HelpContextMenu.Items(0).Header")
-            HelpContextMenu.Items(2).Header = MCBackup.Language.Dictionary("MainWindow.Toolbar.HelpContextMenu.Items(2).Header")
-            HelpContextMenu.Items(3).Header = MCBackup.Language.Dictionary("MainWindow.Toolbar.HelpContextMenu.Items(3).Header")
+            FileToolbarButton.Content = MCBackup.Language.GetString("MainWindow.Toolbar.FileButton.Text")
+            FileContextMenu.Items(0).Header = MCBackup.Language.GetString("MainWindow.Toolbar.FileContextMenu.Items(0).Header")
+            EditToolbarButton.Content = MCBackup.Language.GetString("MainWindow.Toolbar.EditButton.Text")
+            EditContextMenu.Items(0).Header = MCBackup.Language.GetString("MainWindow.Toolbar.EditContextMenu.Items(0).Header")
+            EditContextMenu.Items(1).Header = MCBackup.Language.GetString("MainWindow.Toolbar.EditContextMenu.Items(1).Header")
+            ToolsToolbarButton.Content = MCBackup.Language.GetString("MainWindow.Toolbar.ToolsButton.Text")
+            ToolsContextMenu.Items(0).Header = MCBackup.Language.GetString("MainWindow.Toolbar.ToolsContextMenu.Items(0).Header")
+            HelpToolbarButton.Content = MCBackup.Language.GetString("MainWindow.Toolbar.HelpButton.Text")
+            HelpContextMenu.Items(0).Header = MCBackup.Language.GetString("MainWindow.Toolbar.HelpContextMenu.Items(0).Header")
+            HelpContextMenu.Items(2).Header = MCBackup.Language.GetString("MainWindow.Toolbar.HelpContextMenu.Items(2).Header")
+            HelpContextMenu.Items(3).Header = MCBackup.Language.GetString("MainWindow.Toolbar.HelpContextMenu.Items(3).Header")
 
-            StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
+            StatusLabel.Content = MCBackup.Language.GetString("Status.Ready")
             Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
 
-            SearchTextBox.Text = MCBackup.Language.Dictionary("MainWindow.Search")
+            SearchTextBox.Text = MCBackup.Language.GetString("MainWindow.Search")
             SearchTextBox.Foreground = New SolidColorBrush(Colors.Gray)
 
-            ListViewSortByItem.Header = MCBackup.Language.Dictionary("MainWindow.ListView.ContextMenu.SortBy")
-            ListViewSortByNameItem.Header = MCBackup.Language.Dictionary("MainWindow.ListView.ContextMenu.SortBy.Name")
-            ListViewSortByDateCreatedItem.Header = MCBackup.Language.Dictionary("MainWindow.ListView.ContextMenu.SortBy.DateCreated")
-            ListViewSortByTypeItem.Header = MCBackup.Language.Dictionary("MainWindow.ListView.ContextMenu.SortBy.Type")
-            ListViewSortAscendingItem.Header = MCBackup.Language.Dictionary("MainWindow.ListView.ContextMenu.SortBy.Ascending")
-            ListViewSortDescendingItem.Header = MCBackup.Language.Dictionary("MainWindow.ListView.ContextMenu.SortBy.Descending")
+            ListViewSortByItem.Header = MCBackup.Language.GetString("MainWindow.ListView.ContextMenu.SortBy")
+            ListViewSortByNameItem.Header = MCBackup.Language.GetString("MainWindow.ListView.ContextMenu.SortBy.Name")
+            ListViewSortByDateCreatedItem.Header = MCBackup.Language.GetString("MainWindow.ListView.ContextMenu.SortBy.DateCreated")
+            ListViewSortByTypeItem.Header = MCBackup.Language.GetString("MainWindow.ListView.ContextMenu.SortBy.Type")
+            ListViewSortAscendingItem.Header = MCBackup.Language.GetString("MainWindow.ListView.ContextMenu.SortBy.Ascending")
+            ListViewSortDescendingItem.Header = MCBackup.Language.GetString("MainWindow.ListView.ContextMenu.SortBy.Descending")
 
-            ListViewGroupByItem.Header = MCBackup.Language.Dictionary("MainWindow.ListView.ContextMenu.GroupBy")
-            ListViewGroupByNameItem.Header = MCBackup.Language.Dictionary("MainWindow.ListView.ContextMenu.GroupBy.OriginalName")
-            ListViewGroupByTypeItem.Header = MCBackup.Language.Dictionary("MainWindow.ListView.ContextMenu.GroupBy.Type")
-            ListViewGroupByNothingItem.Header = MCBackup.Language.Dictionary("MainWindow.ListView.ContextMenu.GroupBy.Nothing")
+            ListViewGroupByItem.Header = MCBackup.Language.GetString("MainWindow.ListView.ContextMenu.GroupBy")
+            ListViewGroupByNameItem.Header = MCBackup.Language.GetString("MainWindow.ListView.ContextMenu.GroupBy.OriginalName")
+            ListViewGroupByTypeItem.Header = MCBackup.Language.GetString("MainWindow.ListView.ContextMenu.GroupBy.Type")
+            ListViewGroupByNothingItem.Header = MCBackup.Language.GetString("MainWindow.ListView.ContextMenu.GroupBy.Nothing")
 
-            ListViewRestoreItem.Header = MCBackup.Language.Dictionary("MainWindow.RestoreButton.Content")
-            ListViewDeleteItem.Header = MCBackup.Language.Dictionary("MainWindow.DeleteButton.Content")
-            ListViewRenameItem.Header = MCBackup.Language.Dictionary("MainWindow.RenameButton.Content")
+            ListViewRestoreItem.Header = MCBackup.Language.GetString("MainWindow.RestoreButton.Content")
+            ListViewDeleteItem.Header = MCBackup.Language.GetString("MainWindow.DeleteButton.Content")
+            ListViewRenameItem.Header = MCBackup.Language.GetString("MainWindow.RenameButton.Content")
 
-            ListViewOpenInExplorerItem.Header = MCBackup.Language.Dictionary("MainWindow.ListView.ContextMenu.OpenInExplorer")
+            ListViewOpenInExplorerItem.Header = MCBackup.Language.GetString("MainWindow.ListView.ContextMenu.OpenInExplorer")
 
-            NoBackupsOverlay.Text = MCBackup.Language.Dictionary("MainWindow.NoBackupsOverlay.Text")
+            NoBackupsOverlay.Text = MCBackup.Language.GetString("MainWindow.NoBackupsOverlay.Text")
 
-            CancelButton.Content = MCBackup.Language.Dictionary("MainWindow.CancelButton.Text")
+            CancelButton.Content = MCBackup.Language.GetString("MainWindow.CancelButton.Text")
         Catch ex As Exception
             Dispatcher.Invoke(Sub() ErrorReportDialog.Show("Could not load language.", ex))
         End Try
@@ -752,7 +752,7 @@ Partial Class MainWindow
 
     Public Sub ReloadBackupGroups()
         GroupsTabControl.Items.Clear()
-        GroupsTabControl.Items.Add(New TaggedTabItem(MCBackup.Language.Dictionary("MainWindow.Groups.All"), ""))
+        GroupsTabControl.Items.Add(New TaggedTabItem(MCBackup.Language.GetString("MainWindow.Groups.All"), ""))
         For Each Group As String In My.Settings.BackupGroups
             GroupsTabControl.Items.Add(New TaggedTabItem(Group, Group))
         Next
@@ -801,8 +801,8 @@ Partial Class MainWindow
                 Progress.Value = e.ProgressPercentage
 
                 ' Set status label & window title text to reflect status & progress
-                StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.BackingUp"), e.ProgressPercentage, IIf(Single.IsNaN(e.TransferRate), 0, e.TransferRate / 1048576), Manager.EstimatedTimeSpanToString(e.EstimatedTimeRemaining))
-                Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.Backup"), ApplicationVersion, e.ProgressPercentage)
+                StatusLabel.Content = MCBackup.Language.GetString("Status.BackingUp", e.ProgressPercentage, IIf(Single.IsNaN(e.TransferRate), 0, e.TransferRate / 1048576), Manager.EstimatedTimeSpanToString(e.EstimatedTimeRemaining))
+                Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.Backup", ApplicationVersion, e.ProgressPercentage)
 
             Case BackupStatus.RevertingChanges
 
@@ -811,8 +811,8 @@ Partial Class MainWindow
                 Progress.Value = 0
 
                 ' Set status label & window title text to reflect status
-                StatusLabel.Content = MCBackup.Language.Dictionary("Status.RevertingChanges")
-                Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.RevertingChanges"), ApplicationVersion)
+                StatusLabel.Content = MCBackup.Language.GetString("Status.RevertingChanges")
+                Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.RevertingChanges", ApplicationVersion)
 
             Case BackupStatus.CreatingThumbnail
 
@@ -821,8 +821,8 @@ Partial Class MainWindow
                 Progress.Value = e.ProgressPercentage
 
                 ' Set status label & window title text to reflect status & progress
-                StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.CreatingThumb"), e.ProgressPercentage)
-                Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.CreatingThumb"), ApplicationVersion, e.ProgressPercentage)
+                StatusLabel.Content = MCBackup.Language.GetString("Status.CreatingThumb", e.ProgressPercentage)
+                Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.CreatingThumb", ApplicationVersion, e.ProgressPercentage)
 
         End Select
     End Sub
@@ -834,15 +834,15 @@ Partial Class MainWindow
         If e.Error IsNot Nothing Then
 
             ' Show error balloon tip
-            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupError"), MCBackup.Language.Dictionary("BalloonTip.BackupError"), System.Windows.Forms.ToolTipIcon.Error)
+            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.GetString("BalloonTip.Title.BackupError"), MCBackup.Language.GetString("BalloonTip.BackupError"), System.Windows.Forms.ToolTipIcon.Error)
 
             ' Show error report dialog
-            ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Backup"), e.Error)
+            ErrorReportDialog.Show(MCBackup.Language.GetString("Exception.Backup"), e.Error)
 
         Else
 
             ' Show backup completed balloon tip
-            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.BackupComplete"), MCBackup.Language.Dictionary("BalloonTip.BackupComplete"), System.Windows.Forms.ToolTipIcon.Info)
+            If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.GetString("BalloonTip.Title.BackupComplete"), MCBackup.Language.GetString("BalloonTip.BackupComplete"), System.Windows.Forms.ToolTipIcon.Info)
 
         End If
 
@@ -862,8 +862,8 @@ Partial Class MainWindow
         RefreshBackupsList()
 
         ' Set status to ready
-        StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
-        Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
+        StatusLabel.Content = MCBackup.Language.GetString("Status.Ready")
+        Me.Title = "MCBackup " + ApplicationVersion
 
         ' Set progress to 100%
         Progress.Maximum = 100
@@ -878,7 +878,7 @@ Partial Class MainWindow
     Private RestoreStopWatch As New Stopwatch
 
     Private Sub RestoreButton_Click(sender As Object, e As EventArgs) Handles RestoreButton.Click, ListViewRestoreItem.Click
-        If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.RestoreAreYouSure"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = Forms.DialogResult.Yes Then
+        If MetroMessageBox.Show(MCBackup.Language.GetString("Message.RestoreAreYouSure"), MCBackup.Language.GetString("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = Forms.DialogResult.Yes Then
             EnableUI(False)
             'Cancel = False
             Log.Print("Starting Restore")
@@ -892,7 +892,7 @@ Partial Class MainWindow
                 InfoJson As JObject
 
             If Not File.Exists(My.Settings.BackupsFolderLocation & "\" & RestoreInfo.BackupName & "\info.json") Then
-                MetroMessageBox.Show(MCBackup.Language.Dictionary(""))
+                MetroMessageBox.Show(MCBackup.Language.GetString(""))
                 Exit Sub
             End If
 
@@ -915,6 +915,7 @@ Partial Class MainWindow
                         Case "technic"
                             Launcher = Game.Launcher.Technic
                         Case "ftb"
+                            Launcher = Game.Launcher.FeedTheBeast
                         Case "feedthebeast"
                             Launcher = Game.Launcher.FeedTheBeast
                         Case "atlauncher"
@@ -930,7 +931,7 @@ Partial Class MainWindow
             End Using
 
             If Launcher <> My.Settings.Launcher Then
-                MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("Message.IncompatibleBackupConfig"), Launcher.GetStringValue()), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                MetroMessageBox.Show(MCBackup.Language.GetString("Message.IncompatibleBackupConfig", Launcher.GetStringValue()), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
                 EnableUI(True)
                 Exit Sub
             End If
@@ -971,8 +972,19 @@ Partial Class MainWindow
         Progress.Maximum = 100
         Progress.Value = e.ProgressPercentage
 
-        StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Restoring"), e.ProgressPercentage, e.TransferRate / 1048576, Manager.EstimatedTimeSpanToString(e.EstimatedTimeRemaining))
-        Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.Restore"), ApplicationVersion, e.ProgressPercentage)
+        Select Case e.RestoreStatus
+
+            Case RestoreStatus.RemovingOldFiles
+
+                StatusLabel.Content = MCBackup.Language.GetString("Status.RemovingOldContent", e.ProgressPercentage)
+                Me.Title = "MCBackup {0} - " & MCBackup.Language.GetString("MainWindow.Title.RemovingOldContent", ApplicationVersion, e.ProgressPercentage)
+
+            Case RestoreStatus.Restoring
+
+                StatusLabel.Content = MCBackup.Language.GetString("Status.Restoring", e.ProgressPercentage, e.TransferRate / 1048576, Manager.EstimatedTimeSpanToString(e.EstimatedTimeRemaining))
+                Me.Title = "MCBackup {0} - " & MCBackup.Language.GetString("MainWindow.Title.Restore", ApplicationVersion, e.ProgressPercentage)
+
+        End Select
 
     End Sub
 
@@ -984,7 +996,7 @@ Partial Class MainWindow
 
         End If
 
-        StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
+        StatusLabel.Content = MCBackup.Language.GetString("Status.Ready")
         Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
         Progress.Maximum = 100
         Progress.Value = 100
@@ -1123,16 +1135,16 @@ Partial Class MainWindow
             PercentComplete = CurrentSize / TotalSize * 100
 
             Dispatcher.Invoke(Sub()
-                                  StatusLabel.Content = String.Format(MCBackup.Language.Dictionary("Status.Deleting"), 100 - PercentComplete)
-                                  Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.Delete"), ApplicationVersion, 100 - PercentComplete)
+                                  StatusLabel.Content = MCBackup.Language.GetString("Status.Deleting", 100 - PercentComplete)
+                                  Me.Title = "MCBackup " + ApplicationVersion + " - " & MCBackup.Language.GetString("MainWindow.Title.Delete", 100 - PercentComplete)
                                   MCBackup.Progress.Value = CurrentSize
                               End Sub)
             Thread.Sleep(200)
         Loop
 
         Dispatcher.Invoke(Sub()
-                              StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
-                              Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
+                              StatusLabel.Content = MCBackup.Language.GetString("Status.Ready")
+                              Me.Title = "MCBackup " + ApplicationVersion
                               MCBackup.Progress.Value = 0
                               EnableUI(True)
                           End Sub)
@@ -1152,11 +1164,11 @@ Partial Class MainWindow
                 Log.Print("Delete thread aborted!", Log.Level.Severe)
                 Me.Dispatcher.Invoke(Sub()
                                          Progress.Value = 0
-                                         StatusLabel.Content = MCBackup.Language.Dictionary("Status.CanceledAndReady")
+                                         StatusLabel.Content = MCBackup.Language.GetString("Status.CanceledAndReady")
                                          Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
                                      End Sub)
             Else
-                Dispatcher.Invoke(Sub() ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Delete"), ex))
+                Dispatcher.Invoke(Sub() ErrorReportDialog.Show(MCBackup.Language.GetString("Exception.Delete"), ex))
             End If
         End Try
 
@@ -1167,7 +1179,7 @@ Partial Class MainWindow
         EnableUI(True)
         RefreshBackupsList()
         ReloadBackupGroups()
-        StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
+        StatusLabel.Content = MCBackup.Language.GetString("Status.Ready")
         Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
         Progress.IsIndeterminate = False
     End Sub
@@ -1195,11 +1207,11 @@ Partial Class MainWindow
         If AutoBackupWindow.IsVisible Then
             AutoBackupWindow.Hide()
             Me.Left = Me.Left + (AutoBackupWindow.Width / 2)
-            AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " >>"
+            AutomaticBackupButton.Content = MCBackup.Language.GetString("MainWindow.AutomaticBackupButton.Content") & " >>"
             AdjustBackground()
         Else
             Me.Left = Me.Left - (AutoBackupWindow.Width / 2)
-            AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " <<"
+            AutomaticBackupButton.Content = MCBackup.Language.GetString("MainWindow.AutomaticBackupButton.Content") & " <<"
             AutoBackupWindow.Top = Me.Top
             AutoBackupWindow.Left = Me.Left + Me.Width + 5
             AutoBackupWindow.Show()
@@ -1428,7 +1440,7 @@ Partial Class MainWindow
                             AutoBackupWindowWasShown = AutoBackupWindow.IsVisible
                             If AutoBackupWindow.IsVisible Then AutoBackupWindow.Hide()
                             If My.Settings.FirstCloseToTray Then
-                                NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RunningBackground"), MCBackup.Language.Dictionary("BalloonTip.RunningBackground"), System.Windows.Forms.ToolTipIcon.Info)
+                                NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.GetString("BalloonTip.Title.RunningBackground"), MCBackup.Language.GetString("BalloonTip.RunningBackground"), System.Windows.Forms.ToolTipIcon.Info)
                                 My.Settings.FirstCloseToTray = False
                             End If
 
@@ -1439,7 +1451,7 @@ Partial Class MainWindow
                             e.Cancel = True
                         Case Forms.DialogResult.No
                             If Manager.IsBusy Or ThreadIsNotNothingAndAlive(DeleteThread) Then
-                                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.MCBackupIsWorking"), MCBackup.Language.Dictionary("Message.Caption.MCBackupIsWorking"), MessageBoxButton.OK, MessageBoxImage.Question)
+                                MetroMessageBox.Show(MCBackup.Language.GetString("Message.MCBackupIsWorking"), MCBackup.Language.GetString("Message.Caption.MCBackupIsWorking"), MessageBoxButton.OK, MessageBoxImage.Question)
                                 e.Cancel = True
                             End If
                         Case Forms.DialogResult.Cancel
@@ -1453,7 +1465,7 @@ Partial Class MainWindow
                         AutoBackupWindowWasShown = AutoBackupWindow.IsVisible
                         If AutoBackupWindow.IsVisible Then AutoBackupWindow.Hide()
                         If My.Settings.FirstCloseToTray Then
-                            NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.RunningBackground"), MCBackup.Language.Dictionary("BalloonTip.RunningBackground"), System.Windows.Forms.ToolTipIcon.Info)
+                            NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.GetString("BalloonTip.Title.RunningBackground"), MCBackup.Language.GetString("BalloonTip.RunningBackground"), System.Windows.Forms.ToolTipIcon.Info)
                             My.Settings.FirstCloseToTray = False
                         End If
 
@@ -1462,7 +1474,7 @@ Partial Class MainWindow
                         e.Cancel = True
                     Else
                         If Manager.IsBusy Or ThreadIsNotNothingAndAlive(DeleteThread) Then
-                            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.MCBackupIsWorking"), MCBackup.Language.Dictionary("Message.Caption.MCBackupIsWorking"), MessageBoxButton.OK, MessageBoxImage.Question)
+                            MetroMessageBox.Show(MCBackup.Language.GetString("Message.MCBackupIsWorking"), MCBackup.Language.GetString("Message.Caption.MCBackupIsWorking"), MessageBoxButton.OK, MessageBoxImage.Question)
                             e.Cancel = True
                         End If
                     End If
@@ -1537,14 +1549,14 @@ Partial Class MainWindow
     Private Sub SearchTextBox_LostFocus(sender As Object, e As RoutedEventArgs) Handles SearchTextBox.LostFocus
         If String.IsNullOrEmpty(SearchTextBox.Text) Then
             PreventUpdate = True
-            SearchTextBox.Text = MCBackup.Language.Dictionary("MainWindow.Search")
+            SearchTextBox.Text = MCBackup.Language.GetString("MainWindow.Search")
             SearchTextBox.Foreground = New SolidColorBrush(Colors.Gray)
             PreventUpdate = False
         End If
     End Sub
 
     Private Sub SearchTextBox_GotFocus(sender As Object, e As RoutedEventArgs) Handles SearchTextBox.GotFocus
-        If SearchTextBox.Text = MCBackup.Language.Dictionary("MainWindow.Search") Then
+        If SearchTextBox.Text = MCBackup.Language.GetString("MainWindow.Search") Then
             PreventUpdate = True
             SearchTextBox.Text = ""
             SearchTextBox.Foreground = New SolidColorBrush(Colors.Black)
@@ -1606,7 +1618,7 @@ Partial Class MainWindow
 
         If DeleteThread IsNot Nothing Then
             If DeleteThread.IsAlive Then
-                If MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.CancelDelete"), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
+                If MetroMessageBox.Show(MCBackup.Language.GetString("Message.CancelDelete"), MCBackup.Language.GetString("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Exclamation) = MessageBoxResult.Yes Then
                     If DeleteThread.IsAlive Then
                         DeleteThread.Abort()
                     End If
@@ -1662,8 +1674,8 @@ Partial Class MainWindow
     Public Sub MoveToGroup(SelectedItems As List(Of ListViewBackupItem), Group As String)
         Me.Dispatcher.Invoke(Sub()
                                  EnableUI(False)
-                                 StatusLabel.Content = MCBackup.Language.Dictionary("Status.MovingBackups")
-                                 Me.Title = String.Format("MCBackup {0} - " & MCBackup.Language.Dictionary("MainWindow.Title.MovingBackups"), ApplicationVersion)
+                                 StatusLabel.Content = MCBackup.Language.GetString("Status.MovingBackups")
+                                 Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.MovingBackups", ApplicationVersion)
                                  Progress.IsIndeterminate = True
                              End Sub)
 
@@ -1694,7 +1706,7 @@ Partial Class MainWindow
 
         Me.Dispatcher.Invoke(Sub()
                                  EnableUI(True)
-                                 StatusLabel.Content = MCBackup.Language.Dictionary("Status.Ready")
+                                 StatusLabel.Content = MCBackup.Language.GetString("Status.Ready")
                                  Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
                                  Progress.IsIndeterminate = False
                                  RefreshBackupsList()

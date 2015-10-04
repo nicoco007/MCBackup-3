@@ -25,17 +25,17 @@ Public Class DeleteDialog
         Dim MsgBox As New DeleteDialog
         MsgBox.Owner = Owner
         MsgBox.Title = Application.Current.MainWindow.Title
-        MsgBox.AreYouSureTextBlock.Text = MCBackup.Language.Dictionary("Message.DeleteAreYouSure")
-        MsgBox.YesButton.Content = MCBackup.Language.Dictionary("MetroMsgBox.Button.Yes")
-        MsgBox.NoButton.Content = MCBackup.Language.Dictionary("MetroMsgBox.Button.No")
-        MsgBox.DoNotAskAgainCheckBox.Content = MCBackup.Language.Dictionary("DeleteDialog.DoNotAskAgain.Text")
+        MsgBox.AreYouSureTextBlock.Text = MCBackup.Language.GetString("Message.DeleteAreYouSure")
+        MsgBox.YesButton.Content = MCBackup.Language.GetString("MetroMsgBox.Button.Yes")
+        MsgBox.NoButton.Content = MCBackup.Language.GetString("MetroMsgBox.Button.No")
+        MsgBox.DoNotAskAgainCheckBox.Content = MCBackup.Language.GetString("DeleteDialog.DoNotAskAgain.Text")
         MsgBox.ShowDialog()
         My.Settings.ShowDeleteDialog = Not MsgBox.DoNotAskAgainCheckBox.IsChecked
         Return Result
     End Function
 
     Private Sub LoadLanguage()
-        Me.Title = MCBackup.Language.Dictionary("Message.Caption.AreYouSure")
+        Me.Title = MCBackup.Language.GetString("Message.Caption.AreYouSure")
     End Sub
 
     Private Sub YesButton_Click(sender As Object, e As RoutedEventArgs) Handles YesButton.Click

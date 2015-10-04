@@ -35,8 +35,8 @@ Public Class RenameBackupGroupDialog
     End Sub
 
     Private Sub LoadLanguage()
-        Me.Title = MCBackup.Language.Dictionary("RenameWindow.Title")
-        RenameButton.Content = MCBackup.Language.Dictionary("RenameWindow.RenameButton.Content")
-        CancelButton.Content = MCBackup.Language.Dictionary("RenameWindow.CancelButton.Content")
+        Me.Title = MCBackup.Language.GetString("RenameWindow.Title")
+        RenameButton.Content = MCBackup.Language.GetString("RenameWindow.RenameButton.Content")
+        CancelButton.Content = MCBackup.Language.GetString("RenameWindow.CancelButton.Content")
     End Sub
 End Class

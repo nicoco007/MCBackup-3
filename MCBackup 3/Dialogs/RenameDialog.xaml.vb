@@ -29,7 +29,7 @@ Public Class RenameDialog
 
     Private Sub RenameButton_Click(sender As Object, e As EventArgs) Handles RenameButton.Click
         If TextBox.Text = "" Then
-            MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.EnterValidName"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            MetroMessageBox.Show(MCBackup.Language.GetString("Message.EnterValidName"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             Exit Sub
         End If
 
@@ -37,11 +37,11 @@ Public Class RenameDialog
             If Not My.Computer.FileSystem.DirectoryExists(My.Settings.BackupsFolderLocation & "\" & TextBox.Text) Then
                 My.Computer.FileSystem.RenameDirectory(My.Settings.BackupsFolderLocation & "\" & Main.ListView.SelectedItem.Name, TextBox.Text)
             Else
-                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.BackupAlreadyExists"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                MetroMessageBox.Show(MCBackup.Language.GetString("Message.BackupAlreadyExists"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
                 Exit Sub
             End If
         Catch ex As Exception
-            ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Rename"), ex)
+            ErrorReportDialog.Show(MCBackup.Language.GetString("Exception.Rename"), ex)
         End Try
         Main.RefreshBackupsList()
         Me.Close()
@@ -52,8 +52,8 @@ Public Class RenameDialog
     End Sub
 
     Private Sub LoadLanguage()
-        Me.Title = MCBackup.Language.Dictionary("RenameWindow.Title")
-        RenameButton.Content = MCBackup.Language.Dictionary("RenameWindow.RenameButton.Content")
-        CancelButton.Content = MCBackup.Language.Dictionary("RenameWindow.CancelButton.Content")
+        Me.Title = MCBackup.Language.GetString("RenameWindow.Title")
+        RenameButton.Content = MCBackup.Language.GetString("RenameWindow.RenameButton.Content")
+        CancelButton.Content = MCBackup.Language.GetString("RenameWindow.CancelButton.Content")
     End Sub
 End Class

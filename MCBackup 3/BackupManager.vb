@@ -386,16 +386,16 @@ Public NotInheritable Class BackupManager
 
             AddHandler FileSystemManager.DeleteDirectoryCompleted, Sub(sender, e)
 
-                                                                       Try
+                                                                       If e.Error IsNot Nothing Then
+
+                                                                           RestoreAsyncOperation.PostOperationCompleted(RestoreCompletedCallback, New RestoreCompletedEventArgs(e.Error, _CancellationPending))
+
+                                                                       Else
 
                                                                            RestoreThread = New Thread(AddressOf RestoreThreadStart)
                                                                            RestoreThread.Start(New RestoreEventArgs(backupName, restoreLocation, backupType))
 
-                                                                       Catch ex As Exception
-
-                                                                           RestoreAsyncOperation.PostOperationCompleted(RestoreCompletedCallback, New RestoreCompletedEventArgs(ex, _CancellationPending))
-
-                                                                       End Try
+                                                                       End If
 
                                                                    End Sub
 
@@ -403,16 +403,8 @@ Public NotInheritable Class BackupManager
 
         Else
 
-            Try
-
-                RestoreThread = New Thread(AddressOf RestoreThreadStart)
-                RestoreThread.Start(New RestoreEventArgs(backupName, restoreLocation, backupType))
-
-            Catch ex As Exception
-
-                RestoreAsyncOperation.PostOperationCompleted(RestoreCompletedCallback, New RestoreCompletedEventArgs(ex, _CancellationPending))
-
-            End Try
+            RestoreThread = New Thread(AddressOf RestoreThreadStart)
+            RestoreThread.Start(New RestoreEventArgs(backupName, restoreLocation, backupType))
 
         End If
 
@@ -594,13 +586,13 @@ Public NotInheritable Class BackupManager
     ''' <returns>A string describing the estimated time left.</returns>
     Public Function EstimatedTimeSpanToString(span As TimeSpan)
         If span.Hours > 0 Then
-            Return String.Format(MCBackup.Language.Dictionary("TimeLeft.HoursMinutesSeconds"), Math.Floor(span.TotalHours), span.Minutes, Math.Round(span.Seconds / 10) * 10)
+            Return String.Format(MCBackup.Language.GetString("TimeLeft.HoursMinutesSeconds"), Math.Floor(span.TotalHours), span.Minutes, Math.Round(span.Seconds / 10) * 10)
         ElseIf span.TotalMinutes >= 1 Then
-            Return String.Format(MCBackup.Language.Dictionary("TimeLeft.MinutesSeconds"), Math.Floor(span.TotalMinutes), Math.Round(span.Seconds / 10) * 10)
+            Return String.Format(MCBackup.Language.GetString("TimeLeft.MinutesSeconds"), Math.Floor(span.TotalMinutes), Math.Round(span.Seconds / 10) * 10)
         ElseIf span.Seconds > 5 Then
-            Return String.Format(MCBackup.Language.Dictionary("TimeLeft.Seconds"), Math.Round(span.Seconds / 10) * 10)
+            Return String.Format(MCBackup.Language.GetString("TimeLeft.Seconds"), Math.Round(span.Seconds / 10) * 10)
         Else
-            Return MCBackup.Language.Dictionary("TimeLeft.LessThanFive")
+            Return MCBackup.Language.GetString("TimeLeft.LessThanFive")
         End If
     End Function
 End Class

@@ -29,10 +29,10 @@ Public Class CullDialog
         AddHandler DeleteBackgroundWorker.DoWork, New DoWorkEventHandler(AddressOf DeleteBackgroundWorker_DoWork)
         AddHandler DeleteBackgroundWorker.RunWorkerCompleted, New RunWorkerCompletedEventHandler(AddressOf DeleteBackgroundWorker_RunWorkerCompleted)
 
-        Me.Title = MCBackup.Language.Dictionary("CullWindow.Title")
-        Label1.Content = MCBackup.Language.Dictionary("CullWindow.Label1.Content")
-        Label2.Content = MCBackup.Language.Dictionary("CullWindow.Label2.Content")
-        CullButton.Content = MCBackup.Language.Dictionary("CullWindow.CullButton.Content")
+        Me.Title = MCBackup.Language.GetString("CullWindow.Title")
+        Label1.Content = MCBackup.Language.GetString("CullWindow.Label1.Content")
+        Label2.Content = MCBackup.Language.GetString("CullWindow.Label2.Content")
+        CullButton.Content = MCBackup.Language.GetString("CullWindow.CullButton.Content")
     End Sub
 
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
@@ -45,7 +45,7 @@ Public Class CullDialog
     End Sub
 
     Private Sub CullButton_Click(sender As Object, e As RoutedEventArgs) Handles CullButton.Click
-        If MetroMessageBox.Show(String.Format(MCBackup.Language.Dictionary("CullWindow.AreYouSureMsg"), DaysNumUpDown.Value), MCBackup.Language.Dictionary("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.No Then
+        If MetroMessageBox.Show(String.Format(MCBackup.Language.GetString("CullWindow.AreYouSureMsg"), DaysNumUpDown.Value), MCBackup.Language.GetString("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.No Then
             Exit Sub
         End If
 
@@ -58,7 +58,7 @@ Public Class CullDialog
         Next
 
         DeleteBackgroundWorker.RunWorkerAsync()
-        Main.StatusLabel.Content = MCBackup.Language.Dictionary("Status.Deleting")
+        Main.StatusLabel.Content = MCBackup.Language.GetString("Status.Deleting")
         Main.ProgressBar.IsIndeterminate = True
         Me.Close()
     End Sub
@@ -68,13 +68,13 @@ Public Class CullDialog
             Try
                 My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & Item, FileIO.DeleteDirectoryOption.DeleteAllContents)
             Catch ex As Exception
-                ErrorReportDialog.Show(MCBackup.Language.Dictionary("Exception.Delete"), ex)
+                ErrorReportDialog.Show(MCBackup.Language.GetString("Exception.Delete"), ex)
             End Try
         Next
     End Sub
 
     Private Sub DeleteBackgroundWorker_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs)
-        Main.StatusLabel.Content = MCBackup.Language.Dictionary("Status.DeleteComplete")
+        Main.StatusLabel.Content = MCBackup.Language.GetString("Status.DeleteComplete")
         Main.ProgressBar.IsIndeterminate = False
         Main.RefreshBackupsList()
     End Sub

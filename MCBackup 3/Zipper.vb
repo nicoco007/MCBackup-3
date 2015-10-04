@@ -246,13 +246,9 @@ Class Zipper
 
     Public Sub CancelExtract()
         If extractThread IsNot Nothing AndAlso extractThread.IsAlive Then
+
             _CancellationPending = True
 
-            extractThread.Abort()
-
-            Dim e As New ExtractCompletedEventArgs(Nothing, True)
-
-            extractAsyncOperation.PostOperationCompleted(extractCompletedCallback, e)
         End If
     End Sub
 
@@ -282,6 +278,12 @@ Class Zipper
                 AddHandler zip.ExtractProgress, Sub(s, args)
                                                     If prevEntry IsNot args.CurrentEntry Then
                                                         prevBytesTransferred = 0
+                                                    End If
+
+                                                    If CancellationPending Then
+                                                        args.Cancel = True
+
+                                                        Return
                                                     End If
 
                                                     If args.BytesTransferred <> 0 Then

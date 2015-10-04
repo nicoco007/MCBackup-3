@@ -60,62 +60,57 @@ Public Class AsyncFileSystemManager
         ' Create global error variable
         Dim err As Exception = Nothing
 
-        ' Create new timer for progress
-        Dim DeleteDirectoryTimer As New DispatcherTimer() With {.Interval = TimeSpan.FromMilliseconds(100)}
-
         ' Create delete directory asynchronous operation
         DeleteDirectoryAsyncOperation = AsyncOperationManager.CreateOperation(Nothing)
 
         ' Create thread
         Dim DeleteDirectoryThread As New Thread(Sub()
 
-                                                    DeleteDirectoryTimer.Start()
+                                                    Try
 
-                                                    My.Computer.FileSystem.DeleteDirectory(directory, onDirectoryNotEmpty)
+                                                        My.Computer.FileSystem.DeleteDirectory(directory, onDirectoryNotEmpty)
+
+                                                    Catch ex As Exception
+
+                                                        err = ex
+
+                                                    End Try
 
                                                 End Sub)
 
-        ' Set timer tick event
-        AddHandler DeleteDirectoryTimer.Tick, Sub()
+        Dim DeleteDirectoryProgressThread As New Thread(Sub()
+                                                            Try
+                                                                ' Check if delete is in progress and cancellation is not pending
+                                                                While DeleteDirectoryThread.IsAlive And Not _CancellationPending
 
-                                                  ' Check if delete is in progress and cancellation is not pending
-                                                  If DeleteDirectoryThread.IsAlive And Not _CancellationPending Then
+                                                                    ' Get current size of directory to delete
+                                                                    Dim currentSize As Long = GetDirectorySize(directory)
 
-                                                      ' Get current size of directory to delete
-                                                      Dim currentSize As Long = GetDirectorySize(directory)
+                                                                    ' Get progress (subtract from 100 since progress is inverted)
+                                                                    Dim progressPercentage As Single = 100 - currentSize / totalSize * 100
 
-                                                      ' Get progress (subtract from 100 since progress is inverted)
-                                                      Dim progressPercentage As Single = 100 - currentSize / totalSize * 100
+                                                                    ' Post progress changed
+                                                                    DeleteDirectoryAsyncOperation.Post(DeleteDirectoryProgressChangedCallback, New DeleteDirectoryProgressChangedEventArgs(progressPercentage))
 
-                                                      ' Post progress changed
-                                                      DeleteDirectoryAsyncOperation.Post(DeleteDirectoryProgressChangedCallback, New DeleteDirectoryProgressChangedEventArgs(progressPercentage))
+                                                                End While
 
-                                                  Else
+                                                                ' Abort thread if cancellation was pending
+                                                                If _CancellationPending Then DeleteDirectoryThread.Abort()
 
-                                                      ' Abort thread if cancellation was pending
-                                                      If _CancellationPending Then DeleteDirectoryThread.Abort()
+                                                            Catch ex As Exception
 
-                                                      ' Post operation completed
-                                                      DeleteDirectoryAsyncOperation.PostOperationCompleted(DeleteDirectoryCompletedCallback, New DeleteDirectoryCompletedEventArgs(err, CancellationPending))
+                                                                err = ex
 
-                                                      ' Stop timer
-                                                      DeleteDirectoryTimer.Stop()
+                                                            End Try
 
-                                                  End If
+                                                            ' Post operation completed
+                                                            DeleteDirectoryAsyncOperation.PostOperationCompleted(DeleteDirectoryCompletedCallback, New DeleteDirectoryCompletedEventArgs(err, CancellationPending))
 
-                                              End Sub
+                                                        End Sub)
 
-        Try
-
-            ' Start delete directory thread
-            DeleteDirectoryThread.Start()
-
-        Catch ex As Exception
-
-            ' Set error as caught variable
-            err = ex
-
-        End Try
+        ' Start delete directory thread
+        DeleteDirectoryThread.Start()
+        DeleteDirectoryProgressThread.Start()
 
     End Sub
     Private Sub SendDeleteDirectoryProgressChanged(e As DeleteDirectoryProgressChangedEventArgs)

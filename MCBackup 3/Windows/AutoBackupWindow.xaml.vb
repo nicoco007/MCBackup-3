@@ -38,14 +38,14 @@ Public Class AutoBackupWindow
 
     Public Sub LoadLanguage()
         Try
-            Me.Title = MCBackup.Language.Dictionary("AutoBackupWindow.Title")
-            BackupEveryLabel.Content = MCBackup.Language.Dictionary("AutoBackupWindow.BackupEveryLabel.Content")
-            MinutesLabel.Content = MCBackup.Language.Dictionary("AutoBackupWindow.MinutesLabel.Content")
-            WorldToBackUpLabel.Text = MCBackup.Language.Dictionary("AutoBackupWindow.WorldToBackUpLabel.Text")
-            RefreshButton.Content = MCBackup.Language.Dictionary("AutoBackupWindow.RefreshButton.Content")
-            StartButton.Content = MCBackup.Language.Dictionary("AutoBackupWindow.StartButton.Content.Start")
-            SaveNameColumn.Header = MCBackup.Language.Dictionary("BackupWindow.SaveNameColumn.Header")
-            SaveLocationColumn.Header = MCBackup.Language.Dictionary("BackupWindow.SaveLocationColumn.Header")
+            Me.Title = MCBackup.Language.GetString("AutoBackupWindow.Title")
+            BackupEveryLabel.Content = MCBackup.Language.GetString("AutoBackupWindow.BackupEveryLabel.Content")
+            MinutesLabel.Content = MCBackup.Language.GetString("AutoBackupWindow.MinutesLabel.Content")
+            WorldToBackUpLabel.Text = MCBackup.Language.GetString("AutoBackupWindow.WorldToBackUpLabel.Text")
+            RefreshButton.Content = MCBackup.Language.GetString("AutoBackupWindow.RefreshButton.Content")
+            StartButton.Content = MCBackup.Language.GetString("AutoBackupWindow.StartButton.Content.Start")
+            SaveNameColumn.Header = MCBackup.Language.GetString("BackupWindow.SaveNameColumn.Header")
+            SaveLocationColumn.Header = MCBackup.Language.GetString("BackupWindow.SaveLocationColumn.Header")
         Catch
         End Try
     End Sub
@@ -61,7 +61,7 @@ Public Class AutoBackupWindow
         Me.Hide()
         MainWindow.Left = MainWindow.Left + (Me.Width / 2)
         Try
-            MainWindow.AutomaticBackupButton.Content = MCBackup.Language.Dictionary("MainWindow.AutomaticBackupButton.Content") & " >>"
+            MainWindow.AutomaticBackupButton.Content = MCBackup.Language.GetString("MainWindow.AutomaticBackupButton.Content") & " >>"
         Catch
         End Try
         MainWindow.Focus()
@@ -88,7 +88,7 @@ Public Class AutoBackupWindow
             MainWindow.NotificationIconWindow.AutoBackupLabel.Content = "Automatic Backup is not running."
             MainWindow.NotificationIconWindow.AutoBackupTimeLabel.Visibility = Visibility.Collapsed
 
-            StartButton.Content = MCBackup.Language.Dictionary("AutoBackupWindow.StartButton.Content.Start")
+            StartButton.Content = MCBackup.Language.GetString("AutoBackupWindow.StartButton.Content.Start")
             TimerStarted = False
 
             MinutesNumUpDown.IsEnabled = True
@@ -103,7 +103,7 @@ Public Class AutoBackupWindow
             TimeLabel.Content = String.Format("{0:00}:00", MinutesNumUpDown.Value)
             If MainWindow.NotificationIconWindow.IsVisible Then MainWindow.NotificationIconWindow.AutoBackupTimeLabel.Content = String.Format("{0:00}:00", MinutesNumUpDown.Value)
             Timer.Start()
-            StartButton.Content = MCBackup.Language.Dictionary("AutoBackupWindow.StartButton.Content.Stop")
+            StartButton.Content = MCBackup.Language.GetString("AutoBackupWindow.StartButton.Content.Stop")
             TimerStarted = True
 
             MinutesNumUpDown.IsEnabled = False
@@ -131,14 +131,14 @@ Public Class AutoBackupWindow
             Dim Name As String = BackupName.Process(My.Settings.DefaultAutoBackupName, DirectCast(SavesListView.SelectedItem, SaveInfoListViewItem).Name)
 
             If Regex.IsMatch(Name, "[\/:*?""<>|]") Then
-                MetroMessageBox.Show(MCBackup.Language.Dictionary("Message.IllegalCharacters"), MCBackup.Language.Dictionary("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
+                MetroMessageBox.Show(MCBackup.Language.GetString("Message.IllegalCharacters"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
                 Timer.Stop()
                 Exit Sub
             End If
 
             MainWindow.BackupInfo.Name = Name
 
-            MainWindow.BackupInfo.Description = String.Format(MCBackup.Language.Dictionary("AutoBackupWindow.BackupDescription"), SavesListView.SelectedItem.Name)
+            MainWindow.BackupInfo.Description = String.Format(MCBackup.Language.GetString("AutoBackupWindow.BackupDescription"), SavesListView.SelectedItem.Name)
             Select Case My.Settings.Launcher
                 Case Game.Launcher.Minecraft
                     MainWindow.BackupInfo.Location = My.Settings.SavesFolderLocation & "\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
@@ -155,14 +155,14 @@ Public Class AutoBackupWindow
             MainWindow.BackupInfo.Launcher = SavesListView.SelectedItem.Launcher
             MainWindow.BackupInfo.Modpack = SavesListView.SelectedItem.Modpack
 
-            MainWindow.BackupInfo.Group = MCBackup.Language.Dictionary("Groups.AutoBackups")
+            MainWindow.BackupInfo.Group = MCBackup.Language.GetString("Groups.AutoBackups")
 
             MainWindow.StartBackup()
 
-            If My.Settings.ShowBalloonTips Then MainWindow.NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.Dictionary("BalloonTip.Title.AutoBackup"), String.Format(MCBackup.Language.Dictionary("BalloonTip.AutoBackup"), CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name), Forms.ToolTipIcon.Info)
+            If My.Settings.ShowBalloonTips Then MainWindow.NotifyIcon.ShowBalloonTip(2000, MCBackup.Language.GetString("BalloonTip.Title.AutoBackup"), String.Format(MCBackup.Language.GetString("BalloonTip.AutoBackup"), CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name), Forms.ToolTipIcon.Info)
 
-            If Not My.Settings.BackupGroups.Contains(MCBackup.Language.Dictionary("Groups.AutoBackups")) Then
-                My.Settings.BackupGroups.Add(MCBackup.Language.Dictionary("Groups.AutoBackups"))
+            If Not My.Settings.BackupGroups.Contains(MCBackup.Language.GetString("Groups.AutoBackups")) Then
+                My.Settings.BackupGroups.Add(MCBackup.Language.GetString("Groups.AutoBackups"))
             End If
 
             Minutes = MinutesNumUpDown.Value
