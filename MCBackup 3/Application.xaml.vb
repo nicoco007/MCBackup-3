@@ -14,7 +14,11 @@
 '   ║                      limitations under the License.                       ║
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
 
-Imports MahApps.Metro
+Imports System.Globalization
+Imports System.Reflection
+Imports System.Runtime.InteropServices
+Imports System.Threading
+Imports System.Windows.Interop
 
 Class Application
     Public Enum AppCloseAction
