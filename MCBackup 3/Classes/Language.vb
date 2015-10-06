@@ -15,7 +15,6 @@
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
 
 Imports System.IO
-Imports System.Text.RegularExpressions
 
 Public Class Language
     Private Shared Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)

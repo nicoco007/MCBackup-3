@@ -1631,6 +1631,8 @@ Partial Class MainWindow
     End Sub
 
     Private Sub EnableUI(IsEnabled As Boolean)
+        Me.Cursor = IIf(IsEnabled, Cursors.Arrow, Cursors.AppStarting)
+
         BackupButton.IsEnabled = IsEnabled
         RestoreButton.IsEnabled = IsEnabled
         DeleteButton.IsEnabled = IsEnabled
