@@ -1,22 +1,26 @@
 ﻿Imports System.ComponentModel
 Imports System.IO
 Imports System.Threading
-Imports System.Windows.Threading
 
 Public Class AsyncFileSystemManager
 
     Public Delegate Sub DeleteDirectoryProgressChangedEventHandler(sender As Object, e As DeleteDirectoryProgressChangedEventArgs)
-
     Public Delegate Sub DeleteDirectoryCompletedEventHandler(sender As Object, e As DeleteDirectoryCompletedEventArgs)
+    Public Delegate Sub CopyDirectoryProgressChangedEventHandler(sender As Object, e As CopyDirectoryProgressChangedEventArgs)
+    Public Delegate Sub CopyDirectoryCompletedEventHandler(sender As Object, e As CopyDirectoryCompletedEventArgs)
 
     Public Event DeleteDirectoryProgressChanged As DeleteDirectoryProgressChangedEventHandler
-
     Public Event DeleteDirectoryCompleted As DeleteDirectoryCompletedEventHandler
+    Public Event CopyDirectoryProgressChanged As CopyDirectoryProgressChangedEventHandler
+    Public Event CopyDirectoryCompleted As CopyDirectoryCompletedEventHandler
 
     Private DeleteDirectoryProgressChangedCallback As SendOrPostCallback
     Private DeleteDirectoryCompletedCallback As SendOrPostCallback
+    Private CopyDirectoryProgressChangedCallback As SendOrPostCallback
+    Private CopyDirectoryCompletedCallback As SendOrPostCallback
 
     Private DeleteDirectoryAsyncOperation As AsyncOperation
+    Private CopyDirectoryAsyncOperation As AsyncOperation
 
     Private _IsBusy As Boolean = False
     Public ReadOnly Property IsBusy As Boolean
@@ -32,11 +36,19 @@ Public Class AsyncFileSystemManager
         End Get
     End Property
 
+    Public Sub Cancel()
+
+        Me._CancellationPending = True
+
+    End Sub
+
     Public Sub New()
 
         ' Set callbacks
         DeleteDirectoryProgressChangedCallback = New SendOrPostCallback(AddressOf SendDeleteDirectoryProgressChanged)
         DeleteDirectoryCompletedCallback = New SendOrPostCallback(AddressOf SendDeleteDirectoryCompleted)
+        CopyDirectoryProgressChangedCallback = New SendOrPostCallback(AddressOf SendCopyDirectoryProgressChanged)
+        CopyDirectoryCompletedCallback = New SendOrPostCallback(AddressOf SendCopyDirectoryCompleted)
 
     End Sub
 
@@ -127,9 +139,96 @@ Public Class AsyncFileSystemManager
 
         ' Set manager as not busy
         Me._IsBusy = False
+        Me._CancellationPending = False
 
         ' Raise completed event
         RaiseEvent DeleteDirectoryCompleted(Me, e)
+
+    End Sub
+
+    Public Sub CopyDirectoryAsync(sourceDirectory As String, destinationDirectory As String, Optional overwrite As Boolean = False)
+
+        ' Check if manager is already busy
+        If Me._IsBusy Then
+
+            ' Throw invalid operation exception if manager is already running
+            Throw New InvalidOperationException("Async Filesystem Manager is busy!")
+
+        End If
+
+        Me._IsBusy = True
+        Me._CancellationPending = False
+
+        Dim totalBytes As Long = GetDirectorySize(sourceDirectory)
+
+        Dim err As Exception = Nothing
+
+        CopyDirectoryAsyncOperation = AsyncOperationManager.CreateOperation(Nothing)
+
+        Dim CopyDirectoryThread As New Thread(Sub()
+
+                                                  My.Computer.FileSystem.CopyDirectory(sourceDirectory, destinationDirectory, overwrite)
+
+                                              End Sub)
+
+        Dim CopyDirectoryProgressThread As New Thread(Sub()
+
+                                                          Try
+
+                                                              ' Check if delete is in progress and cancellation is not pending
+                                                              While CopyDirectoryThread.IsAlive And Not _CancellationPending
+
+                                                                  ' Get current size of directory to delete
+                                                                  Dim bytesCopied As Long = GetDirectorySize(destinationDirectory)
+
+                                                                  Dim progressPercentage As Single = 0
+
+                                                                  ' Make sure we are not dividing by 0
+                                                                  If totalBytes <> 0 And bytesCopied <> 0 Then
+
+                                                                      ' Get progress (subtract from 100 since progress is inverted)
+                                                                      progressPercentage = 100 - bytesCopied / totalBytes * 100
+
+                                                                      ' Post progress changed
+                                                                      CopyDirectoryAsyncOperation.Post(CopyDirectoryProgressChangedCallback, New CopyDirectoryProgressChangedEventArgs(progressPercentage, bytesCopied, totalBytes))
+
+                                                                  Else
+
+                                                                      Log.Print("Division by zero prevented during delete directory operation - may be caused by empty directory", Log.Level.Warning)
+
+                                                                  End If
+                                                              End While
+
+                                                              ' Abort thread if cancellation was pending
+                                                              If _CancellationPending Then CopyDirectoryThread.Abort()
+
+                                                          Catch ex As Exception
+
+                                                              err = ex
+
+                                                          End Try
+
+                                                          CopyDirectoryAsyncOperation.PostOperationCompleted(CopyDirectoryCompletedCallback, New CopyDirectoryCompletedEventArgs(err, CancellationPending))
+
+                                                      End Sub)
+
+        CopyDirectoryThread.Start()
+        CopyDirectoryProgressThread.Start()
+
+    End Sub
+
+    Private Sub SendCopyDirectoryProgressChanged(e As CopyDirectoryProgressChangedEventArgs)
+
+        RaiseEvent CopyDirectoryProgressChanged(Me, e)
+
+    End Sub
+
+    Private Sub SendCopyDirectoryCompleted(e As CopyDirectoryCompletedEventArgs)
+
+        Me._IsBusy = False
+        Me._CancellationPending = False
+
+        RaiseEvent CopyDirectoryCompleted(Me, e)
 
     End Sub
 

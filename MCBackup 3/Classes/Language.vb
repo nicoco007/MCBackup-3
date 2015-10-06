@@ -31,7 +31,7 @@ Public Class Language
         End Set
     End Property
 
-    Public Shared Dictionary As New Dictionary(Of String, String)
+    Private Shared Dictionary As New Dictionary(Of String, String)
 
     Public Shared Sub Load(FileName As String)
 

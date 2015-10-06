@@ -23,10 +23,10 @@ Imports System.Text
 Imports System.Threading
 Imports System.Windows.Threading
 Imports MahApps.Metro
+Imports MCBackup.BackupManager
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 Imports Substrate
-Imports MCBackup.BackupManager
 
 Partial Class MainWindow
 
@@ -51,14 +51,9 @@ Partial Class MainWindow
     Public NotificationIconWindow As New NotificationIconWindow
     Private Splash As New Splash
 
-    'Private Cancel As Boolean = False
-
     Public AutoBackupWindowWasShown As Boolean = False
 
     Public BackgroundImageBitmap As BitmapImage
-
-    ' New threading stuff
-    Private BackupThread As Thread
 
     Private Manager As New BackupManager()
 #End Region
@@ -77,11 +72,6 @@ Partial Class MainWindow
         Application.CloseAction = Application.AppCloseAction.Force
 
         UpdateTheme()
-        'Dim DefaultBackground As SolidColorBrush = DirectCast(FindResource("ControlBackgroundBrush"), SolidColorBrush)
-        'Dim InterfaceOpacityBackground As New SolidColorBrush(Color.FromArgb(My.Settings.InterfaceOpacity * 2.55, DefaultBackground.Color.R, DefaultBackground.Color.G, DefaultBackground.Color.B))
-
-        'Me.ListView.Background = InterfaceOpacityBackground
-        'Me.Sidebar.Background = InterfaceOpacityBackground
 
         Splash.Show()
         Splash.ShowStatus("Splash.Status.Starting", "Starting...")
@@ -793,7 +783,7 @@ Partial Class MainWindow
                 Progress.IsIndeterminate = True
                 Progress.Value = 0
 
-                StatusLabel.Content = "Starting..."
+                StatusLabel.Content = MCBackup.Language.GetString("Status.StartingBackup")
 
             Case BackupStatus.Running
 
@@ -971,16 +961,28 @@ Partial Class MainWindow
     Private Sub BackupManager_RestoreProgressChanged(sender As Object, e As RestoreProgressChangedEventArgs)
 
         Progress.Maximum = 100
-        Progress.Value = e.ProgressPercentage
 
         Select Case e.RestoreStatus
 
+            Case RestoreStatus.Starting
+
+                Progress.IsIndeterminate = True
+                Progress.Value = 0
+
+                StatusLabel.Content = MCBackup.Language.GetString("Status.StartingRestore")
+
             Case RestoreStatus.RemovingOldFiles
+
+                Progress.IsIndeterminate = False
+                Progress.Value = e.ProgressPercentage
 
                 StatusLabel.Content = MCBackup.Language.GetString("Status.RemovingOldContent", e.ProgressPercentage)
                 Me.Title = "MCBackup {0} - " + MCBackup.Language.GetString("MainWindow.Title.RemovingOldContent", ApplicationVersion, e.ProgressPercentage)
 
             Case RestoreStatus.Restoring
+
+                Progress.IsIndeterminate = False
+                Progress.Value = e.ProgressPercentage
 
                 StatusLabel.Content = MCBackup.Language.GetString("Status.Restoring", e.ProgressPercentage, e.TransferRate / 1048576, Manager.EstimatedTimeSpanToString(e.EstimatedTimeRemaining))
                 Me.Title = "MCBackup {0} - " + MCBackup.Language.GetString("MainWindow.Title.Restore", ApplicationVersion, e.ProgressPercentage)

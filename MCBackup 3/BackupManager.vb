@@ -27,6 +27,7 @@ Public NotInheritable Class BackupManager
     End Enum
 
     Public Enum RestoreStatus
+        Starting
         RemovingOldFiles
         Restoring
     End Enum
@@ -374,21 +375,33 @@ Public NotInheritable Class BackupManager
 
         RestoreAsyncOperation = AsyncOperationManager.CreateOperation(Nothing)
 
+        SendRestoreProgressChanged(New RestoreProgressChangedEventArgs(RestoreStatus.Starting))
+
         If Directory.Exists(restoreLocation) Then
 
-            Dim FileSystemManager As New AsyncFileSystemManager()
+            Dim fileSystemManager As New AsyncFileSystemManager()
 
-            AddHandler FileSystemManager.DeleteDirectoryProgressChanged, Sub(sender, e)
+            AddHandler fileSystemManager.DeleteDirectoryProgressChanged, Sub(sender, e)
+
+                                                                             If _CancellationPending Then
+
+                                                                                 fileSystemManager.Cancel()
+
+                                                                             End If
 
                                                                              RestoreAsyncOperation.Post(RestoreProgressChangedCallback, New RestoreProgressChangedEventArgs(RestoreStatus.RemovingOldFiles, e.ProgressPercentage))
 
                                                                          End Sub
 
-            AddHandler FileSystemManager.DeleteDirectoryCompleted, Sub(sender, e)
+            AddHandler fileSystemManager.DeleteDirectoryCompleted, Sub(sender, e)
 
                                                                        If e.Error IsNot Nothing Then
 
                                                                            RestoreAsyncOperation.PostOperationCompleted(RestoreCompletedCallback, New RestoreCompletedEventArgs(e.Error, _CancellationPending))
+
+                                                                       ElseIf e.Cancelled
+
+                                                                           RestoreAsyncOperation.PostOperationCompleted(RestoreCompletedCallback, New RestoreCompletedEventArgs(Nothing, True))
 
                                                                        Else
 
@@ -399,7 +412,7 @@ Public NotInheritable Class BackupManager
 
                                                                    End Sub
 
-            FileSystemManager.DeleteDirectoryAsync(restoreLocation, FileIO.DeleteDirectoryOption.DeleteAllContents)
+            fileSystemManager.DeleteDirectoryAsync(restoreLocation, FileIO.DeleteDirectoryOption.DeleteAllContents)
 
         Else
 
@@ -414,14 +427,14 @@ Public NotInheritable Class BackupManager
 
         Dim BackupPath As String = Path.Combine(My.Settings.BackupsFolderLocation, e.BackupName, "backup.zip")
 
+        Dim stopwatch As New Stopwatch()
+        Dim estimatedTimeRemaining As TimeSpan = TimeSpan.FromSeconds(0)
+        Dim progress As Single
+        Dim transferRate As Single
+
         If File.Exists(BackupPath) Then
 
             Dim zipper As New Zipper()
-
-            Dim stopwatch As New Stopwatch()
-            Dim estimatedTimeRemaining As TimeSpan = TimeSpan.FromSeconds(0)
-            Dim progress As Single
-            Dim transferRate As Single
 
             AddHandler zipper.ExtractProgressChanged, Sub(s, args)
 
@@ -465,7 +478,47 @@ Public NotInheritable Class BackupManager
 
         Else
 
+            Dim fileSystemManager As New AsyncFileSystemManager()
 
+            AddHandler fileSystemManager.CopyDirectoryProgressChanged, Sub(s, args)
+
+                                                                           ' If cancellation is pending, stop compression and exit method
+                                                                           If _CancellationPending Then
+
+                                                                               fileSystemManager.Cancel()
+
+                                                                               Return
+
+                                                                           End If
+
+                                                                           ' Check if bytes copied is more than 0 to prevent division by zero error
+                                                                           If args.BytesCopied > 0 Then
+
+                                                                               ' Set estimated time remaining
+                                                                               estimatedTimeRemaining = TimeSpan.FromMilliseconds(stopwatch.ElapsedMilliseconds / args.BytesCopied * (args.TotalBytes - args.BytesCopied))
+
+                                                                           End If
+
+                                                                           ' Set progress
+                                                                           progress = (args.BytesCopied / args.TotalBytes) * 100
+
+                                                                           ' Set transfer rate (bytes per second)
+                                                                           transferRate = args.BytesCopied / stopwatch.Elapsed.TotalSeconds
+
+                                                                           ' Post backup progress callback with current progress data
+                                                                           RestoreAsyncOperation.Post(RestoreProgressChangedCallback, New RestoreProgressChangedEventArgs(RestoreStatus.Restoring, progress, estimatedTimeRemaining, transferRate))
+
+                                                                       End Sub
+
+            AddHandler fileSystemManager.CopyDirectoryCompleted, Sub(s, args)
+
+                                                                     RestoreAsyncOperation.PostOperationCompleted(RestoreCompletedCallback, New RestoreCompletedEventArgs(Nothing, _CancellationPending))
+
+                                                                 End Sub
+
+            stopwatch.Start()
+
+            fileSystemManager.CopyDirectoryAsync(Path.Combine(My.Settings.BackupsFolderLocation, e.BackupName), e.RestoreLocation, True)
 
         End If
 

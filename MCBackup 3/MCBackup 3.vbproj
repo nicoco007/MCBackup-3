@@ -115,6 +115,8 @@
     <Compile Include="EventArgs\BackupProgressChangedEventArgs.vb" />
     <Compile Include="EventArgs\CompressCompletedEventArgs.vb" />
     <Compile Include="EventArgs\CompressDirectoryEventArgs.vb" />
+    <Compile Include="EventArgs\CopyDirectoryCompletedEventArgs.vb" />
+    <Compile Include="EventArgs\CopyDirectoryProgressChangedEventArgs.vb" />
     <Compile Include="EventArgs\DeleteDirectoryCompletedEventArgs.vb" />
     <Compile Include="EventArgs\DeleteDirectoryProgressChangedEventArgs.vb" />
     <Compile Include="EventArgs\ExtractProgressChangedEventArgs.vb" />
