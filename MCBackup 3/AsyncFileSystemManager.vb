@@ -103,7 +103,7 @@ Public Class AsyncFileSystemManager
 
                                                                     Else
 
-                                                                        Log.Print("Division by zero prevented during delete directory operation - may be caused by empty directory", Log.Level.Warning)
+                                                                        Log.Warn("Division by zero prevented during delete directory operation - may be caused by empty directory")
 
                                                                     End If
                                                                 End While
@@ -194,7 +194,7 @@ Public Class AsyncFileSystemManager
 
                                                                   Else
 
-                                                                      Log.Print("Division by zero prevented during delete directory operation - may be caused by empty directory", Log.Level.Warning)
+                                                                      Log.Warn("Division by zero prevented during delete directory operation - may be caused by empty directory")
 
                                                                   End If
                                                               End While
@@ -270,9 +270,9 @@ Public Class AsyncFileSystemManager
                 Next
 
             Catch ex As IOException
-                Log.Print("File enumeration failed: " + ex.Message, Log.Level.Warning)
+                Log.Warn("File enumeration failed: " + ex.Message)
             Catch ex As UnauthorizedAccessException
-                Log.Print("File enumeration failed: " + ex.Message, Log.Level.Warning)
+                Log.Warn("File enumeration failed: " + ex.Message)
             End Try
 
             ' Return byte count

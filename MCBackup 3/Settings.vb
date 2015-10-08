@@ -23,20 +23,20 @@ Imports System.Configuration
 ' L'événement SettingsSaving est déclenché avant l'enregistrement des valeurs de paramètre.
 Partial Friend NotInheritable Class MySettings
     Public Sub MySettings_SettingsLoaded() Handles MyBase.SettingsLoaded
-        Log.Print("Loading settings...", Log.Level.Debug)
+        Log.Debug("Loading settings...")
         For Each Setting As SettingsPropertyValue In My.Settings.PropertyValues
-            Log.Print("{0,-30}= {1}", Log.Level.Debug, Setting.Name, Setting.PropertyValue)
+            Log.Verbose("{0,-45}= {1}", Setting.Name, Setting.PropertyValue)
         Next
     End Sub
 
     Public Sub MySettings_SettingChanging(sender As Object, e As SettingChangingEventArgs) Handles MyBase.SettingChanging
-        Log.Print("Setting '{0}' set to '{1}'", Log.Level.Debug, e.SettingName, e.NewValue)
+        Log.Debug("Setting '{0}' set to '{1}'", e.SettingName, e.NewValue)
     End Sub
 
     Public Sub MySettings_SettingsSaving() Handles MyBase.SettingsSaving
-        Log.Print("Saving settings...")
-        For Each Setting As System.Configuration.SettingsPropertyValue In My.Settings.PropertyValues
-            Log.Print("{0,-30}= {1}", Log.Level.Debug, Setting.Name, Setting.PropertyValue)
+        Log.Debug("Saving settings...")
+        For Each Setting As SettingsPropertyValue In My.Settings.PropertyValues
+            Log.Verbose("{0,-30}= {1}", Setting.Name, Setting.PropertyValue)
         Next
     End Sub
 End Class

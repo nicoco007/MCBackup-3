@@ -176,7 +176,7 @@ Partial Public Class Options
             My.Settings.BackgroundImageStretch = Brush.Stretch
             MainWindow.AdjustBackground()
         Catch ex As Exception
-            Log.Print(ex.Message, Log.Level.Severe)
+            Log.Severe(ex.Message)
         End Try
     End Sub
 
@@ -590,7 +590,7 @@ Partial Public Class Options
                 My.Settings.BackupsFolderLocation = FSD.FolderName
                 BackupsFolderTextBox.Text = My.Settings.BackupsFolderLocation
             Catch ex As Exception
-                Log.Print("Could not set backups folder: " & ex.Message, Log.Level.Severe)
+                Log.Severe("Could not set backups folder: " & ex.Message)
                 MetroMessageBox.Show(MCBackup.Language.GetString("Message.CouldNotSetBackupsFolder"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             End Try
         End If

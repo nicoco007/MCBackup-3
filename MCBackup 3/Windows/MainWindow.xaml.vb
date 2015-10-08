@@ -23,15 +23,17 @@ Imports System.Text
 Imports System.Threading
 Imports System.Windows.Threading
 Imports MahApps.Metro
+Imports MahApps.Metro.Controls
 Imports MCBackup.BackupManager
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 Imports Substrate
 
 Partial Class MainWindow
+    Inherits MetroWindow
 
 #Region "Variables"
-    Private AppData As String = Environ("APPDATA")
+    Private AppData As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
 
     Public BackupInfo As New BackupInfo
     Public RestoreInfo As New RestoreInfo
@@ -69,196 +71,253 @@ Partial Class MainWindow
     End Sub
 
     Private Sub Window_Loaded(sender As Object, e As EventArgs) Handles Window.Loaded
-        Application.CloseAction = Application.AppCloseAction.Force
 
-        UpdateTheme()
+        Application.CloseAction = Application.AppCloseAction.Force
 
         Splash.Show()
         Splash.ShowStatus("Splash.Status.Starting", "Starting...")
 
-        Log.SPrint("")
-        Log.SPrint("---------- Starting MCBackup v{0} @ {1} ----------", ApplicationVersion, Log.DebugTimeStamp())
-        Log.Print(Game.Launcher.Minecraft.GetStringValue())
-        Log.Print(Game.Launcher.FeedTheBeast.GetStringValue())
-        Log.Print("OS Name: " & Log.GetWindowsVersion())
-        Log.Print("OS Version: " & Environment.OSVersion.Version.Major & "." & Environment.OSVersion.Version.Minor)
-        Log.Print("Architecture: " & Log.GetWindowsArch())
-        Log.Print(".NET Framework Version: " & Environment.Version.Major & "." & Environment.Version.Minor)
+        Log.Print("")
+        Log.Print("---------- Starting MCBackup v{0} @ {1} ----------", ApplicationVersion, Log.DebugTimeStamp())
+        Log.Info("OS Name: " & Log.GetWindowsName())
+        Log.Info("OS Version: " & Log.GetWindowsVersion())
+        Log.Info("Architecture: " & Log.GetWindowsArch())
+        Log.Info(".NET Framework Version: " & Environment.Version.Major & "." & Environment.Version.Minor)
 
-        Dim SettingsUpgraded As Boolean = False
-        Dim ConfigurationFile As String = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath
-        Debug.Print("Configuration file: " + ConfigurationFile)
+#Region "Default Language"
 
-        If My.Settings.CallUpgrade Then
-            ' Check if other configuration files exist
-            Dim ConfigurationDirectory As DirectoryInfo = New FileInfo(ConfigurationFile).Directory.Parent
-            If ConfigurationDirectory.Exists() Then
-                For Each VersionDirectory As DirectoryInfo In ConfigurationDirectory.GetDirectories()
-                    If File.Exists(Path.Combine(VersionDirectory.FullName, "user.config")) And VersionDirectory.Name <> ApplicationVersion.ToString() Then
-                        SettingsUpgraded = True
-                        Exit For
-                    End If
-                Next
-            End If
+        If String.IsNullOrEmpty(My.Settings.Language) Or Not File.Exists(My.Settings.Language + ".lang") Then
 
-            Log.Print("Upgrading settings")
-            My.Settings.Upgrade()
-            My.Settings.CallUpgrade = False
+            Dim defaultLanguage As String
+
+            Select Case CultureInfo.CurrentCulture.ThreeLetterISOLanguageName
+
+                Case "eng"
+
+                    defaultLanguage = "en_US"
+
+                Case "fra"
+
+                    defaultLanguage = "fr_FR"
+
+                Case Else
+
+                    defaultLanguage = "en_US"
+
+            End Select
+
+            My.Settings.Language = defaultLanguage
+
         End If
 
-        Splash.StepProgress()
+#End Region
 
-        Me.Title = "MCBackup " & ApplicationVersion
+#Region "Configuration Upgrade"
 
-        Splash.ShowStatus("Splash.Status.LoadingLang", "Loading Language...")
-        Splash.StepProgress()
+        Dim configurationFile As String = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath
+        Dim configurationDirectory As DirectoryInfo = New FileInfo(configurationFile).Directory.Parent
 
-        Dim DefaultLanguage As String = "en_US"
+        If My.Settings.CallUpgrade And configurationDirectory.Exists() Then
 
-        Log.Print("System language: " & CultureInfo.CurrentCulture.EnglishName, Log.Level.Debug)
+            Log.Debug("[CONFIGURATION] Configuration directory found! " + configurationDirectory.FullName)
 
-        Select Case CultureInfo.CurrentCulture.ThreeLetterISOLanguageName
-            Case "eng"
-                DefaultLanguage = "en_US"
-            Case "fra"
-                DefaultLanguage = "fr_FR"
-        End Select
+            For Each versionDirectory As DirectoryInfo In configurationDirectory.GetDirectories()
 
-        Splash.StepProgress()
+                Log.Verbose("[CONFIGURATION] Found version " + versionDirectory.Name)
 
-        Try
-            If String.IsNullOrEmpty(My.Settings.Language) Then
-                My.Settings.Language = DefaultLanguage
-            End If
-            MCBackup.Language.Load(My.Settings.Language & ".lang")
-            If String.IsNullOrEmpty(My.Settings.DefaultBackupName) Then My.Settings.DefaultBackupName = MCBackup.Language.GetString("Localization.DefaultBackupName")
-            If String.IsNullOrEmpty(My.Settings.DefaultAutoBackupName) Then My.Settings.DefaultAutoBackupName = MCBackup.Language.GetString("Localization.DefaultAutoBackupName")
-        Catch ex As Exception
-            ErrorReportDialog.Show("Could not load language file " & My.Settings.Language & ".lang! MCBackup will now exit.", ex)
-            My.Settings.Language = DefaultLanguage
-            My.Settings.Save()
-            Me.Close()
-            Exit Sub
-        End Try
+                If File.Exists(Path.Combine(versionDirectory.FullName, "user.config")) Then
 
-        Splash.StepProgress()
+                    Log.Info("[CONFIGURATION] Previous configuration (version {0}) found! Prompting user to upgrade settings.", versionDirectory.Name)
 
-        NotifyIcon.Text = "MCBackup " & ApplicationVersion
+                    If MetroMessageBox.Show(MCBackup.Language.FindString("Message.MigrateSettings", My.Settings.Language + ".lang"), MCBackup.Language.FindString("Message.Caption.MigrateSettings", My.Settings.Language + ".lang"), MessageBoxButton.YesNo) = MessageBoxResult.Yes Then
+
+                        Log.Info("[CONFIGURATION] Upgrading settings!")
+
+                        My.Settings.Upgrade()
+
+                    End If
+
+                    Log.Info("[CONFIGURATION] Settings upgrade skipped.")
+
+                    My.Settings.CallUpgrade = False
+                    Exit For
+
+                End If
+
+            Next
+
+        End If
+
+#End Region
+
+#Region "Language"
+
+        MCBackup.Language.Load(My.Settings.Language + ".lang")
+
+        If String.IsNullOrEmpty(My.Settings.DefaultBackupName) Then My.Settings.DefaultBackupName = MCBackup.Language.GetString("Localization.DefaultBackupName")
+        If String.IsNullOrEmpty(My.Settings.DefaultAutoBackupName) Then My.Settings.DefaultAutoBackupName = MCBackup.Language.GetString("Localization.DefaultAutoBackupName")
+
+#End Region
+
+#Region "Notification Icon"
+
+        Log.Debug("Attempting to create notification icon...")
+
+        NotifyIcon.Text = "MCBackup " + ApplicationVersion
         NotifyIcon.Icon = New System.Drawing.Icon(Application.GetResourceStream(New Uri("pack://application:,,,/Resources/icon.ico")).Stream)
-        Dim ContextMenu As New Forms.ContextMenu
-        Dim ExitToolbarMenuItem As New Forms.MenuItem
-        ExitToolbarMenuItem.Text = MCBackup.Language.FindString("NotifyIcon.ContextMenu.ExitItem.Text", My.Settings.Language & ".lang")
-        AddHandler ExitToolbarMenuItem.Click, AddressOf ExitToolbarMenuItem_Click
 
-        ContextMenu.MenuItems.Add(ExitToolbarMenuItem)
-        NotifyIcon.ContextMenu = ContextMenu
+        Dim contextMenu As New Forms.ContextMenu
+        contextMenu.MenuItems.Add(New Forms.MenuItem With {.Text = MCBackup.Language.GetString("NotifyIcon.ContextMenu.ExitItem.Text")})
+
+        NotifyIcon.ContextMenu = contextMenu
         NotifyIcon.Visible = True
 
-        Splash.StepProgress()
+#End Region
 
-        Splash.ShowStatus("Splash.Status.LoadingProps", "Loading Settings...")
+#Region "Appearance Settings"
 
-        If SettingsUpgraded Then MetroMessageBox.Show(MCBackup.Language.GetString("Message.SettingsUpgrade"), MCBackup.Language.GetString("Message.Caption.Information"), MessageBoxButton.OK, MessageBoxImage.Information)
+        Log.Debug("Loading appearance settings...")
 
-        Log.Print(String.Format("Current Launcher: '{0}'", My.Settings.Launcher.GetStringValue()))
-        Splash.StepProgress()
+        If Not String.IsNullOrEmpty(My.Settings.BackgroundImageLocation) And My.Computer.FileSystem.FileExists(My.Settings.BackgroundImageLocation) Then
 
-        StatusLabel.Foreground = New SolidColorBrush(My.Settings.StatusLabelColor)
+            Log.Debug("Attempting to load background image " + My.Settings.BackgroundImageLocation)
 
-        Splash.StepProgress()
-
-        If Not My.Settings.BackgroundImageLocation = "" And My.Computer.FileSystem.FileExists(My.Settings.BackgroundImageLocation) Then
             BackgroundImageBitmap = New BitmapImage(New Uri(My.Settings.BackgroundImageLocation))
             AdjustBackground()
+
         End If
 
-        Splash.StepProgress()
+        StatusLabel.Foreground = New SolidColorBrush(My.Settings.StatusLabelColor)
 
         Me.Width = My.Settings.WindowSize.Width
         Me.Height = My.Settings.WindowSize.Height
 
         Me.WindowState = IIf(My.Settings.IsWindowMaximized, WindowState.Maximized, WindowState.Normal)
 
-        If My.Settings.BackupsFolderLocation = "" Then
-            My.Settings.BackupsFolderLocation = StartupPath & "\backups"
-            Directory.CreateDirectory(My.Settings.BackupsFolderLocation)
-        End If
-
-        If Not My.Computer.FileSystem.DirectoryExists(My.Settings.BackupsFolderLocation) Then
-            If MetroMessageBox.Show(MCBackup.Language.GetString("Message.BackupsFolderNotFound"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OKCancel) = MessageBoxResult.OK Then
-                My.Settings.BackupsFolderLocation = StartupPath & "\backups"
-                My.Computer.FileSystem.CreateDirectory(My.Settings.BackupsFolderLocation)
-            Else
-                Me.Close()
-                Exit Sub
-            End If
-        End If
-
-        Log.Print("Backups folder location set to '" & My.Settings.BackupsFolderLocation & "'")
-
         GridSidebarColumn.Width = New GridLength(My.Settings.SidebarWidth.Value, GridUnitType.Star)
         GridListViewColumn.Width = New GridLength(My.Settings.ListViewWidth.Value, GridUnitType.Star)
 
-        Splash.ShowStatus("Splash.Status.FindingMinecraft", "Finding Minecraft...")
-        Splash.StepProgress()
+#End Region
 
-        If String.IsNullOrEmpty(My.Settings.MinecraftFolderLocation) Then
-            If IO.Directory.Exists(AppData & "\.minecraft\saves") And IO.Directory.Exists(AppData & "\.minecraft\versions") Then
-                My.Settings.MinecraftFolderLocation = AppData & "\.minecraft"
-                My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
-            End If
-        End If
+#Region "Minecraft Directory"
+
+        Log.Info("Searching for Minecraft directory...")
 
         If Not Directory.Exists(My.Settings.MinecraftFolderLocation) Then
-            If MetroMessageBox.Show(MCBackup.Language.GetString("Message.NoMinecraftInstallError"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OKCancel, MessageBoxImage.Error) = MessageBoxResult.OK Then
-                Dim SetMinecraftFolderWindow As New SetMinecraftFolderWindow
-                SetMinecraftFolderWindow.ShowDialog()
+
+            Log.Warn("Minecraft installation directory was not found!")
+
+            If My.Settings.Launcher = Game.Launcher.Minecraft AndAlso Directory.Exists(Path.Combine(AppData, ".minecraft")) Then
+
+                Log.Warn("Default Minecraft directory found! Minecraft folder location has been reset to default.")
+
+                My.Settings.MinecraftFolderLocation = Path.Combine(AppData, ".minecraft")
+                My.Settings.SavesFolderLocation = Path.Combine(AppData, ".minecraft", "saves")
+
             Else
-                Me.Close()
+
+                Log.Warn("Launcher is not Minecraft or default Minecraft does not exist - Prompting user to select directory.")
+
+                If MetroMessageBox.Show(MCBackup.Language.GetString("Message.NoMinecraftInstallError"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OKCancel, MessageBoxImage.Error) = MessageBoxResult.OK Then
+
+                    Dim SetMinecraftFolderWindow As New SetMinecraftFolderWindow
+                    SetMinecraftFolderWindow.ShowDialog()
+
+                Else
+
+                    Application.Current.Shutdown()
+
+                End If
+
             End If
+
         End If
 
-        Splash.StepProgress()
+        Log.Info("Minecraft folder location: " + My.Settings.MinecraftFolderLocation)
 
-        Log.Print("Minecraft folder set to '" & My.Settings.MinecraftFolderLocation & "'")
-        If My.Settings.Launcher = Game.Launcher.Minecraft Then Log.Print("Saves folder set to '" & My.Settings.SavesFolderLocation & "'")
+        If My.Settings.Launcher = Game.Launcher.Minecraft Then
 
-        Splash.StepProgress()
+            If String.IsNullOrEmpty(My.Settings.SavesFolderLocation) Or Not Directory.Exists(My.Settings.SavesFolderLocation) Then
+
+                Log.Warn("Saves folder does not exist! Reset to default.")
+
+                My.Settings.SavesFolderLocation = Path.Combine(My.Settings.MinecraftFolderLocation, "saves")
+
+            End If
+
+            Log.Info("Saves folder location: " + My.Settings.MinecraftFolderLocation)
+
+        Else
+
+            My.Settings.SavesFolderLocation = Nothing
+
+        End If
+
+#End Region
+
+#Region "Backups Directory"
+
+        Log.Info("Searching for backups directory...")
+
+        If String.IsNullOrEmpty(My.Settings.BackupsFolderLocation) Then
+
+            My.Settings.BackupsFolderLocation = Path.Combine(Directory.GetCurrentDirectory(), "backups")
+            Directory.CreateDirectory(My.Settings.BackupsFolderLocation)
+
+        ElseIf Not Directory.Exists(My.Settings.BackupsFolderLocation)
+
+            Log.Warn("Backups folder not found!")
+
+            If MetroMessageBox.Show(MCBackup.Language.GetString("Message.BackupsFolderNotFound", My.Settings.BackupsFolderLocation), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OKCancel) = MessageBoxResult.OK Then
+
+                My.Settings.BackupsFolderLocation = Path.Combine(Directory.GetCurrentDirectory(), "backups")
+
+                Log.Info("Backups folder location reset.")
+
+            Else
+
+                Application.Current.Shutdown()
+
+            End If
+
+        End If
+
+        Log.Info("Backups folder location: " + My.Settings.BackupsFolderLocation)
+
+#End Region
+
+#Region "Update Check"
 
         If My.Settings.CheckForUpdates Then
-            Log.Print("Searching for updates...")
-            Splash.ShowStatus("Splash.Status.CheckingUpdates", "Checking for Updates...")
 
-            Log.Print("Connecting to http://content.nicoco007.com...")
-            Try
-                My.Computer.Network.Ping("content.nicoco007.com", 1000)
-                Log.Print("Successfully connected.")
+            Log.Info("Checking for an update...")
 
-                Dim WebClient As New WebClient
-                AddHandler WebClient.DownloadStringCompleted, AddressOf WebClient_DownloadedStringAsync
-                WebClient.DownloadStringAsync(New Uri("http://content.nicoco007.com/downloads/mcbackup-3/version"))
-            Catch ex As Exception
-                Log.Print("Could not connect to http://content.nicoco007.com, skipping update check...", Log.Level.Warning)
-            End Try
+            Dim client As New WebClient
+            AddHandler client.DownloadStringCompleted, AddressOf DownloadVersionStringCompleted
+            client.DownloadStringAsync(New Uri("http://content.nicoco007.com/downloads/mcbackup-3/version"))
+
         Else
-            Log.Print("Update checking disabled, skipping...")
-            Splash.StepProgress()
+
+            Log.Info("Update check skipped as per settings.")
+
         End If
 
-        Splash.ShowStatus("Splash.Status.Done", "Done.")
-        Splash.StepProgress()
+#End Region
+
+        If My.Settings.SendAnonymousData Then
+
+            Dim client As New WebClient
+            client.DownloadDataAsync(New Uri("http://c.statcounter.com/10065404/0/6bad5aa6/1/"))
+
+        End If
+
+        Log.Debug("Loading language for main form...")
 
         LoadLanguage()
 
-        Splash.Hide()
-
+        Splash.Close()
         Application.CloseAction = Application.AppCloseAction.Ask
 
-        ' Send +1 to StatCounter
-        If My.Settings.SendAnonymousData Then
-            Dim WebClient As New WebClient
-            WebClient.DownloadDataAsync(New Uri("http://c.statcounter.com/10065404/0/6bad5aa6/1/"))
-        End If
     End Sub
 
     Private Sub Window_ContentRendered(sender As Object, e As EventArgs) Handles Window.ContentRendered
@@ -266,24 +325,24 @@ Partial Class MainWindow
         ReloadBackupGroups()
     End Sub
 
-    Private Sub WebClient_DownloadedStringAsync(sender As Object, e As DownloadStringCompletedEventArgs)
+    Private Sub DownloadVersionStringCompleted(sender As Object, e As DownloadStringCompletedEventArgs)
         If e.Error Is Nothing Then
             LatestVersion = e.Result
             Dim ApplicationVersionInt = ApplicationVersion.Replace(".", "")
             Dim LatestVersionInt = LatestVersion.Replace(".", "")
             If ApplicationVersionInt < LatestVersionInt Then
-                Log.Print("A new version is available (version " & LatestVersion & ")!")
+                Log.Info("A new version is available (version " & LatestVersion & ")!")
                 Dim UpdateDialog As New UpdateDialog
                 UpdateDialog.Owner = Me
                 UpdateDialog.Show()
             ElseIf ApplicationVersionInt > LatestVersionInt Then
-                Log.Print("MCBackup seems to be running a beta version (version " & ApplicationVersion & ")!")
+                Log.Info("MCBackup seems to be running a beta version (version " & ApplicationVersion & ")!")
                 Me.Title += " Beta"
             ElseIf ApplicationVersionInt = LatestVersionInt Then
-                Log.Print("MCBackup is up-to-date (version " & ApplicationVersion & ").")
+                Log.Info("MCBackup is up-to-date (version " & ApplicationVersion & ").")
             End If
         Else
-            Log.Print("An error occured while trying to retrieve the latest version: " & e.Error.Message)
+            Log.Warn("An error occured while trying to retrieve the latest version: " & e.Error.Message)
             LatestVersion = "Unknown"
         End If
     End Sub
@@ -318,12 +377,15 @@ Partial Class MainWindow
 
         Dim DirectoriesToDelete As New ArrayList
 
+        Log.Info("Searching in '{0}' for backups...", My.Settings.BackupsFolderLocation)
+
         For Each Folder As DirectoryInfo In Directory.GetDirectories ' For each folder in the backups folder
+            Log.Verbose("Found backup '{0}'", Folder.Name)
             Dim Type As String = "[ERROR]"                 ' Create variables with default value [ERROR], in case one of the values doesn't exist
 
             Try
                 If File.Exists(Folder.FullName & "\info.mcb") Then ' Convert info.mcb to info.json
-                    Log.Print("Converting info.mcb to JSON in backup '{0}'", Log.Level.Info, Folder.Name)
+                    Log.Info("Converting info.mcb to JSON in backup '{0}'", Folder.Name)
 
                     Dim Json As New JObject
 
@@ -356,7 +418,7 @@ Partial Class MainWindow
                 End If
 
                 If Not My.Computer.FileSystem.FileExists(Folder.FullName & "\info.json") Then
-                    Log.Print("'info.json' does not exist in folder '{0}'. This folder will not be considered as a backup.", Log.Level.Warning, Folder.Name)
+                    Log.Warn("'info.json' does not exist in folder '{0}'. This folder will not be considered as a backup.", Folder.Name)
                     DirectoriesToDelete.Add(Folder.Name)
                     Exit Try
                 End If
@@ -426,7 +488,7 @@ Partial Class MainWindow
                     End If
                 End If
             Catch ex As Exception
-                Log.Print("An error occured during the backup: " & ex.Message, Log.Level.Severe)
+                Log.Severe("An error occured during the backup: " & ex.Message)
             End Try
         Next
 
@@ -490,7 +552,7 @@ Partial Class MainWindow
 
         Progress.IsIndeterminate = False
         StatusLabel.Content = MCBackup.Language.GetString("Status.Ready")
-        Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
+        Me.Title = "MCBackup " + ApplicationVersion
         EnableUI(True)
     End Sub
 
@@ -607,7 +669,7 @@ Partial Class MainWindow
             OriginalFolderName = InfoJson("OriginalName")
             Description = InfoJson("Description")
         Catch ex As Exception
-            Log.Print("Could not read info.json! " + ex.Message, Log.Level.Severe)
+            Log.Severe("Could not read info.json! " + ex.Message)
         End Try
 
         Dispatcher.Invoke(Sub()
@@ -710,7 +772,7 @@ Partial Class MainWindow
             HelpContextMenu.Items(3).Header = MCBackup.Language.GetString("MainWindow.Toolbar.HelpContextMenu.Items(3).Header")
 
             StatusLabel.Content = MCBackup.Language.GetString("Status.Ready")
-            Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
+            Me.Title = "MCBackup " + ApplicationVersion
 
             SearchTextBox.Text = MCBackup.Language.GetString("MainWindow.Search")
             SearchTextBox.Foreground = New SolidColorBrush(Colors.Gray)
@@ -977,7 +1039,7 @@ Partial Class MainWindow
                 Progress.Value = e.ProgressPercentage
 
                 StatusLabel.Content = MCBackup.Language.GetString("Status.RemovingOldContent", e.ProgressPercentage)
-                Me.Title = "MCBackup {0} - " + MCBackup.Language.GetString("MainWindow.Title.RemovingOldContent", ApplicationVersion, e.ProgressPercentage)
+                Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.RemovingOldContent", e.ProgressPercentage)
 
             Case RestoreStatus.Restoring
 
@@ -985,7 +1047,7 @@ Partial Class MainWindow
                 Progress.Value = e.ProgressPercentage
 
                 StatusLabel.Content = MCBackup.Language.GetString("Status.Restoring", e.ProgressPercentage, e.TransferRate / 1048576, Manager.EstimatedTimeSpanToString(e.EstimatedTimeRemaining))
-                Me.Title = "MCBackup {0} - " + MCBackup.Language.GetString("MainWindow.Title.Restore", ApplicationVersion, e.ProgressPercentage)
+                Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.Restore", e.ProgressPercentage)
 
         End Select
 
@@ -1000,7 +1062,7 @@ Partial Class MainWindow
         End If
 
         StatusLabel.Content = MCBackup.Language.GetString("Status.Ready")
-        Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
+        Me.Title = "MCBackup " + ApplicationVersion
         Progress.Maximum = 100
         Progress.Value = 100
         EnableUI(True)
@@ -1164,11 +1226,11 @@ Partial Class MainWindow
                                  End Sub)
         Catch ex As Exception
             If TypeOf ex Is ThreadAbortException Then
-                Log.Print("Delete thread aborted!", Log.Level.Severe)
+                Log.Severe("Delete thread aborted!")
                 Me.Dispatcher.Invoke(Sub()
                                          Progress.Value = 0
                                          StatusLabel.Content = MCBackup.Language.GetString("Status.CanceledAndReady")
-                                         Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
+                                         Me.Title = "MCBackup " + ApplicationVersion
                                      End Sub)
             Else
                 Dispatcher.Invoke(Sub() ErrorReportDialog.Show(MCBackup.Language.GetString("Exception.Delete"), ex))
@@ -1183,7 +1245,7 @@ Partial Class MainWindow
         RefreshBackupsList()
         ReloadBackupGroups()
         StatusLabel.Content = MCBackup.Language.GetString("Status.Ready")
-        Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
+        Me.Title = "MCBackup " + ApplicationVersion
         Progress.IsIndeterminate = False
     End Sub
 #End Region
@@ -1500,7 +1562,7 @@ Partial Class MainWindow
 
             My.Settings.Save()
 
-            Log.Print("Someone Is closing me!")
+            Log.Print("Someone is closing me!")
         End If
     End Sub
 #End Region
@@ -1685,7 +1747,7 @@ Partial Class MainWindow
                              End Sub)
 
         For Each Item As ListViewBackupItem In SelectedItems
-            Log.Print("Rewriting info.json file For backup '{0}'.", Log.Level.Info, Item.Name)
+            Log.Info("Rewriting info.json file For backup '{0}'.", Item.Name)
 
             Try
                 Dim InfoJson As JObject
@@ -1705,14 +1767,14 @@ Partial Class MainWindow
                     End Using
                 End If
             Catch ex As Exception
-                Log.Print("An error occured while trying to rewrite JSON data: " & ex.Message, Log.Level.Severe)
+                Log.Severe("An error occured while trying to rewrite JSON data: " & ex.Message)
             End Try
         Next
 
         Me.Dispatcher.Invoke(Sub()
                                  EnableUI(True)
                                  StatusLabel.Content = MCBackup.Language.GetString("Status.Ready")
-                                 Me.Title = String.Format("MCBackup {0}", ApplicationVersion)
+                                 Me.Title = "MCBackup " + ApplicationVersion
                                  Progress.IsIndeterminate = False
                                  RefreshBackupsList()
                              End Sub)

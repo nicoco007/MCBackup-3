@@ -60,11 +60,11 @@ Public Class ErrorReportDialog
             End If
             Application.CloseAction = Application.AppCloseAction.Force
         Catch ex As Exception
-            Log.Print("Could not show ErrorReportDialog: " & ex.Message, Log.Level.Warning)
+            Log.Severe("Could not show ErrorReportDialog: " & ex.Message)
             Try
-                Log.Print(New StackTrace(ex, True).ToString)
+                Log.Severe(New StackTrace(ex, True).ToString)
             Catch InnerException As Exception
-                Log.Print("Could not trace exception: " & InnerException.Message, Log.Level.Warning)
+                Log.Severe("Could not trace exception: " & InnerException.Message)
             End Try
         End Try
     End Sub

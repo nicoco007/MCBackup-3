@@ -34,44 +34,65 @@ Public Class Language
 
     Public Shared Sub Load(FileName As String)
 
-        Log.Print("Loading language from file '" & FileName & "'...")
+        Dim path As String = Directory.GetCurrentDirectory & "\language\" & FileName
+
+        Log.Info("Loading language from '" + path + "'...")
+
         Dictionary.Clear()
 
-        Using sr As New StreamReader(Directory.GetCurrentDirectory & "\language\" & FileName)
+        Try
 
-            Dim lineNumber As Integer = 0
+            If File.Exists(path) Then
 
-            While sr.Peek <> -1
+                Using sr As New StreamReader(path)
 
-                lineNumber += 1
+                    Dim lineNumber As Integer = 0
 
-                Dim line As String = sr.ReadLine()
+                    While sr.Peek <> -1
 
-                If line.Contains("//") Then
+                        lineNumber += 1
 
-                    line = line.Remove(line.IndexOf("//"))
+                        Dim line As String = sr.ReadLine()
 
-                End If
+                        If line.Contains("//") Then
 
-                Dim parts As String() = line.Split("=")
+                            line = line.Remove(line.IndexOf("//"))
 
-                If line.Contains("=") Then
+                        End If
 
-                    Dim identifier = line.Remove(line.IndexOf("="))
+                        Dim parts As String() = line.Split("=")
 
-                    Dim value = line.Substring(line.IndexOf("=") + 1)
+                        If line.Contains("=") Then
 
-                    Dictionary.Add(identifier, value)
+                            Dim identifier = line.Remove(line.IndexOf("="))
 
-                Else
+                            Dim value = line.Substring(line.IndexOf("=") + 1).Replace("\n", vbNewLine)
 
-                    Log.Print("Line {0} did not contain a valid language entry!", Log.Level.Warning, lineNumber)
+                            Dictionary.Add(identifier, value)
 
-                End If
+                        Else
 
-            End While
+                            Log.Warn("Line {0} did not contain a valid language entry!", lineNumber)
 
-        End Using
+                        End If
+
+                    End While
+
+                End Using
+
+            Else
+
+                MetroMessageBox.Show("Language file could not be found! Please reinstall MCBackup.")
+
+            End If
+
+        Catch ex As Exception
+
+            ErrorReportDialog.Show("Failed to load language file! " + ex.Message, ex)
+
+            Application.Current.Shutdown()
+
+        End Try
 
     End Sub
 
@@ -108,7 +129,7 @@ Public Class Language
 
         Else
 
-            Log.Print("Identifier {0} does not exist in language file!", Log.Level.Warning, identifier)
+            Log.Warn("Identifier {0} does not exist in language file!", identifier)
 
             Return "[MISSING]"
 

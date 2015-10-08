@@ -47,7 +47,7 @@ Public Class BackupDialog
                         End If
                     Next
                 Else
-                    Log.Print("Saves folder does not exist!", Log.Level.Warning)
+                    Log.Warn("Saves folder does not exist!")
                 End If
 
                 If Directory.Exists(My.Settings.MinecraftFolderLocation & "\versions") Then
@@ -56,7 +56,7 @@ Public Class BackupDialog
                         VersionsListView.Items.Add(Version.Name)
                     Next
                 Else
-                    Log.Print("Versions folder does not exist!")
+                    Log.Warn("Versions folder does not exist!")
                 End If
             Case Game.Launcher.Technic
                 If Directory.Exists(My.Settings.MinecraftFolderLocation & "\modpacks") Then
@@ -71,12 +71,12 @@ Public Class BackupDialog
                                 End If
                             Next
                         Else
-                            Log.Print("Modpack '{0}' does not have a saves folder!", Log.Level.Warning, Modpack.Name)
+                            Log.Warn("Modpack '{0}' does not have a saves folder!", Modpack.Name)
                         End If
                         VersionsListView.Items.Add(Modpack.Name)
                     Next
                 Else
-                    Log.Print("Modpacks directory does not exist!", Log.Level.Warning)
+                    Log.Warn("Modpacks directory does not exist!")
                 End If
             Case Game.Launcher.FeedTheBeast
                 If Directory.Exists(My.Settings.MinecraftFolderLocation) Then
@@ -92,13 +92,13 @@ Public Class BackupDialog
                                     End If
                                 Next
                             Else
-                                Log.Print("Pack '{0}' does not have a saves folder!", Log.Level.Warning, Directory.Name)
+                                Log.Warn("Pack '{0}' does not have a saves folder!", Directory.Name)
                             End If
                             VersionsListView.Items.Add(Directory.Name)
                         End If
                     Next
                 Else
-                    Log.Print("FeedTheBeast directory does not exist!", Log.Level.Severe)
+                    Log.Warn("FeedTheBeast directory does not exist!")
                 End If
             Case Game.Launcher.ATLauncher
                 If Directory.Exists(My.Settings.MinecraftFolderLocation & "\Instances") Then
@@ -113,12 +113,12 @@ Public Class BackupDialog
                                 End If
                             Next
                         Else
-                            Log.Print("Instance '{0}' does not have a saves folder")
+                            Log.Warn("Instance '{0}' does not have a saves folder")
                         End If
                         VersionsListView.Items.Add(Instance.Name)
                     Next
                 Else
-                    Log.Print("Instances directory does not exist!", Log.Level.Warning)
+                    Log.Warn("Instances directory does not exist!")
                 End If
         End Select
 

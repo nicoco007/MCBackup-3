@@ -210,30 +210,6 @@ Partial Friend NotInheritable Class MySettings
     
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-     Global.System.Configuration.DefaultSettingValueAttribute(" [AUTO] ")>  _
-    Public Property AutoBkpPrefix() As String
-        Get
-            Return CType(Me("AutoBkpPrefix"),String)
-        End Get
-        Set
-            Me("AutoBkpPrefix") = value
-        End Set
-    End Property
-    
-    <Global.System.Configuration.UserScopedSettingAttribute(),  _
-     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-     Global.System.Configuration.DefaultSettingValueAttribute("")>  _
-    Public Property AutoBkpSuffix() As String
-        Get
-            Return CType(Me("AutoBkpSuffix"),String)
-        End Get
-        Set
-            Me("AutoBkpSuffix") = value
-        End Set
-    End Property
-    
-    <Global.System.Configuration.UserScopedSettingAttribute(),  _
-     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.Configuration.DefaultSettingValueAttribute("Cyan")>  _
     Public Property Theme() As String
         Get
@@ -259,9 +235,9 @@ Partial Friend NotInheritable Class MySettings
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.Configuration.DefaultSettingValueAttribute("Type")>  _
-    Public Property ListViewGroupBy() As MCBackup.BackupsListView.GroupBy
+    Public Property ListViewGroupBy() As Global.MCBackup.BackupsListView.GroupBy
         Get
-            Return CType(Me("ListViewGroupBy"),MCBackup.BackupsListView.GroupBy)
+            Return CType(Me("ListViewGroupBy"),Global.MCBackup.BackupsListView.GroupBy)
         End Get
         Set
             Me("ListViewGroupBy") = value
@@ -271,9 +247,9 @@ Partial Friend NotInheritable Class MySettings
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.Configuration.DefaultSettingValueAttribute("DateCreated")>  _
-    Public Property ListViewSortBy() As MCBackup.BackupsListView.SortBy
+    Public Property ListViewSortBy() As Global.MCBackup.BackupsListView.SortBy
         Get
-            Return CType(Me("ListViewSortBy"),MCBackup.BackupsListView.SortBy)
+            Return CType(Me("ListViewSortBy"),Global.MCBackup.BackupsListView.SortBy)
         End Get
         Set
             Me("ListViewSortBy") = value
@@ -282,7 +258,7 @@ Partial Friend NotInheritable Class MySettings
     
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-     Global.System.Configuration.DefaultSettingValueAttribute("Ascending")>  _
+     Global.System.Configuration.DefaultSettingValueAttribute("Descending")>  _
     Public Property ListViewSortByDirection() As Global.System.ComponentModel.ListSortDirection
         Get
             Return CType(Me("ListViewSortByDirection"),Global.System.ComponentModel.ListSortDirection)

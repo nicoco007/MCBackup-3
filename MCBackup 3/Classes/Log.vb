@@ -19,213 +19,119 @@ Imports System.IO
 Public Class Log
     Public Shared Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
 
-    Public Enum Level
-        Info
-        Warning
-        Severe
-        Debug
-    End Enum
+    Public Shared Sub Verbose(message As String, ParamArray args() As Object)
 
-    ''' <summary>
-    ''' Prints a message in the log file and the debug.
-    ''' </summary>
-    ''' <param name="Message">Message to display</param>
-    Public Shared Sub Print(Message As String, ParamArray args As Object())
-        Dim FullMessage As String = String.Format(Message, args)
+        If CheckCommandLineArguments("-v", "--verbose") Then Print(DebugTimeStamp() + " [VERBOSE] " + message, args)
 
-        FullMessage = FullMessage.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>")
-
-        If FullMessage.Contains(vbNewLine) Then
-            Dim FullMessageParts = FullMessage.Split(vbNewLine, 0, StringSplitOptions.RemoveEmptyEntries)
-
-            Try
-                Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
-                    For Each Part As String In FullMessageParts
-                        Part = Part.Replace(vbNewLine, "")
-                        Debug.Print(DebugTimeStamp() & " [INFO] " & Part)
-                        SW.WriteLine(DebugTimeStamp() & " [INFO] " & Part)
-                    Next
-                End Using
-            Catch
-            End Try
-        Else
-            Try
-                Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
-                    Debug.Print(DebugTimeStamp() & " [INFO] " & FullMessage)
-                    SW.WriteLine(DebugTimeStamp() & " [INFO] " & FullMessage)
-                End Using
-            Catch
-            End Try
-        End If
     End Sub
 
-    ''' <summary>
-    ''' Prints a message in the log file and the debug.
-    ''' </summary>
-    ''' <param name="Message">Message to display</param>
-    Public Shared Sub Print(Message As String, Level As Level)
-        Dim FullMessage = Message.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>")
 
-        If FullMessage.Contains(vbNewLine) Then
-            Dim FullMessageParts = FullMessage.Split(vbNewLine, 0, StringSplitOptions.RemoveEmptyEntries)
+    Public Shared Sub Debug(message As String, ParamArray args() As Object)
 
-            Try
-                Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
-                    Select Case Level
-                        Case Log.Level.Info
-                            For Each Part As String In FullMessageParts
-                                Part = Part.Replace(vbNewLine, "")
-                                Debug.Print(DebugTimeStamp() & " [INFO] " & Part)
-                                SW.WriteLine(DebugTimeStamp() & " [INFO] " & Part)
-                            Next
-                        Case Log.Level.Warning
-                            For Each Part As String In FullMessageParts
-                                Part = Part.Replace(vbNewLine, "")
-                                Debug.Print(DebugTimeStamp() & " [WARNING] " & Part)
-                                SW.WriteLine(DebugTimeStamp() & " [WARNING] " & Part)
-                            Next
-                        Case Log.Level.Severe
-                            For Each Part As String In FullMessageParts
-                                Part = Part.Replace(vbNewLine, "")
-                                Debug.Print(DebugTimeStamp() & " [SEVERE] " & Part)
-                                SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & Part)
-                            Next
-                        Case Log.Level.Debug
-                            If Environment.GetCommandLineArgs().Contains("---debug") Then
-                                For Each Part As String In FullMessageParts
-                                    Part = Part.Replace(vbNewLine, "")
-                                    Debug.Print(DebugTimeStamp() & " [DEBUG] " & Part)
-                                    SW.WriteLine(DebugTimeStamp() & " [DEBUG] " & Part)
-                                Next
-                            End If
-                    End Select
-                End Using
-            Catch
-            End Try
-        Else
-            Try
-                Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
-                    Select Case Level
-                        Case Log.Level.Info
-                            Debug.Print(DebugTimeStamp() & " [INFO] " & FullMessage)
-                            SW.WriteLine(DebugTimeStamp() & " [INFO] " & FullMessage)
-                        Case Log.Level.Warning
-                            Debug.Print(DebugTimeStamp() & " [WARNING] " & FullMessage)
-                            SW.WriteLine(DebugTimeStamp() & " [WARNING] " & FullMessage)
-                        Case Log.Level.Severe
-                            Debug.Print(DebugTimeStamp() & " [SEVERE] " & FullMessage)
-                            SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & FullMessage)
-                        Case Log.Level.Debug
-                            If Environment.GetCommandLineArgs().Contains("--debug") Then
-                                Debug.Print(DebugTimeStamp() & " [DEBUG] " & FullMessage)
-                                SW.WriteLine(DebugTimeStamp() & " [DEBUG] " & FullMessage)
-                            End If
-                    End Select
-                End Using
-            Catch
-            End Try
-        End If
+        If CheckCommandLineArguments("-v", "--verbose", "-d", "--debug") Then Print(DebugTimeStamp() + " [DEBUG] " + message, args)
+
     End Sub
 
-    ''' <summary>
-    ''' Prints a message in the log file and the debug with the specified Level.
-    ''' </summary>
-    ''' <param name="Message">Message to be printed</param>
-    ''' <param name="Level">Level, either [INFO], [WARNING], or [SEVERE]</param>
-    Public Shared Sub Print(Message As String, Level As Level, ParamArray args As Object())
-        Dim FullMessage As String = String.Format(Message, args)
 
-        FullMessage = FullMessage.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>")
+    Public Shared Sub Info(message As String, ParamArray args() As Object)
 
-        If FullMessage.Contains(vbNewLine) Then
-            Dim FullMessageParts = FullMessage.Split(vbNewLine, 0, StringSplitOptions.RemoveEmptyEntries)
+        Print(DebugTimeStamp() + " [INFO] " + message, args)
 
-            Try
-                Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
-                    Select Case Level
-                        Case Log.Level.Info
-                            For Each Part As String In FullMessageParts
-                                Part = Part.Replace(vbNewLine, "")
-                                Debug.Print(DebugTimeStamp() & " [INFO] " & Part)
-                                SW.WriteLine(DebugTimeStamp() & " [INFO] " & Part)
-                            Next
-                        Case Log.Level.Warning
-                            For Each Part As String In FullMessageParts
-                                Part = Part.Replace(vbNewLine, "")
-                                Debug.Print(DebugTimeStamp() & " [WARNING] " & Part)
-                                SW.WriteLine(DebugTimeStamp() & " [WARNING] " & Part)
-                            Next
-                        Case Log.Level.Severe
-                            For Each Part As String In FullMessageParts
-                                Part = Part.Replace(vbNewLine, "")
-                                Debug.Print(DebugTimeStamp() & " [SEVERE] " & Part)
-                                SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & Part)
-                            Next
-                        Case Log.Level.Debug
-                            If Environment.GetCommandLineArgs().Contains("--debug") Then
-                                For Each Part As String In FullMessageParts
-                                    Part = Part.Replace(vbNewLine, "")
-                                    Debug.Print(DebugTimeStamp() & " [DEBUG] " & Part)
-                                    SW.WriteLine(DebugTimeStamp() & " [DEBUG] " & Part)
-                                Next
-                            End If
-                    End Select
-                End Using
-            Catch
-            End Try
-        Else
-            Try
-                Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
-                    Select Case Level
-                        Case Log.Level.Info
-                            Debug.Print(DebugTimeStamp() & " [INFO] " & FullMessage)
-                            SW.WriteLine(DebugTimeStamp() & " [INFO] " & FullMessage)
-                        Case Log.Level.Warning
-                            Debug.Print(DebugTimeStamp() & " [WARNING] " & FullMessage)
-                            SW.WriteLine(DebugTimeStamp() & " [WARNING] " & FullMessage)
-                        Case Log.Level.Severe
-                            Debug.Print(DebugTimeStamp() & " [SEVERE] " & FullMessage)
-                            SW.WriteLine(DebugTimeStamp() & " [SEVERE] " & FullMessage)
-                        Case Log.Level.Debug
-                            If Environment.GetCommandLineArgs().Contains("--debug") Then
-                                Debug.Print(DebugTimeStamp() & " [DEBUG] " & FullMessage)
-                                SW.WriteLine(DebugTimeStamp() & " [DEBUG] " & FullMessage)
-                            End If
-                    End Select
-                End Using
-            Catch
-            End Try
-        End If
     End Sub
 
-    ''' <summary>
-    ''' Silently prints a message in the log file and the debug without a Level/time stamp.
-    ''' </summary>
-    ''' <param name="Message">Message to be printed</param>
-    Public Shared Sub SPrint(Message As String, ParamArray args As Object())
-        Message = Message.Replace(Environ("USERPROFILE"), "<USERDIRECTORY>")
-        Try
-            Using SW As New StreamWriter(Main.StartupPath & "\mcbackup.log", True)
-                Debug.Print(Message, args)
-                SW.WriteLine(Message, args)
-            End Using
-        Catch
-        End Try
+    Public Shared Sub Warn(message As String, ParamArray args() As Object)
+
+        Print(DebugTimeStamp() + " [WARNING] " + message, args)
+
     End Sub
+
+    Public Shared Sub Severe(message As String, ParamArray args() As Object)
+
+        Print(DebugTimeStamp() + " [SEVERE] " + message, args)
+
+    End Sub
+
+    Public Shared Sub Print(text As String, ParamArray args() As Object)
+
+        Dim message() As String
+
+        message = IIf(args IsNot Nothing, FilterText(String.Format(text, args)), FilterText(text))
+
+        Using streamWriter As New StreamWriter(Directory.GetCurrentDirectory() & "\mcbackup.log", True)
+
+            For Each part As String In message
+
+                Diagnostics.Debug.Print(part)
+                streamWriter.WriteLine(part)
+
+            Next
+
+        End Using
+
+    End Sub
+
+    Private Shared Function CheckCommandLineArguments(ParamArray args() As String)
+
+        For Each arg As String In args
+
+            If Environment.GetCommandLineArgs().Contains(arg) Then Return True
+
+        Next
+
+        Return False
+
+    End Function
+
+    Private Shared Function FilterText(text As String) As String()
+
+        text = text.Replace(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "<USERDIRECTORY>")
+
+        Return text.Split(vbNewLine)
+
+    End Function
 
     ''' <summary>
     ''' Returns a log timestamp
     ''' </summary>
     ''' <returns>A timestamp in the form YYYY-MM-DD hh:mm:ss</returns>
-    Public Shared Function DebugTimeStamp()
+    Public Shared Function DebugTimeStamp() As String
+
         Return DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")
+
     End Function
 
     ''' <summary>
-    ''' Converts Windows NT version to 'human-readable' name
+    ''' Gets Windows NT version
     ''' </summary>
     ''' <returns>Windows OS Version name</returns>
-    Public Shared Function GetWindowsVersion()
+    Public Shared Function GetWindowsVersion() As String
+
+        Return Environment.OSVersion.Version.Major & "." & Environment.OSVersion.Version.Minor
+
+
+    End Function
+
+    ''' <summary>
+    ''' Gets Windows architecture
+    ''' </summary>
+    ''' <returns>Windows architecture (32/64bit)</returns>
+
+    Public Shared Function GetWindowsArch() As String
+
+        If Environment.Is64BitOperatingSystem Then
+
+            Return "amd64"
+
+        Else
+
+            Return "x86"
+
+        End If
+
+    End Function
+
+    Public Shared Function GetWindowsName() As String
+
         Select Case Environment.OSVersion.Version.Major
             Case 5
                 Select Case Environment.OSVersion.Version.Minor
@@ -245,20 +151,14 @@ Public Class Log
                     Case 3
                         Return "Windows 8.1"
                 End Select
+            Case 10
+                Select Case Environment.OSVersion.Version.Minor
+                    Case 0
+                        Return "Windows 10"
+                End Select
         End Select
+
         Return "Unknown / Incompatible"
-    End Function
 
-    ''' <summary>
-    ''' Gets Windows architecture
-    ''' </summary>
-    ''' <returns>Windows architecture (32/64bit)</returns>
-
-    Public Shared Function GetWindowsArch()
-        If Environment.Is64BitOperatingSystem Then
-            Return "amd64"
-        Else
-            Return "x86"
-        End If
     End Function
 End Class

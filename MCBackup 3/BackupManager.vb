@@ -277,7 +277,7 @@ Public NotInheritable Class BackupManager
                               If e.Data = Nothing Then Return
 
                               ' Log for debug purposes
-                              Log.Print("[MCMAP] " & e.Data, Log.Level.Debug)
+                              Log.Info("[MCMAP] " & e.Data)
 
                               ' Set step number according to output text
                               If e.Data.Contains("Loading all chunks") Then

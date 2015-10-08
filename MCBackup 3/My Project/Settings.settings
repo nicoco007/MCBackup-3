@@ -41,12 +41,6 @@
     <Setting Name="StatusLabelColor" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#FF000000</Value>
     </Setting>
-    <Setting Name="AutoBkpPrefix" Type="System.String" Scope="User">
-      <Value Profile="(Default)"> [AUTO] </Value>
-    </Setting>
-    <Setting Name="AutoBkpSuffix" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="Theme" Type="System.String" Scope="User">
       <Value Profile="(Default)">Cyan</Value>
     </Setting>
@@ -60,7 +54,7 @@
       <Value Profile="(Default)">DateCreated</Value>
     </Setting>
     <Setting Name="ListViewSortByDirection" Type="System.ComponentModel.ListSortDirection" Scope="User">
-      <Value Profile="(Default)">Ascending</Value>
+      <Value Profile="(Default)">Descending</Value>
     </Setting>
     <Setting Name="FirstCloseToTray" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

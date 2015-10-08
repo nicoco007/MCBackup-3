@@ -186,7 +186,7 @@ Public Class AutoBackupWindow
                         End If
                     Next
                 Else
-                    Log.Print("Saves directory does not exist!", Log.Level.Warning)
+                    Log.Warn("Saves directory does not exist!")
                 End If
             Case Game.Launcher.Technic
                 If Directory.Exists(My.Settings.MinecraftFolderLocation & "\modpacks") Then
@@ -204,7 +204,7 @@ Public Class AutoBackupWindow
                         End If
                     Next
                 Else
-                    Log.Print("Modpacks directory does not exist!", Log.Level.Warning)
+                    Log.Warn("Modpacks directory does not exist!")
                 End If
             Case Game.Launcher.FeedTheBeast
                 If Directory.Exists(My.Settings.MinecraftFolderLocation) Then
@@ -223,7 +223,7 @@ Public Class AutoBackupWindow
                         End If
                     Next
                 Else
-                    Log.Print("FeedTheBeast directory does not exist!", Log.Level.Severe)
+                    Log.Warn("FeedTheBeast directory does not exist!")
                 End If
             Case Game.Launcher.ATLauncher
                 If Directory.Exists(My.Settings.MinecraftFolderLocation & "\Instances") Then
@@ -241,7 +241,7 @@ Public Class AutoBackupWindow
                         End If
                     Next
                 Else
-                    Log.Print("Instances directory does not exist!", Log.Level.Warning)
+                    Log.Warn("Instances directory does not exist!")
                 End If
         End Select
 
