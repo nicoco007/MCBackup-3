@@ -21,7 +21,6 @@ Public Class CloseToTrayDialog
     Sub New()
         InitializeComponent()
         LoadLanguage()
-        Me.Height = 120
     End Sub
 
     Private Sub YesButton_Click(sender As Object, e As RoutedEventArgs) Handles YesButton.Click
@@ -51,15 +50,6 @@ Public Class CloseToTrayDialog
         Me.Close()
     End Sub
 
-    Private Sub SaveCheckBox_Click(sender As Object, e As RoutedEventArgs) Handles SaveCheckBox.Click
-        CancelButton.IsEnabled = Not SaveCheckBox.IsChecked
-        If SaveCheckBox.IsChecked Then
-            Me.Height = 140
-        Else
-            Me.Height = 120
-        End If
-    End Sub
-
     Private Sub LoadLanguage()
         Me.Title = MCBackup.Language.GetString("CloseToTrayWindow.Title")
         MessageLabel.Content = MCBackup.Language.GetString("CloseToTrayWindow.MessageLabel.Content")
@@ -68,12 +58,6 @@ Public Class CloseToTrayDialog
         CancelButton.Content = MCBackup.Language.GetString("CloseToTrayWindow.CancelButton.Content")
         SaveCheckBox.Content = MCBackup.Language.GetString("CloseToTrayWindow.SaveCheckBox.Content")
         RevertLabel.Content = MCBackup.Language.GetString("CloseToTrayWindow.RevertLabel.Content")
-    End Sub
-
-    Private Sub CloseToTrayWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
-        Dim Margin = SaveCheckBox.Margin
-        Margin.Left = (Grid.Width / 2) - (SaveCheckBox.ActualWidth / 2)
-        SaveCheckBox.Margin = Margin
     End Sub
 
     Public Overloads Function ShowDialog() As Forms.DialogResult

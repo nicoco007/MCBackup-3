@@ -38,8 +38,6 @@ Partial Class MainWindow
     Public BackupInfo As New BackupInfo
     Public RestoreInfo As New RestoreInfo
 
-    Private DeleteForRestoreThread As Thread
-    Private RestoreThread As Thread
     Private DeleteThread As Thread
 
     Private FolderBrowserDialog As New Forms.FolderBrowserDialog
@@ -51,7 +49,6 @@ Partial Class MainWindow
 
     Public AutoBackupWindow As New AutoBackupWindow
     Public NotificationIconWindow As New NotificationIconWindow
-    Private Splash As New Splash
 
     Public AutoBackupWindowWasShown As Boolean = False
 
@@ -72,11 +69,11 @@ Partial Class MainWindow
 
     Private Sub Window_Loaded(sender As Object, e As EventArgs) Handles Window.Loaded
 
-        Application.CloseAction = Application.AppCloseAction.Force
-
+        ' Show splash and set text to "Starting..."
+        Dim Splash As New Splash()
         Splash.Show()
-        Splash.ShowStatus("Splash.Status.Starting", "Starting...")
 
+        ' Print system relevant information to log
         Log.Print("")
         Log.Print("---------- Starting MCBackup v{0} @ {1} ----------", ApplicationVersion, Log.DebugTimeStamp())
         Log.Info("OS Name: " & Log.GetWindowsName())
@@ -86,60 +83,72 @@ Partial Class MainWindow
 
 #Region "Default Language"
 
+        ' Check if language is set if and language file exists
         If String.IsNullOrEmpty(My.Settings.Language) Or Not File.Exists(My.Settings.Language + ".lang") Then
 
-            Dim defaultLanguage As String
-
+            ' Set default language variable according to system language
             Select Case CultureInfo.CurrentCulture.ThreeLetterISOLanguageName
 
                 Case "eng"
 
-                    defaultLanguage = "en_US"
+                    My.Settings.Language = "en_US"
 
                 Case "fra"
 
-                    defaultLanguage = "fr_FR"
+                    My.Settings.Language = "fr_FR"
 
                 Case Else
 
-                    defaultLanguage = "en_US"
+                    My.Settings.Language = "en_US"
 
             End Select
-
-            My.Settings.Language = defaultLanguage
 
         End If
 
 #End Region
 
+        ' Add step to splash progress
+        Splash.StepProgress()
+
 #Region "Configuration Upgrade"
 
+        ' Find configuration file
         Dim configurationFile As String = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath
+
+        ' Get configuration directory from configuration file
         Dim configurationDirectory As DirectoryInfo = New FileInfo(configurationFile).Directory.Parent
 
+        ' Check if upgrade is necessary and if configuration directory exists
         If My.Settings.CallUpgrade And configurationDirectory.Exists() Then
 
             Log.Debug("[CONFIGURATION] Configuration directory found! " + configurationDirectory.FullName)
 
+            ' Iterate through all version directories in configuration directory
             For Each versionDirectory As DirectoryInfo In configurationDirectory.GetDirectories()
 
                 Log.Verbose("[CONFIGURATION] Found version " + versionDirectory.Name)
 
+                ' Check if configuration file exists for version
                 If File.Exists(Path.Combine(versionDirectory.FullName, "user.config")) Then
 
                     Log.Info("[CONFIGURATION] Previous configuration (version {0}) found! Prompting user to upgrade settings.", versionDirectory.Name)
 
+                    ' Prompt user to upgrade settings
                     If MetroMessageBox.Show(MCBackup.Language.FindString("Message.MigrateSettings", My.Settings.Language + ".lang"), MCBackup.Language.FindString("Message.Caption.MigrateSettings", My.Settings.Language + ".lang"), MessageBoxButton.YesNo) = MessageBoxResult.Yes Then
 
                         Log.Info("[CONFIGURATION] Upgrading settings!")
 
+                        ' Upgrade settings
                         My.Settings.Upgrade()
 
                     End If
 
                     Log.Info("[CONFIGURATION] Settings upgrade skipped.")
 
+                    ' Set callupgrade to false, so user is not prompted again
                     My.Settings.CallUpgrade = False
+
+                    ' Exit for loop to prevent more dialogs from being shown
                     Exit For
 
                 End If
@@ -150,67 +159,100 @@ Partial Class MainWindow
 
 #End Region
 
+        ' Add step to splash progress
+        Splash.StepProgress()
+
 #Region "Language"
 
+        ' Attempt to load language (exceptions are caught by Language class)
         MCBackup.Language.Load(My.Settings.Language + ".lang")
 
+        ' Set default backup names according to langauge if they are not set
         If String.IsNullOrEmpty(My.Settings.DefaultBackupName) Then My.Settings.DefaultBackupName = MCBackup.Language.GetString("Localization.DefaultBackupName")
         If String.IsNullOrEmpty(My.Settings.DefaultAutoBackupName) Then My.Settings.DefaultAutoBackupName = MCBackup.Language.GetString("Localization.DefaultAutoBackupName")
 
 #End Region
 
+        ' Add step to splash progress
+        Splash.StepProgress()
+
 #Region "Notification Icon"
 
         Log.Debug("Attempting to create notification icon...")
 
+        ' Set notification icon text and icon
         NotifyIcon.Text = "MCBackup " + ApplicationVersion
         NotifyIcon.Icon = New System.Drawing.Icon(Application.GetResourceStream(New Uri("pack://application:,,,/Resources/icon.ico")).Stream)
 
+        ' Create context menu for notification icon
         Dim contextMenu As New Forms.ContextMenu
+
+        ' Add exit item to notification icon
         contextMenu.MenuItems.Add(New Forms.MenuItem With {.Text = MCBackup.Language.GetString("NotifyIcon.ContextMenu.ExitItem.Text")})
 
+        ' Set notification icon context menu to created context menu
         NotifyIcon.ContextMenu = contextMenu
+
+        ' Show notification icon
         NotifyIcon.Visible = True
 
 #End Region
+
+        ' Add step to splash progress
+        Splash.StepProgress()
 
 #Region "Appearance Settings"
 
         Log.Debug("Loading appearance settings...")
 
+        ' Set window size
+        Me.Width = My.Settings.WindowSize.Width
+        Me.Height = My.Settings.WindowSize.Height
+
+        ' Check if a background image is set and file exists
         If Not String.IsNullOrEmpty(My.Settings.BackgroundImageLocation) And My.Computer.FileSystem.FileExists(My.Settings.BackgroundImageLocation) Then
 
             Log.Debug("Attempting to load background image " + My.Settings.BackgroundImageLocation)
 
+            ' Set background image bitmap to saved file
             BackgroundImageBitmap = New BitmapImage(New Uri(My.Settings.BackgroundImageLocation))
+
+            ' Adjust background according to main window size
             AdjustBackground()
 
         End If
 
+        ' Set status label text color
         StatusLabel.Foreground = New SolidColorBrush(My.Settings.StatusLabelColor)
 
-        Me.Width = My.Settings.WindowSize.Width
-        Me.Height = My.Settings.WindowSize.Height
-
+        ' Set window state
         Me.WindowState = IIf(My.Settings.IsWindowMaximized, WindowState.Maximized, WindowState.Normal)
 
+        ' Set backups list/sidebar width
+        ' TODO: Find less hacky way to do this!
         GridSidebarColumn.Width = New GridLength(My.Settings.SidebarWidth.Value, GridUnitType.Star)
         GridListViewColumn.Width = New GridLength(My.Settings.ListViewWidth.Value, GridUnitType.Star)
 
 #End Region
 
+        ' Add step to splash progress
+        Splash.StepProgress()
+
 #Region "Minecraft Directory"
 
         Log.Info("Searching for Minecraft directory...")
 
+        ' Check if Minecraft directory exists
         If Not Directory.Exists(My.Settings.MinecraftFolderLocation) Then
 
             Log.Warn("Minecraft installation directory was not found!")
 
+            ' Check if launcher is default Minecraft and default Minecraft directory exists
             If My.Settings.Launcher = Game.Launcher.Minecraft AndAlso Directory.Exists(Path.Combine(AppData, ".minecraft")) Then
 
                 Log.Warn("Default Minecraft directory found! Minecraft folder location has been reset to default.")
 
+                ' Reset Minecraft location to default Minecraft directory
                 My.Settings.MinecraftFolderLocation = Path.Combine(AppData, ".minecraft")
                 My.Settings.SavesFolderLocation = Path.Combine(AppData, ".minecraft", "saves")
 
@@ -218,13 +260,16 @@ Partial Class MainWindow
 
                 Log.Warn("Launcher is not Minecraft or default Minecraft does not exist - Prompting user to select directory.")
 
+                ' Prompt user to select a new Minecraft directory
                 If MetroMessageBox.Show(MCBackup.Language.GetString("Message.NoMinecraftInstallError"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OKCancel, MessageBoxImage.Error) = MessageBoxResult.OK Then
 
+                    ' Show directory selection dialog
                     Dim SetMinecraftFolderWindow As New SetMinecraftFolderWindow
                     SetMinecraftFolderWindow.ShowDialog()
 
                 Else
 
+                    ' Close MCBackup
                     Application.Current.Shutdown()
 
                 End If
@@ -235,13 +280,18 @@ Partial Class MainWindow
 
         Log.Info("Minecraft folder location: " + My.Settings.MinecraftFolderLocation)
 
+        ' Check if launcher is default Minecraft
         If My.Settings.Launcher = Game.Launcher.Minecraft Then
 
+            ' Check if saves folder location is empty or doesn't exist
             If String.IsNullOrEmpty(My.Settings.SavesFolderLocation) Or Not Directory.Exists(My.Settings.SavesFolderLocation) Then
 
                 Log.Warn("Saves folder does not exist! Reset to default.")
 
+                ' Reset saves directory
                 My.Settings.SavesFolderLocation = Path.Combine(My.Settings.MinecraftFolderLocation, "saves")
+
+                ' TODO: add prompt
 
             End If
 
@@ -249,33 +299,44 @@ Partial Class MainWindow
 
         Else
 
+            ' Set saves directory to nothing if launcher isn't default Minecraft
             My.Settings.SavesFolderLocation = Nothing
 
         End If
 
 #End Region
 
+        ' Add step to splash progress
+        Splash.StepProgress()
+
 #Region "Backups Directory"
 
         Log.Info("Searching for backups directory...")
 
+        ' Check if backups directory is set
         If String.IsNullOrEmpty(My.Settings.BackupsFolderLocation) Then
 
+            ' If backups directory is not set, MCBackup has not been launched yet. Set backups directory to default directory.
             My.Settings.BackupsFolderLocation = Path.Combine(Directory.GetCurrentDirectory(), "backups")
+
+            ' Create backups directory
             Directory.CreateDirectory(My.Settings.BackupsFolderLocation)
 
         ElseIf Not Directory.Exists(My.Settings.BackupsFolderLocation)
 
             Log.Warn("Backups folder not found!")
 
+            ' Tell user backups directory was not found and will be reset
             If MetroMessageBox.Show(MCBackup.Language.GetString("Message.BackupsFolderNotFound", My.Settings.BackupsFolderLocation), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OKCancel) = MessageBoxResult.OK Then
 
+                ' Reset backups folder location
                 My.Settings.BackupsFolderLocation = Path.Combine(Directory.GetCurrentDirectory(), "backups")
 
                 Log.Info("Backups folder location reset.")
 
             Else
 
+                ' Close MCBackup
                 Application.Current.Shutdown()
 
             End If
@@ -286,12 +347,17 @@ Partial Class MainWindow
 
 #End Region
 
+        ' Add step to splash progress
+        Splash.StepProgress()
+
 #Region "Update Check"
 
+        ' Check if user wants to check for updates
         If My.Settings.CheckForUpdates Then
 
             Log.Info("Checking for an update...")
 
+            ' Get most recent version from official website
             Dim client As New WebClient
             AddHandler client.DownloadStringCompleted, AddressOf DownloadVersionStringCompleted
             client.DownloadStringAsync(New Uri("http://content.nicoco007.com/downloads/mcbackup-3/version"))
@@ -304,18 +370,33 @@ Partial Class MainWindow
 
 #End Region
 
+        ' Add step to splash progress
+        Splash.StepProgress()
+
+        ' Check if user allows anonymous data collection
         If My.Settings.SendAnonymousData Then
 
+            ' Send +1 to StatCounter
             Dim client As New WebClient
             client.DownloadDataAsync(New Uri("http://c.statcounter.com/10065404/0/6bad5aa6/1/"))
 
         End If
 
+        ' Add step to splash progress
+        Splash.StepProgress()
+
         Log.Debug("Loading language for main form...")
 
+        ' Load language for main window
         LoadLanguage()
 
+        ' Add step to splash progress
+        Splash.StepProgress()
+
+        ' Close splash
         Splash.Close()
+
+        ' Set close action to ask
         Application.CloseAction = Application.AppCloseAction.Ask
 
     End Sub

@@ -32,6 +32,8 @@ Class Application
     End Property
 
     Sub New()
-        CloseAction = AppCloseAction.Ask
+
+        CloseAction = AppCloseAction.Force
+
     End Sub
 End Class

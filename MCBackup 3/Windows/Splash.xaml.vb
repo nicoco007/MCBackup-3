@@ -34,15 +34,6 @@ Public Class Splash
         Me.Title = "MCBackup v" & Main.ApplicationVersion
     End Sub
 
-    Public Sub ShowStatus(DictionaryEntry As String, DefaultString As String)
-        Try
-            Status.Content = MCBackup.Language.FindString(DictionaryEntry, My.Settings.Language & ".lang")
-        Catch ex As Exception
-            Status.Content = DefaultString
-        End Try
-        Status.Refresh()
-    End Sub
-
     Public Sub SetProgress(Progress As Integer)
         Me.Progress.Value = Progress
         Me.Progress.Refresh()
