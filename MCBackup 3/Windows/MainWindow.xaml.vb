@@ -81,8 +81,6 @@ Partial Class MainWindow
         Log.Info("Architecture: " & Log.GetWindowsArch())
         Log.Info(".NET Framework Version: " & Environment.Version.Major & "." & Environment.Version.Minor)
 
-#Region "Default Language"
-
         ' Check if language is set if and language file exists
         If String.IsNullOrEmpty(My.Settings.Language) Or Not File.Exists(My.Settings.Language + ".lang") Then
 
@@ -105,12 +103,8 @@ Partial Class MainWindow
 
         End If
 
-#End Region
-
         ' Add step to splash progress
         Splash.StepProgress()
-
-#Region "Configuration Upgrade"
 
         ' Find configuration file
         Dim configurationFile As String = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath
@@ -157,12 +151,8 @@ Partial Class MainWindow
 
         End If
 
-#End Region
-
         ' Add step to splash progress
         Splash.StepProgress()
-
-#Region "Language"
 
         ' Attempt to load language (exceptions are caught by Language class)
         MCBackup.Language.Load(My.Settings.Language + ".lang")
@@ -171,12 +161,8 @@ Partial Class MainWindow
         If String.IsNullOrEmpty(My.Settings.DefaultBackupName) Then My.Settings.DefaultBackupName = MCBackup.Language.GetString("Localization.DefaultBackupName")
         If String.IsNullOrEmpty(My.Settings.DefaultAutoBackupName) Then My.Settings.DefaultAutoBackupName = MCBackup.Language.GetString("Localization.DefaultAutoBackupName")
 
-#End Region
-
         ' Add step to splash progress
         Splash.StepProgress()
-
-#Region "Notification Icon"
 
         Log.Debug("Attempting to create notification icon...")
 
@@ -196,12 +182,8 @@ Partial Class MainWindow
         ' Show notification icon
         NotifyIcon.Visible = True
 
-#End Region
-
         ' Add step to splash progress
         Splash.StepProgress()
-
-#Region "Appearance Settings"
 
         Log.Debug("Loading appearance settings...")
 
@@ -233,12 +215,8 @@ Partial Class MainWindow
         GridSidebarColumn.Width = New GridLength(My.Settings.SidebarWidth.Value, GridUnitType.Star)
         GridListViewColumn.Width = New GridLength(My.Settings.ListViewWidth.Value, GridUnitType.Star)
 
-#End Region
-
         ' Add step to splash progress
         Splash.StepProgress()
-
-#Region "Minecraft Directory"
 
         Log.Info("Searching for Minecraft directory...")
 
@@ -304,12 +282,8 @@ Partial Class MainWindow
 
         End If
 
-#End Region
-
         ' Add step to splash progress
         Splash.StepProgress()
-
-#Region "Backups Directory"
 
         Log.Info("Searching for backups directory...")
 
@@ -345,12 +319,8 @@ Partial Class MainWindow
 
         Log.Info("Backups folder location: " + My.Settings.BackupsFolderLocation)
 
-#End Region
-
         ' Add step to splash progress
         Splash.StepProgress()
-
-#Region "Update Check"
 
         ' Check if user wants to check for updates
         If My.Settings.CheckForUpdates Then
@@ -367,8 +337,6 @@ Partial Class MainWindow
             Log.Info("Update check skipped as per settings.")
 
         End If
-
-#End Region
 
         ' Add step to splash progress
         Splash.StepProgress()
@@ -418,7 +386,6 @@ Partial Class MainWindow
                 UpdateDialog.Show()
             ElseIf ApplicationVersionInt > LatestVersionInt Then
                 Log.Info("MCBackup seems to be running a beta version (version " & ApplicationVersion & ")!")
-                Me.Title += " Beta"
             ElseIf ApplicationVersionInt = LatestVersionInt Then
                 Log.Info("MCBackup is up-to-date (version " & ApplicationVersion & ").")
             End If
