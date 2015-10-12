@@ -69,6 +69,8 @@ Partial Class MainWindow
 
     Private Sub Window_Loaded(sender As Object, e As EventArgs) Handles Window.Loaded
 
+
+
         ' Show splash and set text to "Starting..."
         Dim Splash As New Splash()
         Splash.Show()
@@ -245,10 +247,23 @@ Partial Class MainWindow
                     Dim SetMinecraftFolderWindow As New SetMinecraftFolderWindow
                     SetMinecraftFolderWindow.ShowDialog()
 
+                    If String.IsNullOrEmpty(My.Settings.MinecraftFolderLocation) Then
+
+                        ' Close MCBackup
+                        Splash.Close()
+                        Me.DialogResult = False
+                        Me.Close()
+                        Return
+
+                    End If
+                    
                 Else
 
                     ' Close MCBackup
-                    Application.Current.Shutdown()
+                    Splash.Close()
+                    Me.DialogResult = False
+                    Me.Close()
+                    Return
 
                 End If
 
@@ -273,7 +288,7 @@ Partial Class MainWindow
 
             End If
 
-            Log.Info("Saves folder location: " + My.Settings.MinecraftFolderLocation)
+            Log.Info("Saves folder location: " + My.Settings.SavesFolderLocation)
 
         Else
 

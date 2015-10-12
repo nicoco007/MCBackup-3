@@ -14,6 +14,8 @@
 '   ║                      limitations under the License.                       ║
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
 
+Imports System.ComponentModel
+Imports System.IO
 Imports System.Windows.Interop
 
 Public Class SetMinecraftFolderWindow
@@ -22,24 +24,17 @@ Public Class SetMinecraftFolderWindow
         If FSD.ShowDialog(New WindowInteropHelper(Me).Handle) = Forms.DialogResult.OK Then
             Select Case GetInstallationTypeButtons()
                 Case Game.Launcher.Minecraft
-                    Debug.Print(FSD.FolderName & "\launcher.jar")
-                    If Not IO.File.Exists(FSD.FolderName & "\launcher.jar") Then
-                        If MetroMessageBox.Show(MCBackup.Language.GetString("Message.ConfirmInvalidMinecraftFolder"), MCBackup.Language.GetString("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Warning) = MessageBoxResult.No Then
-                            Exit Sub
-                        End If
-                    End If
                     My.Settings.MinecraftFolderLocation = FSD.FolderName
                     My.Settings.SavesFolderLocation = FSD.FolderName & "\saves"
-                Case Game.Launcher.Technic
+                Case Else
                     My.Settings.MinecraftFolderLocation = FSD.FolderName
-                Case Game.Launcher.FeedTheBeast
-                    My.Settings.MinecraftFolderLocation = FSD.FolderName
-                Case Game.Launcher.ATLauncher
-                    My.Settings.MinecraftFolderLocation = FSD.FolderName
+                    My.Settings.SavesFolderLocation = Nothing
             End Select
+
+            My.Settings.Launcher = GetInstallationTypeButtons()
+            BaseFolderTextBox.Text = My.Settings.MinecraftFolderLocation
+            SavesFolderTextBox.Text = My.Settings.SavesFolderLocation
         End If
-        My.Settings.Launcher = GetInstallationTypeButtons()
-        BaseFolderTextBox.Text = My.Settings.MinecraftFolderLocation
     End Sub
 
     Private Function GetInstallationTypeButtons() As Game.Launcher
@@ -55,13 +50,62 @@ Public Class SetMinecraftFolderWindow
         Return Nothing
     End Function
 
-    Private Sub SaveButton_Click(sender As Object, e As RoutedEventArgs) Handles SaveButton.Click
-        If BaseFolderTextBox.Text = "" Then
-            If MetroMessageBox.Show(MCBackup.Language.GetString("Message.PleaseSelectFolder"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OKCancel, MessageBoxImage.Error) = MessageBoxResult.Cancel Then
-                Application.Current.Shutdown()
+    Private Sub LauncherTypeChanged(sender As RadioButton, e As EventArgs) Handles MinecraftInstallationRadioButton.Checked, TechnicInstallationRadioButton.Checked, FTBInstallationRadioButton.Checked, ATLauncherInstallationRadioButton.Checked
+
+        If Me.IsLoaded Then
+
+            If sender Is MinecraftInstallationRadioButton Then
+
+                SavesFolderTextBox.IsEnabled = True
+                SavesFolderBrowseButton.IsEnabled = True
+
+                If Not String.IsNullOrEmpty(BaseFolderTextBox.Text) Then
+
+                    SavesFolderTextBox.Text = BaseFolderTextBox.Text + "\saves"
+                    My.Settings.SavesFolderLocation = BaseFolderTextBox.Text + "\saves"
+
+                End If
+
+            Else
+
+                SavesFolderTextBox.IsEnabled = False
+                SavesFolderBrowseButton.IsEnabled = False
+
+                SavesFolderTextBox.Text = ""
+                My.Settings.SavesFolderLocation = ""
+
             End If
+
         End If
+
+    End Sub
+
+    Private Sub SaveButton_Click(sender As Object, e As RoutedEventArgs) Handles SaveButton.Click
+
         Me.Close()
+
+    End Sub
+
+    Private Sub Window_Closing(sender As Object, e As CancelEventArgs) Handles Window.Closing
+
+        If BaseFolderTextBox.Text = "" OrElse Not Directory.Exists(BaseFolderTextBox.Text) Then
+
+            If MetroMessageBox.Show(MCBackup.Language.GetString("Message.PleaseSelectFolder"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OKCancel, MessageBoxImage.Error) = MessageBoxResult.OK Then
+
+                e.Cancel = True
+
+            End If
+
+        Else
+
+            If My.Settings.Launcher = Game.Launcher.Minecraft And String.IsNullOrEmpty(My.Settings.SavesFolderLocation) And Not String.IsNullOrEmpty(My.Settings.MinecraftFolderLocation) Then
+
+                My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation + "\saves"
+
+            End If
+
+        End If
+
     End Sub
 
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs) Handles Window.Loaded
@@ -77,6 +121,9 @@ Public Class SetMinecraftFolderWindow
 
         BaseFolderLabel.Content = MCBackup.Language.GetString("OptionsWindow.FoldersTab.BaseFolderLabel.Text")
         BaseFolderBrowseButton.Content = MCBackup.Language.GetString("OptionsWindow.FoldersTab.BrowseButton.Text")
+
+        SavesFolderLabel.Content = MCBackup.Language.GetString("OptionsWindow.FoldersTab.SavesFolderLabel.Text")
+        SavesFolderBrowseButton.Content = MCBackup.Language.GetString("OptionsWindow.FoldersTab.BrowseButton.Text")
 
         SaveButton.Content = MCBackup.Language.GetString("SetMinecraftFolderWindow.SaveButton.Text")
     End Sub
