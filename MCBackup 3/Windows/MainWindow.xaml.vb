@@ -1198,7 +1198,7 @@ Partial Class MainWindow
     End Sub
 
     Private Sub WebsiteMenuItem_Click(sender As Object, e As RoutedEventArgs)
-        Process.Start("http://go.nicoco007.com/fwlink/?LinkID=1000")
+        Process.Start("http://go.nicoco007.com/fwlink/?LinkID=1000&utm_source=mcbackup&utm_medium=mcbackup")
     End Sub
 
     Private Sub AboutMenuItem_Click(sender As Object, e As RoutedEventArgs)

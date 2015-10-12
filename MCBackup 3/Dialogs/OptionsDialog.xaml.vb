@@ -655,7 +655,7 @@ Partial Public Class Options
     Private Sub TextBlock_MouseUp(sender As Object, e As MouseButtonEventArgs)
         TryCast(sender, TextBlock).Foreground = New SolidColorBrush(Color.FromArgb(255, 0, 0, 255))
         If MetroMessageBox.Show(MCBackup.Language.GetString("Message.OpenWebpage"), MCBackup.Language.GetString("Message.Caption.AreYouSure"), MessageBoxButton.OKCancel, MessageBoxImage.Information) = MessageBoxResult.OK Then
-            Process.Start("http://go.nicoco007.com/fwlink/?LinkID=1002")
+            Process.Start("http://go.nicoco007.com/fwlink/?LinkID=1002&utm_source=mcbackup&utm_medium=mcbackup")
         End If
     End Sub
 

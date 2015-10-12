@@ -15,10 +15,10 @@
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
 
 Public Class UpdateDialog
-    Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
+    Private MainWindow As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
 
     Private Sub YesButton_Click(sender As Object, e As RoutedEventArgs) Handles YesButton.Click
-        Process.Start("http://www.nicoco007.com/minecraft/applications/mcbackup-3/downloads/")
+        Process.Start("http://go.nicoco007.com/fwlink/?LinkID=1006")
         Me.Close()
     End Sub
 
@@ -29,8 +29,8 @@ Public Class UpdateDialog
     Private Sub UpdateDialog_Loaded(sender As Object, e As RoutedEventArgs)
         Me.Title = MCBackup.Language.GetString("UpdateDialog.Title")
         Label1.Content = MCBackup.Language.GetString("UpdateDialog.Label1.Text")
-        CurrentVersionLabel.Content = String.Format(MCBackup.Language.GetString("UpdateDialog.CurrentVersionLabel.Text"), Main.ApplicationVersion)
-        LatestVersionLabel.Content = String.Format(MCBackup.Language.GetString("UpdateDialog.LatestVersionLabel.Text"), Main.LatestVersion)
+        CurrentVersionLabel.Content = String.Format(MCBackup.Language.GetString("UpdateDialog.CurrentVersionLabel.Text"), MainWindow.ApplicationVersion)
+        LatestVersionLabel.Content = String.Format(MCBackup.Language.GetString("UpdateDialog.LatestVersionLabel.Text"), MainWindow.LatestVersion)
         Label2.Content = MCBackup.Language.GetString("UpdateDialog.Label2.Text")
         YesButton.Content = MCBackup.Language.GetString("MetroMsgBox.Button.Yes")
         NoButton.Content = MCBackup.Language.GetString("MetroMsgBox.Button.No")
@@ -38,6 +38,6 @@ Public Class UpdateDialog
     End Sub
 
     Private Sub Button_Click(sender As Object, e As RoutedEventArgs)
-        Process.Start("http://www.nicoco007.com/en/minecraft/applications/mcbackup-3/changelog/")
+        Process.Start("http://go.nicoco007.com/fwlink/?LinkID=1001&utm_source=mcbackup&utm_medium=mcbackup")
     End Sub
 End Class
