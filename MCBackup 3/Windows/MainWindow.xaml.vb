@@ -217,6 +217,9 @@ Partial Class MainWindow
         GridSidebarColumn.Width = New GridLength(My.Settings.SidebarWidth.Value, GridUnitType.Star)
         GridListViewColumn.Width = New GridLength(My.Settings.ListViewWidth.Value, GridUnitType.Star)
 
+        ' Call theme updater
+        UpdateTheme()
+
         ' Add step to splash progress
         Splash.StepProgress()
 
@@ -329,7 +332,10 @@ Partial Class MainWindow
             Else
 
                 ' Close MCBackup
-                Application.Current.Shutdown()
+                Splash.Close()
+                Me.DialogResult = False
+                Me.Close()
+                Return
 
             End If
 
