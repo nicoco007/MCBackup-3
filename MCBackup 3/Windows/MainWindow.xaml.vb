@@ -321,6 +321,9 @@ Partial Class MainWindow
                 ' Reset backups folder location
                 My.Settings.BackupsFolderLocation = Path.Combine(Directory.GetCurrentDirectory(), "backups")
 
+                ' Create backups directory
+                Directory.CreateDirectory(My.Settings.BackupsFolderLocation)
+
                 Log.Info("Backups folder location reset.")
 
             Else
