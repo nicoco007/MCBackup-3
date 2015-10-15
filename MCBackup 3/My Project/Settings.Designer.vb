@@ -459,6 +459,18 @@ Partial Friend NotInheritable Class MySettings
             Me("BackgroundImageYAlign") = value
         End Set
     End Property
+    
+    <Global.System.Configuration.UserScopedSettingAttribute(),  _
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+     Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+    Public Property ShowNewsOnStartup() As Boolean
+        Get
+            Return CType(Me("ShowNewsOnStartup"),Boolean)
+        End Get
+        Set
+            Me("ShowNewsOnStartup") = value
+        End Set
+    End Property
 End Class
 
 Namespace My

@@ -36,6 +36,7 @@ Partial Public Class Options
         CheckForUpdatesCheckBox.IsChecked = My.Settings.CheckForUpdates
         ShowBalloonTipsCheckBox.IsChecked = My.Settings.ShowBalloonTips
         CreateThumbOnWorldCheckBox.IsChecked = My.Settings.CreateThumbOnWorld
+        ShowNewsCheckBox.IsChecked = My.Settings.ShowNewsOnStartup
 
         AlwaysCloseCheckBox.IsChecked = My.Settings.SaveCloseState
         CloseToTrayRadioButton.IsChecked = My.Settings.CloseToTray
@@ -194,14 +195,15 @@ Partial Public Class Options
             Exit Sub
         End If
 
-        Log.Print("Minecraft folder location set to " & My.Settings.MinecraftFolderLocation)
-        Log.Print("Saves folder location set to " & My.Settings.SavesFolderLocation)
-        Log.Print("Backups folder location set to " & My.Settings.BackupsFolderLocation)
+        Log.Info("Minecraft folder location set to " & My.Settings.MinecraftFolderLocation)
+        Log.Info("Saves folder location set to " & My.Settings.SavesFolderLocation)
+        Log.Info("Backups folder location set to " & My.Settings.BackupsFolderLocation)
 
         My.Settings.InterfaceOpacity = ListViewOpacitySlider.Value
         My.Settings.CheckForUpdates = CheckForUpdatesCheckBox.IsChecked
         My.Settings.ShowBalloonTips = ShowBalloonTipsCheckBox.IsChecked
         My.Settings.CreateThumbOnWorld = CreateThumbOnWorldCheckBox.IsChecked
+        My.Settings.ShowNewsOnStartup = ShowNewsCheckBox.IsChecked
 
         My.Settings.DefaultBackupName = DefaultBackupNameTextBox.Text
         My.Settings.DefaultAutoBackupName = DefaultAutoBackupNameTextBox.Text
@@ -257,6 +259,7 @@ Partial Public Class Options
         CloseCompletelyRadioButton.Content = MCBackup.Language.GetString("OptionsWindow.GeneralPanel.CloseCompletelyRadioButton.Content")
         'AlwaysCloseNoteTextBlock.Text = MCBackup.Language.GetString("OptionsWindow.GeneralPanel.AlwaysCloseNoteTextBlock.Text")
         SendAnonymousDataCheckBox.Content = MCBackup.Language.GetString("OptionsWindow.GeneralPanel.SendAnonymousDataCheckBox.Content")
+        ShowNewsCheckBox.Content = MCBackup.Language.GetString("OptionsWindow.GeneralPanel.ShowNewsCheckBox.Content")
 
         ' Appearance 
         GeneralAppearanceGroupBox.Header = MCBackup.Language.GetString("OptionsWindow.AppearancePanel.GeneralAppearanceGroupBox.Header")

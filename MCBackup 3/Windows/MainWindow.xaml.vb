@@ -396,6 +396,16 @@ Partial Class MainWindow
     Private Sub Window_ContentRendered(sender As Object, e As EventArgs) Handles Window.ContentRendered
         RefreshBackupsList()
         ReloadBackupGroups()
+
+        If My.Settings.ShowNewsOnStartup Then
+
+            Dim newsWindow As New NewsWindow()
+            newsWindow.Owner = Me
+            newsWindow.Width = Me.Width - 100
+            newsWindow.Height = newsWindow.Width / 16 * 9
+            newsWindow.Show()
+
+        End If
     End Sub
 
     Private Sub DownloadVersionStringCompleted(sender As Object, e As DownloadStringCompletedEventArgs)
