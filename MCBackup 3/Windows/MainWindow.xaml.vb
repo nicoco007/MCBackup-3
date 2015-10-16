@@ -54,22 +54,17 @@ Partial Class MainWindow
 
     Public BackgroundImageBitmap As BitmapImage
 
-    Private Manager As New BackupManager()
+    Private WithEvents Manager As New BackupManager()
 #End Region
 
 #Region "Load"
     Public Sub New()
+
         InitializeComponent()
 
-        AddHandler Manager.BackupProgressChanged, AddressOf BackupManager_BackupProgressChanged
-        AddHandler Manager.BackupCompleted, AddressOf BackupManager_BackupCompleted
-        AddHandler Manager.RestoreProgressChanged, AddressOf BackupManager_RestoreProgressChanged
-        AddHandler Manager.RestoreCompleted, AddressOf BackupManager_RestoreCompleted
     End Sub
 
     Private Sub Window_Loaded(sender As Object, e As EventArgs) Handles Window.Loaded
-
-
 
         ' Show splash and set text to "Starting..."
         Dim Splash As New Splash()
@@ -917,7 +912,7 @@ Partial Class MainWindow
         Manager.BackupAsync(BackupInfo.Name, BackupInfo.Location, BackupInfo.Type, BackupInfo.Description, BackupInfo.Group, BackupInfo.Launcher, BackupInfo.Modpack)
     End Sub
 
-    Private Sub BackupManager_BackupProgressChanged(sender As Object, e As BackupProgressChangedEventArgs)
+    Private Sub BackupManager_BackupProgressChanged(sender As Object, e As BackupProgressChangedEventArgs) Handles Manager.BackupProgressChanged
         Progress.Maximum = 100
 
         ' Report progress depending on status
@@ -937,7 +932,7 @@ Partial Class MainWindow
 
                 ' Set status label & window title text to reflect status & progress
                 StatusLabel.Content = MCBackup.Language.GetString("Status.BackingUp", e.ProgressPercentage, IIf(Single.IsNaN(e.TransferRate), 0, e.TransferRate / 1048576), Manager.EstimatedTimeSpanToString(e.EstimatedTimeRemaining))
-                Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.Backup", ApplicationVersion, e.ProgressPercentage)
+                Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.Backup", e.ProgressPercentage)
 
             Case BackupStatus.RevertingChanges
 
@@ -947,7 +942,7 @@ Partial Class MainWindow
 
                 ' Set status label & window title text to reflect status
                 StatusLabel.Content = MCBackup.Language.GetString("Status.RevertingChanges")
-                Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.RevertingChanges", ApplicationVersion)
+                Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.RevertingChanges", e.ProgressPercentage)
 
             Case BackupStatus.CreatingThumbnail
 
@@ -957,12 +952,12 @@ Partial Class MainWindow
 
                 ' Set status label & window title text to reflect status & progress
                 StatusLabel.Content = MCBackup.Language.GetString("Status.CreatingThumb", e.ProgressPercentage)
-                Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.CreatingThumb", ApplicationVersion, e.ProgressPercentage)
+                Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.CreatingThumb", e.ProgressPercentage)
 
         End Select
     End Sub
 
-    Private Sub BackupManager_BackupCompleted(sender As Object, e As BackupCompletedEventArgs)
+    Private Sub BackupManager_BackupCompleted(sender As Object, e As BackupCompletedEventArgs) Handles Manager.BackupCompleted
         ProgressBar.Value = 100
 
         ' Check if an error occured
@@ -1102,7 +1097,7 @@ Partial Class MainWindow
         End If
     End Sub
 
-    Private Sub BackupManager_RestoreProgressChanged(sender As Object, e As RestoreProgressChangedEventArgs)
+    Private Sub BackupManager_RestoreProgressChanged(sender As Object, e As RestoreProgressChangedEventArgs) Handles Manager.RestoreProgressChanged
 
         Progress.Maximum = 100
 
@@ -1135,7 +1130,7 @@ Partial Class MainWindow
 
     End Sub
 
-    Private Sub BackupManager_RestoreCompleted(sender As Object, e As RestoreCompletedEventArgs)
+    Private Sub BackupManager_RestoreCompleted(sender As Object, e As RestoreCompletedEventArgs) Handles Manager.RestoreCompleted
 
         If e.Error IsNot Nothing Then
 
@@ -1824,7 +1819,7 @@ Partial Class MainWindow
         Me.Dispatcher.Invoke(Sub()
                                  EnableUI(False)
                                  StatusLabel.Content = MCBackup.Language.GetString("Status.MovingBackups")
-                                 Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.MovingBackups", ApplicationVersion)
+                                 Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.MovingBackups")
                                  Progress.IsIndeterminate = True
                              End Sub)
 
