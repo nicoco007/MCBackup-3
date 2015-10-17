@@ -397,6 +397,10 @@
     </Content>
     <Resource Include="Resources\WindowsIcons-license.txt" />
     <Resource Include="Resources\Entypo-license.txt" />
+    <Resource Include="Resources\thumb\atlauncher.png" />
+    <Resource Include="Resources\thumb\ftb.png" />
+    <Resource Include="Resources\thumb\minecraft.png" />
+    <Resource Include="Resources\thumb\technic.png" />
     <Content Include="Substrate.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

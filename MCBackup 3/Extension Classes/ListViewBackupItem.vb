@@ -65,11 +65,22 @@ Public Class ListViewBackupItem
         End Set
     End Property
 
-    Public Sub New(Name As String, DateCreated As String, Color As SolidColorBrush, OriginalName As String, Type As String)
+    Private m_Launcher As Game.Launcher
+    Public Property Launcher As Game.Launcher
+        Get
+            Return m_Launcher
+        End Get
+        Set(value As Game.Launcher)
+            m_Launcher = value
+        End Set
+    End Property
+
+    Public Sub New(Name As String, DateCreated As String, Color As SolidColorBrush, OriginalName As String, Type As String, Launcher As Game.Launcher)
         Me.Name = Name
         Me.DateCreated = DateCreated
         Me.Color = Color
         Me.OriginalName = OriginalName
         Me.Type = Type
+        Me.Launcher = Launcher
     End Sub
 End Class

@@ -163,7 +163,7 @@
             <Border x:Name="Sidebar" Grid.Column="2" BorderBrush="#FF646464" BorderThickness="0,1,1,1" Margin="0,0,0,0">
                 <Grid>
                     <TextBlock Name="SidebarTitle" Text="XXX element(s)" Foreground="{DynamicResource TextBrush}" FontSize="20" FontFamily="Segoe UI" Padding="5"  TextTrimming="CharacterEllipsis" Height="38" VerticalAlignment="Top"/>
-                    <Image x:Name="ThumbnailImage" Source="pack://application:,,,/Resources/nothumb.png"  Margin="10,37,10,190"/>
+                    <Image x:Name="ThumbnailImage" Source="pack://application:,,,/Resources/nothumb.png" Margin="46,37,45,195" HorizontalAlignment="Center" Width="Auto" Height="Auto" MaxWidth="256" MaxHeight="256"/>
                     <DockPanel Height="190" VerticalAlignment="Bottom">
                         <Grid DockPanel.Dock="Top">
                             <TextBlock x:Name="SidebarTypeLabel" Text="Type: " Foreground="{DynamicResource GrayBrush2}" Padding="5,5,0,5"  Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="99"/>

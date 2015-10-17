@@ -458,7 +458,7 @@ Partial Class MainWindow
 
         For Each Folder As DirectoryInfo In Directory.GetDirectories ' For each folder in the backups folder
             Log.Verbose("Found backup '{0}'", Folder.Name)
-            Dim Type As String = "[ERROR]"                 ' Create variables with default value [ERROR], in case one of the values doesn't exist
+            Dim Type As String = 0
 
             Try
                 If File.Exists(Folder.FullName & "\info.mcb") Then ' Convert info.mcb to info.json
@@ -534,11 +534,10 @@ Partial Class MainWindow
 
                 Dim BackupDateCreated As DateTime = GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString)
 
+                Const BackupsStayFreshFor As Integer = 7
+                Const BackupsBecomeCrapAfter As Integer = 31
 
-                If Group = "" And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
-
-                    Const BackupsStayFreshFor As Integer = 7
-                    Const BackupsBecomeCrapAfter As Integer = 31
+                If (Group = "" OrElse InfoJson("Group") = Group) And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
 
                     Dim percent = Math.Max(Math.Min((DateTime.Today.Subtract(BackupDateCreated).TotalDays - BackupsStayFreshFor) / (BackupsBecomeCrapAfter - BackupsStayFreshFor), 1), 0)
 
@@ -553,30 +552,43 @@ Partial Class MainWindow
                     '                  = -2p(x - 1)
                     Dim green As Integer = IIf(percent > 0.5, -2 * My.Settings.ListViewTextColorIntensity * (percent - 1), My.Settings.ListViewTextColorIntensity)
 
-                    Debug.Print(Math.Floor(DateTime.Today.Subtract(BackupDateCreated).TotalDays).ToString() + " " + red.ToString() + " " + green.ToString() + " ")
+                    Dim Launcher As Game.Launcher
+                    Dim Temp As Object = InfoJson("Launcher")
+
+                    If IsNumeric(Temp) Then
+                        If Temp > [Enum].GetValues(GetType(Game.Launcher)).Cast(Of Game.Launcher).Last() Or Temp < 0 Then
+                            Launcher = Game.Launcher.Minecraft
+                        Else
+                            Launcher = Temp
+                        End If
+                    ElseIf Not String.IsNullOrEmpty(Temp)
+                        Select Case Temp.ToString().ToLower()
+                            Case "minecraft"
+                                Launcher = Game.Launcher.Minecraft
+                            Case "technic"
+                                Launcher = Game.Launcher.Technic
+                            Case "ftb"
+                                Launcher = Game.Launcher.FeedTheBeast
+                            Case "feedthebeast"
+                                Launcher = Game.Launcher.FeedTheBeast
+                            Case "atlauncher"
+                                Launcher = Game.Launcher.ATLauncher
+                            Case Else
+                                Launcher = Game.Launcher.Minecraft
+                        End Select
+                    Else
+                        Launcher = Game.Launcher.Minecraft
+                    End If
 
                     Dispatcher.Invoke(Sub()
                                           Items.Add(New ListViewBackupItem(Folder.ToString,
-                                                     BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture),
-                                                     New SolidColorBrush(Color.FromRgb(red, green, 0)),
-                                                     InfoJson("OriginalName"),
-                                                     Type))
+                                                                           BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture),
+                                                                           New SolidColorBrush(Color.FromRgb(red, green, 0)),
+                                                                           InfoJson("OriginalName"),
+                                                                           Type,
+                                                                           Launcher))
                                       End Sub)
 
-                ElseIf InfoJson("Group") = Group And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
-                    If BackupDateCreated.AddDays(14) < DateTime.Today Then
-                        Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), InfoJson("OriginalName"), Type))
-                                          End Sub)
-                    ElseIf BackupDateCreated.AddDays(7) < DateTime.Today Then
-                        Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
-                                          End Sub)
-                    Else
-                        Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
-                                          End Sub)
-                    End If
                 End If
             Catch ex As Exception
                 Log.Severe("An error occured during the backup: " & ex.Message)
@@ -745,7 +757,18 @@ Partial Class MainWindow
                                       Dispatcher.Invoke(Sub() ErrorReportDialog.Show("An error occured while trying to load the backup's thumbnail", ex))
                                   End Try
                               Else
-                                  ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/nothumb.png"))
+                                  Select Case SelectedItem.Launcher
+                                      Case Game.Launcher.Minecraft
+                                          ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/thumb/minecraft.png"))
+                                      Case Game.Launcher.Technic
+                                          ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/thumb/technic.png"))
+                                      Case Game.Launcher.FeedTheBeast
+                                          ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/thumb/ftb.png"))
+                                      Case Game.Launcher.ATLauncher
+                                          ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/thumb/atlauncher.png"))
+                                      Case Else
+                                          ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/nothumb.png"))
+                                  End Select
                               End If
                           End Sub)
 
