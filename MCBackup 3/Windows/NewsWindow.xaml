@@ -6,7 +6,7 @@
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:MCBackup"
         mc:Ignorable="d"
-        Title="NewsWindow" Height="450" Width="800" WindowStartupLocation="CenterOwner" BorderBrush="{DynamicResource AccentColorBrush}" BorderThickness="1">
+        Title="NewsWindow" Height="450" Width="800" WindowStartupLocation="CenterOwner" WindowTransitionsEnabled="False" BorderBrush="{DynamicResource AccentColorBrush}" BorderThickness="1">
     <Grid>
         <WebBrowser x:Name="WebBrowser" Navigating="WebBrowser_Navigating" Margin="1,0,1,37"/>
             <controls:ProgressRing x:Name="ProgressRing" Foreground="{DynamicResource AccentColorBrush}" IsActive="False" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="32" Height="32"  Margin="71,0,0,3"/>

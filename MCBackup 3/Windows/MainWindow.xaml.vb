@@ -55,6 +55,8 @@ Partial Class MainWindow
     Public BackgroundImageBitmap As BitmapImage
 
     Private WithEvents Manager As New BackupManager()
+
+    Private Splash As New Splash()
 #End Region
 
 #Region "Load"
@@ -62,12 +64,10 @@ Partial Class MainWindow
 
         InitializeComponent()
 
-    End Sub
+        ' Call theme updater
+        UpdateTheme()
 
-    Private Sub Window_Loaded(sender As Object, e As EventArgs) Handles Window.Loaded
-
-        ' Show splash and set text to "Starting..."
-        Dim Splash As New Splash()
+        ' Show splash
         Splash.Show()
 
         ' Print system relevant information to log
@@ -132,6 +132,9 @@ Partial Class MainWindow
                         ' Upgrade settings
                         My.Settings.Upgrade()
 
+                        ' Call theme updater
+                        UpdateTheme()
+
                     End If
 
                     Log.Info("[CONFIGURATION] Settings upgrade skipped.")
@@ -147,6 +150,10 @@ Partial Class MainWindow
             Next
 
         End If
+
+        ' Set window size
+        Me.Width = My.Settings.WindowSize.Width
+        Me.Height = My.Settings.WindowSize.Height
 
         ' Add step to splash progress
         Splash.StepProgress()
@@ -184,10 +191,6 @@ Partial Class MainWindow
 
         Log.Debug("Loading appearance settings...")
 
-        ' Set window size
-        Me.Width = My.Settings.WindowSize.Width
-        Me.Height = My.Settings.WindowSize.Height
-
         ' Check if a background image is set and file exists
         If Not String.IsNullOrEmpty(My.Settings.BackgroundImageLocation) And My.Computer.FileSystem.FileExists(My.Settings.BackgroundImageLocation) Then
 
@@ -211,9 +214,6 @@ Partial Class MainWindow
         ' TODO: Find less hacky way to do this!
         GridSidebarColumn.Width = New GridLength(My.Settings.SidebarWidth.Value, GridUnitType.Star)
         GridListViewColumn.Width = New GridLength(My.Settings.ListViewWidth.Value, GridUnitType.Star)
-
-        ' Call theme updater
-        UpdateTheme()
 
         ' Add step to splash progress
         Splash.StepProgress()
@@ -254,7 +254,7 @@ Partial Class MainWindow
                         Return
 
                     End If
-                    
+
                 Else
 
                     ' Close MCBackup
