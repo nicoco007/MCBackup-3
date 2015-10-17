@@ -536,19 +536,33 @@ Partial Class MainWindow
 
 
                 If Group = "" And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
-                    If BackupDateCreated.AddDays(14) < DateTime.Today Then
-                        Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), InfoJson("OriginalName"), Type))
-                                          End Sub)
-                    ElseIf BackupDateCreated.AddDays(7) < DateTime.Today Then
-                        Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
-                                          End Sub)
-                    Else
-                        Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
-                                          End Sub)
-                    End If
+
+                    Const BackupsStayFreshFor As Integer = 7
+                    Const BackupsBecomeCrapAfter As Integer = 31
+
+                    Dim percent = Math.Max(Math.Min((DateTime.Today.Subtract(BackupDateCreated).TotalDays - BackupsStayFreshFor) / (BackupsBecomeCrapAfter - BackupsStayFreshFor), 1), 0)
+
+                    ' for red, we want p where
+                    ' 0 < p < 0.5    y = 2px
+                    ' 0.5 <= p < 1   y = p
+                    Dim red As Integer = IIf(percent < 0.5, percent * My.Settings.ListViewTextColorIntensity * 2, My.Settings.ListViewTextColorIntensity)
+
+                    ' for green, we want p where
+                    ' 0 < p < 0.5    y = p
+                    ' 0.5 <= p < 1   y = -2px + 2p (inverse of 2px)
+                    '                  = -2p(x - 1)
+                    Dim green As Integer = IIf(percent > 0.5, -2 * My.Settings.ListViewTextColorIntensity * (percent - 1), My.Settings.ListViewTextColorIntensity)
+
+                    Debug.Print(Math.Floor(DateTime.Today.Subtract(BackupDateCreated).TotalDays).ToString() + " " + red.ToString() + " " + green.ToString() + " ")
+
+                    Dispatcher.Invoke(Sub()
+                                          Items.Add(New ListViewBackupItem(Folder.ToString,
+                                                     BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture),
+                                                     New SolidColorBrush(Color.FromRgb(red, green, 0)),
+                                                     InfoJson("OriginalName"),
+                                                     Type))
+                                      End Sub)
+
                 ElseIf InfoJson("Group") = Group And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
                     If BackupDateCreated.AddDays(14) < DateTime.Today Then
                         Dispatcher.Invoke(Sub()

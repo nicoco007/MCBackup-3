@@ -23,8 +23,8 @@
 
     <Grid>
         <Label x:Name="TimeLabel" Content="00:00" Margin="10,0,15,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="64" Height="100" VerticalAlignment="Top"/>
-        <Button x:Name="StartButton" Content="Start" Margin="82,0,81,24" FontSize="24" Height="40" VerticalAlignment="Bottom" IsEnabled="False"/>
-        <ListView Name="SavesListView" Margin="10,196,10,178" BorderThickness="1">
+        <Button x:Name="StartButton" Content="Start" Margin="82,0,81,14" FontSize="24" Height="40" VerticalAlignment="Bottom" IsEnabled="False"/>
+        <ListView Name="SavesListView" Margin="10,196,10,132" BorderThickness="1">
             <ListView.View>
                 <GridView>
                     <GridViewColumn x:Name="SaveNameColumn" Width="200" Header="Name">
@@ -45,7 +45,7 @@
             </ListView.View>
         </ListView>
         <TextBlock x:Name="WorldToBackUpLabel" Text="World to back up:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,171,0,0" Height="20"/>
-        <Button x:Name="RefreshButton" Content="Refresh" Margin="0,0,17,146" Height="27" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="85"/>
+        <Button x:Name="RefreshButton" Content="Refresh" Margin="0,0,11,100" Height="27" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="85"/>
         <Controls:NumericUpDown x:Name="MinutesNumUpDown" Margin="128,118,127,0" Height="23" VerticalAlignment="Top" Minimum="1" Maximum="60" Value="15" HorizontalAlignment="Center" Width="85"/>
         <Label x:Name="BackupEveryLabel" Content="Backup every" VerticalAlignment="Top" Margin="10,88,10,0" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Width="322"/>
         <Label x:Name="MinutesLabel" Content="minutes" VerticalAlignment="Top" Margin="10,146,10,0" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Width="322"/>
