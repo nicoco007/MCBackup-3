@@ -55,8 +55,6 @@ Partial Class MainWindow
     Public BackgroundImageBitmap As BitmapImage
 
     Private WithEvents Manager As New BackupManager()
-
-    Private Splash As New Splash()
 #End Region
 
 #Region "Load"
@@ -68,6 +66,7 @@ Partial Class MainWindow
         UpdateTheme()
 
         ' Show splash
+        Dim Splash As New Splash()
         Splash.Show()
 
         ' Print system relevant information to log
@@ -76,7 +75,6 @@ Partial Class MainWindow
         Log.Info("OS Name: " & Log.GetWindowsName())
         Log.Info("OS Version: " & Log.GetWindowsVersion())
         Log.Info("Architecture: " & Log.GetWindowsArch())
-        Log.Info(".NET Framework Version: " & Environment.Version.Major & "." & Environment.Version.Minor)
 
         ' Check if language is set if and language file exists
         If String.IsNullOrEmpty(My.Settings.Language) Or Not File.Exists(My.Settings.Language + ".lang") Then
