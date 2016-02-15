@@ -5,13 +5,54 @@ Imports Newtonsoft.Json.Linq
 
 Public Class BackupMetadata
 
+    Private _Loaded As Boolean
     Public ReadOnly Property Loaded As Boolean
+        Get
+            Return _Loaded
+        End Get
+    End Property
+
+    Private _OriginalName As String
     Public ReadOnly Property OriginalName As String
+        Get
+            Return _OriginalName
+        End Get
+    End Property
+
+    Private _Type As BackupTypes
     Public ReadOnly Property Type As BackupTypes
+        Get
+            Return _Type
+        End Get
+    End Property
+
+    Private _Description As String
     Public ReadOnly Property Description As String
+        Get
+            Return _Description
+        End Get
+    End Property
+
+    Private _Launcher As Game.Launcher
     Public ReadOnly Property Launcher As Game.Launcher
+        Get
+            Return _Launcher
+        End Get
+    End Property
+
+    Private _Modpack As String
     Public ReadOnly Property Modpack As String
+        Get
+            Return _Modpack
+        End Get
+    End Property
+
+    Private _Group As String
     Public ReadOnly Property Group As String
+        Get
+            Return _Group
+        End Get
+    End Property
 
     Public Sub New(BackupLocation As String)
 
@@ -23,14 +64,14 @@ Public Class BackupMetadata
                 json = JsonConvert.DeserializeObject(SR.ReadToEnd)
             End Using
 
-            OriginalName = json("OriginalName")
-            Type = GetBackupType(json("Type"))
-            Description = json("Description")
-            Launcher = GetLauncher(json("Launcher"))
-            Modpack = json("Modpack")
-            Group = json("Group")
+            _OriginalName = json("OriginalName")
+            _Type = GetBackupType(json("Type"))
+            _Description = json("Description")
+            _Launcher = GetLauncher(json("Launcher"))
+            _Modpack = json("Modpack")
+            _Group = json("Group")
 
-            Loaded = True
+            _Loaded = True
 
         ElseIf File.Exists(Path.Combine(BackupLocation, "info.mcb")) Then ' old format
 
@@ -39,23 +80,23 @@ Public Class BackupMetadata
                     Dim Line As String = SR.ReadLine
                     If Not Line.StartsWith("#") Then
                         If Line.StartsWith("baseFolderName=") Then
-                            OriginalName = Line.Substring(15)
+                            _OriginalName = Line.Substring(15)
                         ElseIf Line.StartsWith("type=") Then
-                            Type = GetBackupType(Line.Substring(5))
+                            _Type = GetBackupType(Line.Substring(5))
                         ElseIf Line.StartsWith("desc=") Then
-                            Description = Line.Substring(5)
+                            _Description = Line.Substring(5)
                         ElseIf Line.StartsWith("groupName=") Then
-                            Group = Line.Substring(10)
+                            _Group = Line.Substring(10)
                         ElseIf Line.StartsWith("launcher=") Then
-                            Launcher = GetLauncher(Line.Substring(9))
+                            _Launcher = GetLauncher(Line.Substring(9))
                         ElseIf Line.StartsWith("modpack=") Then
-                            Modpack = Line.Substring(8)
+                            _Modpack = Line.Substring(8)
                         End If
                     End If
                 Loop
             End Using
 
-            Loaded = True
+            _Loaded = True
 
         End If
 
