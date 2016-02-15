@@ -98,7 +98,7 @@
                 </ListView.ContextMenu>
                 <ListView.View>
                     <GridView x:Name="ListViewGridView">
-                        <GridViewColumn Width="400">
+                        <GridViewColumn Width="350">
                             <GridViewColumn.Header>
                                 <GridViewColumnHeader Tag="Name" x:Name="NameColumnHeader">Name</GridViewColumnHeader>
                             </GridViewColumn.Header>
@@ -108,7 +108,7 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Width="160">
+                        <GridViewColumn Width="150">
                             <GridViewColumn.Header>
                                 <GridViewColumnHeader Tag="DateCreated" x:Name="DateCreatedColumnHeader">Date Created</GridViewColumnHeader>
                             </GridViewColumn.Header>
@@ -125,6 +125,16 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Type}" Foreground="{Binding Color}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="100">
+                            <GridViewColumn.Header>
+                                <GridViewColumnHeader Tag="SyncStatus" x:Name="SyncStatusColumnHeader">Sync Status</GridViewColumnHeader>
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding SyncStatus}"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>

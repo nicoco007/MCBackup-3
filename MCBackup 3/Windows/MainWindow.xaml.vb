@@ -247,7 +247,6 @@ Partial Class MainWindow
 
                         ' Close MCBackup
                         Splash.Close()
-                        Me.DialogResult = False
                         Me.Close()
                         Return
 
@@ -257,7 +256,6 @@ Partial Class MainWindow
 
                     ' Close MCBackup
                     Splash.Close()
-                    Me.DialogResult = False
                     Me.Close()
                     Return
 
@@ -326,7 +324,6 @@ Partial Class MainWindow
 
                 ' Close MCBackup
                 Splash.Close()
-                Me.DialogResult = False
                 Me.Close()
                 Return
 
@@ -448,94 +445,24 @@ Partial Class MainWindow
                               End If
                               Group = TryCast(GroupsTabControl.SelectedItem, TaggedTabItem).Tag
                           End Sub)
-        Dim Directory As New IO.DirectoryInfo(My.Settings.BackupsFolderLocation) ' Create a DirectoryInfo variable for the backups folder
 
         Dim DirectoriesToDelete As New ArrayList
 
         Log.Info("Searching in '{0}' for backups...", My.Settings.BackupsFolderLocation)
 
-        For Each Folder As DirectoryInfo In Directory.GetDirectories ' For each folder in the backups folder
-            Log.Verbose("Found backup '{0}'", Folder.Name)
+        For Each Backup As DirectoryInfo In New DirectoryInfo(My.Settings.BackupsFolderLocation).GetDirectories ' For each folder in the backups folder
+            Log.Verbose("Found backup '{0}'", Backup.Name)
             Dim Type As String = 0
 
             Try
-                If File.Exists(Folder.FullName & "\info.mcb") Then ' Convert info.mcb to info.json
-                    Log.Info("Converting info.mcb to JSON in backup '{0}'", Folder.Name)
+                Dim backupMetadata As BackupMetadata = New BackupMetadata(Backup.FullName)
 
-                    Dim Json As New JObject
-
-                    Using SR As New StreamReader(Folder.FullName & "\info.mcb")
-                        Do While SR.Peek <> -1
-                            Dim Line As String = SR.ReadLine
-                            If Not Line.StartsWith("#") Then
-                                If Line.StartsWith("baseFolderName=") Then
-                                    Json.Add(New JProperty("OriginalName", Line.Substring(15)))
-                                ElseIf Line.StartsWith("type=") Then
-                                    Json.Add(New JProperty("Type", Line.Substring(5)))
-                                ElseIf Line.StartsWith("desc=") Then
-                                    Json.Add(New JProperty("Description", Line.Substring(5)))
-                                ElseIf Line.StartsWith("groupName=") Then
-                                    Json.Add(New JProperty("Group", Line.Substring(10)))
-                                ElseIf Line.StartsWith("launcher=") Then
-                                    Json.Add(New JProperty("Launcher", Line.Substring(9)))
-                                ElseIf Line.StartsWith("modpack=") Then
-                                    Json.Add(New JProperty("Modpack", Line.Substring(8)))
-                                End If
-                            End If
-                        Loop
-                    End Using
-
-                    Using SR As New StreamWriter(Folder.FullName & "\info.json")
-                        SR.Write(JsonConvert.SerializeObject(Json, Formatting.Indented))
-                    End Using
-
-                    File.Delete(Folder.FullName & "\info.mcb")
-                End If
-
-                If Not My.Computer.FileSystem.FileExists(Folder.FullName & "\info.json") Then
-                    Log.Warn("'info.json' does not exist in folder '{0}'. This folder will not be considered as a backup.", Folder.Name)
-                    DirectoriesToDelete.Add(Folder.Name)
-                    Exit Try
-                End If
-
-                Dim InfoJson As JObject
-
-                Using SR As New StreamReader(Folder.FullName & "\info.json")
-                    InfoJson = JsonConvert.DeserializeObject(SR.ReadToEnd)
-                End Using
-
-                If Not IsNumeric(InfoJson("Type")) Then
-                    Select Case InfoJson("Type")
-                        Case "save"
-                            InfoJson("Type") = BackupTypes.World
-                        Case "version"
-                            InfoJson("Type") = BackupTypes.Version
-                        Case "everything"
-                            InfoJson("Type") = BackupTypes.Full
-                        Case Else
-                            InfoJson("Type") = BackupTypes.World
-                    End Select
-
-                    Using SW As New StreamWriter(Folder.FullName + "\info.json")
-                        SW.Write(InfoJson)
-                    End Using
-                End If
-
-                Select Case CInt(InfoJson("Type"))
-                    Case BackupTypes.World
-                        Type = MCBackup.Language.GetString("BackupTypes.Save")
-                    Case BackupTypes.Version
-                        Type = MCBackup.Language.GetString("BackupTypes.Version")
-                    Case BackupTypes.Full
-                        Type = MCBackup.Language.GetString("BackupTypes.Everything")
-                End Select
-
-                Dim BackupDateCreated As DateTime = GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString)
+                Dim BackupDateCreated As DateTime = GetFolderDateCreated(Backup.FullName)
 
                 Const BackupsStayFreshFor As Integer = 7
                 Const BackupsBecomeCrapAfter As Integer = 31
 
-                If (Group = "" OrElse InfoJson("Group") = Group) And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
+                If (Group = "" OrElse backupMetadata.Group = Group) And Backup.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
 
                     Dim percent = Math.Max(Math.Min((DateTime.Today.Subtract(BackupDateCreated).TotalDays - BackupsStayFreshFor) / (BackupsBecomeCrapAfter - BackupsStayFreshFor), 1), 0)
 
@@ -550,41 +477,13 @@ Partial Class MainWindow
                     '                  = -2p(x - 1)
                     Dim green As Integer = IIf(percent > 0.5, -2 * My.Settings.ListViewTextColorIntensity * (percent - 1), My.Settings.ListViewTextColorIntensity)
 
-                    Dim Launcher As Game.Launcher
-                    Dim Temp As Object = InfoJson("Launcher")
-
-                    If IsNumeric(Temp) Then
-                        If Temp > [Enum].GetValues(GetType(Game.Launcher)).Cast(Of Game.Launcher).Last() Or Temp < 0 Then
-                            Launcher = Game.Launcher.Minecraft
-                        Else
-                            Launcher = Temp
-                        End If
-                    ElseIf Not String.IsNullOrEmpty(Temp)
-                        Select Case Temp.ToString().ToLower()
-                            Case "minecraft"
-                                Launcher = Game.Launcher.Minecraft
-                            Case "technic"
-                                Launcher = Game.Launcher.Technic
-                            Case "ftb"
-                                Launcher = Game.Launcher.FeedTheBeast
-                            Case "feedthebeast"
-                                Launcher = Game.Launcher.FeedTheBeast
-                            Case "atlauncher"
-                                Launcher = Game.Launcher.ATLauncher
-                            Case Else
-                                Launcher = Game.Launcher.Minecraft
-                        End Select
-                    Else
-                        Launcher = Game.Launcher.Minecraft
-                    End If
-
                     Dispatcher.Invoke(Sub()
-                                          Items.Add(New ListViewBackupItem(Folder.ToString,
+                                          Items.Add(New ListViewBackupItem(Backup.Name,
                                                                            BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture),
                                                                            New SolidColorBrush(Color.FromRgb(red, green, 0)),
-                                                                           InfoJson("OriginalName"),
-                                                                           Type,
-                                                                           Launcher))
+                                                                           backupMetadata.OriginalName,
+                                                                           backupMetadata.Type,
+                                                                           backupMetadata.Launcher))
                                       End Sub)
 
                 End If

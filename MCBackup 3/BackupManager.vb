@@ -2,7 +2,6 @@
 Imports System.Globalization
 Imports System.IO
 Imports System.Threading
-Imports System.Windows.Threading
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 
