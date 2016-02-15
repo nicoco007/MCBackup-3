@@ -1,4 +1,0 @@
-language: csharp
-solution: MCBackup-3.sln
-install:
-    - nuget restore MCBackup-3.sln
