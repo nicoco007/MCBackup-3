@@ -63,6 +63,7 @@
   <ItemGroup>
     <Reference Include="Ionic.Zip, Version=1.9.8.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetZip.1.9.8\lib\net20\Ionic.Zip.dll</HintPath>
+	</Reference>
     <Reference Include="DotNetBox, Version=1.1.2.0, Culture=neutral, PublicKeyToken=d520375c40228fe8, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetBox.1.1.2\lib\net40\DotNetBox.dll</HintPath>
       <Private>True</Private>
@@ -462,11 +463,13 @@
 	<ItemGroup>
 		<AssemblyInfoFiles Include="My Project/AssemblyInfo.vb"/>
 	</ItemGroup>
-    <AssemblyInfo AssemblyInfoFiles="@(AssemblyInfoFiles)" 
+    <AssemblyInfo Condition="$(Build) != ''"
+				  AssemblyInfoFiles="@(AssemblyInfoFiles)" 
                   AssemblyCopyright="Copyright © 2013-2016 nicoco007" 
                   AssemblyVersion="$(AssemblyMajorVersion).$(AssemblyMinorVersion).$(AssemblyRevision).$(Build)"
                   AssemblyFileVersion="$(AssemblyMajorVersion).$(AssemblyMinorVersion).$(AssemblyRevision).$(Build)">
     </AssemblyInfo>
+  </Target>
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
     <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
