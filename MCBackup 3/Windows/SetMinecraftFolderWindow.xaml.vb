@@ -23,7 +23,7 @@ Public Class SetMinecraftFolderWindow
         Dim FSD As New FolderSelectDialog
         If FSD.ShowDialog(New WindowInteropHelper(Me).Handle) = Forms.DialogResult.OK Then
             Select Case GetInstallationTypeButtons()
-                Case Game.Launcher.Minecraft
+                Case Launcher.Minecraft
                     My.Settings.MinecraftFolderLocation = FSD.FolderName
                     My.Settings.SavesFolderLocation = FSD.FolderName & "\saves"
                 Case Else
@@ -37,15 +37,15 @@ Public Class SetMinecraftFolderWindow
         End If
     End Sub
 
-    Private Function GetInstallationTypeButtons() As Game.Launcher
+    Private Function GetInstallationTypeButtons() As Launcher
         If MinecraftInstallationRadioButton.IsChecked Then
-            Return Game.Launcher.Minecraft
+            Return Launcher.Minecraft
         ElseIf TechnicInstallationRadioButton.IsChecked Then
-            Return Game.Launcher.Technic
+            Return Launcher.Technic
         ElseIf FTBInstallationRadioButton.IsChecked Then
-            Return Game.Launcher.FeedTheBeast
+            Return Launcher.FeedTheBeast
         ElseIf ATLauncherInstallationRadioButton.IsChecked Then
-            Return Game.Launcher.ATLauncher
+            Return Launcher.ATLauncher
         End If
         Return Nothing
     End Function
@@ -98,7 +98,7 @@ Public Class SetMinecraftFolderWindow
 
         Else
 
-            If My.Settings.Launcher = Game.Launcher.Minecraft And String.IsNullOrEmpty(My.Settings.SavesFolderLocation) And Not String.IsNullOrEmpty(My.Settings.MinecraftFolderLocation) Then
+            If My.Settings.Launcher = Launcher.Minecraft And String.IsNullOrEmpty(My.Settings.SavesFolderLocation) And Not String.IsNullOrEmpty(My.Settings.MinecraftFolderLocation) Then
 
                 My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation + "\saves"
 

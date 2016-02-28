@@ -14,7 +14,6 @@
 '   ║                      limitations under the License.                       ║
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
 
-Imports MahApps.Metro
 Imports System.Windows.Interop
 Imports System.IO
 Imports System.Text.RegularExpressions
@@ -57,13 +56,13 @@ Partial Public Class Options
         ShowDeleteConfirmationCheckBox.IsChecked = My.Settings.ShowDeleteDialog
 
         Select Case My.Settings.Launcher
-            Case Game.Launcher.Minecraft
+            Case Launcher.Minecraft
                 MinecraftInstallationRadioButton.IsChecked = True
-            Case Game.Launcher.Technic
+            Case Launcher.Technic
                 TechnicInstallationRadioButton.IsChecked = True
-            Case Game.Launcher.FeedTheBeast
+            Case Launcher.FeedTheBeast
                 FTBInstallationRadioButton.IsChecked = True
-            Case Game.Launcher.ATLauncher
+            Case Launcher.ATLauncher
                 ATLauncherInstallationRadioButton.IsChecked = True
         End Select
 
@@ -71,7 +70,7 @@ Partial Public Class Options
         SavesFolderTextBox.Text = My.Settings.SavesFolderLocation
         BackupsFolderTextBox.Text = My.Settings.BackupsFolderLocation
 
-        If My.Settings.Launcher = Game.Launcher.Minecraft Then
+        If My.Settings.Launcher = Launcher.Minecraft Then
             SavesFolderBrowseButton.IsEnabled = True
             SavesFolderTextBox.IsEnabled = True
             SavesFolderTextBox.Text = My.Settings.SavesFolderLocation
@@ -493,7 +492,7 @@ Partial Public Class Options
             If FSD.ShowDialog(New WindowInteropHelper(Me).Handle) = Forms.DialogResult.OK Then
                 My.Settings.Launcher = GetInstallationTypeButtons()
                 My.Settings.MinecraftFolderLocation = FSD.FolderName
-                If My.Settings.Launcher = Game.Launcher.Minecraft Then
+                If My.Settings.Launcher = Launcher.Minecraft Then
                     Directory.CreateDirectory(My.Settings.MinecraftFolderLocation & "\saves")
                     My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
                 End If
@@ -503,7 +502,7 @@ Partial Public Class Options
                 SetInstallationTypeButtons(My.Settings.Launcher)
             End If
 
-            If My.Settings.Launcher = Game.Launcher.Minecraft Then
+            If My.Settings.Launcher = Launcher.Minecraft Then
                 SavesFolderBrowseButton.IsEnabled = True
                 SavesFolderTextBox.IsEnabled = True
                 SavesFolderTextBox.Text = My.Settings.SavesFolderLocation
@@ -517,30 +516,30 @@ Partial Public Class Options
         End If
     End Sub
 
-    Private Sub SetInstallationTypeButtons(Type As Game.Launcher)
+    Private Sub SetInstallationTypeButtons(Type As Launcher)
         Select Case Type
-            Case Game.Launcher.Minecraft
+            Case Launcher.Minecraft
                 MinecraftInstallationRadioButton.IsChecked = True
-            Case Game.Launcher.Technic
+            Case Launcher.Technic
                 TechnicInstallationRadioButton.IsChecked = True
-            Case Game.Launcher.FeedTheBeast
+            Case Launcher.FeedTheBeast
                 FTBInstallationRadioButton.IsChecked = True
-            Case Game.Launcher.ATLauncher
+            Case Launcher.ATLauncher
                 ATLauncherInstallationRadioButton.IsChecked = True
         End Select
     End Sub
 
-    Private Function GetInstallationTypeButtons() As Game.Launcher
+    Private Function GetInstallationTypeButtons() As Launcher
         If MinecraftInstallationRadioButton.IsChecked Then
-            Return Game.Launcher.Minecraft
+            Return Launcher.Minecraft
         ElseIf TechnicInstallationRadioButton.IsChecked Then
-            Return Game.Launcher.Technic
+            Return Launcher.Technic
         ElseIf FTBInstallationRadioButton.IsChecked Then
-            Return Game.Launcher.FeedTheBeast
+            Return Launcher.FeedTheBeast
         ElseIf ATLauncherInstallationRadioButton.IsChecked Then
-            Return Game.Launcher.ATLauncher
+            Return Launcher.ATLauncher
         End If
-        Return Game.Launcher.Minecraft
+        Return Launcher.Minecraft
     End Function
 
     Private Sub BaseFolderBrowseButton_Click(sender As Object, e As RoutedEventArgs) Handles BaseFolderBrowseButton.Click
@@ -548,13 +547,13 @@ Partial Public Class Options
         If FSD.ShowDialog(New WindowInteropHelper(Me).Handle) = Forms.DialogResult.OK Then
             My.Settings.Launcher = GetInstallationTypeButtons()
             My.Settings.MinecraftFolderLocation = FSD.FolderName
-            If My.Settings.Launcher = Game.Launcher.Minecraft Then
+            If My.Settings.Launcher = Launcher.Minecraft Then
                 Directory.CreateDirectory(My.Settings.MinecraftFolderLocation & "\saves")
                 My.Settings.SavesFolderLocation = My.Settings.MinecraftFolderLocation & "\saves"
             End If
             BaseFolderTextBox.Text = My.Settings.MinecraftFolderLocation
 
-            If My.Settings.Launcher = Game.Launcher.Minecraft Then
+            If My.Settings.Launcher = Launcher.Minecraft Then
                 SavesFolderBrowseButton.IsEnabled = True
                 SavesFolderTextBox.IsEnabled = True
                 SavesFolderTextBox.Text = My.Settings.SavesFolderLocation

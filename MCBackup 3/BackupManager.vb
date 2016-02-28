@@ -6,30 +6,6 @@ Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 
 Public NotInheritable Class BackupManager
-    ''' <summary>
-    ''' Status of the backup currently running.
-    ''' </summary>
-    Public Enum BackupStatus
-        Starting
-        Running
-        RevertingChanges
-        CreatingThumbnail
-    End Enum
-
-    ''' <summary>
-    ''' Type of backup to create. This can be a world, a version, or the whole Minecraft installation.
-    ''' </summary>
-    Public Enum BackupTypes
-        World
-        Version
-        Full
-    End Enum
-
-    Public Enum RestoreStatus
-        Starting
-        RemovingOldFiles
-        Restoring
-    End Enum
 
 #Region "Delegates"
     ''' <summary>
@@ -126,7 +102,7 @@ Public NotInheritable Class BackupManager
 
     End Sub
 
-    Public Sub BackupAsync(name As String, path As String, type As String, description As String, group As String, launcher As Game.Launcher, modpack As String)
+    Public Sub BackupAsync(name As String, path As String, type As String, description As String, group As String, launcher As Launcher, modpack As String)
 
         ' Check if BackupManager is busy
         If _IsBusy Then
@@ -232,7 +208,7 @@ Public NotInheritable Class BackupManager
         End If
 
         ' Check if backup is a world, user wants thumbnails to be created and mcmap exists
-        If args.Type = BackupTypes.World And My.Settings.CreateThumbOnWorld And File.Exists("mcmap/mcmap.exe") And File.Exists(Path.Combine(args.Path, "level.dat")) Then
+        If args.Type = BackupType.World And My.Settings.CreateThumbOnWorld And File.Exists("mcmap/mcmap.exe") And File.Exists(Path.Combine(args.Path, "level.dat")) Then
 
             ' Set progress to creating thumbnail
             BackupAsyncOperation.Post(BackupProgressChangedCallback, New BackupProgressChangedEventArgs(BackupStatus.CreatingThumbnail, 0))
@@ -361,7 +337,7 @@ Public NotInheritable Class BackupManager
 
     End Sub
 
-    Public Sub RestoreAsync(backupName As String, restoreLocation As String, backupType As BackupTypes)
+    Public Sub RestoreAsync(backupName As String, restoreLocation As String, backupType As BackupType)
 
         If Me._IsBusy Then
 
@@ -398,7 +374,7 @@ Public NotInheritable Class BackupManager
 
                                                                            RestoreAsyncOperation.PostOperationCompleted(RestoreCompletedCallback, New RestoreCompletedEventArgs(e.Error, _CancellationPending))
 
-                                                                       ElseIf e.Cancelled
+                                                                       ElseIf e.Cancelled Then
 
                                                                            RestoreAsyncOperation.PostOperationCompleted(RestoreCompletedCallback, New RestoreCompletedEventArgs(Nothing, True))
 

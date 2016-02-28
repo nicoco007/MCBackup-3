@@ -16,7 +16,6 @@
 Imports System.Drawing
 Imports System.Reflection
 Imports System.Windows.Threading
-Imports MCBackup.Game
 
 Module ExtensionModule
     Private EmptyDelegate As Action = Sub()
@@ -33,6 +32,23 @@ Module ExtensionModule
                 Dim Attr As StringValue = Attribute.GetCustomAttribute(MemberInfo(0), GetType(StringValue))
                 If Attr IsNot Nothing Then
                     Return Attr.Name
+                Else
+                    Return TheEnum.ToString()
+                End If
+            Else
+                Return TheEnum.ToString()
+            End If
+        End If
+        Return Nothing
+    End Function
+
+    <Runtime.CompilerServices.Extension> Public Function GetTranslation(TheEnum As Object) As String
+        If TheEnum >= 0 Then
+            Dim MemberInfo As MemberInfo() = TheEnum.GetType().GetMember(TheEnum.ToString)
+            If MemberInfo IsNot Nothing And MemberInfo.Length > 0 Then
+                Dim Attr As Translation = Attribute.GetCustomAttribute(MemberInfo(0), GetType(Translation))
+                If Attr IsNot Nothing Then
+                    Return Language.GetString(Attr.Key)
                 Else
                     Return TheEnum.ToString()
                 End If

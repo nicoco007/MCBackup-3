@@ -17,8 +17,6 @@
 Imports System.Windows.Threading
 Imports System.Text.RegularExpressions
 Imports System.IO
-Imports System.Text
-Imports System.Globalization
 
 Public Class AutoBackupWindow
     Private MainWindow As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
@@ -140,13 +138,13 @@ Public Class AutoBackupWindow
 
             MainWindow.BackupInfo.Description = String.Format(MCBackup.Language.GetString("AutoBackupWindow.BackupDescription"), SavesListView.SelectedItem.Name)
             Select Case My.Settings.Launcher
-                Case Game.Launcher.Minecraft
+                Case Launcher.Minecraft
                     MainWindow.BackupInfo.Location = My.Settings.SavesFolderLocation & "\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
-                Case Game.Launcher.Technic
+                Case Launcher.Technic
                     MainWindow.BackupInfo.Location = My.Settings.MinecraftFolderLocation & "\modpacks\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Modpack & "\saves\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
-                Case Game.Launcher.FeedTheBeast
+                Case Launcher.FeedTheBeast
                     MainWindow.BackupInfo.Location = My.Settings.MinecraftFolderLocation & "\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Modpack & "\minecraft\saves\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
-                Case Game.Launcher.ATLauncher
+                Case Launcher.ATLauncher
                     MainWindow.BackupInfo.Location = My.Settings.MinecraftFolderLocation & "\Instances\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Modpack & "\saves\" & CType(SavesListView.SelectedItem, SaveInfoListViewItem).Name
             End Select
 
@@ -177,18 +175,18 @@ Public Class AutoBackupWindow
     Public Sub ReloadSaves()
         SavesListView.Items.Clear()
         Select Case My.Settings.Launcher
-            Case Game.Launcher.Minecraft
+            Case Launcher.Minecraft
                 If Directory.Exists(My.Settings.SavesFolderLocation) Then
                     Dim SavesDirectory As New DirectoryInfo(My.Settings.SavesFolderLocation)
                     For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
                         If File.Exists(Folder.FullName & "\level.dat") Then
-                            SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, Game.Launcher.Minecraft))
+                            SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, Launcher.Minecraft))
                         End If
                     Next
                 Else
                     Log.Warn("Saves directory does not exist!")
                 End If
-            Case Game.Launcher.Technic
+            Case Launcher.Technic
                 If Directory.Exists(My.Settings.MinecraftFolderLocation & "\modpacks") Then
                     Dim Modpacks As New DirectoryInfo(My.Settings.MinecraftFolderLocation & "\modpacks")
                     For Each Modpack As DirectoryInfo In Modpacks.GetDirectories
@@ -196,7 +194,7 @@ Public Class AutoBackupWindow
                             Dim SavesDirectory As New DirectoryInfo(Modpack.FullName & "\saves")
                             For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
                                 If File.Exists(Folder.FullName & "\level.dat") Then
-                                    SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, Game.Launcher.Technic, Modpack.Name))
+                                    SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, Launcher.Technic, Modpack.Name))
                                 End If
                             Next
                         Else
@@ -206,7 +204,7 @@ Public Class AutoBackupWindow
                 Else
                     Log.Warn("Modpacks directory does not exist!")
                 End If
-            Case Game.Launcher.FeedTheBeast
+            Case Launcher.FeedTheBeast
                 If Directory.Exists(My.Settings.MinecraftFolderLocation) Then
                     Dim BaseDirectory As New DirectoryInfo(My.Settings.MinecraftFolderLocation)
                     For Each Directory As DirectoryInfo In BaseDirectory.GetDirectories
@@ -215,7 +213,7 @@ Public Class AutoBackupWindow
                                 Dim SavesDirectory As New DirectoryInfo(Directory.FullName & "\minecraft\saves")
                                 For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
                                     If File.Exists(Folder.FullName & "\level.dat") Then
-                                        SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, Game.Launcher.FeedTheBeast, Directory.Name))
+                                        SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, Launcher.FeedTheBeast, Directory.Name))
                                     End If
                                 Next
                             End If
@@ -225,7 +223,7 @@ Public Class AutoBackupWindow
                 Else
                     Log.Warn("FeedTheBeast directory does not exist!")
                 End If
-            Case Game.Launcher.ATLauncher
+            Case Launcher.ATLauncher
                 If Directory.Exists(My.Settings.MinecraftFolderLocation & "\Instances") Then
                     Dim Instances As New DirectoryInfo(My.Settings.MinecraftFolderLocation & "\Instances")
                     For Each Instance As DirectoryInfo In Instances.GetDirectories
@@ -233,7 +231,7 @@ Public Class AutoBackupWindow
                             Dim SavesDirectory As New DirectoryInfo(Instance.FullName & "\saves")
                             For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
                                 If File.Exists(Folder.FullName & "\level.dat") Then
-                                    SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, Game.Launcher.ATLauncher, Instance.Name))
+                                    SavesListView.Items.Add(New SaveInfoListViewItem(Folder.Name, Launcher.ATLauncher, Instance.Name))
                                 End If
                             Next
                         Else
@@ -245,7 +243,7 @@ Public Class AutoBackupWindow
                 End If
         End Select
 
-        If My.Settings.Launcher = Game.Launcher.Minecraft Then
+        If My.Settings.Launcher = Launcher.Minecraft Then
             SaveNameColumn.Width = 310
             SaveLocationColumn.Width = 0
         Else
@@ -283,12 +281,12 @@ Public Class SaveInfoListViewItem
         End Set
     End Property
 
-    Private _Launcher As Game.Launcher
-    Public Property Launcher As Game.Launcher
+    Private _Launcher As Launcher
+    Public Property Launcher As Launcher
         Get
             Return _Launcher
         End Get
-        Set(value As Game.Launcher)
+        Set(value As Launcher)
             _Launcher = value
         End Set
     End Property
@@ -303,13 +301,13 @@ Public Class SaveInfoListViewItem
         End Set
     End Property
 
-    Sub New(Name As String, Launcher As Game.Launcher)
+    Sub New(Name As String, Launcher As Launcher)
         Me.Name = Name
         Me.Launcher = Launcher
         Me.Modpack = Modpack
     End Sub
 
-    Sub New(Name As String, Launcher As Game.Launcher, Modpack As String)
+    Sub New(Name As String, Launcher As Launcher, Modpack As String)
         Me.Name = Name
         Me.Launcher = Launcher
         Me.Modpack = Modpack

@@ -19,12 +19,10 @@ Imports System.Configuration
 Imports System.Globalization
 Imports System.IO
 Imports System.Net
-Imports System.Text
 Imports System.Threading
 Imports System.Windows.Threading
 Imports MahApps.Metro
 Imports MahApps.Metro.Controls
-Imports MCBackup.BackupManager
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 Imports Substrate
@@ -103,6 +101,8 @@ Partial Class MainWindow
 
         ' Find configuration file
         Dim configurationFile As String = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath
+
+        Log.Debug("Configuration file: " + configurationFile)
 
         ' Get configuration directory from configuration file
         Dim configurationDirectory As DirectoryInfo = New FileInfo(configurationFile).Directory.Parent
@@ -224,7 +224,7 @@ Partial Class MainWindow
             Log.Warn("Minecraft installation directory was not found!")
 
             ' Check if launcher is default Minecraft and default Minecraft directory exists
-            If My.Settings.Launcher = Game.Launcher.Minecraft AndAlso Directory.Exists(Path.Combine(AppData, ".minecraft")) Then
+            If My.Settings.Launcher = Launcher.Minecraft AndAlso Directory.Exists(Path.Combine(AppData, ".minecraft")) Then
 
                 Log.Warn("Default Minecraft directory found! Minecraft folder location has been reset to default.")
 
@@ -268,7 +268,7 @@ Partial Class MainWindow
         Log.Info("Minecraft folder location: " + My.Settings.MinecraftFolderLocation)
 
         ' Check if launcher is default Minecraft
-        If My.Settings.Launcher = Game.Launcher.Minecraft Then
+        If My.Settings.Launcher = Launcher.Minecraft Then
 
             ' Check if saves folder location is empty or doesn't exist
             If String.IsNullOrEmpty(My.Settings.SavesFolderLocation) Or Not Directory.Exists(My.Settings.SavesFolderLocation) Then
@@ -384,8 +384,8 @@ Partial Class MainWindow
     End Sub
 
     Private Sub Window_ContentRendered(sender As Object, e As EventArgs) Handles Window.ContentRendered
-        RefreshBackupsList()
         ReloadBackupGroups()
+        RefreshBackupsList()
 
         If My.Settings.ShowNewsOnStartup Then
 
@@ -419,99 +419,35 @@ Partial Class MainWindow
         End If
     End Sub
 
-    Private WithEvents BGW As New BackgroundWorker
-    Private Items
+    Public Async Function RefreshBackupsList() As Task
 
-    Public Sub RefreshBackupsList()
-        If Me.IsLoaded And GroupsTabControl.SelectedIndex <> -1 And Not BGW.IsBusy Then
-            If Dispatcher.CheckAccess Then
-                Items = New List(Of ListViewBackupItem)
-                EnableUI(False)
-                Progress.IsIndeterminate = True
-                StatusLabel.Content = MCBackup.Language.GetString("Status.RefreshingBackupsList")
-                Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.RefreshingBackupsList", ApplicationVersion)
-                BGW.RunWorkerAsync()
-            Else
-                Dispatcher.Invoke(Sub() RefreshBackupsList())
-            End If
-        End If
-    End Sub
+        EnableUI(False)
+        Progress.IsIndeterminate = True
+        StatusLabel.Content = MCBackup.Language.GetString("Status.RefreshingBackupsList")
+        Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.RefreshingBackupsList", ApplicationVersion)
 
-    Private Sub BGW_DoWork() Handles BGW.DoWork
-        Dim Search As String = "", Group As String = ""
-        Dispatcher.Invoke(Sub()
-                              If Not SearchTextBox.Text = MCBackup.Language.GetString("MainWindow.Search") Then
-                                  Search = SearchTextBox.Text
-                              End If
-                              Group = TryCast(GroupsTabControl.SelectedItem, TaggedTabItem).Tag
-                          End Sub)
+        Dim Items As New List(Of ListViewBackupItem)
 
-        Dim DirectoriesToDelete As New ArrayList
+        Dim asyncOp As AsyncOperation = AsyncOperationManager.CreateOperation(Nothing)
+        Dim callback As New SendOrPostCallback(Sub(arg As Object)
 
-        Log.Info("Searching in '{0}' for backups...", My.Settings.BackupsFolderLocation)
+                                                   Dim metadata As BackupMetadata = arg
 
-        For Each Backup As DirectoryInfo In New DirectoryInfo(My.Settings.BackupsFolderLocation).GetDirectories ' For each folder in the backups folder
-            Log.Verbose("Found backup '{0}'", Backup.Name)
-            Dim Type As String = 0
+                                                   Items.Add(New ListViewBackupItem(metadata.Name, metadata.GetDateCreated(), New SolidColorBrush(metadata.GetColor()), metadata.OriginalName, metadata.Type.GetTranslation(), metadata.Launcher))
+                                               End Sub)
 
-            Try
-                Dim backupMetadata As BackupMetadata = New BackupMetadata(Backup.FullName)
+        Await Task.Factory.StartNew(Sub()
 
-                Dim BackupDateCreated As DateTime = GetFolderDateCreated(Backup.FullName)
+                                        For Each Backup As DirectoryInfo In New DirectoryInfo(My.Settings.BackupsFolderLocation).GetDirectories
 
-                Const BackupsStayFreshFor As Integer = 7
-                Const BackupsBecomeCrapAfter As Integer = 31
+                                            Dim backupMetadata As New BackupMetadata(Backup.FullName)
 
-                If (Group = "" OrElse backupMetadata.Group = Group) And Backup.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
+                                            asyncOp.Post(callback, backupMetadata)
 
-                    Dim percent = Math.Max(Math.Min((DateTime.Today.Subtract(BackupDateCreated).TotalDays - BackupsStayFreshFor) / (BackupsBecomeCrapAfter - BackupsStayFreshFor), 1), 0)
+                                        Next
 
-                    ' for red, we want p where
-                    ' 0 < p < 0.5    y = 2px
-                    ' 0.5 <= p < 1   y = p
-                    Dim red As Integer = IIf(percent < 0.5, percent * My.Settings.ListViewTextColorIntensity * 2, My.Settings.ListViewTextColorIntensity)
+                                    End Sub)
 
-                    ' for green, we want p where
-                    ' 0 < p < 0.5    y = p
-                    ' 0.5 <= p < 1   y = -2px + 2p (inverse of 2px)
-                    '                  = -2p(x - 1)
-                    Dim green As Integer = IIf(percent > 0.5, -2 * My.Settings.ListViewTextColorIntensity * (percent - 1), My.Settings.ListViewTextColorIntensity)
-
-                    Dispatcher.Invoke(Sub()
-                                          Items.Add(New ListViewBackupItem(Backup.Name,
-                                                                           BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture),
-                                                                           New SolidColorBrush(Color.FromRgb(red, green, 0)),
-                                                                           backupMetadata.OriginalName,
-                                                                           backupMetadata.Type,
-                                                                           backupMetadata.Launcher))
-                                      End Sub)
-
-                End If
-            Catch ex As Exception
-                Log.Severe("An error occured during the backup: " & ex.Message)
-            End Try
-        Next
-
-        If DirectoriesToDelete.Count > 0 Then
-            Dim SB As New StringBuilder
-            For Each Folder As String In DirectoriesToDelete
-                SB.Append(vbNewLine & "> " & Folder)
-            Next
-            Dim Result As MessageBoxResult
-            Dispatcher.Invoke(Sub()
-                                  Result = MetroMessageBox.Show(MCBackup.Language.GetString("Message.DeleteInvalidBackups", SB.ToString), MCBackup.Language.GetString("Message.Caption.InvalidBackups"), MessageBoxButton.YesNo, MessageBoxImage.Question)
-                              End Sub)
-            If Result = MessageBoxResult.Yes Then
-                Dispatcher.Invoke(Sub()
-                                      Progress.IsIndeterminate = False
-                                      EnableUI(False)
-                                      StartDelete(DirectoriesToDelete)
-                                  End Sub)
-            End If
-        End If
-    End Sub
-
-    Private Sub BGW_RunWorkerCompleted() Handles BGW.RunWorkerCompleted
         ListView.ItemsSource = Items
         ListView.SelectedIndex = -1
         SidebarTitle.Text = MCBackup.Language.GetString("MainWindow.Sidebar.NumberElements", Items.Count)
@@ -554,7 +490,8 @@ Partial Class MainWindow
         StatusLabel.Content = MCBackup.Language.GetString("Status.Ready")
         Me.Title = "MCBackup " + ApplicationVersion
         EnableUI(True)
-    End Sub
+
+    End Function
 
     Private Sub ListView_SelectionChanged(sender As Object, e As EventArgs) Handles ListView.SelectionChanged
         Select Case ListView.SelectedItems.Count
@@ -655,13 +592,13 @@ Partial Class MainWindow
                                   End Try
                               Else
                                   Select Case SelectedItem.Launcher
-                                      Case Game.Launcher.Minecraft
+                                      Case Launcher.Minecraft
                                           ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/thumb/minecraft.png"))
-                                      Case Game.Launcher.Technic
+                                      Case Launcher.Technic
                                           ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/thumb/technic.png"))
-                                      Case Game.Launcher.FeedTheBeast
+                                      Case Launcher.FeedTheBeast
                                           ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/thumb/ftb.png"))
-                                      Case Game.Launcher.ATLauncher
+                                      Case Launcher.ATLauncher
                                           ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/thumb/atlauncher.png"))
                                       Case Else
                                           ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/nothumb.png"))
@@ -669,7 +606,7 @@ Partial Class MainWindow
                               End If
                           End Sub)
 
-        Dim Type As BackupTypes = BackupTypes.World, OriginalFolderName As String = "-", Description As String = ""
+        Dim Type As BackupType = BackupType.World, OriginalFolderName As String = "-", Description As String = ""
 
         Try
             Dim InfoJson As JObject
@@ -688,13 +625,13 @@ Partial Class MainWindow
                               SidebarOriginalNameContent.ToolTip = OriginalFolderName
 
                               Select Case Type
-                                  Case BackupTypes.World
+                                  Case BackupType.World
                                       SidebarTypeContent.Text = MCBackup.Language.GetString("BackupTypes.Save")
                                       SidebarTypeContent.ToolTip = MCBackup.Language.GetString("BackupTypes.Save")
-                                  Case BackupTypes.Version
+                                  Case BackupType.Version
                                       SidebarTypeContent.Text = MCBackup.Language.GetString("BackupTypes.Version")
                                       SidebarTypeContent.ToolTip = MCBackup.Language.GetString("BackupTypes.Version")
-                                  Case BackupTypes.Full
+                                  Case BackupType.Full
                                       SidebarTypeContent.Text = MCBackup.Language.GetString("BackupTypes.Everything")
                                       SidebarTypeContent.ToolTip = MCBackup.Language.GetString("BackupTypes.Everything")
                               End Select
@@ -702,7 +639,7 @@ Partial Class MainWindow
                               DescriptionTextBox.Text = IIf(String.IsNullOrEmpty(Description), MCBackup.Language.GetString("MainWindow.Sidebar.Description.NoDesc"), Description)
                           End Sub)
 
-        If Type = BackupTypes.World AndAlso SelectedItem IsNot Nothing AndAlso File.Exists(Path.Combine(My.Settings.BackupsFolderLocation, SelectedItem.Name, "level.dat")) Then
+        If Type = BackupType.World AndAlso SelectedItem IsNot Nothing AndAlso File.Exists(Path.Combine(My.Settings.BackupsFolderLocation, SelectedItem.Name, "level.dat")) Then
             Dispatcher.Invoke(Sub()
                                   SidebarPlayerHealthGrid.Children.Clear()
                                   SidebarPlayerHungerGrid.Children.Clear()
@@ -951,7 +888,7 @@ Partial Class MainWindow
             ListView.SelectedIndex = -1
 
             Dim BaseFolderName As String = "",
-                Launcher As Game.Launcher = Game.Launcher.Minecraft,
+                Launcher As Launcher = Launcher.Minecraft,
                 Modpack As String = "",
                 InfoJson As JObject
 
@@ -967,28 +904,28 @@ Partial Class MainWindow
 
                 Dim Temp As Object = InfoJson("Launcher")
                 If IsNumeric(Temp) Then
-                    If Temp > [Enum].GetValues(GetType(Game.Launcher)).Cast(Of Game.Launcher).Last() Or Temp < 0 Then
-                        Launcher = Game.Launcher.Minecraft
+                    If Temp > [Enum].GetValues(GetType(Launcher)).Cast(Of Launcher).Last() Or Temp < 0 Then
+                        Launcher = Launcher.Minecraft
                     Else
                         Launcher = Temp
                     End If
                 ElseIf Not String.IsNullOrEmpty(Temp)
                     Select Case Temp.ToString().ToLower()
                         Case "minecraft"
-                            Launcher = Game.Launcher.Minecraft
+                            Launcher = Launcher.Minecraft
                         Case "technic"
-                            Launcher = Game.Launcher.Technic
+                            Launcher = Launcher.Technic
                         Case "ftb"
-                            Launcher = Game.Launcher.FeedTheBeast
+                            Launcher = Launcher.FeedTheBeast
                         Case "feedthebeast"
-                            Launcher = Game.Launcher.FeedTheBeast
+                            Launcher = Launcher.FeedTheBeast
                         Case "atlauncher"
-                            Launcher = Game.Launcher.ATLauncher
+                            Launcher = Launcher.ATLauncher
                         Case Else
-                            Launcher = Game.Launcher.Minecraft
+                            Launcher = Launcher.Minecraft
                     End Select
                 Else
-                    Launcher = Game.Launcher.Minecraft
+                    Launcher = Launcher.Minecraft
                 End If
 
                 Modpack = InfoJson("Modpack")
@@ -1001,29 +938,29 @@ Partial Class MainWindow
             End If
 
             Select Case RestoreInfo.BackupType
-                Case BackupTypes.World
+                Case BackupType.World
                     Select Case My.Settings.Launcher
-                        Case Game.Launcher.Minecraft
+                        Case Launcher.Minecraft
                             RestoreInfo.RestoreLocation = My.Settings.SavesFolderLocation & "\" & BaseFolderName
-                        Case Game.Launcher.Technic
+                        Case Launcher.Technic
                             RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\modpacks\" & Modpack & "\saves\" & BaseFolderName
-                        Case Game.Launcher.FeedTheBeast
+                        Case Launcher.FeedTheBeast
                             RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\" & Modpack & "\minecraft\saves\" & BaseFolderName
-                        Case Game.Launcher.ATLauncher
+                        Case Launcher.ATLauncher
                             RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\Instances\" & Modpack & "\saves\" & BaseFolderName
                     End Select
-                Case BackupTypes.Version
+                Case BackupType.Version
                     Select Case My.Settings.Launcher
-                        Case Game.Launcher.Minecraft
+                        Case Launcher.Minecraft
                             RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\versions\" & BaseFolderName
-                        Case Game.Launcher.Technic
+                        Case Launcher.Technic
                             RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\modpacks\" & BaseFolderName
-                        Case Game.Launcher.FeedTheBeast
+                        Case Launcher.FeedTheBeast
                             RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\" & BaseFolderName
-                        Case Game.Launcher.ATLauncher
+                        Case Launcher.ATLauncher
                             RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation & "\Instances\" & BaseFolderName
                     End Select
-                Case BackupTypes.Full
+                Case BackupType.Full
                     RestoreInfo.RestoreLocation = My.Settings.MinecraftFolderLocation
             End Select
 

@@ -1,8 +1,4 @@
-﻿Imports System.IO
-Imports Newtonsoft.Json
-Imports Newtonsoft.Json.Linq
-
-Public Class BackupInfo
+﻿Public Class BackupInfo
     Private _Name As String
     Public Property Name As String
         Get
@@ -53,12 +49,12 @@ Public Class BackupInfo
         End Set
     End Property
 
-    Private _Launcher As Game.Launcher
-    Public Property Launcher As Game.Launcher
+    Private _Launcher As Launcher
+    Public Property Launcher As Launcher
         Get
             Return _Launcher
         End Get
-        Set(value As Game.Launcher)
+        Set(value As Launcher)
             _Launcher = value
         End Set
     End Property

@@ -340,17 +340,17 @@ Partial Friend NotInheritable Class MySettings
         End Set
     End Property
     
-    <Global.System.Configuration.UserScopedSettingAttribute(),  _
-     Global.System.Diagnostics.DebuggerNonUserCodeAttribute()>  _
-    Public Property Launcher() As Global.MCBackup.Game.Launcher
+    <Global.System.Configuration.UserScopedSettingAttribute(),
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute()>
+    Public Property Launcher() As Global.MCBackup.Launcher
         Get
-            Return CType(Me("Launcher"),Global.MCBackup.Game.Launcher)
+            Return CType(Me("Launcher"), Global.MCBackup.Launcher)
         End Get
         Set
-            Me("Launcher") = value
+            Me("Launcher") = Value
         End Set
     End Property
-    
+
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.Configuration.DefaultSettingValueAttribute("True")>  _

@@ -19,12 +19,12 @@
         End Set
     End Property
 
-    Private _BackupType As BackupManager.BackupTypes
-    Public Property BackupType As BackupManager.BackupTypes
+    Private _BackupType As BackupType
+    Public Property BackupType As BackupType
         Get
             Return _BackupType
         End Get
-        Set(value As BackupManager.BackupTypes)
+        Set(value As BackupType)
             _BackupType = value
         End Set
     End Property

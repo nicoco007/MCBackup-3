@@ -14,34 +14,7 @@
 '   ║                      limitations under the License.                       ║
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
 
-Imports System.Reflection
-
 Public Class Game
-    Public Enum Launcher
-        Minecraft
-        Technic
-        <StringValue("Feed the Beast")> FeedTheBeast
-        ATLauncher
-    End Enum
-
-    <AttributeUsage(AttributeTargets.Field)>
-    Public Class StringValue
-        Inherits Attribute
-        Private _Name As String
-        Public Property Name As String
-            Get
-                Return _Name
-            End Get
-            Set(value As String)
-                _Name = value
-            End Set
-        End Property
-
-        Public Sub New(Name As String)
-            _Name = Name
-        End Sub
-    End Class
-
     Public Class Images
         Public Class Health
             Inherits Image

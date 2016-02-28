@@ -1,14 +1,22 @@
 ﻿Imports System.IO
-Imports MCBackup.BackupManager
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 
 Public Class BackupMetadata
 
+    Private _FullPath As String
+
     Private _Loaded As Boolean
     Public ReadOnly Property Loaded As Boolean
         Get
             Return _Loaded
+        End Get
+    End Property
+
+    Private _Name As String
+    Public ReadOnly Property Name As String
+        Get
+            Return _Name
         End Get
     End Property
 
@@ -19,8 +27,8 @@ Public Class BackupMetadata
         End Get
     End Property
 
-    Private _Type As BackupTypes
-    Public ReadOnly Property Type As BackupTypes
+    Private _Type As BackupType
+    Public ReadOnly Property Type As BackupType
         Get
             Return _Type
         End Get
@@ -33,8 +41,8 @@ Public Class BackupMetadata
         End Get
     End Property
 
-    Private _Launcher As Game.Launcher
-    Public ReadOnly Property Launcher As Game.Launcher
+    Private _Launcher As Launcher
+    Public ReadOnly Property Launcher As Launcher
         Get
             Return _Launcher
         End Get
@@ -54,7 +62,32 @@ Public Class BackupMetadata
         End Get
     End Property
 
+    Const BackupsStayFreshFor As Integer = 7
+    Const BackupsBecomeCrapAfter As Integer = 31
+
+    Public Function GetColor() As Color
+
+        Dim percent = Math.Max(Math.Min((Date.Today.Subtract(GetDateCreated()).TotalDays - BackupsStayFreshFor) / (BackupsBecomeCrapAfter - BackupsStayFreshFor), 1), 0)
+
+        ' for red, we want p where
+        ' 0 < p < 0.5    y = 2px
+        ' 0.5 <= p < 1   y = p
+        Dim red As Integer = IIf(percent < 0.5, percent * My.Settings.ListViewTextColorIntensity * 2, My.Settings.ListViewTextColorIntensity)
+
+        ' for green, we want p where
+        ' 0 < p < 0.5    y = p
+        ' 0.5 <= p < 1   y = -2px + 2p (inverse of 2px)
+        '                  = -2p(x - 1)
+        Dim green As Integer = IIf(percent > 0.5, -2 * My.Settings.ListViewTextColorIntensity * (percent - 1), My.Settings.ListViewTextColorIntensity)
+
+        Return Color.FromRgb(red, green, 0)
+
+    End Function
+
     Public Sub New(BackupLocation As String)
+
+        _Name = Path.GetFileName(BackupLocation)
+        _FullPath = BackupLocation
 
         If File.Exists(Path.Combine(BackupLocation, "info.json")) Then ' new format
 
@@ -102,7 +135,7 @@ Public Class BackupMetadata
 
     End Sub
 
-    Private Function GetBackupType(Input As Object) As BackupTypes
+    Private Function GetBackupType(Input As Object) As BackupType
 
         If IsNumeric(Input) Then
 
@@ -113,16 +146,16 @@ Public Class BackupMetadata
             Select Case Input
 
                 Case "save"
-                    Return BackupTypes.World
+                    Return BackupType.World
 
                 Case "version"
-                    Return BackupTypes.Version
+                    Return BackupType.Version
 
                 Case "everything"
-                    Return BackupTypes.Full
+                    Return BackupType.Full
 
                 Case Else
-                    Return BackupTypes.World
+                    Return BackupType.World
 
             End Select
 
@@ -130,13 +163,13 @@ Public Class BackupMetadata
 
     End Function
 
-    Private Function GetLauncher(Input As Object) As Game.Launcher
+    Private Function GetLauncher(Input As Object) As Launcher
 
         If IsNumeric(Input) Then
 
-            If Input < 0 Or Input > [Enum].GetValues(GetType(Game.Launcher)).Cast(Of Game.Launcher).Last() Then
+            If Input < 0 Or Input > [Enum].GetValues(GetType(Launcher)).Cast(Of Launcher).Last() Then
 
-                Return Game.Launcher.Minecraft
+                Return Launcher.Minecraft
 
             Else
 
@@ -149,26 +182,29 @@ Public Class BackupMetadata
             Select Case Input.ToString().ToLower()
 
                 Case "minecraft"
-                    Return Game.Launcher.Minecraft
+                    Return Launcher.Minecraft
 
                 Case "technic"
-                    Return Game.Launcher.Technic
+                    Return Launcher.Technic
 
                 Case "ftb"
                 Case "feedthebeast"
-                    Return Game.Launcher.FeedTheBeast
+                    Return Launcher.FeedTheBeast
 
                 Case "atlauncher"
-                    Return Game.Launcher.ATLauncher
-
-                Case Else
-                    Return Game.Launcher.Minecraft
+                    Return Launcher.ATLauncher
 
             End Select
 
         End If
 
-        Return Game.Launcher.Minecraft
+        Return Launcher.Minecraft
+
+    End Function
+
+    Public Function GetDateCreated()
+
+        Return (New Scripting.FileSystemObject).GetFolder(_FullPath).DateCreated ' Get FolderPath's date of creation
 
     End Function
 

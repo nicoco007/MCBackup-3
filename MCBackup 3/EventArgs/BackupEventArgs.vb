@@ -33,12 +33,12 @@ Public Class BackupEventArgs
         End Set
     End Property
 
-    Private _Type As BackupManager.BackupTypes
-    Public Property Type As BackupManager.BackupTypes
+    Private _Type As BackupType
+    Public Property Type As BackupType
         Get
             Return _Type
         End Get
-        Set(value As BackupManager.BackupTypes)
+        Set(value As BackupType)
             _Type = value
         End Set
     End Property
@@ -53,12 +53,12 @@ Public Class BackupEventArgs
         End Set
     End Property
 
-    Private _Launcher As Game.Launcher
-    Public Property Launcher As Game.Launcher
+    Private _Launcher As Launcher
+    Public Property Launcher As Launcher
         Get
             Return _Launcher
         End Get
-        Set(value As Game.Launcher)
+        Set(value As Launcher)
             _Launcher = value
         End Set
     End Property
@@ -73,7 +73,7 @@ Public Class BackupEventArgs
         End Set
     End Property
 
-    Public Sub New(Name As String, Path As String, Type As String, Description As String, Group As String, Launcher As Game.Launcher, Modpack As String)
+    Public Sub New(Name As String, Path As String, Type As String, Description As String, Group As String, Launcher As Launcher, Modpack As String)
         Me.Name = Name
         Me.Path = Path
         Me.Type = Type

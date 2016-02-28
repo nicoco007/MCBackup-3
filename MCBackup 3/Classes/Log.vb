@@ -57,16 +57,20 @@ Public Class Log
 
         message = IIf(args IsNot Nothing, FilterText(String.Format(text, args)), FilterText(text))
 
-        Using streamWriter As New StreamWriter(Directory.GetCurrentDirectory() & "\mcbackup.log", True)
+        Try
+            Using streamWriter As New StreamWriter(Directory.GetCurrentDirectory() & "\mcbackup.log", True)
 
-            For Each part As String In message
+                For Each part As String In message
 
-                Diagnostics.Debug.Print(part)
-                streamWriter.WriteLine(part)
+                    Diagnostics.Debug.Print(part)
+                    streamWriter.WriteLine(part)
 
-            Next
+                Next
 
-        End Using
+            End Using
+        Catch ex As Exception
+
+        End Try
 
     End Sub
 
@@ -84,7 +88,7 @@ Public Class Log
 
     Private Shared Function FilterText(text As String) As String()
 
-        text = text.Replace(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "<USERDIRECTORY>")
+        'text = text.Replace(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "<USERDIRECTORY>")
 
         Return text.Split(vbNewLine)
 

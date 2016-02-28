@@ -150,6 +150,12 @@
     <Compile Include="Classes\BackupMetadata.vb" />
     <Compile Include="Classes\BackupsListView.vb" />
     <Compile Include="Classes\RestoreInfo.vb" />
+    <Compile Include="Enums\BackupStatus.vb" />
+    <Compile Include="Enums\BackupType.vb" />
+    <Compile Include="Enums\Launcher.vb" />
+    <Compile Include="Enums\RestoreStatus.vb" />
+    <Compile Include="Enums\StringValue.vb" />
+    <Compile Include="Enums\Translation.vb" />
     <Compile Include="EventArgs\BackupCompletedEventArgs.vb" />
     <Compile Include="EventArgs\BackupEventArgs.vb" />
     <Compile Include="EventArgs\BackupProgressChangedEventArgs.vb" />
