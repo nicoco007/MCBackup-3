@@ -383,9 +383,9 @@ Partial Class MainWindow
 
     End Sub
 
-    Private Sub Window_ContentRendered(sender As Object, e As EventArgs) Handles Window.ContentRendered
+    Private Async Sub Window_ContentRendered(sender As Object, e As EventArgs) Handles Window.ContentRendered
         ReloadBackupGroups()
-        RefreshBackupsList()
+        Await RefreshBackupsList()
 
         If My.Settings.ShowNewsOnStartup Then
 
@@ -420,6 +420,8 @@ Partial Class MainWindow
     End Sub
 
     Public Async Function RefreshBackupsList() As Task
+
+        If Not Directory.Exists(My.Settings.BackupsFolderLocation) Then Return
 
         EnableUI(False)
         Progress.IsIndeterminate = True

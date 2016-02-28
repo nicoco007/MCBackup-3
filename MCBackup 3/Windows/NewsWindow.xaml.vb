@@ -7,6 +7,8 @@ Public Class NewsWindow
 
         LoadLanguage()
 
+        WebBrowser.Navigate("https://www.nicoco007.com/category/mcbackup-3?utm_source=mcbackup-news&utm_medium=mcbackup")
+
         'Using Reader As XmlReader = XmlReader.Create("https://www.nicoco007.com/category/mcbackup-3/feed")
 
         '    Dim Feed As SyndicationFeed = SyndicationFeed.Load(Reader)
@@ -69,12 +71,6 @@ Public Class NewsWindow
             WebBrowser.GoForward()
 
         End If
-
-    End Sub
-
-    Private Sub ProgressRing_Loaded(sender As Object, e As RoutedEventArgs) Handles ProgressRing.Loaded
-
-        ' WebBrowser.Navigate("https://www.nicoco007.com/category/mcbackup-3?utm_source=mcbackup-news&utm_medium=mcbackup")
 
     End Sub
 
