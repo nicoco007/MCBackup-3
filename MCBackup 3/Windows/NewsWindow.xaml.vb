@@ -1,8 +1,23 @@
-﻿Public Class NewsWindow
+﻿Imports System.Xml
+Imports System.ServiceModel.Syndication
+
+Public Class NewsWindow
 
     Private Sub Window_Loaded(sender As Object, e As EventArgs) Handles MyBase.Loaded
 
         LoadLanguage()
+
+        'Using Reader As XmlReader = XmlReader.Create("https://www.nicoco007.com/category/mcbackup-3/feed")
+
+        '    Dim Feed As SyndicationFeed = SyndicationFeed.Load(Reader)
+        '    Log.Info("[RSS] " + Feed.Title.Text)
+        '    WebBrowser.Navigate(Feed.Items(0).Links(0).Uri)
+
+        '    For Each Item As SyndicationItem In Feed.Items
+        '        Log.Info("[RSS] " + Item.Title.Text)
+        '    Next
+
+        'End Using
 
     End Sub
 
@@ -59,7 +74,7 @@
 
     Private Sub ProgressRing_Loaded(sender As Object, e As RoutedEventArgs) Handles ProgressRing.Loaded
 
-        WebBrowser.Navigate("https://www.nicoco007.com/category/mcbackup-3/")
+        ' WebBrowser.Navigate("https://www.nicoco007.com/category/mcbackup-3?utm_source=mcbackup-news&utm_medium=mcbackup")
 
     End Sub
 
