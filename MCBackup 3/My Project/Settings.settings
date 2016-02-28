@@ -105,5 +105,11 @@
     <Setting Name="BackgroundImageYAlign" Type="System.Windows.Media.AlignmentY" Scope="User">
       <Value Profile="(Default)">Center</Value>
     </Setting>
+    <Setting Name="ShowNewsOnStartup" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="LastBackupGroupUsed" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

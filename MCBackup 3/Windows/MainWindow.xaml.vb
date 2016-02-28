@@ -54,24 +54,18 @@ Partial Class MainWindow
 
     Public BackgroundImageBitmap As BitmapImage
 
-    Private Manager As New BackupManager()
+    Private WithEvents Manager As New BackupManager()
 #End Region
 
 #Region "Load"
     Public Sub New()
+
         InitializeComponent()
 
-        AddHandler Manager.BackupProgressChanged, AddressOf BackupManager_BackupProgressChanged
-        AddHandler Manager.BackupCompleted, AddressOf BackupManager_BackupCompleted
-        AddHandler Manager.RestoreProgressChanged, AddressOf BackupManager_RestoreProgressChanged
-        AddHandler Manager.RestoreCompleted, AddressOf BackupManager_RestoreCompleted
-    End Sub
+        ' Call theme updater
+        UpdateTheme()
 
-    Private Sub Window_Loaded(sender As Object, e As EventArgs) Handles Window.Loaded
-
-
-
-        ' Show splash and set text to "Starting..."
+        ' Show splash
         Dim Splash As New Splash()
         Splash.Show()
 
@@ -81,7 +75,6 @@ Partial Class MainWindow
         Log.Info("OS Name: " & Log.GetWindowsName())
         Log.Info("OS Version: " & Log.GetWindowsVersion())
         Log.Info("Architecture: " & Log.GetWindowsArch())
-        Log.Info(".NET Framework Version: " & Environment.Version.Major & "." & Environment.Version.Minor)
 
         ' Check if language is set if and language file exists
         If String.IsNullOrEmpty(My.Settings.Language) Or Not File.Exists(My.Settings.Language + ".lang") Then
@@ -137,6 +130,9 @@ Partial Class MainWindow
                         ' Upgrade settings
                         My.Settings.Upgrade()
 
+                        ' Call theme updater
+                        UpdateTheme()
+
                     End If
 
                     Log.Info("[CONFIGURATION] Settings upgrade skipped.")
@@ -152,6 +148,10 @@ Partial Class MainWindow
             Next
 
         End If
+
+        ' Set window size
+        Me.Width = My.Settings.WindowSize.Width
+        Me.Height = My.Settings.WindowSize.Height
 
         ' Add step to splash progress
         Splash.StepProgress()
@@ -189,10 +189,6 @@ Partial Class MainWindow
 
         Log.Debug("Loading appearance settings...")
 
-        ' Set window size
-        Me.Width = My.Settings.WindowSize.Width
-        Me.Height = My.Settings.WindowSize.Height
-
         ' Check if a background image is set and file exists
         If Not String.IsNullOrEmpty(My.Settings.BackgroundImageLocation) And My.Computer.FileSystem.FileExists(My.Settings.BackgroundImageLocation) Then
 
@@ -216,9 +212,6 @@ Partial Class MainWindow
         ' TODO: Find less hacky way to do this!
         GridSidebarColumn.Width = New GridLength(My.Settings.SidebarWidth.Value, GridUnitType.Star)
         GridListViewColumn.Width = New GridLength(My.Settings.ListViewWidth.Value, GridUnitType.Star)
-
-        ' Call theme updater
-        UpdateTheme()
 
         ' Add step to splash progress
         Splash.StepProgress()
@@ -254,17 +247,15 @@ Partial Class MainWindow
 
                         ' Close MCBackup
                         Splash.Close()
-                        Me.DialogResult = False
                         Me.Close()
                         Return
 
                     End If
-                    
+
                 Else
 
                     ' Close MCBackup
                     Splash.Close()
-                    Me.DialogResult = False
                     Me.Close()
                     Return
 
@@ -333,7 +324,6 @@ Partial Class MainWindow
 
                 ' Close MCBackup
                 Splash.Close()
-                Me.DialogResult = False
                 Me.Close()
                 Return
 
@@ -396,6 +386,16 @@ Partial Class MainWindow
     Private Sub Window_ContentRendered(sender As Object, e As EventArgs) Handles Window.ContentRendered
         RefreshBackupsList()
         ReloadBackupGroups()
+
+        If My.Settings.ShowNewsOnStartup Then
+
+            Dim newsWindow As New NewsWindow()
+            newsWindow.Owner = Me
+            newsWindow.Width = Me.Width - 100
+            newsWindow.Height = newsWindow.Width / 16 * 9
+            newsWindow.Show()
+
+        End If
     End Sub
 
     Private Sub DownloadVersionStringCompleted(sender As Object, e As DownloadStringCompletedEventArgs)
@@ -445,119 +445,47 @@ Partial Class MainWindow
                               End If
                               Group = TryCast(GroupsTabControl.SelectedItem, TaggedTabItem).Tag
                           End Sub)
-        Dim Directory As New IO.DirectoryInfo(My.Settings.BackupsFolderLocation) ' Create a DirectoryInfo variable for the backups folder
 
         Dim DirectoriesToDelete As New ArrayList
 
         Log.Info("Searching in '{0}' for backups...", My.Settings.BackupsFolderLocation)
 
-        For Each Folder As DirectoryInfo In Directory.GetDirectories ' For each folder in the backups folder
-            Log.Verbose("Found backup '{0}'", Folder.Name)
-            Dim Type As String = "[ERROR]"                 ' Create variables with default value [ERROR], in case one of the values doesn't exist
+        For Each Backup As DirectoryInfo In New DirectoryInfo(My.Settings.BackupsFolderLocation).GetDirectories ' For each folder in the backups folder
+            Log.Verbose("Found backup '{0}'", Backup.Name)
+            Dim Type As String = 0
 
             Try
-                If File.Exists(Folder.FullName & "\info.mcb") Then ' Convert info.mcb to info.json
-                    Log.Info("Converting info.mcb to JSON in backup '{0}'", Folder.Name)
+                Dim backupMetadata As BackupMetadata = New BackupMetadata(Backup.FullName)
 
-                    Dim Json As New JObject
+                Dim BackupDateCreated As DateTime = GetFolderDateCreated(Backup.FullName)
 
-                    Using SR As New StreamReader(Folder.FullName & "\info.mcb")
-                        Do While SR.Peek <> -1
-                            Dim Line As String = SR.ReadLine
-                            If Not Line.StartsWith("#") Then
-                                If Line.StartsWith("baseFolderName=") Then
-                                    Json.Add(New JProperty("OriginalName", Line.Substring(15)))
-                                ElseIf Line.StartsWith("type=") Then
-                                    Json.Add(New JProperty("Type", Line.Substring(5)))
-                                ElseIf Line.StartsWith("desc=") Then
-                                    Json.Add(New JProperty("Description", Line.Substring(5)))
-                                ElseIf Line.StartsWith("groupName=") Then
-                                    Json.Add(New JProperty("Group", Line.Substring(10)))
-                                ElseIf Line.StartsWith("launcher=") Then
-                                    Json.Add(New JProperty("Launcher", Line.Substring(9)))
-                                ElseIf Line.StartsWith("modpack=") Then
-                                    Json.Add(New JProperty("Modpack", Line.Substring(8)))
-                                End If
-                            End If
-                        Loop
-                    End Using
+                Const BackupsStayFreshFor As Integer = 7
+                Const BackupsBecomeCrapAfter As Integer = 31
 
-                    Using SR As New StreamWriter(Folder.FullName & "\info.json")
-                        SR.Write(JsonConvert.SerializeObject(Json, Formatting.Indented))
-                    End Using
+                If (Group = "" OrElse backupMetadata.Group = Group) And Backup.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
 
-                    File.Delete(Folder.FullName & "\info.mcb")
-                End If
+                    Dim percent = Math.Max(Math.Min((DateTime.Today.Subtract(BackupDateCreated).TotalDays - BackupsStayFreshFor) / (BackupsBecomeCrapAfter - BackupsStayFreshFor), 1), 0)
 
-                If Not My.Computer.FileSystem.FileExists(Folder.FullName & "\info.json") Then
-                    Log.Warn("'info.json' does not exist in folder '{0}'. This folder will not be considered as a backup.", Folder.Name)
-                    DirectoriesToDelete.Add(Folder.Name)
-                    Exit Try
-                End If
+                    ' for red, we want p where
+                    ' 0 < p < 0.5    y = 2px
+                    ' 0.5 <= p < 1   y = p
+                    Dim red As Integer = IIf(percent < 0.5, percent * My.Settings.ListViewTextColorIntensity * 2, My.Settings.ListViewTextColorIntensity)
 
-                Dim InfoJson As JObject
+                    ' for green, we want p where
+                    ' 0 < p < 0.5    y = p
+                    ' 0.5 <= p < 1   y = -2px + 2p (inverse of 2px)
+                    '                  = -2p(x - 1)
+                    Dim green As Integer = IIf(percent > 0.5, -2 * My.Settings.ListViewTextColorIntensity * (percent - 1), My.Settings.ListViewTextColorIntensity)
 
-                Using SR As New StreamReader(Folder.FullName & "\info.json")
-                    InfoJson = JsonConvert.DeserializeObject(SR.ReadToEnd)
-                End Using
+                    Dispatcher.Invoke(Sub()
+                                          Items.Add(New ListViewBackupItem(Backup.Name,
+                                                                           BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture),
+                                                                           New SolidColorBrush(Color.FromRgb(red, green, 0)),
+                                                                           backupMetadata.OriginalName,
+                                                                           backupMetadata.Type,
+                                                                           backupMetadata.Launcher))
+                                      End Sub)
 
-                If Not IsNumeric(InfoJson("Type")) Then
-                    Select Case InfoJson("Type")
-                        Case "save"
-                            InfoJson("Type") = BackupTypes.World
-                        Case "version"
-                            InfoJson("Type") = BackupTypes.Version
-                        Case "everything"
-                            InfoJson("Type") = BackupTypes.Full
-                        Case Else
-                            InfoJson("Type") = BackupTypes.World
-                    End Select
-
-                    Using SW As New StreamWriter(Folder.FullName + "\info.json")
-                        SW.Write(InfoJson)
-                    End Using
-                End If
-
-                Select Case CInt(InfoJson("Type"))
-                    Case BackupTypes.World
-                        Type = MCBackup.Language.GetString("BackupTypes.Save")
-                    Case BackupTypes.Version
-                        Type = MCBackup.Language.GetString("BackupTypes.Version")
-                    Case BackupTypes.Full
-                        Type = MCBackup.Language.GetString("BackupTypes.Everything")
-                End Select
-
-                Dim BackupDateCreated As DateTime = GetFolderDateCreated(Directory.ToString & "\" & Folder.ToString)
-
-
-                If Group = "" And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
-                    If BackupDateCreated.AddDays(14) < DateTime.Today Then
-                        Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), InfoJson("OriginalName"), Type))
-                                          End Sub)
-                    ElseIf BackupDateCreated.AddDays(7) < DateTime.Today Then
-                        Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
-                                          End Sub)
-                    Else
-                        Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
-                                          End Sub)
-                    End If
-                ElseIf InfoJson("Group") = Group And Folder.Name.IndexOf(Search, 0, StringComparison.CurrentCultureIgnoreCase) <> -1 Then
-                    If BackupDateCreated.AddDays(14) < DateTime.Today Then
-                        Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, 0, 0)), InfoJson("OriginalName"), Type))
-                                          End Sub)
-                    ElseIf BackupDateCreated.AddDays(7) < DateTime.Today Then
-                        Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(My.Settings.ListViewTextColorIntensity, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
-                                          End Sub)
-                    Else
-                        Dispatcher.Invoke(Sub()
-                                              Items.Add(New ListViewBackupItem(Folder.ToString, BackupDateCreated.ToString(MCBackup.Language.GetString("Localization.DefaultDateFormat"), CultureInfo.InvariantCulture), New SolidColorBrush(Color.FromRgb(0, My.Settings.ListViewTextColorIntensity, 0)), InfoJson("OriginalName"), Type))
-                                          End Sub)
-                    End If
                 End If
             Catch ex As Exception
                 Log.Severe("An error occured during the backup: " & ex.Message)
@@ -726,7 +654,18 @@ Partial Class MainWindow
                                       Dispatcher.Invoke(Sub() ErrorReportDialog.Show("An error occured while trying to load the backup's thumbnail", ex))
                                   End Try
                               Else
-                                  ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/nothumb.png"))
+                                  Select Case SelectedItem.Launcher
+                                      Case Game.Launcher.Minecraft
+                                          ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/thumb/minecraft.png"))
+                                      Case Game.Launcher.Technic
+                                          ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/thumb/technic.png"))
+                                      Case Game.Launcher.FeedTheBeast
+                                          ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/thumb/ftb.png"))
+                                      Case Game.Launcher.ATLauncher
+                                          ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/thumb/atlauncher.png"))
+                                      Case Else
+                                          ThumbnailImage.Source = New BitmapImage(New Uri("pack://application:,,,/Resources/nothumb.png"))
+                                  End Select
                               End If
                           End Sub)
 
@@ -907,7 +846,7 @@ Partial Class MainWindow
         Manager.BackupAsync(BackupInfo.Name, BackupInfo.Location, BackupInfo.Type, BackupInfo.Description, BackupInfo.Group, BackupInfo.Launcher, BackupInfo.Modpack)
     End Sub
 
-    Private Sub BackupManager_BackupProgressChanged(sender As Object, e As BackupProgressChangedEventArgs)
+    Private Sub BackupManager_BackupProgressChanged(sender As Object, e As BackupProgressChangedEventArgs) Handles Manager.BackupProgressChanged
         Progress.Maximum = 100
 
         ' Report progress depending on status
@@ -927,7 +866,7 @@ Partial Class MainWindow
 
                 ' Set status label & window title text to reflect status & progress
                 StatusLabel.Content = MCBackup.Language.GetString("Status.BackingUp", e.ProgressPercentage, IIf(Single.IsNaN(e.TransferRate), 0, e.TransferRate / 1048576), Manager.EstimatedTimeSpanToString(e.EstimatedTimeRemaining))
-                Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.Backup", ApplicationVersion, e.ProgressPercentage)
+                Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.Backup", e.ProgressPercentage)
 
             Case BackupStatus.RevertingChanges
 
@@ -937,7 +876,7 @@ Partial Class MainWindow
 
                 ' Set status label & window title text to reflect status
                 StatusLabel.Content = MCBackup.Language.GetString("Status.RevertingChanges")
-                Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.RevertingChanges", ApplicationVersion)
+                Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.RevertingChanges", e.ProgressPercentage)
 
             Case BackupStatus.CreatingThumbnail
 
@@ -947,12 +886,12 @@ Partial Class MainWindow
 
                 ' Set status label & window title text to reflect status & progress
                 StatusLabel.Content = MCBackup.Language.GetString("Status.CreatingThumb", e.ProgressPercentage)
-                Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.CreatingThumb", ApplicationVersion, e.ProgressPercentage)
+                Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.CreatingThumb", e.ProgressPercentage)
 
         End Select
     End Sub
 
-    Private Sub BackupManager_BackupCompleted(sender As Object, e As BackupCompletedEventArgs)
+    Private Sub BackupManager_BackupCompleted(sender As Object, e As BackupCompletedEventArgs) Handles Manager.BackupCompleted
         ProgressBar.Value = 100
 
         ' Check if an error occured
@@ -1092,7 +1031,7 @@ Partial Class MainWindow
         End If
     End Sub
 
-    Private Sub BackupManager_RestoreProgressChanged(sender As Object, e As RestoreProgressChangedEventArgs)
+    Private Sub BackupManager_RestoreProgressChanged(sender As Object, e As RestoreProgressChangedEventArgs) Handles Manager.RestoreProgressChanged
 
         Progress.Maximum = 100
 
@@ -1125,7 +1064,7 @@ Partial Class MainWindow
 
     End Sub
 
-    Private Sub BackupManager_RestoreCompleted(sender As Object, e As RestoreCompletedEventArgs)
+    Private Sub BackupManager_RestoreCompleted(sender As Object, e As RestoreCompletedEventArgs) Handles Manager.RestoreCompleted
 
         If e.Error IsNot Nothing Then
 
@@ -1814,7 +1753,7 @@ Partial Class MainWindow
         Me.Dispatcher.Invoke(Sub()
                                  EnableUI(False)
                                  StatusLabel.Content = MCBackup.Language.GetString("Status.MovingBackups")
-                                 Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.MovingBackups", ApplicationVersion)
+                                 Me.Title = "MCBackup " + ApplicationVersion + " - " + MCBackup.Language.GetString("MainWindow.Title.MovingBackups")
                                  Progress.IsIndeterminate = True
                              End Sub)
 

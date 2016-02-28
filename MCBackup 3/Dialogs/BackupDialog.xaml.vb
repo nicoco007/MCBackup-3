@@ -141,7 +141,11 @@ Public Class BackupDialog
         Next
         GroupsComboBox.Items.Add(MCBackup.Language.GetString("Groups.EditGroups"))
 
-        GroupsComboBox.SelectedIndex = 0
+        If GroupsComboBox.Items.Contains(My.Settings.LastBackupGroupUsed) Then
+            GroupsComboBox.SelectedItem = My.Settings.LastBackupGroupUsed
+        Else
+            GroupsComboBox.SelectedIndex = 0
+        End If
     End Sub
 
     Private Sub Name_CheckChanged(sender As Object, e As RoutedEventArgs) Handles DefaultNameRadioButton.Checked, CustomNameRadioButton.Checked
@@ -281,6 +285,8 @@ Public Class BackupDialog
             Dim OptionsWindow As New Options
             OptionsWindow.Owner = Main
             OptionsWindow.ShowDialog(3)
+        Else
+            My.Settings.LastBackupGroupUsed = GroupsComboBox.SelectedItem
         End If
     End Sub
 

@@ -22,33 +22,11 @@ Module ExtensionModule
     Private EmptyDelegate As Action = Sub()
                                       End Sub
 
-    <System.Runtime.CompilerServices.Extension> Public Sub Refresh(uiElement As UIElement)
+    <Runtime.CompilerServices.Extension> Public Sub Refresh(uiElement As UIElement)
         uiElement.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate)
     End Sub
 
-    <System.Runtime.CompilerServices.Extension> Public Function DeleteAsync(Directory As IO.DirectoryInfo)
-        Dim Thread As New System.Threading.Thread(Sub()
-                                                      IO.Directory.Delete(Directory.FullName, True)
-                                                  End Sub)
-        Thread.Start()
-        Return Thread
-    End Function
-
-    <System.Runtime.CompilerServices.Extension> Public Function DeleteContentsAsync(Directory As IO.DirectoryInfo)
-        Dim Thread As New System.Threading.Thread(Sub()
-                                                      For Each File As IO.FileInfo In Directory.GetFiles
-                                                          IO.File.Delete(File.FullName)
-                                                      Next
-
-                                                      For Each Folder As IO.DirectoryInfo In Directory.GetDirectories
-                                                          IO.Directory.Delete(Folder.FullName, True)
-                                                      Next
-                                                  End Sub)
-        Thread.Start()
-        Return Thread
-    End Function
-
-    <System.Runtime.CompilerServices.Extension> Public Function GetStringValue(TheEnum As Game.Launcher) As String
+    <Runtime.CompilerServices.Extension> Public Function GetStringValue(TheEnum As Object) As String
         If TheEnum >= 0 Then
             Dim MemberInfo As MemberInfo() = TheEnum.GetType().GetMember(TheEnum.ToString)
             If MemberInfo IsNot Nothing And MemberInfo.Length > 0 Then
@@ -65,10 +43,10 @@ Module ExtensionModule
         Return Nothing
     End Function
 
-    <System.Runtime.CompilerServices.Extension> Public Function ToImageSource(Icon As Icon) As ImageSource
+    <Runtime.CompilerServices.Extension> Public Function ToImageSource(Icon As Icon) As ImageSource
         Dim Bitmap As Bitmap = Icon.ToBitmap()
         Dim Hbitmap As IntPtr = Bitmap.GetHbitmap()
 
-        Return System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(Hbitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
+        Return Interop.Imaging.CreateBitmapSourceFromHBitmap(Hbitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
     End Function
 End Module

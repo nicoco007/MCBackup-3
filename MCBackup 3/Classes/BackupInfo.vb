@@ -1,4 +1,8 @@
-﻿Public Class BackupInfo
+﻿Imports System.IO
+Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Linq
+
+Public Class BackupInfo
     Private _Name As String
     Public Property Name As String
         Get
