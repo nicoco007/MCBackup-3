@@ -15,7 +15,7 @@ Imports System.Windows
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("nicoco007")> 
 <Assembly: AssemblyProduct("MCBackup 3")> 
-<Assembly: AssemblyCopyright("Copyright © 2013-2015 nicoco007")> 
+<Assembly: AssemblyCopyright("Copyright © 2013-2016 nicoco007")> 
 <Assembly: AssemblyTrademark("")> 
 <Assembly: ComVisible(false)>
 
