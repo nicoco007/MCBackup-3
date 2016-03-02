@@ -60,6 +60,10 @@
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>
+    </StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="DotNetBox, Version=1.1.2.0, Culture=neutral, PublicKeyToken=d520375c40228fe8, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetBox.1.1.2\lib\net40\DotNetBox.dll</HintPath>
@@ -138,10 +142,10 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="Application.xaml">
+    <Page Include="Application.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
     <Compile Include="AsyncFileSystemManager.vb" />
     <Compile Include="BackupManager.vb" />
     <Compile Include="Classes\BackupInfo.vb" />
@@ -171,6 +175,7 @@
     <Compile Include="EventArgs\RestoreCompletedEventArgs.vb" />
     <Compile Include="EventArgs\RestoreEventArgs.vb" />
     <Compile Include="EventArgs\RestoreProgressChangedEventArgs.vb" />
+    <Compile Include="NativeMethods.vb" />
     <Compile Include="Windows\AutoBackupWindow.xaml.vb">
       <DependentUpon>AutoBackupWindow.xaml</DependentUpon>
     </Compile>

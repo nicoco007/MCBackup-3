@@ -14,6 +14,8 @@
 '   ║                      limitations under the License.                       ║
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
 
+Imports System.Threading
+
 Class Application
     Public Enum AppCloseAction
         Ask
@@ -33,7 +35,31 @@ Class Application
 
     Sub New()
 
+        InitializeComponent()
+
         CloseAction = AppCloseAction.Force
 
+    End Sub
+
+    <STAThread>
+    Public Shared Sub Main()
+        Dim createdNew As Boolean
+        Dim mutex As New Mutex(True, "{f5d1ae04-b456-4a7d-a1ea-19f45838908e}", createdNew)
+
+        If Not createdNew Then
+            Dim currentProcess As Process = Process.GetCurrentProcess()
+            Dim processes As Process() = Process.GetProcessesByName(currentProcess.ProcessName)
+
+            For Each p As Process In processes
+                If (p.MainWindowHandle <> IntPtr.Zero) Then
+                    NativeMethods.ShowWindow(p.MainWindowHandle, 1)
+                    NativeMethods.SetForegroundWindow(p.MainWindowHandle)
+                End If
+            Next
+        Else
+            Dim app As New Application()
+            Dim mainWindow As New MainWindow()
+            app.Run(mainWindow)
+        End If
     End Sub
 End Class
