@@ -41,10 +41,14 @@ Class Application
 
     End Sub
 
+    Public Shared mutex As Mutex
+
     <STAThread>
     Public Shared Sub Main()
         Dim createdNew As Boolean
-        Dim mutex As New Mutex(True, "{f5d1ae04-b456-4a7d-a1ea-19f45838908e}", createdNew)
+        mutex = New Mutex(True, "{f5d1ae04-b456-4a7d-a1ea-19f45838908e}", createdNew)
+
+        GC.KeepAlive(mutex)
 
         If Not createdNew Then
             Dim currentProcess As Process = Process.GetCurrentProcess()
@@ -61,5 +65,7 @@ Class Application
             Dim mainWindow As New MainWindow()
             app.Run(mainWindow)
         End If
+
+        mutex.Close()
     End Sub
 End Class
