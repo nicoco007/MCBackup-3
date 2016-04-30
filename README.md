@@ -38,7 +38,7 @@ If you happen to find a bug, please go to the [bug tracker][2] and submit a repo
 [3]:http://ci.nicoco007.com:8080/job/MCBackup%203                             "MCBackup 3 Jenkins Job"
 [4]:mailto:support@nicoco007.com                                              "Support Email"
 
-3<sup>rd</sup> Party Software
+3<sup>rd</sup> Party Software/Libraries
 ------------
 JSON.NET - [MIT License](https://json.codeplex.com/license) - https://json.codeplex.com/
 
