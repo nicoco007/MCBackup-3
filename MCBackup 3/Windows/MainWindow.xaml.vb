@@ -33,7 +33,7 @@ Partial Class MainWindow
 #Region "Variables"
     Private AppData As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
 
-    Public BackupInfo As New BackupInfo
+    'Public BackupInfo As New BackupInfo
     Public RestoreInfo As New RestoreInfo
 
     Private DeleteThread As Thread
@@ -462,11 +462,11 @@ Partial Class MainWindow
 
         Select Case My.Settings.ListViewGroupBy
             Case BackupsListView.GroupBy.OriginalName
-                ListViewGroupByNameItem_Click(Nothing, Nothing)
+                SetListViewGroupDescriptions("OriginalName")
             Case BackupsListView.GroupBy.Type
-                ListViewGroupByTypeItem_Click(Nothing, Nothing)
+                SetListViewGroupDescriptions("Type")
             Case Else
-                ListViewGroupByNothingItem_Click(Nothing, Nothing)
+                SetListViewGroupDescriptions(Nothing)
         End Select
 
         Select Case My.Settings.ListViewSortBy
@@ -777,12 +777,12 @@ Partial Class MainWindow
 
     End Sub
 
-    Public Sub StartBackup()
+    Public Sub StartBackup(name As String, location As String, type As String, description As String, group As String, launcher As Launcher, modpack As String)
         ' Disable UI buttons
         EnableUI(False)
 
         ' Start backup using BackupManager
-        Manager.BackupAsync(BackupInfo.Name, BackupInfo.Location, BackupInfo.Type, BackupInfo.Description, BackupInfo.Group, BackupInfo.Launcher, BackupInfo.Modpack)
+        Manager.BackupAsync(name, location, type, description, group, launcher, modpack)
     End Sub
 
     Private Sub BackupManager_BackupProgressChanged(sender As Object, e As BackupProgressChangedEventArgs) Handles Manager.BackupProgressChanged
@@ -1305,33 +1305,29 @@ Partial Class MainWindow
         End If
     End Sub
 
-    Private Sub ListViewGroupByNameItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewGroupByNameItem.Click
-        ListViewGroupByNameItem.IsChecked = True
-        ListViewGroupByTypeItem.IsChecked = False
-        ListViewGroupByNothingItem.IsChecked = False
-        Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
-        View.GroupDescriptions.Clear()
-        View.GroupDescriptions.Add(New PropertyGroupDescription("OriginalName"))
-        My.Settings.ListViewGroupBy = BackupsListView.GroupBy.OriginalName
+    Private Sub ListViewGroupByItems_Click(sender As Object, e As RoutedEventArgs) Handles ListViewGroupByNameItem.Click, ListViewGroupByTypeItem.Click, ListViewGroupByNothingItem.Click
+        If sender Is ListViewGroupByNameItem Then
+            SetListViewGroupDescriptions("OriginalName")
+        ElseIf sender Is ListViewGroupByTypeItem Then
+            SetListViewGroupDescriptions("Type")
+        Else
+            SetListViewGroupDescriptions(Nothing)
+        End If
     End Sub
 
-    Private Sub ListViewGroupByTypeItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewGroupByTypeItem.Click
-        ListViewGroupByNameItem.IsChecked = False
-        ListViewGroupByTypeItem.IsChecked = True
-        ListViewGroupByNothingItem.IsChecked = False
+    Private Sub SetListViewGroupDescriptions(Group As String)
+        ListViewGroupByNameItem.IsChecked = (Group = "OriginalName")
+        ListViewGroupByTypeItem.IsChecked = (Group = "Type")
+        ListViewGroupByNothingItem.IsChecked = (Group = Nothing)
+
         Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
         View.GroupDescriptions.Clear()
-        View.GroupDescriptions.Add(New PropertyGroupDescription("Type"))
+
+        If Group <> Nothing Then
+            View.GroupDescriptions.Add(New PropertyGroupDescription(Group))
+        End If
+
         My.Settings.ListViewGroupBy = BackupsListView.GroupBy.Type
-    End Sub
-
-    Private Sub ListViewGroupByNothingItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewGroupByNothingItem.Click
-        ListViewGroupByNameItem.IsChecked = False
-        ListViewGroupByTypeItem.IsChecked = False
-        ListViewGroupByNothingItem.IsChecked = True
-        Dim View As CollectionView = DirectCast(CollectionViewSource.GetDefaultView(ListView.ItemsSource), CollectionView)
-        View.GroupDescriptions.Clear()
-        My.Settings.ListViewGroupBy = BackupsListView.GroupBy.Nothing
     End Sub
 
     Private Sub ListViewSortByNameItem_Click(sender As Object, e As RoutedEventArgs) Handles ListViewSortByNameItem.Click

@@ -165,34 +165,37 @@ Public Class BackupDialog
             Exit Sub
         End If
 
+        Dim location As String
+        Dim type As BackupType
+
         Select Case BackupTypeTabControl.SelectedIndex
             Case 0
                 Select Case My.Settings.Launcher
                     Case Launcher.Minecraft
-                        Main.BackupInfo.Location = My.Settings.SavesFolderLocation & "\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
+                        location = My.Settings.SavesFolderLocation & "\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
                     Case Launcher.Technic
-                        Main.BackupInfo.Location = My.Settings.MinecraftFolderLocation & "\modpacks\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
+                        location = My.Settings.MinecraftFolderLocation & "\modpacks\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
                     Case Launcher.FeedTheBeast
-                        Main.BackupInfo.Location = My.Settings.MinecraftFolderLocation & "\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\minecraft\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
+                        location = My.Settings.MinecraftFolderLocation & "\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\minecraft\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
                     Case Launcher.ATLauncher
-                        Main.BackupInfo.Location = My.Settings.MinecraftFolderLocation & "\Instances\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
+                        location = My.Settings.MinecraftFolderLocation & "\Instances\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
                 End Select
-                Main.BackupInfo.Type = BackupType.World
+                type = BackupType.World
             Case 1
                 Select Case My.Settings.Launcher
                     Case Launcher.Minecraft
-                        Main.BackupInfo.Location = My.Settings.MinecraftFolderLocation & "\versions\" & VersionsListView.SelectedItem
+                        location = My.Settings.MinecraftFolderLocation & "\versions\" & VersionsListView.SelectedItem
                     Case Launcher.Technic
-                        Main.BackupInfo.Location = My.Settings.MinecraftFolderLocation & "\modpacks\" & VersionsListView.SelectedItem
+                        location = My.Settings.MinecraftFolderLocation & "\modpacks\" & VersionsListView.SelectedItem
                     Case Launcher.FeedTheBeast
-                        Main.BackupInfo.Location = My.Settings.MinecraftFolderLocation & "\" & VersionsListView.SelectedItem
+                        location = My.Settings.MinecraftFolderLocation & "\" & VersionsListView.SelectedItem
                     Case Launcher.ATLauncher
-                        Main.BackupInfo.Location = My.Settings.MinecraftFolderLocation & "\Instances\" & VersionsListView.SelectedItem
+                        location = My.Settings.MinecraftFolderLocation & "\Instances\" & VersionsListView.SelectedItem
                 End Select
-                Main.BackupInfo.Type = BackupType.Version
+                type = BackupType.Version
             Case 2
-                Main.BackupInfo.Location = My.Settings.MinecraftFolderLocation
-                Main.BackupInfo.Type = BackupType.Full
+                location = My.Settings.MinecraftFolderLocation
+                type = BackupType.Full
         End Select
 
         Dim OriginalFolderName As String
@@ -226,19 +229,14 @@ Public Class BackupDialog
             Exit Sub
         End If
 
-        Main.BackupInfo.Name = Name
-
-        Main.BackupInfo.Description = DescriptionTextBox.Text
-
-        Main.BackupInfo.Group = IIf(GroupsComboBox.SelectedIndex = 0, Nothing, GroupsComboBox.SelectedItem)
-        Main.BackupInfo.Launcher = My.Settings.Launcher
+        Dim modpack = Nothing
 
         If My.Settings.Launcher <> Launcher.Minecraft And SavesListView.SelectedItems.Count > 0 Then
-            Main.BackupInfo.Modpack = CType(SavesListView.SelectedItem, SavesListViewItem).Location
+            modpack = CType(SavesListView.SelectedItem, SavesListViewItem).Location
         End If
 
         Me.Close()
-        Main.StartBackup()
+        Main.StartBackup(Name, location, type, DescriptionTextBox.Text, IIf(GroupsComboBox.SelectedIndex = 0, Nothing, GroupsComboBox.SelectedItem), My.Settings.Launcher, modpack)
     End Sub
 
     Public Shared Function GetBackupTimeStamp()
@@ -260,6 +258,9 @@ Public Class BackupDialog
         BackupWorldTab.Header = MCBackup.Language.GetString("BackupWindow.BackupWorldTab.Header")
         SaveNameColumn.Header = MCBackup.Language.GetString("BackupWindow.SaveNameColumn.Header")
         SaveLocationColumn.Header = MCBackup.Language.GetString("BackupWindow.SaveLocationColumn.Header")
+        VersionNameColumn.Header = MCBackup.Language.GetString("BackupWindow.VersionNameColumn.Header")
+        BackupEverythingTab.Header = MCBackup.Language.GetString("BackupWindow.BackupEverythingTab.Header")
+
         Select Case My.Settings.Launcher
             Case Launcher.Minecraft
                 BackupVersionTab.Header = MCBackup.Language.GetString("BackupWindow.BackupVersionTab.Header.Minecraft")
@@ -270,8 +271,6 @@ Public Class BackupDialog
             Case Launcher.ATLauncher
                 BackupVersionTab.Header = MCBackup.Language.GetString("BackupWindow.BackupVersionTab.Header.ATLauncher")
         End Select
-        VersionNameColumn.Header = MCBackup.Language.GetString("BackupWindow.VersionNameColumn.Header")
-        BackupEverythingTab.Header = MCBackup.Language.GetString("BackupWindow.BackupEverythingTab.Header")
     End Sub
 
     Private Sub CancelButton_Click(sender As Object, e As RoutedEventArgs) Handles CancelButton.Click
@@ -340,11 +339,11 @@ End Class
 Public Class BackupName
     Public Shared Function Process(BackupName As String, OriginalFolderName As String) As String
         If Regex.Matches(BackupName, "%timestamp:.+?%").Count > 0 Then
-            For Each Match As RegularExpressions.Match In Regex.Matches(BackupName, "%timestamp:.+?%")
+            For Each Match As Match In Regex.Matches(BackupName, "%timestamp:.+?%")
                 Dim Format = Match.Value.Substring(Match.Value.IndexOf(":") + 1)
                 Format = Format.Remove(Format.IndexOf("%"))
                 Try
-                    BackupName = BackupName.Replace(Match.ToString, DateTime.Now.ToString(Format, IIf(My.Settings.IgnoreSystemLocalizationWhenFormatting, CultureInfo.InvariantCulture, CultureInfo.CurrentCulture)))
+                    BackupName = BackupName.Replace(Match.ToString, Date.Now.ToString(Format, IIf(My.Settings.IgnoreSystemLocalizationWhenFormatting, CultureInfo.InvariantCulture, CultureInfo.CurrentCulture)))
                 Catch
                 End Try
             Next

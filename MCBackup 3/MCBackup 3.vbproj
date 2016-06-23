@@ -148,7 +148,6 @@
     </Page>
     <Compile Include="AsyncFileSystemManager.vb" />
     <Compile Include="BackupManager.vb" />
-    <Compile Include="Classes\BackupInfo.vb" />
     <Compile Include="Classes\BackupMetadata.vb" />
     <Compile Include="Classes\BackupsListView.vb" />
     <Compile Include="Classes\RestoreInfo.vb" />
