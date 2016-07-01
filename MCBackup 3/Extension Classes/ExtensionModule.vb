@@ -1,5 +1,5 @@
 ﻿'   ╔═══════════════════════════════════════════════════════════════════════════╗
-'   ║                      Copyright © 2013-2015 nicoco007                      ║
+'   ║                      Copyright © 2013-2016 nicoco007                      ║
 '   ║                                                                           ║
 '   ║      Licensed under the Apache License, Version 2.0 (the "License");      ║
 '   ║      you may not use this file except in compliance with the License.     ║
@@ -13,6 +13,7 @@
 '   ║     See the License for the specific language governing permissions and   ║
 '   ║                      limitations under the License.                       ║
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
+
 Imports System.Drawing
 Imports System.Reflection
 Imports System.Windows.Threading
@@ -25,35 +26,18 @@ Module ExtensionModule
         uiElement.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate)
     End Sub
 
-    <Runtime.CompilerServices.Extension> Public Function GetStringValue(TheEnum As Object) As String
-        If TheEnum >= 0 Then
-            Dim MemberInfo As MemberInfo() = TheEnum.GetType().GetMember(TheEnum.ToString)
-            If MemberInfo IsNot Nothing And MemberInfo.Length > 0 Then
-                Dim Attr As StringValue = Attribute.GetCustomAttribute(MemberInfo(0), GetType(StringValue))
-                If Attr IsNot Nothing Then
-                    Return Attr.Name
+    <Runtime.CompilerServices.Extension> Public Function GetString(theEnum As Object) As String
+        If theEnum >= 0 Then
+            Dim memberInfo As MemberInfo() = theEnum.GetType().GetMember(theEnum.ToString)
+            If memberInfo IsNot Nothing And memberInfo.Length > 0 Then
+                Dim attr As StringValue = Attribute.GetCustomAttribute(memberInfo(0), GetType(StringValue))
+                If attr IsNot Nothing Then
+                    Return attr.Name
                 Else
-                    Return TheEnum.ToString()
+                    Return theEnum.ToString()
                 End If
             Else
-                Return TheEnum.ToString()
-            End If
-        End If
-        Return Nothing
-    End Function
-
-    <Runtime.CompilerServices.Extension> Public Function GetTranslation(TheEnum As Object) As String
-        If TheEnum >= 0 Then
-            Dim MemberInfo As MemberInfo() = TheEnum.GetType().GetMember(TheEnum.ToString)
-            If MemberInfo IsNot Nothing And MemberInfo.Length > 0 Then
-                Dim Attr As Translation = Attribute.GetCustomAttribute(MemberInfo(0), GetType(Translation))
-                If Attr IsNot Nothing Then
-                    Return Language.GetString(Attr.Key)
-                Else
-                    Return TheEnum.ToString()
-                End If
-            Else
-                Return TheEnum.ToString()
+                Return theEnum.ToString()
             End If
         End If
         Return Nothing

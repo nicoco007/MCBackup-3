@@ -1,5 +1,5 @@
 ﻿'   ╔═══════════════════════════════════════════════════════════════════════════╗
-'   ║                      Copyright © 2013-2015 nicoco007                      ║
+'   ║                      Copyright © 2013-2016 nicoco007                      ║
 '   ║                                                                           ║
 '   ║      Licensed under the Apache License, Version 2.0 (the "License");      ║
 '   ║      you may not use this file except in compliance with the License.     ║
@@ -88,7 +88,7 @@ Public Class Log
 
     Private Shared Function FilterText(text As String) As String()
 
-        'text = text.Replace(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "<USERDIRECTORY>")
+        text = text.Replace(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "<USERDIRECTORY>")
 
         Return text.Split(vbNewLine)
 

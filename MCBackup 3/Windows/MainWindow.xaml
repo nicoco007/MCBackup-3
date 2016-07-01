@@ -1,6 +1,6 @@
 ﻿<!--
 ╔═══════════════════════════════════════════════════════════════════════════╗
-║                      Copyright © 2013-2015 nicoco007                      ║
+║                      Copyright © 2013-2016 nicoco007                      ║
 ║                                                                           ║
 ║      Licensed under the Apache License, Version 2.0 (the "License");      ║
 ║      you may not use this file except in compliance with the License.     ║
@@ -15,14 +15,16 @@
 ║                      limitations under the License.                       ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 -->
-<Controls:MetroWindow x:Name="Window" x:Class="MainWindow"
+<controls:MetroWindow x:Name="Window" x:Class="MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:local="clr-namespace:MCBackup"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
     Title="MCBackup" Height="600" Width="980" MinHeight="600" MinWidth="980" ResizeMode="CanResize" WindowStartupLocation="CenterScreen" Icon="pack://application:,,,/Resources/icon.ico" WindowTransitionsEnabled="False" ShowMaxRestoreButton="False" Background="{DynamicResource WindowBackgroundBrush}" NonActiveWindowTitleBrush="{DynamicResource WindowTitleColorBrush}" NonActiveBorderBrush="{x:Null}">
-    <Controls:MetroWindow.RightWindowCommands>
-        <Controls:WindowCommands>
-            <TextBox x:Name="SearchTextBox" Width="200" Margin="2" Foreground="Gray" Text="Search..." Background="#FFFFFFFF"/>
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <local:PlaceholderTextBox x:Name="SearchTextBox" Width="200" BorderBrush="{DynamicResource SemiTransparentWhiteBrush}" Padding="2"  PlaceholderText="Filter..."/>
             <Button x:Name="FileToolbarButton" Content="File" ContextMenuService.Placement="Bottom">
                 <Button.ContextMenu>
                     <ContextMenu x:Name="FileContextMenu">
@@ -55,8 +57,8 @@
                     </ContextMenu>
                 </Button.ContextMenu>
             </Button>
-        </Controls:WindowCommands>
-    </Controls:MetroWindow.RightWindowCommands>
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
 
     <Grid Name="MainGrid" Height="Auto" VerticalAlignment="Stretch">
         <Grid Name="InternalGrid" Margin="10,60,10,132">
@@ -98,7 +100,7 @@
                 </ListView.ContextMenu>
                 <ListView.View>
                     <GridView x:Name="ListViewGridView">
-                        <GridViewColumn Width="350">
+                        <GridViewColumn Width="450">
                             <GridViewColumn.Header>
                                 <GridViewColumnHeader Tag="Name" x:Name="NameColumnHeader">Name</GridViewColumnHeader>
                             </GridViewColumn.Header>
@@ -128,7 +130,7 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Width="100">
+                        <!--<GridViewColumn Width="100">
                             <GridViewColumn.Header>
                                 <GridViewColumnHeader Tag="SyncStatus" x:Name="SyncStatusColumnHeader">Sync Status</GridViewColumnHeader>
                             </GridViewColumn.Header>
@@ -137,7 +139,7 @@
                                     <TextBlock Text="{Binding SyncStatus}"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
+                        </GridViewColumn>-->
                     </GridView>
                 </ListView.View>
 
@@ -176,23 +178,23 @@
                     <Image x:Name="ThumbnailImage" Source="pack://application:,,,/Resources/nothumb.png" Margin="46,37,45,195" HorizontalAlignment="Center" Width="Auto" Height="Auto" MaxWidth="256" MaxHeight="256"/>
                     <DockPanel Height="190" VerticalAlignment="Bottom">
                         <Grid DockPanel.Dock="Top">
-                            <TextBlock x:Name="SidebarTypeLabel" Text="Type: " Foreground="{DynamicResource GrayBrush2}" Padding="5,5,0,5"  Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="99"/>
+                            <TextBlock x:Name="SidebarTypeLabel" Text="Type: " Foreground="{DynamicResource GrayBrush1}" Padding="5,5,0,5"  Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="99"/>
                             <TextBlock x:Name="SidebarTypeContent" Padding="0,5,0,5" VerticalAlignment="Bottom" Text="&lt;Type&gt;" Margin="99,0,0,0"/>
                         </Grid>
                         <Grid DockPanel.Dock="Top">
-                            <TextBlock x:Name="SidebarOriginalNameLabel" Text="Original Name: " Foreground="{DynamicResource GrayBrush2}" Padding="5,5,0,5"  Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="99"/>
+                            <TextBlock x:Name="SidebarOriginalNameLabel" Text="Original Name: " Foreground="{DynamicResource GrayBrush1}" Padding="5,5,0,5"  Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="99"/>
                             <TextBlock x:Name="SidebarOriginalNameContent" Padding="0,5,0,5" VerticalAlignment="Bottom" Text="&lt;Original Name&gt;" Margin="99,0,0,0"/>
                         </Grid>
                         <Grid Name="SidebarPlayerHealth" Visibility="Collapsed" DockPanel.Dock="Top">
-                            <TextBlock x:Name="SidebarPlayerHealthLabel" Text="Player Health:" Foreground="{DynamicResource GrayBrush2}" Padding="5,5,0,5"  Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="99"/>
+                            <TextBlock x:Name="SidebarPlayerHealthLabel" Text="Player Health:" Foreground="{DynamicResource GrayBrush1}" Padding="5,5,0,5"  Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="99"/>
                             <Grid x:Name="SidebarPlayerHealthGrid"  VerticalAlignment="Bottom" Height="21" Margin="99,0,0,0"/>
                         </Grid>
                         <Grid Name="SidebarPlayerHunger" Visibility="Collapsed" DockPanel.Dock="Top">
-                            <TextBlock x:Name="SidebarPlayerHungerLabel" Text="Player Hunger:" Foreground="{DynamicResource GrayBrush2}" Padding="5,5,0,5" Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="99"/>
+                            <TextBlock x:Name="SidebarPlayerHungerLabel" Text="Player Hunger:" Foreground="{DynamicResource GrayBrush1}" Padding="5,5,0,5" Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="99"/>
                             <Grid x:Name="SidebarPlayerHungerGrid" VerticalAlignment="Bottom" Height="21" Margin="99,0,0,0"/>
                         </Grid>
                         <Grid DockPanel.Dock="Top">
-                            <TextBlock x:Name="SidebarDescriptionLabel" Text="Description :" Foreground="{DynamicResource GrayBrush2}" Padding="5,5,0,5"  Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Width="99" Margin="0,0,0,60"/>
+                            <TextBlock x:Name="SidebarDescriptionLabel" Text="Description :" Foreground="{DynamicResource GrayBrush1}" Padding="5,5,0,5"  Height="Auto" VerticalAlignment="Top" HorizontalAlignment="Left" Width="99" Margin="0,0,0,60"/>
                             <TextBlock x:Name="DescriptionTextBox" TextWrapping="Wrap" Text="&lt;Description&gt;" Padding="5,0" TextTrimming="CharacterEllipsis" Height="112" VerticalAlignment="Bottom"/>
                         </Grid>
                     </DockPanel>
@@ -235,5 +237,6 @@
             </Button.OpacityMask>
         </Button>
         <Button x:Name="CancelButton" Content="Cancel" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="75" Margin="0,0,10,8"/>
+        <Label x:Name="label" Content="{DynamicResource MainWindowSearchPlaceholderText}" HorizontalAlignment="Left" Margin="732,487,0,0" VerticalAlignment="Top"/>
     </Grid>
-</Controls:MetroWindow>
+</controls:MetroWindow>

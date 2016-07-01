@@ -1,7 +1,4 @@
-﻿Imports System.Xml
-Imports System.ServiceModel.Syndication
-
-Public Class NewsWindow
+﻿Public Class NewsWindow
 
     Private Sub Window_Loaded(sender As Object, e As EventArgs) Handles MyBase.Loaded
 
@@ -82,10 +79,10 @@ Public Class NewsWindow
 
     Private Sub LoadLanguage()
 
-        Me.Title = MCBackup.Language.GetString("NewsWindow.Title")
+        Me.Title = Application.Language.GetString("News")
 
-        CloseButton.Content = MCBackup.Language.GetString("NewsWindow.CloseButton.Text")
-        ShowOnStartupCheckBox.Content = MCBackup.Language.GetString("NewsWindow.ShowOnStartup.Text")
+        CloseButton.Content = Application.Language.GetString("Close")
+        ShowOnStartupCheckBox.Content = Application.Language.GetString("Show this window on startup")
 
     End Sub
 

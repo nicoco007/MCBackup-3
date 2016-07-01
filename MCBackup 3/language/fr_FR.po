@@ -1,0 +1,1047 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: MCBackup 3\n"
+"POT-Creation-Date: 2016-07-01 16:47-0400\n"
+"PO-Revision-Date: 2016-07-01 16:48-0400\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.8\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: Application.Language.GetString;Translation;"
+"Application.Language.GetPlural:1,2;Application.Language."
+"GetStringWithContext:1c,2;Application.Language.GetPluralWithContext:2,3,1c\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: BackupManager.vb:616
+msgid "about {0} hours, {1} minutes and {0} seconds remaining"
+msgstr "environ {0} heures, {1} minutes et {0} secondes restantes"
+
+#: BackupManager.vb:618
+msgid "about {0} minutes and {1} seconds remaining"
+msgstr "environ {0} minutes et {1} secondes restantes"
+
+#: BackupManager.vb:620
+msgid "about {0} seconds remaining"
+msgstr "environ {0} secondes restantes"
+
+#: BackupManager.vb:622
+msgid "less than 5 seconds remaining"
+msgstr "moins de 5 secondes restantes"
+
+#: AboutDialog.xaml.vb:21 MainWindow.xaml.vb:778
+msgid "About"
+msgstr "À propos"
+
+#: BackupDialog.xaml.vb:135 MoveToGroupDialog.xaml.vb:31
+msgid "None"
+msgstr "Aucun"
+
+#: BackupDialog.xaml.vb:139
+msgid "Edit groups..."
+msgstr "Modifier les groupes..."
+
+#: BackupDialog.xaml.vb:156
+msgid "Please select a world to back up."
+msgstr "Veuillez sélectionner un monde à sauvegarder."
+
+#: BackupDialog.xaml.vb:156 BackupDialog.xaml.vb:161 BackupDialog.xaml.vb:186
+#: BackupDialog.xaml.vb:194 ErrorReportDialog.xaml.vb:32
+#: OptionsDialog.xaml.vb:189 OptionsDialog.xaml.vb:608
+#: OptionsDialog.xaml.vb:626 RenameDialog.xaml.vb:32 RenameDialog.xaml.vb:40
+#: AutoBackupWindow.xaml.vb:127 MainWindow.xaml.vb:267 MainWindow.xaml.vb:340
+#: MainWindow.xaml.vb:992 SetMinecraftFolderWindow.xaml.vb:93
+msgid "Error"
+msgstr "Erreur"
+
+#: BackupDialog.xaml.vb:161
+msgid "Please select a version/modpack to back up"
+msgstr "Veuillez sélectionner une version ou un pack de mods à sauvegarder."
+
+#: BackupDialog.xaml.vb:186 RenameDialog.xaml.vb:32
+msgid "Please enter a valid backup name."
+msgstr "Veuillez entrer un nom de sauvegarde valide."
+
+#: BackupDialog.xaml.vb:209
+msgctxt "noun"
+msgid "Backup"
+msgstr "Sauvegarde"
+
+#: BackupDialog.xaml.vb:210
+msgid "Backup Details"
+msgstr "Détails de la sauvegarde"
+
+#: BackupDialog.xaml.vb:211
+msgid "Backup Name"
+msgstr "Nom de la sauvegarde"
+
+#: BackupDialog.xaml.vb:212
+msgid "Default Name"
+msgstr "Nom par défaut"
+
+#: BackupDialog.xaml.vb:213
+msgid "Custom Name"
+msgstr "Nom personnalisé"
+
+#: BackupDialog.xaml.vb:214
+msgid "Output"
+msgstr "Sortie"
+
+#: BackupDialog.xaml.vb:215 MainWindow.xaml.vb:764
+msgid "Description"
+msgstr "Description"
+
+#: BackupDialog.xaml.vb:216 BackupDialog.xaml.vb:221 BackupDialog.xaml.vb:223
+#: MainWindow.xaml.vb:758 MainWindow.xaml.vb:786
+msgid "Name"
+msgstr "Nom"
+
+#: BackupDialog.xaml.vb:217 AutoBackupWindow.xaml.vb:44
+#: AutoBackupWindow.xaml.vb:87
+msgid "Start"
+msgstr "Démarrer"
+
+#: BackupDialog.xaml.vb:218 CloseToTrayDialog.xaml.vb:58
+#: RenameBackupGroupDialog.xaml.vb:40 RenameDialog.xaml.vb:57
+#: MainWindow.xaml.vb:805 MetroMessageBox.xaml.vb:83 MetroMessageBox.xaml.vb:99
+msgid "Cancel"
+msgstr "Annuler"
+
+#: BackupDialog.xaml.vb:219
+msgid "Group"
+msgstr "Groupe"
+
+#: BackupDialog.xaml.vb:220 BackupType.vb:2 AutoBackupWindow.xaml.vb:45
+#: MainWindow.xaml.vb:662 MainWindow.xaml.vb:663
+msgid "World"
+msgstr "Monde"
+
+#: BackupDialog.xaml.vb:222 AutoBackupWindow.xaml.vb:46
+msgid "Location"
+msgstr "Emplacement"
+
+#: BackupDialog.xaml.vb:224 BackupType.vb:4 MainWindow.xaml.vb:668
+#: MainWindow.xaml.vb:669
+msgid "Everything"
+msgstr "Tout"
+
+#: BackupDialog.xaml.vb:228 BackupType.vb:3 MainWindow.xaml.vb:665
+#: MainWindow.xaml.vb:666
+msgid "Version"
+msgstr "Version"
+
+#: BackupDialog.xaml.vb:230 BackupDialog.xaml.vb:232
+msgid "Modpack"
+msgstr "Pack de mods"
+
+#: BackupDialog.xaml.vb:234
+msgid "Instance"
+msgstr "Instance"
+
+#: BackupDialog.xaml.vb:256
+msgid ""
+"There seem to be no saves in your {0} installation. This is either because "
+"you have never started the game, or because the folder you selected as base "
+"folder is incorrect. Please check your settings if you have already ran "
+"Minecraft at least once."
+msgstr ""
+"Il semblerait qu'il n'y ait pas de sauvegardes dans votre installation de "
+"{0}. Cela peut être causé par le fait que vous n'avez pas encore crée un "
+"monde, ou parce que vous n'avez pas choisi le bon dossier de base. Veuillez "
+"vérifier vos paramètres si vous avez déjà lancé Minecraft."
+
+#: BackupDialog.xaml.vb:256
+msgid "Warning"
+msgstr "Attention"
+
+#: BackupDialog.xaml.vb:261 OptionsDialog.xaml.vb:185 OptionsDialog.xaml.vb:186
+#: OptionsDialog.xaml.vb:700 OptionsDialog.xaml.vb:715
+msgid "[Folder Name]"
+msgstr "[Nom du dossier]"
+
+#: BackupDialog.xaml.vb:270 OptionsDialog.xaml.vb:709 OptionsDialog.xaml.vb:724
+msgid "Will back up as: "
+msgstr "Sera sauvegardé sous :"
+
+#: CloseToTrayDialog.xaml.vb:54
+msgid "Close to Tray?"
+msgstr "Fermer dans la barre de tâches ?"
+
+#: CloseToTrayDialog.xaml.vb:55
+msgid "Would you like to close MCBackup to tray?"
+msgstr "Voulez-vous fermer MCBackup dans la barre de tâches ?"
+
+#: CloseToTrayDialog.xaml.vb:56 DeleteDialog.xaml.vb:29 UpdateDialog.xaml.vb:35
+#: MetroMessageBox.xaml.vb:94 MetroMessageBox.xaml.vb:105
+msgid "Yes"
+msgstr "Oui"
+
+#: CloseToTrayDialog.xaml.vb:57 DeleteDialog.xaml.vb:30 UpdateDialog.xaml.vb:36
+#: MetroMessageBox.xaml.vb:91 MetroMessageBox.xaml.vb:102
+msgid "No"
+msgstr "Non"
+
+#: CloseToTrayDialog.xaml.vb:59
+msgid "Always do this in the future"
+msgstr "Toujours faire ceci à l'avenir"
+
+#: CloseToTrayDialog.xaml.vb:60
+msgid "You can always revert this in the options menu."
+msgstr ""
+"Vous pouvez toujours changer cette option dans la fenêtre des paramètres."
+
+#: CullDialog.xaml.vb:31
+msgid "Selective deletion"
+msgstr "Suppression sélective"
+
+#: CullDialog.xaml.vb:32
+msgid "Delete all backups older than"
+msgstr "Supprimer les sauvegardes datant de plus de"
+
+#: CullDialog.xaml.vb:33
+msgid "days."
+msgstr "jours."
+
+#: CullDialog.xaml.vb:34 OptionsDialog.xaml.vb:350 MainWindow.xaml.vb:752
+#: MainWindow.xaml.vb:798
+msgid "Delete"
+msgstr "Supprimer"
+
+#: CullDialog.xaml.vb:56 DeleteDialog.xaml.vb:39 OptionsDialog.xaml.vb:452
+#: OptionsDialog.xaml.vb:501 OptionsDialog.xaml.vb:510
+#: OptionsDialog.xaml.vb:689 MainWindow.xaml.vb:938 MainWindow.xaml.vb:1669
+msgid "Are you sure?"
+msgstr "Êtes-vous sûr ?"
+
+#: CullDialog.xaml.vb:58 MainWindow.xaml.vb:1208
+msgid "Deleting... ({0:0.00}% Complete)"
+msgstr "Suppression... (complétée à {0:0.00}%)"
+
+#: CullDialog.xaml.vb:62
+msgid "No backups were created in the selected range of dates."
+msgstr "Aucune sauvegarde n'a été créée dans la "
+
+#: CullDialog.xaml.vb:73 MainWindow.xaml.vb:1241
+msgid "An error occurred during the removal."
+msgstr "Une erreur s'est produite durant la suppression."
+
+#: CullDialog.xaml.vb:79
+msgid "Delete Complete; Ready"
+msgstr "Suppression terminée ; Prêt"
+
+#: DeleteDialog.xaml.vb:28
+msgid "Are you sure you want to delete the selected backup(s)?"
+msgstr ""
+"Êtes-vous sûr de vouloir supprimer la/les sauvegarde(s) sélectionnée(s) ?"
+
+#: DeleteDialog.xaml.vb:32
+msgid "Don't ask me again"
+msgstr "Ne plus me demander"
+
+#: ErrorReportDialog.xaml.vb:26
+msgid "An exception of type {0} occured: "
+msgstr "Une exception de type {0} s'est produite : "
+
+#: ErrorReportDialog.xaml.vb:33
+msgid "Continue"
+msgstr "Continuer"
+
+#: ErrorReportDialog.xaml.vb:34
+msgid "Copy to Clipboard"
+msgstr "Copier dans le presse-papiers"
+
+#: ErrorReportDialog.xaml.vb:35
+msgid ""
+"If this error persists, please consider contacting us at support@nicoco007."
+"com or submit a bug report using the button below."
+msgstr ""
+"Si cette erreur persiste, veuillez nous contacter au support@nicoco007.com "
+"ou soumettez un rapport de bug en utilisant le bouton ci-dessous."
+
+#: ErrorReportDialog.xaml.vb:36 MainWindow.xaml.vb:776
+msgid "Report a Bug"
+msgstr "Soumettre un rapport de bug"
+
+#: ErrorReportDialog.xaml.vb:48
+msgid "Successfully copied to clipboard!"
+msgstr "Copié dans le presse-papiers !"
+
+#: ErrorReportDialog.xaml.vb:48
+msgid "Copied to Clipboard!"
+msgstr "Copié dans le presse-papiers !"
+
+#: CullDialog.xaml.vb:56
+msgid ""
+"You are about to delete one backup. Are you sure you want to do this? They "
+"will be deleted forever! (A long time)"
+msgid_plural ""
+"You are about to delete {0} backups. Are you sure you want to do this? They "
+"will be deleted forever! (A long time)"
+msgstr[0] ""
+"Vous vous apprêtez à supprimer {0} sauvegarde. Êtes-vous sûr de vouloir le "
+"faire ? Elle sera supprimée à tout jamais ! (très longtemps)"
+msgstr[1] ""
+"Vous vous apprêtez à supprimer {0} sauvegardes. Êtes-vous sûr de vouloir le "
+"faire ? Elles seront supprimées à tout jamais ! (très longtemps)"
+
+#: MoveToGroupDialog.xaml.vb:41 MainWindow.xaml.vb:755
+msgid "Move to Group"
+msgstr "Déplacer dans le groupe"
+
+#: MoveToGroupDialog.xaml.vb:42
+msgid "Move"
+msgstr "Déplacer"
+
+#: OptionsDialog.xaml.vb:31
+msgid "All supported image types"
+msgstr "Tous les formats d'image pris en charge"
+
+#: OptionsDialog.xaml.vb:229
+msgid "Failed to load language file"
+msgstr "Échec du chargement du fichier de langue"
+
+#: OptionsDialog.xaml.vb:242 MainWindow.xaml.vb:774
+msgid "Preferences"
+msgstr "Préférences"
+
+#: OptionsDialog.xaml.vb:244 NewsWindow.xaml.vb:84
+msgid "Close"
+msgstr "Fermer"
+
+#: OptionsDialog.xaml.vb:245
+msgid "Reset"
+msgstr "Réinitialiser"
+
+#: OptionsDialog.xaml.vb:247
+msgid "General"
+msgstr "Général"
+
+#: OptionsDialog.xaml.vb:248
+msgid "Appearance"
+msgstr "Apparence"
+
+#: OptionsDialog.xaml.vb:249
+msgid "Folders"
+msgstr "Dossiers"
+
+#: OptionsDialog.xaml.vb:250
+msgid "Groups"
+msgstr "Groupes"
+
+#: OptionsDialog.xaml.vb:251
+msgid "Advanced"
+msgstr "Avancé"
+
+#: OptionsDialog.xaml.vb:254 OptionsDialog.xaml.vb:269
+msgid "General Options"
+msgstr "Options générales"
+
+#: OptionsDialog.xaml.vb:255
+msgid "Close to Tray Options"
+msgstr "Options de fermeture"
+
+#: OptionsDialog.xaml.vb:256
+msgid "Language"
+msgstr "Langue"
+
+#: OptionsDialog.xaml.vb:258
+msgid "Show balloon tips"
+msgstr "Afficher les info-bulles"
+
+#: OptionsDialog.xaml.vb:259
+msgid "Show delete confirmation dialog"
+msgstr "Afficher la confirmation de supression"
+
+#: OptionsDialog.xaml.vb:260
+msgid "Check for updates on startup"
+msgstr "Chercher des mises à jour au démarrage"
+
+#: OptionsDialog.xaml.vb:261
+msgid "Create thumbnail when backing up a world"
+msgstr "Créer un aperçu lors de la sauvegarde d'un monde"
+
+#: OptionsDialog.xaml.vb:262
+msgid "Always..."
+msgstr "Toujours..."
+
+#: OptionsDialog.xaml.vb:263
+msgid "Close to tray"
+msgstr "Fermer dans la barre de tâches"
+
+#: OptionsDialog.xaml.vb:264
+msgid "Close completely"
+msgstr "Fermer complètement"
+
+#: OptionsDialog.xaml.vb:265
+msgid "Send anonymouse statistics"
+msgstr "Envoyer des statistiques anonymes"
+
+#: OptionsDialog.xaml.vb:266
+msgid "Show news window on startup"
+msgstr "Afficher la fenêtre de nouvelles au démarrage"
+
+#: OptionsDialog.xaml.vb:270
+msgid "Text Color"
+msgstr "Couleur du texte"
+
+#: OptionsDialog.xaml.vb:271
+msgid "Backups List Text Color Intensity"
+msgstr "Intensité de la couleur du texte de la liste de sauvegardes"
+
+#: OptionsDialog.xaml.vb:273
+msgid "User Interface Opacity"
+msgstr "Opacité de l'interface utilisateur"
+
+#: OptionsDialog.xaml.vb:274
+msgid "Background Image"
+msgstr "Image d'arrière-plan"
+
+#: OptionsDialog.xaml.vb:275
+msgid "Size Mode"
+msgstr "Mode d'ajustement"
+
+#: OptionsDialog.xaml.vb:276 OptionsDialog.xaml.vb:289
+msgid "Center"
+msgstr "Centrer"
+
+#: OptionsDialog.xaml.vb:277
+msgid "Stretch"
+msgstr "Étirer"
+
+#: OptionsDialog.xaml.vb:278
+msgid "Auto Size"
+msgstr "Ajuster"
+
+#: OptionsDialog.xaml.vb:279
+msgid "Zoom"
+msgstr "Remplir"
+
+#: OptionsDialog.xaml.vb:280 OptionsDialog.xaml.vb:340
+#: OptionsDialog.xaml.vb:343 OptionsDialog.xaml.vb:345
+#: SetMinecraftFolderWindow.xaml.vb:123 SetMinecraftFolderWindow.xaml.vb:126
+msgid "Browse..."
+msgstr "Parcourir..."
+
+#: OptionsDialog.xaml.vb:281
+msgid "Remove"
+msgstr "Retirer"
+
+#: OptionsDialog.xaml.vb:282
+msgid "Theme Color"
+msgstr "Couleur du thème"
+
+#: OptionsDialog.xaml.vb:283 OptionsDialog.xaml.vb:284
+#: OptionsDialog.xaml.vb:285
+msgid "Sample Text"
+msgstr "Exemple de texte"
+
+#: OptionsDialog.xaml.vb:288
+msgid "Top"
+msgstr "Haut"
+
+#: OptionsDialog.xaml.vb:290
+msgid "Bottom"
+msgstr "Bas"
+
+#: OptionsDialog.xaml.vb:296
+msgid "Amber"
+msgstr "Ambre"
+
+#: OptionsDialog.xaml.vb:297
+msgid "Blue"
+msgstr "Bleu"
+
+#: OptionsDialog.xaml.vb:298
+msgid "Brown"
+msgstr "Brun"
+
+#: OptionsDialog.xaml.vb:299
+msgid "Cobalt"
+msgstr "Cobalt"
+
+#: OptionsDialog.xaml.vb:300
+msgid "Crimson"
+msgstr "Cramoisi"
+
+#: OptionsDialog.xaml.vb:301
+msgid "Cyan"
+msgstr "Cyan"
+
+#: OptionsDialog.xaml.vb:302
+msgid "Emerald"
+msgstr "Émeraude"
+
+#: OptionsDialog.xaml.vb:303
+msgid "Green"
+msgstr "Vert"
+
+#: OptionsDialog.xaml.vb:304
+msgid "Indigo"
+msgstr "Indigo"
+
+#: OptionsDialog.xaml.vb:305
+msgid "Lime"
+msgstr "Lime"
+
+#: OptionsDialog.xaml.vb:306
+msgid "Magenta"
+msgstr "Magenta"
+
+#: OptionsDialog.xaml.vb:307
+msgid "Mauve"
+msgstr "Mauve"
+
+#: OptionsDialog.xaml.vb:308
+msgid "Olive"
+msgstr "Olive"
+
+#: OptionsDialog.xaml.vb:309
+msgid "Orange"
+msgstr "Orange"
+
+#: OptionsDialog.xaml.vb:310
+msgid "Pink"
+msgstr "Rose"
+
+#: OptionsDialog.xaml.vb:311
+msgid "Purple"
+msgstr "Pourpre"
+
+#: OptionsDialog.xaml.vb:312
+msgid "Red"
+msgstr "Rouge"
+
+#: OptionsDialog.xaml.vb:313
+msgid "Sienna"
+msgstr "Sienne"
+
+#: OptionsDialog.xaml.vb:314
+msgid "Steel"
+msgstr "Acier"
+
+#: OptionsDialog.xaml.vb:315
+msgid "Teal"
+msgstr "Sarcelle"
+
+#: OptionsDialog.xaml.vb:316
+msgid "Violet"
+msgstr "Violet"
+
+#: OptionsDialog.xaml.vb:317
+msgid "Yellow"
+msgstr "Jaune"
+
+#: OptionsDialog.xaml.vb:329
+msgid "Light"
+msgstr "Clair"
+
+#: OptionsDialog.xaml.vb:330
+msgid "Dark"
+msgstr "Sombre"
+
+#: OptionsDialog.xaml.vb:334
+msgid "Installation Type"
+msgstr "Type d'installation"
+
+#: OptionsDialog.xaml.vb:335 Launcher.vb:2 SetMinecraftFolderWindow.xaml.vb:117
+msgid "Minecraft"
+msgstr "Minecraft"
+
+#: OptionsDialog.xaml.vb:336 Launcher.vb:3 SetMinecraftFolderWindow.xaml.vb:118
+msgid "Technic"
+msgstr "Technic"
+
+#: OptionsDialog.xaml.vb:337 Launcher.vb:4 SetMinecraftFolderWindow.xaml.vb:119
+msgid "Feed the Beast"
+msgstr "Feed the Beast"
+
+#: OptionsDialog.xaml.vb:338 Launcher.vb:6 SetMinecraftFolderWindow.xaml.vb:120
+msgid "ATLauncher"
+msgstr "ATLauncher"
+
+#: OptionsDialog.xaml.vb:339 SetMinecraftFolderWindow.xaml.vb:122
+msgid "Base Folder"
+msgstr "Dossier de base"
+
+#: OptionsDialog.xaml.vb:341
+msgid "General Folders"
+msgstr "Dossiers généraux"
+
+#: OptionsDialog.xaml.vb:342 SetMinecraftFolderWindow.xaml.vb:125
+msgid "Saves Folder"
+msgstr "Dossier des mondes"
+
+#: OptionsDialog.xaml.vb:344
+msgid "Backups Folder"
+msgstr "Dossier des sauvegardes"
+
+#: OptionsDialog.xaml.vb:348
+msgid "Add New Group"
+msgstr "Ajouter un nouveau groupe"
+
+#: OptionsDialog.xaml.vb:349
+msgid "Other Options"
+msgstr "Autres options"
+
+#: OptionsDialog.xaml.vb:351 RenameBackupGroupDialog.xaml.vb:39
+#: RenameDialog.xaml.vb:55 RenameDialog.xaml.vb:56 MainWindow.xaml.vb:753
+#: MainWindow.xaml.vb:799
+msgid "Rename"
+msgstr "Renommer"
+
+#: OptionsDialog.xaml.vb:352
+msgid "Move up"
+msgstr "Déplacer vers le haut"
+
+#: OptionsDialog.xaml.vb:353
+msgid "Move down"
+msgstr "Déplacer vers de bas"
+
+#: OptionsDialog.xaml.vb:356
+msgid "Default Backup Name"
+msgstr "Nom de sauvegarde par défaut"
+
+#: OptionsDialog.xaml.vb:357
+msgid "Default Automatic Backup Name"
+msgstr "Nom de sauvegarde automatique par défaut"
+
+#: OptionsDialog.xaml.vb:358
+msgid "Ignore system language settings when formatting backup names"
+msgstr "Ignorer la langue du système lors du formatage des noms de sauvegarde"
+
+#: OptionsDialog.xaml.vb:359
+msgid "Placeholders"
+msgstr "Variables réservées"
+
+#: OptionsDialog.xaml.vb:501
+msgid ""
+"Are you sure you want to delete this group? It will be lost forever (a long "
+"time)!"
+msgstr ""
+"Êtes-vous sûr de vouloir supprimer ce groupe ? Il sera perdu à tout jamais ! "
+"(très longtemps)"
+
+#: OptionsDialog.xaml.vb:510
+msgid ""
+"Are you sure you want to disable anonymous statistics collection? They are "
+"only used for global statistics!"
+msgstr ""
+"Êtes-vous sûr de vouloir désactiver la collection de statistiques anonymes ? "
+"Elles sont seulement utilisées pour les statistiques globales !"
+
+#: OptionsDialog.xaml.vb:608
+msgid "That folder is not named 'saves'! Please select another folder."
+msgstr ""
+"Ce dossier n'est pas nommé \"saves\" ! Veuillez sélectionner un autre "
+"dossier."
+
+#: OptionsDialog.xaml.vb:626
+msgid ""
+"This folder cannot be set as your backups folder. Please check if you have "
+"read and write permissions in this folder."
+msgstr ""
+"Ce dossier ne peut pas être défini en tant que dossier de sauvegardes. "
+"Veuillez vérifier que vous avez le droit de lire et d'écrire dans ce dossier."
+
+#: OptionsDialog.xaml.vb:689
+msgid "This action will open a webpage in your default web browser."
+msgstr "Cette action ouvrira une page web dans votre fureteur par défaut."
+
+#: RenameBackupGroupDialog.xaml.vb:38
+msgid "Rename Backup Group"
+msgstr "Renommer un groupe de sauvegardes"
+
+#: RenameDialog.xaml.vb:40
+msgid "A backup with that name already exists! Please choose another name."
+msgstr "Une sauvegarde de ce nom existe déjà ! Veuillez choisir un autre nom."
+
+#: RenameDialog.xaml.vb:44
+msgid "An error occured while trying to rename the backup."
+msgstr "Une erreur s'est produite en tentant de renommer la sauvegarde."
+
+#: UpdateDialog.xaml.vb:30
+msgid "New Version Available!"
+msgstr "Nouvelle version disponible !"
+
+#: UpdateDialog.xaml.vb:31
+msgid "A new version of MCBackup is available!"
+msgstr "Une nouvelle version de MCBackup est disponible !"
+
+#: UpdateDialog.xaml.vb:32
+msgid "Installed Version: {0}"
+msgstr "Version installée : {0}"
+
+#: UpdateDialog.xaml.vb:33
+msgid "Latest Version: {0}"
+msgstr "Nouvelle version : {0}"
+
+#: UpdateDialog.xaml.vb:34
+msgid "Would you like to update?"
+msgstr "Voulez-vous mettre MCBackup à jour ?"
+
+#: UpdateDialog.xaml.vb:37
+msgid "Show Changelog"
+msgstr "Afficher le journal des modifications"
+
+#: Launcher.vb:5
+msgid "Curse"
+msgstr "Curse"
+
+#: AutoBackupWindow.xaml.vb:39 AutoBackupWindow.xaml.vb:62
+#: MainWindow.xaml.vb:756 MainWindow.xaml.vb:1280 MainWindow.xaml.vb:1284
+msgid "Automatic Backup"
+msgstr "Sauvegarde automatique"
+
+#: AutoBackupWindow.xaml.vb:40
+msgid "Backup every"
+msgstr "Sauvegarder toutes les"
+
+#: AutoBackupWindow.xaml.vb:41
+msgid "minutes."
+msgstr "minutes."
+
+#: AutoBackupWindow.xaml.vb:42
+msgid "World to back up:"
+msgstr "Monde à sauvegarder :"
+
+#: AutoBackupWindow.xaml.vb:43
+msgid "Refresh"
+msgstr "Rafraîchir"
+
+#: AutoBackupWindow.xaml.vb:100
+msgid "Stop"
+msgstr "Arrêter"
+
+#: AutoBackupWindow.xaml.vb:150 AutoBackupWindow.xaml.vb:157
+#: AutoBackupWindow.xaml.vb:158
+msgid "Automatic Backups"
+msgstr "Sauvegardes automatiques"
+
+#: AutoBackupWindow.xaml.vb:155
+msgid "Automatic Backup Started"
+msgstr "Sauvegarde automatique démarrée"
+
+#: MainWindow.xaml.vb:144
+msgid ""
+"An older version of MCBackup has been detected. Would you like to migrate "
+"your settings?"
+msgstr ""
+"Une ancienne version de MCBackup a été détectée. Voulez-vous charger vos "
+"anciens paramètres ?"
+
+#: MainWindow.xaml.vb:144
+msgid "Migrate settings?"
+msgstr "Charger les anciens paramètres ?"
+
+#: MainWindow.xaml.vb:206
+msgid "Exit"
+msgstr "Quitter"
+
+#: MainWindow.xaml.vb:267
+msgid ""
+"MCBackup was unable to find an installation of Minecraft on your computer. "
+"Please select your Minecraft folder in the following dialog."
+msgstr ""
+"MCBackup n'a pas été capable de trouver une installation de Minecraft sur "
+"votre ordinateur. Veuillez sélectionner votre dossier Minecraft dans la "
+"fenêtre suivante."
+
+#: MainWindow.xaml.vb:450 MainWindow.xaml.vb:452
+msgid "Refreshing backups list..."
+msgstr "Rafraîchissement de la liste des sauvegardes..."
+
+#: MainWindow.xaml.vb:487 MainWindow.xaml.vb:536 MainWindow.xaml.vb:537
+msgid "{0} elements"
+msgstr "{0} éléments"
+
+#: MainWindow.xaml.vb:524 MainWindow.xaml.vb:780 MainWindow.xaml.vb:922
+#: MainWindow.xaml.vb:1069 MainWindow.xaml.vb:1216 MainWindow.xaml.vb:1252
+#: MainWindow.xaml.vb:1759
+msgid "Ready"
+msgstr "Prêt"
+
+#: MainWindow.xaml.vb:546 MainWindow.xaml.vb:548
+msgid "No backup selected."
+msgstr "Aucune sauvegarde sélectionnée"
+
+#: MainWindow.xaml.vb:550
+msgid "No item selected."
+msgstr "Aucun élément sélectionné."
+
+#: MainWindow.xaml.vb:569 MainWindow.xaml.vb:570
+msgid "{0} elements selected"
+msgstr "{0} éléments sélectionnés"
+
+#: MainWindow.xaml.vb:672
+msgid "No description."
+msgstr "Aucune description."
+
+#: MainWindow.xaml.vb:750
+msgctxt "verb"
+msgid "Backup"
+msgstr "Sauvegarder"
+
+#: MainWindow.xaml.vb:751 MainWindow.xaml.vb:797
+msgid "Restore"
+msgstr "Restaurer"
+
+#: MainWindow.xaml.vb:754
+msgid "Selective Deletion"
+msgstr "Supression sélective"
+
+#: MainWindow.xaml.vb:759 MainWindow.xaml.vb:787
+msgid "Date Created"
+msgstr "Date de création"
+
+#: MainWindow.xaml.vb:760 MainWindow.xaml.vb:763 MainWindow.xaml.vb:788
+#: MainWindow.xaml.vb:794
+msgid "Type"
+msgstr "Type"
+
+#: MainWindow.xaml.vb:762 MainWindow.xaml.vb:793
+msgid "Original Name"
+msgstr "Nom original"
+
+#: MainWindow.xaml.vb:765
+msgid "Player Health"
+msgstr "Points de vie"
+
+#: MainWindow.xaml.vb:766
+msgid "Player Hunger"
+msgstr "Points de faim"
+
+#: MainWindow.xaml.vb:768
+msgid "File"
+msgstr "Fichier"
+
+#: MainWindow.xaml.vb:769
+msgid "Quit"
+msgstr "Quitter"
+
+#: MainWindow.xaml.vb:770
+msgid "Edit"
+msgstr "Modifier"
+
+#: MainWindow.xaml.vb:771
+msgid "Refresh Backups List"
+msgstr "Rafraîchir la liste des sauvegardes"
+
+#: MainWindow.xaml.vb:772
+msgid "Open Backups Folder in Explorer"
+msgstr "Ouvrir le dossier des sauvegardes dans l'Explorateur"
+
+#: MainWindow.xaml.vb:773
+msgid "Tools"
+msgstr "Outils"
+
+#: MainWindow.xaml.vb:775
+msgid "Help"
+msgstr "Aide"
+
+#: MainWindow.xaml.vb:777
+msgid "Website"
+msgstr "Site Internet"
+
+#: MainWindow.xaml.vb:783
+msgid "Search..."
+msgstr "Rechercher..."
+
+#: MainWindow.xaml.vb:785
+msgid "Sort by"
+msgstr "Trier par"
+
+#: MainWindow.xaml.vb:789
+msgid "Ascending"
+msgstr "Ascendant"
+
+#: MainWindow.xaml.vb:790
+msgid "Descending"
+msgstr "Descendant"
+
+#: MainWindow.xaml.vb:792
+msgid "Group by"
+msgstr "Regrouper par"
+
+#: MainWindow.xaml.vb:795
+msgid "Nothing"
+msgstr "Rien"
+
+#: MainWindow.xaml.vb:801
+msgid "Open in Explorer"
+msgstr "Ouvrir dans l'Explorateur"
+
+#: MainWindow.xaml.vb:803
+msgid "There are no backups here. Press 'Backup' to create one!"
+msgstr ""
+"Il n'y a pas de sauvegardes ici. Appuyez sur \"Sauvegarder...\"  pour en "
+"créer une!"
+
+#: MainWindow.xaml.vb:813
+msgid "All"
+msgstr "Tout"
+
+#: MainWindow.xaml.vb:852
+msgid "Starting backup..."
+msgstr "Démarrage de la sauvegarde..."
+
+#: MainWindow.xaml.vb:861
+msgid "Backing up... ({0:0.00}% Complete at {1:0.00} MiB/s, {2})"
+msgstr "Sauvegarde... (complétée à {0:0.00}% à {1:0.00} Mio/s, {2})"
+
+#: MainWindow.xaml.vb:862
+msgid "Backup... {0:0.00}%"
+msgstr "Sauvegarde... {0:0.00}%"
+
+#: MainWindow.xaml.vb:871 MainWindow.xaml.vb:872
+msgid "Reverting changes..."
+msgstr "Annulation des changements..."
+
+#: MainWindow.xaml.vb:881
+msgid "Creating thumbnail... ({0:0.00}% Complete)"
+msgstr "Création d'un aperçu... (complété à {0:0.00}% à {1:0.00} Mio/s, {2})"
+
+#: MainWindow.xaml.vb:882
+msgid "Creating thumbnail... {0:0.00}%"
+msgstr "Création d'un aperçu... {0:0.00}%"
+
+#: MainWindow.xaml.vb:894
+msgid "Backup Error!"
+msgstr "Erreur durant la sauvegarde !"
+
+#: MainWindow.xaml.vb:894 MainWindow.xaml.vb:897
+msgid "An error occurred during the backup."
+msgstr "Une erreur s'est produite durant la sauvegarde."
+
+#: MainWindow.xaml.vb:902
+msgid "Backup complete!"
+msgstr "Sauvegarde complétée !"
+
+#: MainWindow.xaml.vb:902
+msgid "Your backup has completed."
+msgstr "La sauvegarde a été complétée."
+
+#: MainWindow.xaml.vb:938
+msgid ""
+"Are you sure you want to restore this backup? This will overwrite any "
+"existing content!"
+msgstr ""
+"Êtes-vous sûr de vouloir restaurer cette sauvegarde ? Cette opération "
+"écrasera tout contenu existant !"
+
+#: MainWindow.xaml.vb:952
+msgid "Backup information does not exist. Cannot restore."
+msgstr "Informations de sauvegarde introuvables. Impossible de restaurer."
+
+#: MainWindow.xaml.vb:992
+msgid ""
+"This backup is not compatible with your current configuration! It is "
+"designed for {0} installations only."
+msgstr ""
+"Cette sauvegarde n'est pas compatible avec votre configuration actuelle ! "
+"Elle a été créée pour les installations de {0} seulement."
+
+#: MainWindow.xaml.vb:1039
+msgid "Starting restore..."
+msgstr "Démarrage de la sauvegarde.éé"
+
+#: MainWindow.xaml.vb:1046
+msgid "Removing old content, please wait..."
+msgstr "Suppression de l'ancien contenu, veuillez patienter..."
+
+#: MainWindow.xaml.vb:1047
+msgid "Removing old content..."
+msgstr "Suppression de l'ancien contenu..."
+
+#: MainWindow.xaml.vb:1054
+msgid "Restoring... ({0:0.00}% Complete at {1:0.00} MiB/s, {2})"
+msgstr "Restauration... (complété à {0:0.00}% à {1:0.00} Mio/s, {2})"
+
+#: MainWindow.xaml.vb:1055
+msgid "Restoring... {0:0.00}%"
+msgstr "Restauration... {0:0.00}%"
+
+#: MainWindow.xaml.vb:1209
+msgid "Deleting... {0:0.00}%"
+msgstr "Suppression... {0:0.00}%"
+
+#: MainWindow.xaml.vb:1237
+msgid "Operation Canceled – Ready"
+msgstr "Opération annulée – Prêt"
+
+#: MainWindow.xaml.vb:1509 MainWindow.xaml.vb:1534
+msgid "I'm Here!"
+msgstr "Je suis ici !"
+
+#: MainWindow.xaml.vb:1509 MainWindow.xaml.vb:1534
+msgid "MCBackup is running in background."
+msgstr "MCBackup continue son exécution en arrière-plan."
+
+#: MainWindow.xaml.vb:1520 MainWindow.xaml.vb:1543
+msgid ""
+"MCBackup is currently working. Please wait for the operation to complete or "
+"cancel it."
+msgstr ""
+"MCBackup est occupé. Veuillez attendre la fin de l'opération en cours ou "
+"annulez-la."
+
+#: MainWindow.xaml.vb:1520 MainWindow.xaml.vb:1543
+msgid "MCBackup is working!"
+msgstr "MCBackup est occupé !"
+
+#: MainWindow.xaml.vb:1669
+msgid "Are you sure you want to cancel the deletion?"
+msgstr "Êtes-vous sûr de vouloir annuler la suppression ?"
+
+#: MainWindow.xaml.vb:1727 MainWindow.xaml.vb:1728
+msgid "Moving backups..."
+msgstr "Déplacement des sauvegardes..."
+
+#: MetroMessageBox.xaml.vb:77 MetroMessageBox.xaml.vb:86
+msgid "OK"
+msgstr "OK"
+
+#: NewsWindow.xaml.vb:82
+msgid "News"
+msgstr "Nouvelles"
+
+#: NewsWindow.xaml.vb:85
+msgid "Show this window on startup"
+msgstr "Afficher cette fenêtre au démarrage"
+
+#: SetMinecraftFolderWindow.xaml.vb:93
+msgid "Please select a folder before continuing."
+msgstr "Veuillez sélectionner un dossier avant de continuer."
+
+#: SetMinecraftFolderWindow.xaml.vb:116
+msgid "Set Minecraft Folder"
+msgstr "Définir le dossier Minecraft"
+
+#: SetMinecraftFolderWindow.xaml.vb:128
+msgid "Save"
+msgstr "Sauvegarde"
+
+#~ msgid "Filter"
+#~ msgstr "Filtrer"
+
+#~ msgid "{0} element"
+#~ msgid_plural "{0} elements"
+#~ msgstr[0] "{0} élément"
+#~ msgstr[1] "{0} éléments"
+
+#~ msgid "One element"
+#~ msgid_plural "{0} elements"
+#~ msgstr[0] "Un élément"
+#~ msgstr[1] "{0} éléments"
+
+#~ msgid "one thing"
+#~ msgid_plural "{0} things"
+#~ msgstr[0] "une chose"
+#~ msgstr[1] "{0} choses"
+#~ msgstr[2] "{0} choseses"
+#~ msgstr[3] "{0} choseseses"
+#~ msgstr[4] "{0} choseseseses"

@@ -1,5 +1,5 @@
 ﻿'   ╔═══════════════════════════════════════════════════════════════════════════╗
-'   ║                      Copyright © 2013-2015 nicoco007                      ║
+'   ║                      Copyright © 2013-2016 nicoco007                      ║
 '   ║                                                                           ║
 '   ║      Licensed under the Apache License, Version 2.0 (the "License");      ║
 '   ║      you may not use this file except in compliance with the License.     ║
@@ -51,13 +51,13 @@ Public Class CloseToTrayDialog
     End Sub
 
     Private Sub LoadLanguage()
-        Me.Title = MCBackup.Language.GetString("CloseToTrayWindow.Title")
-        MessageLabel.Content = MCBackup.Language.GetString("CloseToTrayWindow.MessageLabel.Content")
-        YesButton.Content = MCBackup.Language.GetString("CloseToTrayWindow.YesButton.Content")
-        NoButton.Content = MCBackup.Language.GetString("CloseToTrayWindow.NoButton.Content")
-        CancelButton.Content = MCBackup.Language.GetString("CloseToTrayWindow.CancelButton.Content")
-        SaveCheckBox.Content = MCBackup.Language.GetString("CloseToTrayWindow.SaveCheckBox.Content")
-        RevertLabel.Content = MCBackup.Language.GetString("CloseToTrayWindow.RevertLabel.Content")
+        Me.Title = Application.Language.GetString("Close to Tray?")
+        MessageLabel.Content = Application.Language.GetString("Would you like to close MCBackup to tray?")
+        YesButton.Content = Application.Language.GetString("Yes")
+        NoButton.Content = Application.Language.GetString("No")
+        CancelButton.Content = Application.Language.GetString("Cancel")
+        SaveCheckBox.Content = Application.Language.GetString("Always do this in the future")
+        RevertLabel.Content = Application.Language.GetString("You can always revert this in the options menu.")
     End Sub
 
     Public Overloads Function ShowDialog() As Forms.DialogResult

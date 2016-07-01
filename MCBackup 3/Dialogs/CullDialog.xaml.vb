@@ -1,5 +1,5 @@
 ﻿'   ╔═══════════════════════════════════════════════════════════════════════════╗
-'   ║                      Copyright © 2013-2015 nicoco007                      ║
+'   ║                      Copyright © 2013-2016 nicoco007                      ║
 '   ║                                                                           ║
 '   ║      Licensed under the Apache License, Version 2.0 (the "License");      ║
 '   ║      you may not use this file except in compliance with the License.     ║
@@ -14,7 +14,6 @@
 '   ║                      limitations under the License.                       ║
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
 
-Imports Scripting
 Imports System.ComponentModel
 
 Public Class CullDialog
@@ -29,10 +28,10 @@ Public Class CullDialog
         AddHandler DeleteBackgroundWorker.DoWork, New DoWorkEventHandler(AddressOf DeleteBackgroundWorker_DoWork)
         AddHandler DeleteBackgroundWorker.RunWorkerCompleted, New RunWorkerCompletedEventHandler(AddressOf DeleteBackgroundWorker_RunWorkerCompleted)
 
-        Me.Title = MCBackup.Language.GetString("CullWindow.Title")
-        Label1.Content = MCBackup.Language.GetString("CullWindow.Label1.Content")
-        Label2.Content = MCBackup.Language.GetString("CullWindow.Label2.Content")
-        CullButton.Content = MCBackup.Language.GetString("CullWindow.CullButton.Content")
+        Me.Title = Application.Language.GetString("Selective deletion")
+        Label1.Content = Application.Language.GetString("Delete all backups older than")
+        Label2.Content = Application.Language.GetString("days.")
+        CullButton.Content = Application.Language.GetString("Delete")
     End Sub
 
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
@@ -45,10 +44,6 @@ Public Class CullDialog
     End Sub
 
     Private Sub CullButton_Click(sender As Object, e As RoutedEventArgs) Handles CullButton.Click
-        If MetroMessageBox.Show(String.Format(MCBackup.Language.GetString("CullWindow.AreYouSureMsg"), DaysNumUpDown.Value), MCBackup.Language.GetString("Message.Caption.AreYouSure"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.No Then
-            Exit Sub
-        End If
-
         ItemsToDelete.Clear()
 
         For Each Item In Main.ListView.Items
@@ -57,33 +52,32 @@ Public Class CullDialog
             End If
         Next
 
-        DeleteBackgroundWorker.RunWorkerAsync()
-        Main.StatusLabel.Content = MCBackup.Language.GetString("Status.Deleting")
-        Main.ProgressBar.IsIndeterminate = True
+        If ItemsToDelete.Count > 0 Then
+            If MetroMessageBox.Show(String.Format(Application.Language.GetPlural("You are about to delete one backup. Are you sure you want to do this? They will be deleted forever! (A long time)", "You are about to delete {0} backups. Are you sure you want to do this? They will be deleted forever! (A long time)", ItemsToDelete.Count)), Application.Language.GetString("Are you sure?"), MessageBoxButton.YesNo, MessageBoxImage.Question) = MessageBoxResult.Yes Then
+                DeleteBackgroundWorker.RunWorkerAsync()
+                Main.StatusLabel.Content = Application.Language.GetString("Deleting... ({0:0.00}% Complete)")
+                Main.ProgressBar.IsIndeterminate = True
+            End If
+        Else
+            MetroMessageBox.Show(Application.Language.GetString("No backups were created in the selected range of dates."))
+        End If
+
         Me.Close()
     End Sub
 
-    Private Sub DeleteBackgroundWorker_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs)
+    Private Sub DeleteBackgroundWorker_DoWork(sender As Object, e As DoWorkEventArgs)
         For Each Item As String In ItemsToDelete
             Try
                 My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & Item, FileIO.DeleteDirectoryOption.DeleteAllContents)
             Catch ex As Exception
-                ErrorReportDialog.Show(MCBackup.Language.GetString("Exception.Delete"), ex)
+                ErrorReportDialog.Show(Application.Language.GetString("An error occurred during the removal."), ex)
             End Try
         Next
     End Sub
 
-    Private Sub DeleteBackgroundWorker_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs)
-        Main.StatusLabel.Content = MCBackup.Language.GetString("Status.DeleteComplete")
+    Private Async Sub DeleteBackgroundWorker_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
+        Main.StatusLabel.Content = Application.Language.GetString("Delete Complete; Ready")
         Main.ProgressBar.IsIndeterminate = False
-        Main.RefreshBackupsList()
-    End Sub
-
-    Private Sub Window_ContentRendered(sender As Object, e As EventArgs) Handles MyBase.ContentRendered
-        ' SizeToContent Black Border Fix © nicoco007
-        Dim s As New Size(Me.Width, Me.Height)
-        Me.SizeToContent = SizeToContent.Manual
-        Me.Width = s.Width
-        Me.Height = s.Height
+        Await Main.RefreshBackupsList()
     End Sub
 End Class

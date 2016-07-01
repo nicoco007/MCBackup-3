@@ -1,5 +1,5 @@
 ﻿'   ╔═══════════════════════════════════════════════════════════════════════════╗
-'   ║                      Copyright © 2013-2015 nicoco007                      ║
+'   ║                      Copyright © 2013-2016 nicoco007                      ║
 '   ║                                                                           ║
 '   ║      Licensed under the Apache License, Version 2.0 (the "License");      ║
 '   ║      you may not use this file except in compliance with the License.     ║
@@ -35,8 +35,8 @@ Public Class RenameBackupGroupDialog
     End Sub
 
     Private Sub LoadLanguage()
-        Me.Title = MCBackup.Language.GetString("RenameWindow.Title")
-        RenameButton.Content = MCBackup.Language.GetString("RenameWindow.RenameButton.Content")
-        CancelButton.Content = MCBackup.Language.GetString("RenameWindow.CancelButton.Content")
+        Me.Title = Application.Language.GetString("Rename Backup Group")
+        RenameButton.Content = Application.Language.GetString("Rename")
+        CancelButton.Content = Application.Language.GetString("Cancel")
     End Sub
 End Class

@@ -1,2 +1,2 @@
 MCMap was created by Zhal and is currently being updated and maintained by WRIM at http://blog.wrim.pl/mcmap
-As of 2015-07-07, no license has been published by either Zahl or WRIM.
+As of 2016-07-07, no license has been published by either Zahl or WRIM.

@@ -69,9 +69,13 @@
       <HintPath>..\packages\DotNetBox.1.1.2\lib\net40\DotNetBox.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Ionic.Zip, Version=1.9.8.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNetZip.1.9.8\lib\net20\Ionic.Zip.dll</HintPath>
+    <Reference Include="DotNetZip, Version=1.10.1.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetZip.1.10.1\lib\net20\DotNetZip.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="GettextSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Documents\Visual Studio 2015\Projects\GettextSharp\GettextSharp\bin\Debug\GettextSharp.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro, Version=1.2.4.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.2.4.0\lib\net40\MahApps.Metro.dll</HintPath>
@@ -100,10 +104,10 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Substrate, Version=1.3.8.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Substrate, Version=1.3.9.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Debug\Substrate.dll</HintPath>
     </Reference>
@@ -151,6 +155,7 @@
     <Compile Include="Classes\BackupMetadata.vb" />
     <Compile Include="Classes\BackupsListView.vb" />
     <Compile Include="Classes\RestoreInfo.vb" />
+    <Compile Include="Classes\PlaceholderTextBox.vb" />
     <Compile Include="Enums\BackupStatus.vb" />
     <Compile Include="Enums\BackupType.vb" />
     <Compile Include="Enums\Launcher.vb" />
@@ -201,8 +206,6 @@
     <Compile Include="Extension Classes\FolderBrowserDialog\Reflector.vb" />
     <Compile Include="Extension Classes\ListViewBackupItem.vb" />
     <Compile Include="Extension Classes\TaggedComboBoxItem.vb" />
-    <Compile Include="Extension Classes\ViewboxEx.vb" />
-    <Compile Include="Classes\Language.vb" />
     <Compile Include="Classes\Log.vb" />
     <Compile Include="Windows\MetroMessageBox.xaml.vb">
       <DependentUpon>MetroMessageBox.xaml</DependentUpon>
@@ -217,9 +220,6 @@
     <Compile Include="Classes\Game.vb" />
     <Compile Include="Windows\NewsWindow.xaml.vb">
       <DependentUpon>NewsWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\NotificationIconWindow.xaml.vb">
-      <DependentUpon>NotificationIconWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Classes\Progress.vb" />
     <Compile Include="Windows\SetMinecraftFolderWindow.xaml.vb">
@@ -239,6 +239,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Icons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\IconsNonShared.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -308,10 +312,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\NotificationIconWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Windows\SetMinecraftFolderWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -366,6 +366,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="language\fr_FR.lang">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="language\fr_FR.mo">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="language\fr_FR.po">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="My Project\app.manifest" />
@@ -444,12 +450,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="Version.xml" />
-    <Resource Include="Resources\WindowsIcons-license.txt" />
-    <Resource Include="Resources\Entypo-license.txt" />
     <Resource Include="Resources\thumb\atlauncher.png" />
     <Resource Include="Resources\thumb\ftb.png" />
     <Resource Include="Resources\thumb\minecraft.png" />
     <Resource Include="Resources\thumb\technic.png" />
+    <Resource Include="Resources\WindowsIcons-license.txt" />
+    <Resource Include="Resources\Entypo-license.txt" />
     <Content Include="Substrate.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

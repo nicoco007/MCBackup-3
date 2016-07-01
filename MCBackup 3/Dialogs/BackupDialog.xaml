@@ -1,6 +1,6 @@
 ﻿<!--
 ╔═══════════════════════════════════════════════════════════════════════════╗
-║                      Copyright © 2013-2015 nicoco007                      ║
+║                      Copyright © 2013-2016 nicoco007                      ║
 ║                                                                           ║
 ║      Licensed under the Apache License, Version 2.0 (the "License");      ║
 ║      you may not use this file except in compliance with the License.     ║
@@ -141,7 +141,13 @@
                     <ListView x:Name="VersionsListView" SelectionMode="Single" BorderThickness="1">
                         <ListView.View>
                             <GridView x:Name="VersionsListViewGridView">
-                                <GridViewColumn x:Name="VersionNameColumn" Header="Name" Width="600"/>
+                                <GridViewColumn x:Name="VersionNameColumn" Header="Name" Width="600">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
                             </GridView>
                         </ListView.View>
                     </ListView>

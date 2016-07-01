@@ -1,5 +1,5 @@
 ﻿'   ╔═══════════════════════════════════════════════════════════════════════════╗
-'   ║                      Copyright © 2013-2015 nicoco007                      ║
+'   ║                      Copyright © 2013-2016 nicoco007                      ║
 '   ║                                                                           ║
 '   ║      Licensed under the Apache License, Version 2.0 (the "License");      ║
 '   ║      you may not use this file except in compliance with the License.     ║
@@ -28,7 +28,7 @@ Public Class MoveToGroupDialog
     End Sub
 
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs) Handles Window.Loaded
-        GroupsListBox.Items.Add(MCBackup.Language.GetString("Groups.None"))
+        GroupsListBox.Items.Add(Application.Language.GetString("None"))
 
         For Each Group As String In My.Settings.BackupGroups
             GroupsListBox.Items.Add(Group)
@@ -38,8 +38,8 @@ Public Class MoveToGroupDialog
     End Sub
 
     Private Sub LoadLanguage()
-        Me.Title = MCBackup.Language.GetString("MoveToGroupDialog.Title")
-        MoveButton.Content = MCBackup.Language.GetString("MoveToGroupDialog.MoveButton.Text")
+        Me.Title = Application.Language.GetString("Move to Group")
+        MoveButton.Content = Application.Language.GetString("Move")
     End Sub
 
     Private Sub MoveButton_Click(sender As Object, e As RoutedEventArgs) Handles MoveButton.Click

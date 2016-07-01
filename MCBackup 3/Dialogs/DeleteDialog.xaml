@@ -7,7 +7,7 @@
         <Button Name="YesButton" Content="Yes" HorizontalAlignment="Center" VerticalAlignment="Top" Width="75" Margin="97,45,177,0"/>
         <Button Name="NoButton" Content="No" HorizontalAlignment="Center" VerticalAlignment="Top" Width="74" Margin="187,45,107,0"/>
         <TextBlock x:Name="AreYouSureTextBlock" TextWrapping="NoWrap" Text="Are you sure you want to delete the selected backup(s)?" Margin="50,18,10,70"/>
-        <Image HorizontalAlignment="Left" Height="32" VerticalAlignment="Top" Width="32" Margin="10,10,0,0" Source="/MCBackup;component/Resources/msgbox.question.png"/>
+        <Image x:Name="Image" HorizontalAlignment="Left" Height="32" VerticalAlignment="Top" Width="32" Margin="10,10,0,0"/>
         <CheckBox x:Name="DoNotAskAgainCheckBox" Content="Do not ask me in the future" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="99,0,99,8" Width="Auto"/>
     </Grid>
 </Controls:MetroWindow>

@@ -1,5 +1,5 @@
 ﻿'   ╔═══════════════════════════════════════════════════════════════════════════╗
-'   ║                      Copyright © 2013-2015 nicoco007                      ║
+'   ║                      Copyright © 2013-2016 nicoco007                      ║
 '   ║                                                                           ║
 '   ║      Licensed under the Apache License, Version 2.0 (the "License");      ║
 '   ║      you may not use this file except in compliance with the License.     ║
@@ -14,19 +14,8 @@
 '   ║                      limitations under the License.                       ║
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
 
-Imports System.Text.RegularExpressions
-
 Public Class ErrorReportDialog
     Private Shared ErrorReportDialog As ErrorReportDialog
-    Private Shared Main = TryCast(Application.Current.MainWindow, MainWindow)
-
-    Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs) Handles MyBase.Loaded
-        ' SizeToContent Black Border Fix © nicoco007
-        Dim s As New Size(Me.Width, Me.Height)
-        Me.SizeToContent = SizeToContent.Manual
-        Me.Width = s.Width
-        Me.Height = s.Height
-    End Sub
 
     Public Overloads Shared Sub Show(Message As String, Exception As Exception)
         Log.Print(Message & " " & Exception.Message)
@@ -34,48 +23,29 @@ Public Class ErrorReportDialog
         ErrorReportDialog = New ErrorReportDialog
 
         Try
-            If MCBackup.Language.IsLoaded Then
-                ErrorReportDialog.MessageLabel.Text = String.Format(MCBackup.Language.GetString("Message.ExceptionOccured") & Message, Exception.GetType)
+            ErrorReportDialog.MessageLabel.Text = String.Format(Application.Language.GetString("An exception of type {0} occured: ") + Message, Exception.GetType)
 
-                Dim StackTrace As String = New StackTrace(Exception, True).ToString
-                Log.Print(StackTrace)
-                ErrorReportDialog.ErrorTextBlock.Text = Exception.Message & vbNewLine & StackTrace
+            Dim StackTrace As String = New StackTrace(Exception, True).ToString
+            Log.Print(StackTrace)
+            ErrorReportDialog.ErrorTextBlock.Text = Exception.Message & vbNewLine & StackTrace
 
-                ErrorReportDialog.Title = MCBackup.Language.GetString("Message.Caption.Error")
-                ErrorReportDialog.ContinueButton.Content = MCBackup.Language.GetString("ErrorWindow.ContinueButton.Content")
-                ErrorReportDialog.CopyToClipboardButton.Content = MCBackup.Language.GetString("ErrorWindow.CopyToClipboardButton.Content")
-                ErrorReportDialog.ContactMessage.Text = MCBackup.Language.GetString("ErrorWindow.ContactMessage")
-                ErrorReportDialog.ReportBugButton.Content = MCBackup.Language.GetString("MainWindow.Toolbar.HelpContextMenu.Items(0).Header")
-                System.Media.SystemSounds.Hand.Play()
-                ErrorReportDialog.ShowDialog()
-            Else
-                ErrorReportDialog.MessageLabel.Text = String.Format("An exception of type {0} occured: " & Message, Exception.GetType)
-
-                Dim StackTrace As String = New StackTrace(Exception, True).ToString
-                Log.Print(StackTrace)
-                ErrorReportDialog.ErrorTextBlock.Text = Exception.Message & vbNewLine & StackTrace
-
-                System.Media.SystemSounds.Hand.Play()
-                ErrorReportDialog.ShowDialog()
-            End If
+            ErrorReportDialog.Title = Application.Language.GetString("Error")
+            ErrorReportDialog.ContinueButton.Content = Application.Language.GetString("Continue")
+            ErrorReportDialog.CopyToClipboardButton.Content = Application.Language.GetString("Copy to Clipboard")
+            ErrorReportDialog.ContactMessage.Text = Application.Language.GetString("If this error persists, please consider contacting us at support@nicoco007.com or submit a bug report using the button below.")
+            ErrorReportDialog.ReportBugButton.Content = Application.Language.GetString("Report a Bug")
+            Media.SystemSounds.Hand.Play()
+            ErrorReportDialog.ShowDialog()
             Application.CloseAction = Application.AppCloseAction.Force
         Catch ex As Exception
             Log.Severe("Could not show ErrorReportDialog: " & ex.Message)
-            Try
-                Log.Severe(New StackTrace(ex, True).ToString)
-            Catch InnerException As Exception
-                Log.Severe("Could not trace exception: " & InnerException.Message)
-            End Try
+            Log.Severe(ex.StackTrace)
         End Try
     End Sub
 
     Private Sub CopyToClipboardButton_Click(sender As Object, e As RoutedEventArgs) Handles CopyToClipboardButton.Click
         Clipboard.SetData(DataFormats.Text, Me.ErrorTextBlock.Text)
-        Try
-            MetroMessageBox.Show(MCBackup.Language.GetString("Message.CopiedToClipboard"), MCBackup.Language.GetString("Message.Caption.Copied"), MessageBoxButton.OK, MessageBoxImage.Information)
-        Catch ex As Exception
-            MetroMessageBox.Show("Copied to clipboard.", "Copied", MessageBoxButton.OK, MessageBoxImage.Information)
-        End Try
+        MetroMessageBox.Show(Application.Language.GetString("Successfully copied to clipboard!"), Application.Language.GetString("Copied to Clipboard!"), MessageBoxButton.OK, MessageBoxImage.Information)
     End Sub
 
     Private Sub ContinueButton_Click(sender As Object, e As RoutedEventArgs) Handles ContinueButton.Click
@@ -84,13 +54,5 @@ Public Class ErrorReportDialog
 
     Private Sub ReportBugButton_Click(sender As Object, e As RoutedEventArgs) Handles ReportBugButton.Click
         Process.Start("http://go.nicoco007.com/fwlink/?LinkID=5000")
-    End Sub
-End Class
-
-Public Class TextblockEx
-    Inherits TextBlock
-
-    Sub New(Text As String)
-        Me.Text = Text
     End Sub
 End Class

@@ -177,7 +177,7 @@ Public Class BackupMetadata
 
             End If
 
-        ElseIf Not String.IsNullOrEmpty(Input) Then
+        ElseIf Not String.IsNullOrEmpty(Input.ToString()) Then
 
             Select Case Input.ToString().ToLower()
 

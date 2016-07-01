@@ -1,6 +1,6 @@
 ﻿<!--
 ╔═══════════════════════════════════════════════════════════════════════════╗
-║                      Copyright © 2013-2015 nicoco007                      ║
+║                      Copyright © 2013-2016 nicoco007                      ║
 ║                                                                           ║
 ║      Licensed under the Apache License, Version 2.0 (the "License");      ║
 ║      you may not use this file except in compliance with the License.     ║
@@ -28,8 +28,10 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" x:Name="MessageLabel" Text="Error blah blah" VerticalAlignment="Top" Margin="10,5,10,0" Padding="0,5"/>
-        <TextBox Grid.Row="1" x:Name="ErrorTextBlock" TextWrapping="WrapWithOverflow" Height="Auto" Margin="10,0" IsReadOnly="True" BorderBrush="Black"/>
-        <TextBlock Grid.Row="2" x:Name="ContactMessage" Text="If this error persists, please consider contacting me at support@nicoco007.com." VerticalAlignment="Bottom" Margin="10,0" TextWrapping="Wrap" Padding="0,5"/>
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <TextBox x:Name="ErrorTextBlock" TextWrapping="WrapWithOverflow" Height="Auto" Margin="10,0" IsReadOnly="True"/>
+        </ScrollViewer>
+        <TextBlock Grid.Row="2" x:Name="ContactMessage" Text="If this error persists, please consider contacting us at support@nicoco007.com." VerticalAlignment="Bottom" Margin="10,0" TextWrapping="Wrap" Padding="0,5"/>
         <Grid Margin="0" Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>

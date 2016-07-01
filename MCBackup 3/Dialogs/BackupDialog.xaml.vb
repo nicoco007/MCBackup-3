@@ -1,5 +1,5 @@
-﻿'   ╔═══════════════════════════════════════════════════════════════════════════╗
-'   ║                      Copyright © 2013-2015 nicoco007                      ║
+﻿'   ╔═══════════════════════════════════════════════════════4710════════════════════╗
+'   ║                      Copyright © 2013-2016 nicoco007                      ║
 '   ║                                                                           ║
 '   ║      Licensed under the Apache License, Version 2.0 (the "License");      ║
 '   ║      you may not use this file except in compliance with the License.     ║
@@ -16,12 +16,9 @@
 
 Imports System.IO
 Imports System.Text.RegularExpressions
-Imports System.Text
 Imports System.Globalization
 
 Public Class BackupDialog
-
-    Private Main As MainWindow = DirectCast(Application.Current.MainWindow, MainWindow)
 
     Public Sub New()
         InitializeComponent()
@@ -43,7 +40,7 @@ Public Class BackupDialog
                     Dim SavesDirectory As New DirectoryInfo(My.Settings.SavesFolderLocation)
                     For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
                         If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
-                            SavesListView.Items.Add(New SavesListViewItem(Folder.Name, Nothing))
+                            SavesListView.Items.Add(New SavesListViewItem(Folder.FullName, Folder.Name, Nothing))
                         End If
                     Next
                 Else
@@ -53,7 +50,7 @@ Public Class BackupDialog
                 If Directory.Exists(My.Settings.MinecraftFolderLocation & "\versions") Then
                     Dim VersionsDirectory As New DirectoryInfo(My.Settings.MinecraftFolderLocation & "\versions")
                     For Each Version In VersionsDirectory.GetDirectories
-                        VersionsListView.Items.Add(Version.Name)
+                        VersionsListView.Items.Add(New BackupsDialogListViewItem(Version.FullName, Version.Name))
                     Next
                 Else
                     Log.Warn("Versions folder does not exist!")
@@ -67,13 +64,13 @@ Public Class BackupDialog
                             Log.Print("Searching '{0}' for saves...", SavesDirectory.FullName)
                             For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
                                 If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
-                                    SavesListView.Items.Add(New SavesListViewItem(Folder.Name, Modpack.Name))
+                                    SavesListView.Items.Add(New SavesListViewItem(Folder.FullName, Folder.Name, Modpack.Name))
                                 End If
                             Next
                         Else
                             Log.Warn("Modpack '{0}' does not have a saves folder!", Modpack.Name)
                         End If
-                        VersionsListView.Items.Add(Modpack.Name)
+                        VersionsListView.Items.Add(New BackupsDialogListViewItem(Modpack.FullName, Modpack.Name))
                     Next
                 Else
                     Log.Warn("Modpacks directory does not exist!")
@@ -88,13 +85,13 @@ Public Class BackupDialog
                                 Log.Print("Searching '{0}' for saves...", SavesDirectory.FullName)
                                 For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
                                     If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
-                                        SavesListView.Items.Add(New SavesListViewItem(Folder.Name, Directory.Name))
+                                        SavesListView.Items.Add(New SavesListViewItem(Folder.FullName, Folder.Name, Directory.Name))
                                     End If
                                 Next
                             Else
                                 Log.Warn("Pack '{0}' does not have a saves folder!", Directory.Name)
                             End If
-                            VersionsListView.Items.Add(Directory.Name)
+                            VersionsListView.Items.Add(New BackupsDialogListViewItem(Directory.FullName, Directory.Name))
                         End If
                     Next
                 Else
@@ -109,13 +106,13 @@ Public Class BackupDialog
                             Log.Print("Searching '{0}' for saves...", SavesDirectory.FullName)
                             For Each Folder As DirectoryInfo In SavesDirectory.GetDirectories
                                 If My.Computer.FileSystem.FileExists(Folder.FullName & "\level.dat") Then
-                                    SavesListView.Items.Add(New SavesListViewItem(Folder.Name, Instance.Name))
+                                    SavesListView.Items.Add(New SavesListViewItem(Folder.FullName, Folder.Name, Instance.Name))
                                 End If
                             Next
                         Else
                             Log.Warn("Instance '{0}' does not have a saves folder")
                         End If
-                        VersionsListView.Items.Add(Instance.Name)
+                        VersionsListView.Items.Add(New BackupsDialogListViewItem(Instance.FullName, Instance.Name))
                     Next
                 Else
                     Log.Warn("Instances directory does not exist!")
@@ -135,11 +132,11 @@ Public Class BackupDialog
         CustomNameTextBox.Width = 449 - CustomNameRadioButton.ActualWidth
         CustomNameOutputTextBlock.Width = 449 - CustomNameRadioButton.ActualWidth
 
-        GroupsComboBox.Items.Add(MCBackup.Language.GetString("Groups.None"))
+        GroupsComboBox.Items.Add(Application.Language.GetString("None"))
         For Each Group As String In My.Settings.BackupGroups
             GroupsComboBox.Items.Add(Group)
         Next
-        GroupsComboBox.Items.Add(MCBackup.Language.GetString("Groups.EditGroups"))
+        GroupsComboBox.Items.Add(Application.Language.GetString("Edit groups..."))
 
         If GroupsComboBox.Items.Contains(My.Settings.LastBackupGroupUsed) Then
             GroupsComboBox.SelectedItem = My.Settings.LastBackupGroupUsed
@@ -156,120 +153,85 @@ Public Class BackupDialog
 
     Private Sub StartButton_Click(sender As Object, e As EventArgs) Handles StartButton.Click
         If SavesListView.SelectedItems.Count = 0 And BackupTypeTabControl.SelectedIndex = 0 Then
-            MetroMessageBox.Show(MCBackup.Language.GetString("Message.ChooseSave"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            MetroMessageBox.Show(Application.Language.GetString("Please select a world to back up."), Application.Language.GetString("Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             Exit Sub
         End If
 
         If VersionsListView.SelectedItems.Count = 0 And BackupTypeTabControl.SelectedIndex = 1 Then
-            MetroMessageBox.Show(MCBackup.Language.GetString("Message.ChooseVersion"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            MetroMessageBox.Show(Application.Language.GetString("Please select a version/modpack to back up"), Application.Language.GetString("Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             Exit Sub
         End If
 
-        Dim location As String
-        Dim type As BackupType
+        Dim name As String = ""
+        Dim location As String = ""
+        Dim type As BackupType = BackupTypeTabControl.SelectedIndex
+        Dim OriginalFolderName As String = ""
 
-        Select Case BackupTypeTabControl.SelectedIndex
-            Case 0
-                Select Case My.Settings.Launcher
-                    Case Launcher.Minecraft
-                        location = My.Settings.SavesFolderLocation & "\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
-                    Case Launcher.Technic
-                        location = My.Settings.MinecraftFolderLocation & "\modpacks\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
-                    Case Launcher.FeedTheBeast
-                        location = My.Settings.MinecraftFolderLocation & "\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\minecraft\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
-                    Case Launcher.ATLauncher
-                        location = My.Settings.MinecraftFolderLocation & "\Instances\" & CType(SavesListView.SelectedItem, SavesListViewItem).Location & "\saves\" & CType(SavesListView.SelectedItem, SavesListViewItem).Name
-                End Select
-                type = BackupType.World
-            Case 1
-                Select Case My.Settings.Launcher
-                    Case Launcher.Minecraft
-                        location = My.Settings.MinecraftFolderLocation & "\versions\" & VersionsListView.SelectedItem
-                    Case Launcher.Technic
-                        location = My.Settings.MinecraftFolderLocation & "\modpacks\" & VersionsListView.SelectedItem
-                    Case Launcher.FeedTheBeast
-                        location = My.Settings.MinecraftFolderLocation & "\" & VersionsListView.SelectedItem
-                    Case Launcher.ATLauncher
-                        location = My.Settings.MinecraftFolderLocation & "\Instances\" & VersionsListView.SelectedItem
-                End Select
-                type = BackupType.Version
-            Case 2
-                location = My.Settings.MinecraftFolderLocation
-                type = BackupType.Full
-        End Select
-
-        Dim OriginalFolderName As String
-
-        Select Case BackupTypeTabControl.SelectedIndex
-            Case 0
+        Select Case type
+            Case BackupType.World
+                location = DirectCast(SavesListView.SelectedItem, SavesListViewItem).FullPath
                 OriginalFolderName = DirectCast(SavesListView.SelectedItem, SavesListViewItem).Name
-            Case 1
-                OriginalFolderName = VersionsListView.SelectedItem
-            Case 2
+            Case BackupType.Version
+                location = DirectCast(VersionsListView.SelectedItem, BackupsDialogListViewItem).FullPath
+                OriginalFolderName = DirectCast(VersionsListView.SelectedItem, BackupsDialogListViewItem).Name
+            Case BackupType.Full
+                location = My.Settings.MinecraftFolderLocation
                 OriginalFolderName = My.Settings.Launcher.ToString()
-            Case Else
-                OriginalFolderName = "Unknown"
         End Select
-
-        Dim Name As String
 
         If DefaultNameRadioButton.IsChecked Then
-            Name = BackupName.Process(My.Settings.DefaultBackupName, OriginalFolderName)
+            name = BackupName.Process(My.Settings.DefaultBackupName, OriginalFolderName)
         Else
             If String.IsNullOrEmpty(CustomNameTextBox.Text) Then
-                MetroMessageBox.Show(MCBackup.Language.GetString("Message.EnterValidName"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
+                MetroMessageBox.Show(Application.Language.GetString("Please enter a valid backup name."), Application.Language.GetString("Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
                 Exit Sub
             Else
-                Name = BackupName.Process(CustomNameTextBox.Text, OriginalFolderName)
+                name = BackupName.Process(CustomNameTextBox.Text, OriginalFolderName)
             End If
         End If
 
-        If Regex.IsMatch(Name, "[\/:*?""<>|]") Then
-            MetroMessageBox.Show(MCBackup.Language.GetString("Message.IllegalCharacters"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
+        If Regex.IsMatch(name, "[\/:*?""<>|]") Then
+            MetroMessageBox.Show(Application.Language.GetString("A backup name cannot contain the following characters:\n\ / : * ? "" < > |\nPlease check your settings and try again."), Application.Language.GetString("Error"), MessageBoxButton.OK, MessageBoxImage.Error, TextAlignment.Center)
             Exit Sub
         End If
 
         Dim modpack = Nothing
 
         If My.Settings.Launcher <> Launcher.Minecraft And SavesListView.SelectedItems.Count > 0 Then
-            modpack = CType(SavesListView.SelectedItem, SavesListViewItem).Location
+            modpack = CType(SavesListView.SelectedItem, BackupsDialogListViewItem).Name
         End If
 
         Me.Close()
-        Main.StartBackup(Name, location, type, DescriptionTextBox.Text, IIf(GroupsComboBox.SelectedIndex = 0, Nothing, GroupsComboBox.SelectedItem), My.Settings.Launcher, modpack)
+        BackupManager.BackupAsync(name, location, type, DescriptionTextBox.Text, IIf(GroupsComboBox.SelectedIndex = 0, Nothing, GroupsComboBox.SelectedItem), My.Settings.Launcher, modpack)
     End Sub
 
-    Public Shared Function GetBackupTimeStamp()
-        Return DateTime.Now.ToString("yyyy-MM-dd (hh\hmm\mss\s)")
-    End Function
-
     Private Sub LoadLanguage()
-        Me.Title = MCBackup.Language.GetString("BackupWindow.Title")
-        BackupDetailsGroupBox.Header = MCBackup.Language.GetString("BackupWindow.BackupDetailsGroupBox.Header")
-        BackupNameGroupBox.Header = MCBackup.Language.GetString("BackupWindow.BackupNameGroupBox.Header")
-        DefaultNameRadioButton.Content = MCBackup.Language.GetString("BackupWindow.DefaultNameRadioButton.Content")
-        CustomNameRadioButton.Content = MCBackup.Language.GetString("BackupWindow.CustomNameRadioButton.Content")
-        CustomNameOutputTextBlock.Content = MCBackup.Language.GetString("Localization.Output")
-        ShortDescriptionLabel.Content = MCBackup.Language.GetString("BackupWindow.ShortDescriptionLabel.Content")
-        SavesListViewGridView.Columns(0).Header = MCBackup.Language.GetString("BackupWindow.ListBox.Columns(0).Header")
-        StartButton.Content = MCBackup.Language.GetString("BackupWindow.StartButton.Content")
-        CancelButton.Content = MCBackup.Language.GetString("BackupWindow.CancelButton.Content")
-        GroupLabel.Content = MCBackup.Language.GetString("BackupWindow.GroupLabel.Text")
-        BackupWorldTab.Header = MCBackup.Language.GetString("BackupWindow.BackupWorldTab.Header")
-        SaveNameColumn.Header = MCBackup.Language.GetString("BackupWindow.SaveNameColumn.Header")
-        SaveLocationColumn.Header = MCBackup.Language.GetString("BackupWindow.SaveLocationColumn.Header")
-        VersionNameColumn.Header = MCBackup.Language.GetString("BackupWindow.VersionNameColumn.Header")
-        BackupEverythingTab.Header = MCBackup.Language.GetString("BackupWindow.BackupEverythingTab.Header")
+        Me.Title = Application.Language.GetStringWithContext("noun", "Backup")
+        BackupDetailsGroupBox.Header = Application.Language.GetString("Backup Details")
+        BackupNameGroupBox.Header = Application.Language.GetString("Backup Name")
+        DefaultNameRadioButton.Content = Application.Language.GetString("Default Name")
+        CustomNameRadioButton.Content = Application.Language.GetString("Custom Name")
+        CustomNameOutputTextBlock.Content = Application.Language.GetString("Output")
+        ShortDescriptionLabel.Content = Application.Language.GetString("Description")
+        SavesListViewGridView.Columns(0).Header = Application.Language.GetString("Name")
+        StartButton.Content = Application.Language.GetString("Start")
+        CancelButton.Content = Application.Language.GetString("Cancel")
+        GroupLabel.Content = Application.Language.GetString("Group")
+        BackupWorldTab.Header = Application.Language.GetString("World")
+        SaveNameColumn.Header = Application.Language.GetString("Name")
+        SaveLocationColumn.Header = Application.Language.GetString("Location")
+        VersionNameColumn.Header = Application.Language.GetString("Name")
+        BackupEverythingTab.Header = Application.Language.GetString("Everything")
 
         Select Case My.Settings.Launcher
             Case Launcher.Minecraft
-                BackupVersionTab.Header = MCBackup.Language.GetString("BackupWindow.BackupVersionTab.Header.Minecraft")
+                BackupVersionTab.Header = Application.Language.GetString("Version")
             Case Launcher.Technic
-                BackupVersionTab.Header = MCBackup.Language.GetString("BackupWindow.BackupVersionTab.Header.Technic")
+                BackupVersionTab.Header = Application.Language.GetString("Modpack")
             Case Launcher.FeedTheBeast
-                BackupVersionTab.Header = MCBackup.Language.GetString("BackupWindow.BackupVersionTab.Header.FeedTheBeast")
+                BackupVersionTab.Header = Application.Language.GetString("Modpack")
             Case Launcher.ATLauncher
-                BackupVersionTab.Header = MCBackup.Language.GetString("BackupWindow.BackupVersionTab.Header.ATLauncher")
+                BackupVersionTab.Header = Application.Language.GetString("Instance")
         End Select
     End Sub
 
@@ -281,8 +243,8 @@ Public Class BackupDialog
         If GroupsComboBox.SelectedIndex = GroupsComboBox.Items.Count - 1 And GroupsComboBox.Items.Count > 1 Then
             GroupsComboBox.SelectedIndex = 0
             Me.Close()
-            Dim OptionsWindow As New Options
-            OptionsWindow.Owner = Main
+            Dim OptionsWindow As New OptionsDialog()
+            OptionsWindow.Owner = Owner
             OptionsWindow.ShowDialog(3)
         Else
             My.Settings.LastBackupGroupUsed = GroupsComboBox.SelectedItem
@@ -291,12 +253,12 @@ Public Class BackupDialog
 
     Private Sub Window_ContentRendered(sender As Object, e As EventArgs) Handles Window.ContentRendered
         If SavesListView.Items.Count = 0 Then
-            MetroMessageBox.Show(String.Format(MCBackup.Language.GetString("Message.NoSavesWarning"), My.Settings.Launcher.ToString()), MCBackup.Language.GetString("Message.Caption.Warning"), MessageBoxButton.OK, MessageBoxImage.Warning)
+            MetroMessageBox.Show(String.Format(Application.Language.GetString("There seem to be no saves in your {0} installation. This is either because you have never started the game, or because the folder you selected as base folder is incorrect. Please check your settings if you have already ran Minecraft at least once."), My.Settings.Launcher.ToString()), Application.Language.GetString("Warning"), MessageBoxButton.OK, MessageBoxImage.Warning)
         End If
     End Sub
 
     Private Sub CustomNameTextBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles CustomNameTextBox.TextChanged
-        Dim Name As String = BackupName.Process(CustomNameTextBox.Text, MCBackup.Language.GetString("Localization.DirectoryName"))
+        Dim Name As String = BackupName.Process(CustomNameTextBox.Text, Application.Language.GetString("[Folder Name]"))
 
         If Regex.IsMatch(Name, "[\/:*?""<>|]") Then
             CustomNameTextBox.Background = New SolidColorBrush(Color.FromArgb(100, 255, 0, 0))
@@ -305,33 +267,26 @@ Public Class BackupDialog
             CustomNameTextBox.Background = New SolidColorBrush(Colors.White)
         End If
 
-        CustomNameOutputTextBlock.Content = New ViewboxEx(MCBackup.Language.GetString("Localization.Output") & Name, Stretch.Uniform, StretchDirection.DownOnly)
+        CustomNameOutputTextBlock.Content = New Viewbox() With {.Child = New ContentControl() With {.Content = Application.Language.GetString("Will back up as: ") + Name}, .Stretch = Stretch.Uniform, .StretchDirection = StretchDirection.DownOnly}
+    End Sub
+End Class
+
+Public Class BackupsDialogListViewItem
+    Public Property Name As String
+    Public Property FullPath As String
+
+    Public Sub New(FullPath As String, Name As String)
+        Me.Name = Name
+        Me.FullPath = FullPath
     End Sub
 End Class
 
 Public Class SavesListViewItem
-    Private _Name As String
-    Public Property Name() As String
-        Get
-            Return _Name
-        End Get
-        Set(value As String)
-            _Name = value
-        End Set
-    End Property
+    Inherits BackupsDialogListViewItem
+    Public Property Location As String
 
-    Private _Location As String
-    Public Property Location() As String
-        Get
-            Return _Location
-        End Get
-        Set(value As String)
-            _Location = value
-        End Set
-    End Property
-
-    Public Sub New(Name As String, Location As String)
-        Me.Name = Name
+    Public Sub New(FullPath As String, Name As String, Location As String)
+        MyBase.New(FullPath, Name)
         Me.Location = Location
     End Sub
 End Class

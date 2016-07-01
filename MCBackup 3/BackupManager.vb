@@ -8,101 +8,96 @@ Imports Newtonsoft.Json.Linq
 Public NotInheritable Class BackupManager
 
 #Region "Delegates"
+    Public Delegate Sub BackupStartedEventHandler(e As EventArgs)
+
     ''' <summary>
     ''' Represents the method that will handle the BackupProgressChanged event of the BackupManager class.
     ''' </summary>
-    ''' <param name="sender">The source of the event.</param>
     ''' <param name="e">A BackupProgressChangedEventArgs that contains the event data.</param>
-    Public Delegate Sub BackupProgressChangedEventHandler(sender As Object, e As BackupProgressChangedEventArgs)
+    Public Delegate Sub BackupProgressChangedEventHandler(e As BackupProgressChangedEventArgs)
 
     ''' <summary>
     ''' Represents the method that will handle the BackupCompleted event of the BackupManager class.
     ''' </summary>
-    ''' <param name="sender">The source of the event.</param>
     ''' <param name="e">A BackupCompletedEventArgs that contains the event data.</param>
-    Public Delegate Sub BackupCompletedEventHandler(sender As Object, e As BackupCompletedEventArgs)
+    Public Delegate Sub BackupCompletedEventHandler(e As BackupCompletedEventArgs)
 
-    Public Delegate Sub RestoreProgressChangedEventHandler(sender As Object, e As RestoreProgressChangedEventArgs)
+    Public Delegate Sub RestoreStartedEventHandler(e As EventArgs)
 
-    Public Delegate Sub RestoreCompletedEventHandler(sender As Object, e As RestoreCompletedEventArgs)
+    Public Delegate Sub RestoreProgressChangedEventHandler(e As RestoreProgressChangedEventArgs)
+
+    Public Delegate Sub RestoreCompletedEventHandler(e As RestoreCompletedEventArgs)
 #End Region
 
     ' Threads
-    Private PostBackupThread As Thread = Nothing
+    Private Shared PostBackupThread As Thread = Nothing
 
-    Private RestoreThread As Thread = Nothing
-    Private PreRestoreThread As Thread = Nothing
+    Private Shared RestoreThread As Thread = Nothing
+    Private Shared PreRestoreThread As Thread = Nothing
 
-    Private DeleteDirectoryThread As Thread = Nothing
+    Private Shared DeleteDirectoryThread As Thread = Nothing
 
     ' Async Operations
-    Private BackupAsyncOperation As AsyncOperation = Nothing
-    Private RestoreAsyncOperation As AsyncOperation = Nothing
+    Private Shared BackupAsyncOperation As AsyncOperation = Nothing
+    Private Shared RestoreAsyncOperation As AsyncOperation = Nothing
 
     ' Async Operation Callbacks
-    Private BackupProgressChangedCallback As SendOrPostCallback
-    Private BackupCompletedCallback As SendOrPostCallback
+    Private Shared BackupProgressChangedCallback As SendOrPostCallback = New SendOrPostCallback(AddressOf SendBackupProgressChanged)
+    Private Shared BackupCompletedCallback As SendOrPostCallback = New SendOrPostCallback(AddressOf SendBackupCompleted)
 
-    Private RestoreProgressChangedCallback As SendOrPostCallback
-    Private RestoreCompletedCallback As SendOrPostCallback
+    Private Shared RestoreProgressChangedCallback As SendOrPostCallback = New SendOrPostCallback(AddressOf SendRestoreProgressChanged)
+    Private Shared RestoreCompletedCallback As SendOrPostCallback = New SendOrPostCallback(AddressOf SendRestoreCompleted)
 
 #Region "Events"
+    Public Shared Event BackupStarted As BackupStartedEventHandler
+
     ''' <summary>
     ''' Occurs when backup progress is changed.
     ''' </summary>
-    Public Event BackupProgressChanged As BackupProgressChangedEventHandler
+    Public Shared Event BackupProgressChanged As BackupProgressChangedEventHandler
 
     ''' <summary>
     ''' Occurs when backup is complete.
     ''' </summary>
-    Public Event BackupCompleted As BackupCompletedEventHandler
+    Public Shared Event BackupCompleted As BackupCompletedEventHandler
 
-    Public Event RestoreProgressChanged As RestoreProgressChangedEventHandler
+    Public Shared Event RestoreStarted As RestoreStartedEventHandler
 
-    Public Event RestoreCompleted As RestoreCompletedEventHandler
+    Public Shared Event RestoreProgressChanged As RestoreProgressChangedEventHandler
+
+    Public Shared Event RestoreCompleted As RestoreCompletedEventHandler
 #End Region
 
     ' Exceptions
-    Private BackupError As Exception
-    Private RestoreError As Exception
+    Private Shared BackupError As Exception
+    Private Shared RestoreError As Exception
 
 #Region "Properties"
-    Private _IsBusy As Boolean = False
+    Private Shared _IsBusy As Boolean = False
 
-    Public ReadOnly Property IsBusy As Boolean
+    Public Shared ReadOnly Property IsBusy As Boolean
         Get
             Return _IsBusy
         End Get
     End Property
 
-    Private _CancellationPending As Boolean = False
+    Private Shared _CancellationPending As Boolean = False
 
-    Public ReadOnly Property CancellationPending As Boolean
+    Public Shared ReadOnly Property CancellationPending As Boolean
         Get
             Return _CancellationPending
         End Get
     End Property
 #End Region
 
-    Public Sub New()
-
-        ' Set callbacks
-        BackupProgressChangedCallback = New SendOrPostCallback(AddressOf SendBackupProgressChanged)
-        BackupCompletedCallback = New SendOrPostCallback(AddressOf SendBackupCompleted)
-
-        RestoreProgressChangedCallback = New SendOrPostCallback(AddressOf SendRestoreProgressChanged)
-        RestoreCompletedCallback = New SendOrPostCallback(AddressOf SendRestoreCompleted)
-
-    End Sub
-
-    Public Sub Cancel()
+    Public Shared Sub Cancel()
 
         ' Set CancelPending to True
         _CancellationPending = True
 
     End Sub
 
-    Public Sub BackupAsync(name As String, path As String, type As String, description As String, group As String, launcher As Launcher, modpack As String)
+    Public Shared Sub BackupAsync(name As String, path As String, type As String, description As String, group As String, launcher As Launcher, modpack As String)
 
         ' Check if BackupManager is busy
         If _IsBusy Then
@@ -111,6 +106,8 @@ Public NotInheritable Class BackupManager
             Throw New InvalidOperationException("BackupManager is busy!")
 
         End If
+
+        RaiseEvent BackupStarted(New EventArgs())
 
         ' Set busy to True and CancelPending to false
         _IsBusy = True
@@ -188,7 +185,7 @@ Public NotInheritable Class BackupManager
         zipper.CompressDirectoryAsync(path, IO.Path.Combine(My.Settings.BackupsFolderLocation, name, "backup.zip"))
     End Sub
 
-    Private Sub PostBackupThreadStart(args As BackupEventArgs)
+    Private Shared Sub PostBackupThreadStart(args As BackupEventArgs)
 
         ' Check if backup was cancelled
         If _CancellationPending Then
@@ -314,10 +311,10 @@ Public NotInheritable Class BackupManager
     ''' Called using BackupAsyncOperation to update progress on the calling thread.
     ''' </summary>
     ''' <param name="args">Event arguments.</param>
-    Private Sub SendBackupProgressChanged(args As Object)
+    Private Shared Sub SendBackupProgressChanged(args As BackupProgressChangedEventArgs)
 
         ' Raise backup progress changed event
-        RaiseEvent BackupProgressChanged(Me, DirectCast(args, BackupProgressChangedEventArgs))
+        RaiseEvent BackupProgressChanged(args)
 
     End Sub
 
@@ -325,7 +322,7 @@ Public NotInheritable Class BackupManager
     ''' Called by BackupAsyncOperation after all backup related operations have been completed.
     ''' </summary>
     ''' <param name="args">Event arguments.</param>
-    Private Sub SendBackupCompleted(args As Object)
+    Private Shared Sub SendBackupCompleted(args As BackupCompletedEventArgs)
 
         ' Reset everything to default values
         _IsBusy = False
@@ -333,20 +330,22 @@ Public NotInheritable Class BackupManager
         BackupAsyncOperation = Nothing
 
         ' Raise backup completed event
-        RaiseEvent BackupCompleted(Me, DirectCast(args, BackupCompletedEventArgs))
+        RaiseEvent BackupCompleted(args)
 
     End Sub
 
-    Public Sub RestoreAsync(backupName As String, restoreLocation As String, backupType As BackupType)
+    Public Shared Sub RestoreAsync(backupName As String, restoreLocation As String, backupType As BackupType)
 
-        If Me._IsBusy Then
+        If _IsBusy Then
 
             Throw New InvalidOperationException("Backup Manager is busy!")
 
         End If
 
-        Me._IsBusy = True
-        Me._CancellationPending = False
+        RaiseEvent RestoreStarted(New EventArgs())
+
+        _IsBusy = True
+        _CancellationPending = False
 
         RestoreAsyncOperation = AsyncOperationManager.CreateOperation(Nothing)
 
@@ -398,7 +397,7 @@ Public NotInheritable Class BackupManager
 
     End Sub
 
-    Private Sub RestoreThreadStart(e As RestoreEventArgs)
+    Private Shared Sub RestoreThreadStart(e As RestoreEventArgs)
 
         Dim BackupPath As String = Path.Combine(My.Settings.BackupsFolderLocation, e.BackupName, "backup.zip")
 
@@ -500,14 +499,14 @@ Public NotInheritable Class BackupManager
     End Sub
 
     ' TODO: AsyncOps with delete & copy, move to other class
-    Private Sub DeleteDirectoryAsync(directory As String, onDirectoryNotEmpty As FileIO.DeleteDirectoryOption)
+    Private Shared Sub DeleteDirectoryAsync(directory As String, onDirectoryNotEmpty As FileIO.DeleteDirectoryOption)
 
         DeleteDirectoryThread = New Thread(AddressOf DeleteDirectory)
         DeleteDirectoryThread.Start(directory)
 
     End Sub
 
-    Private Sub DeleteDirectory(directory As String, Optional toplevel As Boolean = True)
+    Private Shared Sub DeleteDirectory(directory As String, Optional toplevel As Boolean = True)
 
         Dim DirectoryInfo As New DirectoryInfo(directory)
 
@@ -545,19 +544,19 @@ Public NotInheritable Class BackupManager
 
     End Sub
 
-    Private Sub SendRestoreProgressChanged(e As RestoreProgressChangedEventArgs)
+    Private Shared Sub SendRestoreProgressChanged(e As RestoreProgressChangedEventArgs)
 
-        RaiseEvent RestoreProgressChanged(Me, e)
+        RaiseEvent RestoreProgressChanged(e)
 
     End Sub
 
-    Private Sub SendRestoreCompleted(e As RestoreCompletedEventArgs)
+    Private Shared Sub SendRestoreCompleted(e As RestoreCompletedEventArgs)
 
         _IsBusy = False
         _CancellationPending = False
         RestoreAsyncOperation = Nothing
 
-        RaiseEvent RestoreCompleted(Me, e)
+        RaiseEvent RestoreCompleted(e)
 
     End Sub
 
@@ -565,7 +564,7 @@ Public NotInheritable Class BackupManager
     ''' Writes backup information to a JSON encoded file.
     ''' </summary>
     ''' <param name="e">A BackupEventArgs that contains the backup's information</param>
-    Private Sub WriteInfoJson(e As BackupEventArgs)
+    Private Shared Sub WriteInfoJson(e As BackupEventArgs)
 
         ' Create new JObject
         Dim InfoJson As New JObject
@@ -593,7 +592,7 @@ Public NotInheritable Class BackupManager
     ''' </summary>
     ''' <param name="directory">Path of the directory.</param>
     ''' <returns>The directory's size, in bytes.</returns>
-    Private Function GetDirectorySize(directory As String) As Long
+    Private Shared Function GetDirectorySize(directory As String) As Long
         If IO.Directory.Exists(directory) Then
             Dim Bytes As Long = 0
 
@@ -612,15 +611,15 @@ Public NotInheritable Class BackupManager
     ''' </summary>
     ''' <param name="span">Time to convert to text.</param>
     ''' <returns>A string describing the estimated time left.</returns>
-    Public Function EstimatedTimeSpanToString(span As TimeSpan)
+    Public Shared Function EstimatedTimeSpanToString(span As TimeSpan)
         If span.Hours > 0 Then
-            Return String.Format(MCBackup.Language.GetString("TimeLeft.HoursMinutesSeconds"), Math.Floor(span.TotalHours), span.Minutes, Math.Round(span.Seconds / 10) * 10)
+            Return String.Format(Application.Language.GetString("about {0} hours, {1} minutes and {0} seconds remaining"), Math.Floor(span.TotalHours), span.Minutes, Math.Round(span.Seconds / 10) * 10)
         ElseIf span.TotalMinutes >= 1 Then
-            Return String.Format(MCBackup.Language.GetString("TimeLeft.MinutesSeconds"), Math.Floor(span.TotalMinutes), Math.Round(span.Seconds / 10) * 10)
+            Return String.Format(Application.Language.GetString("about {0} minutes and {1} seconds remaining"), Math.Floor(span.TotalMinutes), Math.Round(span.Seconds / 10) * 10)
         ElseIf span.Seconds > 5 Then
-            Return String.Format(MCBackup.Language.GetString("TimeLeft.Seconds"), Math.Round(span.Seconds / 10) * 10)
+            Return String.Format(Application.Language.GetString("about {0} seconds remaining"), Math.Round(span.Seconds / 10) * 10)
         Else
-            Return MCBackup.Language.GetString("TimeLeft.LessThanFive")
+            Return Application.Language.GetString("less than 5 seconds remaining")
         End If
     End Function
 End Class

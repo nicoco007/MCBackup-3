@@ -1,5 +1,5 @@
 ﻿'   ╔═══════════════════════════════════════════════════════════════════════════╗
-'   ║                      Copyright © 2013-2015 nicoco007                      ║
+'   ║                      Copyright © 2013-2016 nicoco007                      ║
 '   ║                                                                           ║
 '   ║      Licensed under the Apache License, Version 2.0 (the "License");      ║
 '   ║      you may not use this file except in compliance with the License.     ║
@@ -27,9 +27,9 @@ Public Class RenameDialog
         TextBox.Text = Main.ListView.SelectedItem.Name
     End Sub
 
-    Private Sub RenameButton_Click(sender As Object, e As EventArgs) Handles RenameButton.Click
+    Private Async Sub RenameButton_Click(sender As Object, e As EventArgs) Handles RenameButton.Click
         If TextBox.Text = "" Then
-            MetroMessageBox.Show(MCBackup.Language.GetString("Message.EnterValidName"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+            MetroMessageBox.Show(Application.Language.GetString("Please enter a valid backup name."), Application.Language.GetString("Error"), MessageBoxButton.OK, MessageBoxImage.Error)
             Exit Sub
         End If
 
@@ -37,13 +37,13 @@ Public Class RenameDialog
             If Not My.Computer.FileSystem.DirectoryExists(My.Settings.BackupsFolderLocation & "\" & TextBox.Text) Then
                 My.Computer.FileSystem.RenameDirectory(My.Settings.BackupsFolderLocation & "\" & Main.ListView.SelectedItem.Name, TextBox.Text)
             Else
-                MetroMessageBox.Show(MCBackup.Language.GetString("Message.BackupAlreadyExists"), MCBackup.Language.GetString("Message.Caption.Error"), MessageBoxButton.OK, MessageBoxImage.Error)
+                MetroMessageBox.Show(Application.Language.GetString("A backup with that name already exists! Please choose another name."), Application.Language.GetString("Error"), MessageBoxButton.OK, MessageBoxImage.Error)
                 Exit Sub
             End If
         Catch ex As Exception
-            ErrorReportDialog.Show(MCBackup.Language.GetString("Exception.Rename"), ex)
+            ErrorReportDialog.Show(Application.Language.GetString("An error occured while trying to rename the backup."), ex)
         End Try
-        Main.RefreshBackupsList()
+        Await Main.RefreshBackupsList()
         Me.Close()
     End Sub
 
@@ -52,8 +52,8 @@ Public Class RenameDialog
     End Sub
 
     Private Sub LoadLanguage()
-        Me.Title = MCBackup.Language.GetString("RenameWindow.Title")
-        RenameButton.Content = MCBackup.Language.GetString("RenameWindow.RenameButton.Content")
-        CancelButton.Content = MCBackup.Language.GetString("RenameWindow.CancelButton.Content")
+        Me.Title = Application.Language.GetString("Rename")
+        RenameButton.Content = Application.Language.GetString("Rename")
+        CancelButton.Content = Application.Language.GetString("Cancel")
     End Sub
 End Class

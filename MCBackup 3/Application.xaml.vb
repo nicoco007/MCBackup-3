@@ -1,5 +1,5 @@
 ﻿'   ╔═══════════════════════════════════════════════════════════════════════════╗
-'   ║                      Copyright © 2013-2015 nicoco007                      ║
+'   ║                      Copyright © 2013-2016 nicoco007                      ║
 '   ║                                                                           ║
 '   ║      Licensed under the Apache License, Version 2.0 (the "License");      ║
 '   ║      you may not use this file except in compliance with the License.     ║
@@ -15,6 +15,8 @@
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
 
 Imports System.Threading
+Imports System.Windows.Threading
+Imports GettextSharp
 
 Class Application
     Public Enum AppCloseAction
@@ -32,6 +34,8 @@ Class Application
             _CloseAction = value
         End Set
     End Property
+
+    Public Shared Property Language As New Mo()
 
     Sub New()
 
@@ -67,5 +71,9 @@ Class Application
         End If
 
         mutex.Close()
+    End Sub
+
+    Public Shared Shadows Sub DispatcherUnhandledException(ByVal sender As Object, ByVal e As DispatcherUnhandledExceptionEventArgs) Handles MyBase.DispatcherUnhandledException
+        ErrorReportDialog.Show(e.Exception.Message, e.Exception)
     End Sub
 End Class

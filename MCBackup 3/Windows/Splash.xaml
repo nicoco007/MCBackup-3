@@ -1,6 +1,6 @@
 ﻿<!--
 ╔═══════════════════════════════════════════════════════════════════════════╗
-║                      Copyright © 2013-2015 nicoco007                      ║
+║                      Copyright © 2013-2016 nicoco007                      ║
 ║                                                                           ║
 ║      Licensed under the Apache License, Version 2.0 (the "License");      ║
 ║      you may not use this file except in compliance with the License.     ║
@@ -24,6 +24,6 @@
         <Image Source="pack://application:,,,/Resources/Splash.png" Height="320" Width="530" VerticalAlignment="Top"/>
         <ProgressBar x:Name="Progress" HorizontalAlignment="Left" VerticalAlignment="Top" Width="530" Margin="0,320,0,0" Height="20" Maximum="10"/>
         <Label x:Name="VersionLabel" Content="MCBackup vX.X.X.X" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,255,0,0" Foreground="White" FontFamily="Arial" FontSize="16"/>
-        <Label x:Name="CopyrightLabel" Content="Copyright © 2013-2015 nicoco007" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="14,275,0,0" Foreground="White" FontFamily="Arial" FontSize="13"/>
+        <Label x:Name="CopyrightLabel" Content="Copyright © 2013-2016 nicoco007" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="14,275,0,0" Foreground="White" FontFamily="Arial" FontSize="13"/>
     </Grid>
 </Window>

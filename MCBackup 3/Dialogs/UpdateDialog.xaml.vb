@@ -1,5 +1,5 @@
 ﻿'   ╔═══════════════════════════════════════════════════════════════════════════╗
-'   ║                      Copyright © 2013-2015 nicoco007                      ║
+'   ║                      Copyright © 2013-2016 nicoco007                      ║
 '   ║                                                                           ║
 '   ║      Licensed under the Apache License, Version 2.0 (the "License");      ║
 '   ║      you may not use this file except in compliance with the License.     ║
@@ -27,14 +27,14 @@ Public Class UpdateDialog
     End Sub
 
     Private Sub UpdateDialog_Loaded(sender As Object, e As RoutedEventArgs)
-        Me.Title = MCBackup.Language.GetString("UpdateDialog.Title")
-        Label1.Content = MCBackup.Language.GetString("UpdateDialog.Label1.Text")
-        CurrentVersionLabel.Content = String.Format(MCBackup.Language.GetString("UpdateDialog.CurrentVersionLabel.Text"), MainWindow.ApplicationVersion)
-        LatestVersionLabel.Content = String.Format(MCBackup.Language.GetString("UpdateDialog.LatestVersionLabel.Text"), MainWindow.LatestVersion)
-        Label2.Content = MCBackup.Language.GetString("UpdateDialog.Label2.Text")
-        YesButton.Content = MCBackup.Language.GetString("MetroMsgBox.Button.Yes")
-        NoButton.Content = MCBackup.Language.GetString("MetroMsgBox.Button.No")
-        ShowChangelogButton.Content = MCBackup.Language.GetString("UpdateDialog.ShowChangelogButton.Text")
+        Me.Title = Application.Language.GetString("New Version Available!")
+        Label1.Content = Application.Language.GetString("A new version of MCBackup is available!")
+        CurrentVersionLabel.Content = String.Format(Application.Language.GetString("Installed Version: {0}"), MainWindow.ApplicationVersion)
+        LatestVersionLabel.Content = String.Format(Application.Language.GetString("Latest Version: {0}"), MainWindow.LatestVersion)
+        Label2.Content = Application.Language.GetString("Would you like to update?")
+        YesButton.Content = Application.Language.GetString("Yes")
+        NoButton.Content = Application.Language.GetString("No")
+        ShowChangelogButton.Content = Application.Language.GetString("Show Changelog")
     End Sub
 
     Private Sub Button_Click(sender As Object, e As RoutedEventArgs)
