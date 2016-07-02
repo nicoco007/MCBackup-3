@@ -41,7 +41,7 @@ Public Class RenameDialog
                 Exit Sub
             End If
         Catch ex As Exception
-            ErrorReportDialog.Show(Application.Language.GetString("An error occured while trying to rename the backup."), ex)
+            ErrorReportDialog.ShowDialog(Application.Language.GetString("An error occured while trying to rename the backup."), ex)
         End Try
         Await Main.RefreshBackupsList()
         Me.Close()

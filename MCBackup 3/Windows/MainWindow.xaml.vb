@@ -109,7 +109,7 @@ Partial Class MainWindow
         Try
             Application.Language.Load(Path.Combine(Directory.GetCurrentDirectory(), "language", My.Settings.Language + ".mo"))
         Catch ex As Exception
-            ErrorReportDialog.Show("Unable to load language file", ex)
+            ErrorReportDialog.ShowDialog("Unable to load language file", ex)
             My.Settings.Language = "en_US"
             Application.Language.Clear()
         End Try
@@ -159,7 +159,7 @@ Partial Class MainWindow
                                 My.Settings.Language = "en_US"
                                 Application.Language.Load(Path.Combine(Directory.GetCurrentDirectory(), "language", My.Settings.Language + ".mo"))
                             Catch ex As Exception
-                                ErrorReportDialog.Show("Unable to load language file", ex)
+                                ErrorReportDialog.ShowDialog("Unable to load language file", ex)
                             End Try
                         End Try
 
@@ -621,7 +621,7 @@ Partial Class MainWindow
                                   Try
                                       ThumbnailImage.Source = BitmapFromUri(New Uri(My.Settings.BackupsFolderLocation & "\" & SelectedItem.Name & "\thumb.png"))
                                   Catch ex As Exception
-                                      Dispatcher.Invoke(Sub() ErrorReportDialog.Show("An error occured while trying to load the backup's thumbnail", ex))
+                                      Dispatcher.Invoke(Sub() ErrorReportDialog.ShowDialog("An error occured while trying to load the backup's thumbnail", ex))
                                   End Try
                               Else
                                   Select Case SelectedItem.Launcher
@@ -804,7 +804,7 @@ Partial Class MainWindow
 
             CancelButton.Content = Application.Language.GetString("Cancel")
         Catch ex As Exception
-            Dispatcher.Invoke(Sub() ErrorReportDialog.Show("Could not load language.", ex))
+            Dispatcher.Invoke(Sub() ErrorReportDialog.ShowDialog("Could not load language.", ex))
         End Try
     End Sub
 
@@ -894,7 +894,7 @@ Partial Class MainWindow
             If My.Settings.ShowBalloonTips Then NotifyIcon.ShowBalloonTip(2000, Application.Language.GetString("Backup Error!"), Application.Language.GetString("An error occurred during the backup."), Forms.ToolTipIcon.Error)
 
             ' Show error report dialog
-            ErrorReportDialog.Show(Application.Language.GetString("An error occurred during the backup."), e.Error)
+            ErrorReportDialog.ShowDialog(Application.Language.GetString("An error occurred during the backup."), e.Error)
 
         Else
 
@@ -1062,7 +1062,7 @@ Partial Class MainWindow
 
         If e.Error IsNot Nothing Then
 
-            ErrorReportDialog.Show(e.Error.Message, e.Error)
+            ErrorReportDialog.ShowDialog(e.Error.Message, e.Error)
 
         End If
 
@@ -1088,7 +1088,7 @@ Partial Class MainWindow
         Catch ex As DirectoryNotFoundException
             Return 0
         Catch ex As Exception
-            Dispatcher.Invoke(Sub() ErrorReportDialog.Show(String.Format("Could not find size of '{0}'", FolderPath), ex))
+            Dispatcher.Invoke(Sub() ErrorReportDialog.ShowDialog(String.Format("Could not find size of '{0}'", FolderPath), ex))
 
             Return 0
         End Try
@@ -1099,7 +1099,7 @@ Partial Class MainWindow
             Dim FSO As New Scripting.FileSystemObject
             Return FSO.GetFolder(FolderPath).DateCreated ' Get FolderPath's date of creation
         Catch ex As Exception
-            Dispatcher.Invoke(Sub() ErrorReportDialog.Show(String.Format("Could not find creation date of '{0}'", FolderPath), ex))
+            Dispatcher.Invoke(Sub() ErrorReportDialog.ShowDialog(String.Format("Could not find creation date of '{0}'", FolderPath), ex))
         End Try
         Return Nothing
     End Function
@@ -1117,7 +1117,7 @@ Partial Class MainWindow
             Bitmap.EndInit()
             Return Bitmap
         Catch ex As Exception
-            Dispatcher.Invoke(Sub() ErrorReportDialog.Show(String.Format("Could not convert source {0} to bitmap:", Source), ex))
+            Dispatcher.Invoke(Sub() ErrorReportDialog.ShowDialog(String.Format("Could not convert source {0} to bitmap:", Source), ex))
         End Try
         Return Nothing
     End Function
@@ -1238,7 +1238,7 @@ Partial Class MainWindow
                                          ResetTitle()
                                      End Sub)
             Else
-                Dispatcher.Invoke(Sub() ErrorReportDialog.Show(Application.Language.GetString("An error occurred during the removal."), ex))
+                Dispatcher.Invoke(Sub() ErrorReportDialog.ShowDialog(Application.Language.GetString("An error occurred during the removal."), ex))
             End If
         End Try
 

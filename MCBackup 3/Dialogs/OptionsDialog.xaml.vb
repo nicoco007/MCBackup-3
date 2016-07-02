@@ -181,7 +181,7 @@ Public Class OptionsDialog
         Me.Close()
     End Sub
 
-    Private Sub Window_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
+    Private Async Sub Window_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
         Dim DefaultBackupName As String = BackupName.Process(DefaultBackupNameTextBox.Text, Application.Language.GetString("[Folder Name]"))
         Dim DefaultAutoBackupName As String = BackupName.Process(DefaultAutoBackupNameTextBox.Text, Application.Language.GetString("[Folder Name]"))
 
@@ -212,7 +212,7 @@ Public Class OptionsDialog
         End If
 
         My.Settings.Save()
-        MainWindow.RefreshBackupsList()
+        Await MainWindow.RefreshBackupsList()
         ReloadBackupGroups()
     End Sub
 
@@ -226,7 +226,7 @@ Public Class OptionsDialog
                     Application.Language.Clear()
                 End If
             Catch ex As Exception
-                ErrorReportDialog.Show(Application.Language.GetString("Failed to load language file"), ex)
+                ErrorReportDialog.ShowDialog(Application.Language.GetString("Failed to load language file"), ex)
             End Try
             My.Settings.Language = LanguagesComboBox.SelectedItem.Tag
             LoadLanguage()

@@ -66,6 +66,9 @@ Class Application
             Next
         Else
             Dim app As New Application()
+
+            AddHandler app.DispatcherUnhandledException, AddressOf UnhandledExceptionOccured
+
             Dim mainWindow As New MainWindow()
             app.Run(mainWindow)
         End If
@@ -73,7 +76,8 @@ Class Application
         mutex.Close()
     End Sub
 
-    Public Shared Shadows Sub DispatcherUnhandledException(ByVal sender As Object, ByVal e As DispatcherUnhandledExceptionEventArgs) Handles MyBase.DispatcherUnhandledException
-        ErrorReportDialog.Show(e.Exception.Message, e.Exception)
+    Public Shared Sub UnhandledExceptionOccured(sender As Object, e As DispatcherUnhandledExceptionEventArgs)
+        ErrorReportDialog.ShowDialog(Language.GetString("A severe error has occured."), e.Exception)
+        e.Handled = True
     End Sub
 End Class

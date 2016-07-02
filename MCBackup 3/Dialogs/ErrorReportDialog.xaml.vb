@@ -15,12 +15,15 @@
 '   ╚═══════════════════════════════════════════════════════════════════════════╝
 
 Public Class ErrorReportDialog
-    Private Shared ErrorReportDialog As ErrorReportDialog
 
-    Public Overloads Shared Sub Show(Message As String, Exception As Exception)
+    Public Overloads Shared Sub ShowDialog(Message As String, Exception As Exception)
+        ShowDialog(Message, Exception, False)
+    End Sub
+
+    Public Overloads Shared Sub ShowDialog(Message As String, Exception As Exception, fatal As Boolean)
         Log.Print(Message & " " & Exception.Message)
 
-        ErrorReportDialog = New ErrorReportDialog
+        Dim ErrorReportDialog As New ErrorReportDialog()
 
         Try
             ErrorReportDialog.MessageLabel.Text = String.Format(Application.Language.GetString("An exception of type {0} occured: ") + Message, Exception.GetType)
@@ -30,13 +33,12 @@ Public Class ErrorReportDialog
             ErrorReportDialog.ErrorTextBlock.Text = Exception.Message & vbNewLine & StackTrace
 
             ErrorReportDialog.Title = Application.Language.GetString("Error")
-            ErrorReportDialog.ContinueButton.Content = Application.Language.GetString("Continue")
+            ErrorReportDialog.ContinueButton.Content = IIf(fatal, Application.Language.GetString("Exit"), Application.Language.GetString("Continue"))
             ErrorReportDialog.CopyToClipboardButton.Content = Application.Language.GetString("Copy to Clipboard")
             ErrorReportDialog.ContactMessage.Text = Application.Language.GetString("If this error persists, please consider contacting us at support@nicoco007.com or submit a bug report using the button below.")
             ErrorReportDialog.ReportBugButton.Content = Application.Language.GetString("Report a Bug")
             Media.SystemSounds.Hand.Play()
             ErrorReportDialog.ShowDialog()
-            Application.CloseAction = Application.AppCloseAction.Force
         Catch ex As Exception
             Log.Severe("Could not show ErrorReportDialog: " & ex.Message)
             Log.Severe(ex.StackTrace)

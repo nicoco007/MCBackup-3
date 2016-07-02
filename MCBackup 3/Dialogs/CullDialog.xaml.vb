@@ -70,7 +70,7 @@ Public Class CullDialog
             Try
                 My.Computer.FileSystem.DeleteDirectory(My.Settings.BackupsFolderLocation & "\" & Item, FileIO.DeleteDirectoryOption.DeleteAllContents)
             Catch ex As Exception
-                ErrorReportDialog.Show(Application.Language.GetString("An error occurred during the removal."), ex)
+                ErrorReportDialog.ShowDialog(Application.Language.GetString("An error occurred during the removal."), ex)
             End Try
         Next
     End Sub

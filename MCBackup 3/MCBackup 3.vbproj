@@ -362,12 +362,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="language\en_US.lang">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="language\fr_FR.lang">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="language\fr_FR.mo">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
